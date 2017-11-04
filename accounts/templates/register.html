@@ -1,0 +1,177 @@
+{% load static widget_tweaks %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'assets/images/favicon.png' %}">
+    <title>Nilus - Agronegócio | Registro de Conta.</title>
+    <!-- Bootstrap Core CSS -->
+    <link href="{% static 'assets/plugins/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/plugins/wizard/stepsRegister.css' %}" rel="stylesheet">
+    <!--alerts CSS -->
+    <link href="{% static 'assets/plugins/sweetalert/sweetalert.css' %}" rel="stylesheet" type="text/css">
+    <!-- Custom CSS -->
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <!-- You can change the theme colors from here -->
+    <link href="{% static 'css/colors/green.css' %}" id="theme" rel="stylesheet">
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+</head>
+
+<body>
+
+
+       <div class="login-register" style="background-image:url( {% static 'assets/images/background/login-nilus.jpg' %});">
+       <div class="row" id="validation">
+
+           <div class="col-2"></div>
+                    <div class="col-9">
+                        <div class="card wizard-content">
+                            <div class="card-body">
+                                <h4 class="card-title">Cadastro de Conta</h4>
+                                <h6 class="card-subtitle">Informe os dados abaixo para iniciar a utilização da aplicação</h6>
+                                <form action="" class="validation-wizard wizard-circle" method="post">
+                                     {% csrf_token %}
+                                     {% for error in form.non_field_errors %}
+                                         {{ error }}
+                                        {% endfor %}
+                                    <!-- Step 1 -->
+                                    <h6>Dados de Acesso</h6>
+
+                                    <section>
+                                        <div class="row">
+                                            <div class="col-4">
+                                                <div class="form-group">
+                                                    <label for="username">{{ form.username.label_tag }} <span class="danger">*</span> </label>
+                                                    {% render_field form.username class='form-control required' id="username" name="username" %}
+                                                    {% for error in form.username.errors %}
+			                                           <label class="text-danger">{{ error }}</label>
+			                                        {% endfor %}
+                                                </div>
+                                            </div>
+                                            <div class="col-7">
+                                               <div class="form-group">
+                                                  <label for="name">{{ form.name.label_tag }} <span class="danger">*</span> </label>
+                                                  {% render_field form.name class='form-control required' id="name" name="name" %}
+                                                   {% for error in form.name.errors %}
+			                                           <label class="text-danger">{{ error }}</label>
+			                                        {% endfor %}
+                                               </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-11">
+                                                <div class="form-group">
+                                                    <label for="email">{{ form.email.label_tag }} <span class="danger">*</span> </label>
+                                                    {% render_field form.email class='form-control required' id="email" name="firstName" %}
+                                                    {% for error in form.email.errors %}
+			                                           <label class="text-danger">{{ error }}</label>
+			                                        {% endfor %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </section>
+                                    <!-- Step 2 -->
+                                    <h6>Informações da Conta</h6>
+                                    <section>
+                                        <div class="row">
+                                            <div class="col-4">
+                                                <div class="form-group">
+                                                    <label for="qtd_users">{{ form.qtd_users.label_tag }} <span class="danger">*</span> </label>
+                                                    {% render_field form.qtd_users class='form-control required' id="qtd_users" name="username" %}
+                                                    {% for error in form.qtd_users.errors %}
+			                                           <label class="text-danger">{{ error }}</label>
+			                                        {% endfor %}
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                               <div class="form-group">
+                                                  <label for="qtd_unity">{{ form.qtd_unity.label_tag }} <span class="danger">*</span> </label>
+                                                  {% render_field form.qtd_unity class='form-control required' id="qtd_unity" name="qtd_unity" %}
+                                                   {% for error in form.qtd_unity.errors %}
+			                                           <label class="text-danger">{{ error }}</label>
+			                                        {% endfor %}
+                                               </div>
+                                            </div>
+                                            <div class="col-4">
+                                               <div class="form-group">
+                                                  <label for="qtd_propriety">{{ form.qtd_propriety.label_tag }} <span class="danger">*</span> </label>
+                                                  {% render_field form.qtd_propriety class='form-control required' id="qtd_propriety" name="qtd_propriety" %}
+                                                   {% for error in form.qtd_propriety.errors %}
+			                                           <label class="text-danger">{{ error }}</label>
+			                                        {% endfor %}
+                                               </div>
+                                            </div>
+                                        </div>
+                                    </section>
+                                    <!-- Step 2 -->
+                                    <h6>Senhas</h6>
+                                    <section>
+                                        <div class="row">
+                                            <div class="col-4">
+                                                <div class="form-group">
+                                                    <label for="password1">{{ form.password1.label_tag }} <span class="danger">*</span> </label>
+                                                    {% render_field form.password1 class='form-control required' id="password1" name="password1" %}
+                                                   {% for error in form.password1.errors %}
+			                                            <label class="text-danger">{{ error }}</label>
+			                                        {% endfor %}
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                               <div class="form-group">
+                                                  <label for="password2">{{ form.password2.label_tag }} <span class="danger">*</span> </label>
+                                                  {% render_field form.password2 class='form-control required' id="password2" name="password2" %}
+                                                  {% for error in form.password2.errors %}
+			                                            <div class="danger">{{ error }}</div>
+			                                        {% endfor %}
+                                               </div>
+                                            </div>
+                                        </div>
+                                    </section>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+    </div>
+    <script src="{% static 'assets/plugins/jquery/jquery.min.js' %}"></script>
+    <!-- Bootstrap tether Core JavaScript -->
+    <script src="{% static 'assets/plugins/bootstrap/js/popper.min.js' %}"></script>
+
+    <script src="{% static 'assets/plugins/bootstrap/js/bootstrap.min.js' %}"></script>
+    <!-- slimscrollbar scrollbar JavaScript -->
+    <script src="{% static 'js/jquery.slimscroll.js' %}"></script>
+    <!--Wave Effects -->
+    <script src="{% static 'js/waves.js' %}"></script>
+    <!--Menu sidebar -->
+    <script src="{% static 'js/sidebarmenu.js' %}"></script>
+    <!--stickey kit -->
+    <script src="{% static 'assets/plugins/sticky-kit-master/dist/sticky-kit.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/sparkline/jquery.sparkline.min.js' %}"></script>
+    <!--Custom JavaScript -->
+    <script src="{% static 'js/custom.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/moment/min/moment.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/wizard/jquery.steps_pt-br.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/wizard/jquery.validateptbr.min.js' %}"></script>
+    <!-- Sweet-Alert  -->
+    <script src="{% static 'assets/plugins/sweetalert/sweetalert.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/wizard/stepsRegister.js' %}"></script>
+    <!-- ============================================================== -->
+    <!-- Style switcher -->
+    <!-- ============================================================== -->
+    <script src="{% static 'assets/plugins/styleswitcher/jQuery.style.switcher.js' %}"></script>
+</body>
+
+</html>

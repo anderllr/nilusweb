@@ -1,0 +1,32 @@
+    <table id="myTable" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Empresa</th>
+                        <th>CNPJ/CPF</th>
+                        <th>Situação</th>
+                        <th>Data Cadastro</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for emp in companys %}
+                    <tr>
+                        <td><small>{{ emp.num_company }}</small></td>
+                        <td><small>{{ emp.razao }}</small></td>
+                        <td><small>{{ emp.cnpj_cpf }}</small></td>
+                        <td>{% if emp.situacao == True %}
+                            <small><span class="label label-success">Ativo</span></small>
+                            {% else %}
+                            <small><span class="label label-default">Inativo</span></small>
+                            {% endif %}</td>
+                        <td><small>{{ emp.data_cadastro|date:'d/m/Y'  }}</small></td>
+                        <td><a class="btn btn-success btn edit_company" title="Editar " href="{% url 'edit_company' emp.pk  %}"><i class="fa fa-edit"></i><small> Alterar</small></a>
+                            <a class="btn btn-danger btn delete_company" title="Editar " href="{% url 'delete_company' emp.pk  %}"><i class="fa fa-trash-o"></i><small> Excluir</small></a>
+                            <a class="btn btn-info btn edit_company2" title="Propriedades " href="{% url 'edit_company_prop' emp.pk  %}"><i class="fa fa-edit"></i><small> Propriedades</small></a>
+
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>

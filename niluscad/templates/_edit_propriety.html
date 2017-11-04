@@ -1,0 +1,155 @@
+{% load static widget_tweaks %}
+{% if success %}
+   <script>
+	   close_modal=true;
+   </script>
+{% else %}
+ <div id="#formulario_propriedade">
+    <div class="card">
+        <div class="card-body">
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item "> <a class="nav-link active" data-toggle="tab" href="#principal_prop" role="tab"><span class="hidden-sm-up"><i class="ti-home"></i></span> <span class="hidden-xs-down">Principal</span></a> </li>
+                <li class="nav-item "> <a class="nav-link" data-toggle="tab" href="#endereco_prop" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Endereço</span></a> </li>
+                <li class="nav-item "> <a class="nav-link" data-toggle="tab" href="#contato_prop" role="tab"><span class="hidden-sm-up"><i class="ti-email"></i></span> <span class="hidden-xs-down">Contato</span></a> </li>
+            </ul>
+            <form method="post" method="post" enctype="multipart/form-data" action="{% url 'edit_propriety' object.pk %}">
+             {% csrf_token %}
+                {% for error in form.non_field_errors %}
+                <div class="alert-danger alert">
+                {{ error }}
+                </div>
+                {% endfor %}
+            <!-- Tab panes -->
+                    <div class="tab-content tabcontent-border">
+                        <div class="tab-pane active p-20" id="principal_prop" role="tabpanel">
+                            <div class="row p-t-20">
+                                <div class="col-md-7">
+                                    <div class="form-group">
+                                        <label class="control-label">{{form.ie.label_tag}}</label>
+                                        {% render_field form.ie class="form-control" placeholder=form.cnpj_cpf.label %}
+                                        {% for error in form.ie.errors %}
+                                        <small class="form-control-feedback"> {{ error }} </small>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <!--/span-->
+                            </div>
+                            <div class="row p-t-20">
+                                 <div class="col-md-7">
+                                    <div class="form-group">
+                                        <label class="control-label">{{form.razao.label_tag}}</label>
+                                         {% render_field form.razao class="form-control" placeholder=form.razao.label  value=test  %}
+                                        {% for error in form.razao.errors %}
+                                        <small class="form-control-feedback"> {{ error }} </small>
+                                        {% endfor %}
+                                    </div>
+                                 </div>
+
+                                <div class="col-md-5">
+                                       <label class="control-label">{{form.fantasia.label_tag}}</label>
+                                         {% render_field form.fantasia class="form-control" placeholder=form.fantasia.label %}
+                                        {% for error in form.fantasia.errors %}
+                                        <small class="form-control-feedback"> {{ error }} </small>
+                                        {% endfor %}
+                                </div>
+                            </div>
+                         </div>
+                         <div class="tab-pane  p-20" id="endereco_prop" role="tabpanel">
+                             <div class="row p-t-20">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="control-label">{{form.cep.label_tag}}</label>
+                                        {% render_field form.cep class="form-control" placeholder=form.cep.label %}
+                                        {% for error in form.cep.errors %}
+                                        <small class="form-control-feedback"> {{ error }} </small>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <!--/span-->
+                                <div class="col-md-6">
+                                    <label class="control-label">{{form.endereco.label_tag}}</label>
+                                         {% render_field form.endereco class="form-control" placeholder=form.endereco.label %}
+                                        {% for error in form.endereco.errors %}
+                                        <small class="form-control-feedback"> {{ error }} </small>
+                                        {% endfor %}
+                                </div>
+                                <div class="col-md-3">
+                                       <label class="control-label">{{form.numero.label_tag}}</label>
+                                         {% render_field form.numero class="form-control" placeholder=form.numero.label %}
+                                        {% for error in form.numero.errors %}
+                                        <small class="form-control-feedback"> {{ error }} </small>
+                                        {% endfor %}
+                                    </div>
+                                <!--/span-->
+                            </div>
+                    <!--/row-->
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="control-label">{{form.complemento.label_tag}}</label>
+                                         {% render_field form.complemento class="form-control" placeholder=form.complemento.label %}
+                                        {% for error in form.complemento.errors %}
+                                        <small class="form-control-feedback"> {{ error }} </small>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                        <!--/span-->
+                                <div class="col-md-4">
+                                       <label class="control-label">{{form.bairro.label_tag}}</label>
+                                         {% render_field form.bairro class="form-control" placeholder=form.bairro.label %}
+                                        {% for error in form.bairro.errors %}
+                                        <small class="form-control-feedback"> {{ error }} </small>
+                                        {% endfor %}
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label class="control-label">{{form.cidade.label_tag}}</label>
+                                         {% render_field form.cidade class="form-control" placeholder=form.cidade.label %}
+                                        {% for error in form.cidade.errors %}
+                                        <small class="form-control-feedback"> {{ error }} </small>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                        <label class="control-label">{{form.uf.label_tag}}</label>
+                                        {% render_field form.uf class="form-control" placeholder=form.uf.label %}
+                                        {% for error in form.uf.errors %}
+                                        <small class="form-control-feedback"> {{ error }} </small>
+                                        {% endfor %}
+                                </div>
+                            </div>
+                         </div>
+                         <div class="tab-pane p-20" id="contato_prop" role="tabpanel">
+                            <div class="row p-t-20">
+                                <div class="col-md-7">
+                                    <div class="form-group">
+                                        <label class="control-label">{{form.email.label_tag}}</label>
+                                        {% render_field form.email class="form-control" placeholder=form.email.label %}
+                                        {% for error in form.email.errors %}
+                                        <small class="form-control-feedback"> {{ error }} </small>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <!--/span-->
+                                <div class="col-md-4">
+                                    <label class="control-label">{{form.telefone.label_tag}}</label>
+                                         {% render_field form.telefone class="form-control" placeholder=form.telefone.label %}
+                                        {% for error in form.telefone.errors %}
+                                        <small class="form-control-feedback"> {{ error }} </small>
+                                        {% endfor %}
+                                </div>
+                            </div>
+                         </div>
+                    </div>
+                   <br>
+                   <div class="form-actions">
+                    <button type="submit" class="btn btn-success"> <i class="fa fa-check"></i> Salvar</button>
+                    <a type="button" class="btn btn-inverse" href="{% url 'propriety_list' %}">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+

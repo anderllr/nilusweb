@@ -1,0 +1,39 @@
+{% block subject %} Bem vindo ao Nilus | Ativação de Conta {% endblock %}
+
+
+{% block html %}
+{% load static widget_tweaks %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Seja Bem vindo ao Nilus</title>
+</head>
+<body>
+
+<!--<p align="center"><img src="http://www.blockcells.com.br/static/assets/img/Blockcells_icone.png" alt="logo_email"/></p> -->
+
+<p>Olá, <strong>{{ user.name }}</strong></p>
+<p>Seja bem-vindo ao  <strong>Nilus</strong>, uma empresa voltada para tecnologia de ponta e com foco total no agronegócio<br>
+    Buscamos unir as forças junto aos produtores para alcançar o máximo de resultado na gestão da produção agrícola.</p>
+<br>
+<p><p>Teremos o maior prazer em ajuda-lo e caso  necessite entre em contato através do <a href="mailto:contato@nilus.com.br">contato@nilus.com.br</a>.</p></p>
+<p align="center">  <a class="btn btn-success btn-lg" href="{{domain}}{% url 'user_active' user.token %}">Clique aqui e confirme seu cadastro</a></p>
+
+<!--<p>Indique-nos e compartilhe-nos nas redes sociais (divulgue ao máximo) pois temos convicção da nossa missão de ajudar a proteger pessoas.</p>
+
+<p align="center">&nbsp;</p>
+<p>Aproveite  ainda e baixe nosso aplicativo nas lojas</p>
+<p align="center">
+<img src="http://www.blockcells.com.br/static/assets/img/link_playstore.png" alt="link_playstore" width="200" height="67" border="0" />
+<img src="http://www.blockcells.com.br/static/assets/img/link_appstore.png" alt="link_appstore" width="200" height="67" border="0" /> <br />
+  Estaremos sempre prontos para te atender.</p>
+<p>Atenciosamente</p>
+<p><a href="www.blockcells.com.br"><img src="http://www.blockcells.com.br/static/assets/img/Blockcells.png" alt="Blockcells"/>&nbsp;</a></p>
+<p></p>
+-->
+
+</body>
+</html>
+
+
+{% endblock %}

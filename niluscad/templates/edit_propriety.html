@@ -1,0 +1,153 @@
+{% extends "menu.html" %}
+{% load static widget_tweaks humanize %}
+
+
+
+<!-- Bread crumb and right sidebar toggle -->
+{% block title_page %} Propriedade {% endblock %}
+
+{% block page_body %}
+
+
+
+<div class="card card-outline-success">
+                            <div class="card-header">
+                                <h4 class="m-b-0 text-white">Alterar dados da Propriedade</h4>
+                            </div>
+                            <div class="card-body">
+                               {% include '_edit_propriety.html' %}
+                            </div>
+                        </div>
+
+
+{% endblock %}
+
+
+{% block javascript %}
+
+function loading_viewers(){
+      $('.table_viewers').load('{{ request.path }}');
+	}
+
+
+
+ $('#myTable').DataTable({
+     "language": {
+         "lengthMenu": "Mostrando _MENU_ registros por página",
+         "search" : "Procurar: ",
+         "info" : "Exibindo de _START_ a _END_ de _TOTAL_ registros",
+         "infoEmpty": "Nenhum registro encontrado",
+         "infoFiltered": "(filtrado entre _MAX_ registros)",
+         "paginate" : {
+           "first":      "Primeiro",
+           "last":       "Último",
+           "next":       "Próximo",
+           "previous":   "Anterior"
+         },
+     }
+});
+
+
+<!-- Create Viewer -->
+$(".new_viewer").on("click",".add_viewer_btn", function(e){
+				e.preventDefault();
+				$("#modal-create-userView .modal-body").load("{% url 'register_viewer' %}", function(){
+				  $('#modal-create-userView').modal("show");
+                });
+
+});
+
+$("#modal-create-userView .modal-body").on("submit","form",function(e){
+	 	 e.preventDefault();
+	 	 var dados = $(this).serialize();
+	 	 $.post("{% url 'register_viewer' %}",dados,function(result){
+	 	    $("#modal-create-userView .modal-body").html(result);
+	 	    if(close_modal==true){
+	 	       $('#modal-create-userView').modal("hide");
+               loading_viewers();
+	 	    }
+	 	    else{
+	 	       $('#modal-create-userView').modal("show");
+	 	    }
+	 	 });
+	 });
+
+
+
+
+
+
+
+<!-- Update Viewer -->
+$(".table_viewers").on("click", ".edit_viewer", function(e){
+        e.preventDefault();
+  		$("#modal-update-userView .modal-body").load($(this).attr('href'), function(){
+              $('#modal-update-userView').modal("show");
+			    });
+	});
+
+$("#modal-update-userView .modal-body").on("submit","form",function(e){
+	 	 e.preventDefault();
+
+	 	 var dados = $(this).serialize();
+	 	 $.post($(this).attr('action'),dados,function(result){
+	 	    $("#modal-update-userView .modal-body").html(result);
+	 	    if(close_modal==true){
+	 	       $('#modal-update-userView').modal("hide");
+               loading_viewers();
+               window.location.reload()
+
+	 	    }
+	 	    else{
+	 	       $('#modal-update-userView').modal("show");
+	 	    }
+	 	 });
+	 });
+
+
+
+
+<!-- Permissions -->
+$(".table_viewers").on("click", ".permissions", function(e){
+        e.preventDefault();
+  		$("#modal-update-userView .modal-body").load($(this).attr('href'), function(){
+              $('#modal-update-userView').modal("show");
+			    });
+	});
+
+$("#modal-update-userView .modal-body").on("submit","form",function(e){
+	 	 e.preventDefault();
+
+	 	 var dados = $(this).serialize();
+	 	 $.post($(this).attr('action'),dados,function(result){
+	 	    $("#modal-update-userView .modal-body").html(result);
+	 	    if(close_modal==true){
+	 	       $('#modal-update-userView').modal("hide");
+               loading_viewers();
+               window.location.reload()
+
+	 	    }
+	 	    else{
+	 	       $('#modal-update-userView').modal("show");
+	 	    }
+	 	 });
+	 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}
+
+
+

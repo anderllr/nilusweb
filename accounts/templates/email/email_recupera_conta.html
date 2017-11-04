@@ -1,0 +1,24 @@
+{% block subject %} Nillus - Soluções para o Agronegócio | Recuperar sua conta {% endblock %}
+
+
+{% block html %}
+{% load static widget_tweaks %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Nilus</title>
+</head>
+<body>
+
+<p><strong><h4>SOLICITAÇÃO  DE NOVA SENHA</h4></strong></p>
+<p>Olá, <strong>{{ user.name }}</strong></p>
+<p>Você está recebendo esse e-mail por ter  informado que esqueceu sua senha.</p>
+<p>Clique no link abaixo para configurar uma  nova senha.</p>
+<p align="center">  <a href="{{domain}}{% url 'create_new_password' user.pk token %}">Recuperar Senha</a></p>
+<p>Caso não tenha sido você que solicitou favor  desconsiderar esse e-mail, considere o fato de alterar sua senha pois o seu  cadastro pode estar sendo alvo de tentativa de invasão.</p>
+
+</body>
+</html>
+
+
+{% endblock %}

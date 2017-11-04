@@ -1,0 +1,60 @@
+{% load static widget_tweaks %}
+{% if success %}
+   <script>
+	   close_modal=true;
+   </script>
+{% else %}
+<div>
+    <p class="text-muted m-b-30 font-13">Alterar os dados do usuário abaixo</p>
+        <form class="form"  method="post" enctype="multipart/form-data" action="{% url 'edit_viewer' object.pk %}">
+          {% csrf_token %}
+            {% for error in form.non_field_errors %}
+            <div class="alert-danger alert">
+                {{ error }}
+            </div>
+          {% endfor %}
+    <div class="form-group">
+
+            {{ form.name.label_tag }}
+            {% render_field form.name class='form-control form-control-success' placeholder=name.label  %}
+             {% for error in form.name.errors %}
+             <div class="alert alert-danger">{{ error }}</div>
+             {% endfor %}
+    </div>
+
+    <div class="form-group">
+
+            {{ form.email.label_tag }}
+            {% render_field form.email class='form-control form-control-success' placeholder=email.label  %}
+             {% for error in form.email.errors %}
+             <div class="alert alert-danger">{{ error }}</div>
+             {% endfor %}
+
+    </div>
+    <div class="form-group">
+        <div class="checkbox checkbox-success">
+            {% render_field form.is_active type="checkbox" %}
+             {{ form.is_active.label_tag }}
+             {% for error in form.is_active.errors %}
+             <div class="alert alert-danger">{{ error }}</div>
+             {% endfor %}
+        </div>
+        <div class="checkbox checkbox-success">
+            {% render_field form.is_masteruser type="checkbox" %}
+             {{ form.is_masteruser.label_tag }}
+             {% for error in form.is_masteruser.errors %}
+             <div class="alert alert-danger">{{ error }}</div>
+             {% endfor %}
+        </div>
+    </div>
+            <div class="form-group m-b-0">
+                <div class="offset-sm-3">
+                    <button type="submit" class="btn btn-success waves-effect waves-light m-t-10">Salvar Alterações</button>
+                </div>
+            </div>
+        </form>
+
+       <a href="{% url 'reset_password' object.pk %}" class="btn btn-warning waves-effect waves-light m-t-10">Resetar Senha</a>
+
+</div>
+{% endif %}

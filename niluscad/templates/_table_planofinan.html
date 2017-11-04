@@ -1,0 +1,23 @@
+    <table id="myTable" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Descricao</th>
+                        <th>Sinal</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for pf in plfin %}
+                    <tr>
+                        <td><small>{{ pf.num_plfin }}</small></td>
+                        <td><small>{{ pf.descricao }}</small></td>
+                        <td><small>{{ pf.sinal }}</small></td>
+                        <td><a class="btn btn-success btn edit_planofinan" title="Editar " href="{% url 'edit_planofinan' pf.pk %}"><i class="fa fa-edit"></i><small> Alterar</small></a>
+                            <a class="btn btn-danger btn delete_planofinan" title="Excluir " href="{% url 'delete_planofinan' pf.pk %}"><i class="fa fa-trash-o"></i><small> Excluir</small></a>
+                        </td>
+
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>

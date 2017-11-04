@@ -1,0 +1,21 @@
+    <table id="myTable" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Descricao</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for cc in ccusto %}
+                    <tr>
+                        <td><small>{{ cc.num_ccusto }}</small></td>
+                        <td><small>{{ cc.descricao }}</small></td>
+                        <td><a class="btn btn-success btn edit_ccusto" title="Editar " href="{% url 'edit_ccusto' cc.pk %}"><i class="fa fa-edit"></i><small> Alterar</small></a>
+                            <a class="btn btn-danger btn delete_ccusto" title="Excluir " href="{% url 'delete_ccusto' cc.pk %}"><i class="fa fa-trash-o"></i><small> Excluir</small></a>
+                        </td>
+
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>

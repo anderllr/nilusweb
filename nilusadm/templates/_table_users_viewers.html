@@ -1,0 +1,29 @@
+    <table id="myTable" class="table table-bordered table-striped users_viewers">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Usuario</th>
+                        <th>Email</th>
+                        <th>Status</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for users in users_viewers %}
+                    <tr>
+                        <td><small>{{ users.name }}</small></td>
+                        <td><small>{{ users.username }}</small></td>
+                        <td><small>{{ users.email }}</small></td>
+                        <td>{% if users.is_active == True %}
+                            <small><span class="label label-success">Ativo</span></small>
+                            {% else %}
+                            <small><span class="label label-default">Inativo</span></small>
+                            {% endif %}</td>
+                        <td><a class="btn btn-success btn edit_viewer" title="Editar " href="{% url 'edit_viewer' users.pk %}"><i class="fa fa-edit"></i><small> Alterar</small></a>
+                            <a class="btn btn-info btn permissions" title="Permissões " href="{% url 'edit_permissions' users.pk %}"><i class="fa fa-key"> </i><small> Permissões</small> </a>
+                        </td>
+
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>

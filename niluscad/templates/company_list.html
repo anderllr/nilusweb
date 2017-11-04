@@ -1,0 +1,128 @@
+{% extends "menu.html" %}
+{% load static widget_tweaks humanize %}
+
+
+
+<!-- Bread crumb and right sidebar toggle -->
+{% block title_page %} Empresas {% endblock %}
+
+{% block page_body %}
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Cadastros</h4>
+        <h6 class="card-subtitle">Cadastro de Empresas
+            <div class="col-lg-2 col-md-4 pull-right">
+                     <a class="btn btn-success btn edit_company" title="Nova Empresa " href="{% url 'create_company' %}"><i class="fa fa-plus"></i><small> Cadastrar</small></a>
+            </div>
+        </h6>
+         <br>
+        <div class="table-responsive table_companys">
+          {% include '_table_companys.html' %}
+        </div>
+    </div>
+</div>
+
+
+<div id="modal-create-propriety" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Cadastrar Propriedade</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+{% endblock %}
+
+
+{% block javascript %}
+
+
+		function load_companys(){
+      $('.table_companys').load('{{ request.path }}');
+    }
+
+
+
+$(".table_companys").on("click",".add_propriety", function(e){
+				e.preventDefault();
+				$("#modal-create-propriety .modal-body").load($(this).attr('href'), function(){
+				  $('#modal-create-propriety').modal("show");
+                });
+
+});
+
+$("#modal-create-propriety .modal-body").on("submit","form",function(e){
+	 	 e.preventDefault();
+	 	 var dados = $(this).serialize();
+	 	 $.post($(this).attr('href'),dados,function(result){
+	 	    $("#modal-create-propriety .modal-body").html(result);
+	 	    if(close_modal==true){
+	 	       $('#modal-create-propriety').modal("hide");
+               load_companys();
+	 	    }
+	 	    else{
+	 	       $('#modal-create-propriety').modal("show");
+	 	    }
+	 	 });
+	 });
+
+
+
+
+
+
+
+$(".delete_company").on("click", function(e){
+
+    e.preventDefault();
+    var linkURL = $(this).attr("href");
+    swal({
+        title: "Tem certeza?",
+        text: "Ao aceitar esta empresa será excluida!",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Sim, Excluir!",
+        cancelButtonText: "Não, Cancelar!",
+        closeOnConfirm: false,
+        closeOnCancel: false
+    },
+    function(isConfirm){
+        if (isConfirm) {
+
+            swal("Excluido!", "Registro excluido com sucesso!", "success");
+            window.location.href = linkURL;
+        }
+        else {
+
+            swal("Cancelado", "Exclusão cancelada", "error");
+        }
+});
+
+	});
+
+
+
+
+
+
+{% endblock %}
+
+
+
