@@ -30,7 +30,7 @@ SECRET_KEY = '9+4q3dx3-s^uq-_eek5b)n09fnli04=op=#!gnb_fjqjqiaj$2'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['nilusweb.herokuapp.com']
 
 
 # Application definition
@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'principal',
     'nilusadm',
     'niluscad',
+    'nilusfin',
 
 
 ]
@@ -95,9 +96,13 @@ WSGI_APPLICATION = 'nilusweb.wsgi.application'
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+     'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'db_nilusweb',
+        'USER': 'postgres',
+        'PASSWORD': 'root',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
     }
 }
 
@@ -188,7 +193,7 @@ EMAIL_PORT = 587
 
 
 
-# SITE_DOMAIN = 'http://www.blockcells.com.br'
+SITE_DOMAIN = 'http://nilusweb.herokuapp.com'
 
 
 

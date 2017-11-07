@@ -9,6 +9,7 @@ from django.contrib.auth.models import AbstractBaseUser,UserManager,PermissionsM
 from django.conf import settings
 
 from nilusadm.models import Permissions,Sequenciais
+from principal.models import Instancia
 # Create your models here.
 
 
@@ -98,10 +99,10 @@ def post_save_user(instance,created,**kwargs):
             sequenciais.cadgeral = 0
             sequenciais.save()
 
-
-
-
-
+            # Insere Instancia.
+            instancia = Instancia()
+            instancia.user = instance
+            instancia.save()
 
             from templated_email import send_templated_mail
             send_templated_mail(
@@ -124,6 +125,11 @@ def post_save_user(instance,created,**kwargs):
             permissions.nilusMaquinas = False
             permissions.nilusFiscalCont = False
             permissions.save()
+
+            # Insere Instancia.
+            instancia = Instancia()
+            instancia.user = instance
+            instancia.save()
 
 
 models.signals.pre_save.connect(pre_save_user,User)

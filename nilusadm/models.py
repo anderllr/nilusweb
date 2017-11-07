@@ -36,6 +36,8 @@ class Sequenciais(models.Model):
     cadgeral = models.IntegerField('Seq Cad. CadGeral',default=0)
     ccusto = models.IntegerField('Seq Cad. Ccusto', default=0)
     planofinan = models.IntegerField('Seq PlanoFinan', default=0)
+    conta = models.IntegerField('Seq Conta', default=0)
+    indice = models.IntegerField('Seq Indice', default=0)
 
 
 

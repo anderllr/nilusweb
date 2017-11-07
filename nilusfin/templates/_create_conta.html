@@ -1,0 +1,77 @@
+{% load static widget_tweaks %}
+{% if success %}
+   <script>
+	   close_modal=true;
+   </script>
+{% else %}
+<div>
+    <p class="text-muted m-b-30 font-13">Cadastrar Conta</p>
+        <form class="form-horizontal"  method="post">
+          {% csrf_token %}
+            {% for error in form.non_field_errors %}
+            <div class="alert-danger alert">
+                {{ error }}
+            </div>
+
+          {% endfor %}
+          <div class="row">
+            <div class="form-group col-lg-4">
+                <label class="control-label">{{form.agencia.label_tag}}</label>
+                    <div class="input-group">
+                        {% render_field form.agencia class="form-control" type=text placeholder=form.agencia.label  %}
+                    </div>
+                    {% for error in form.agencia.errors %}
+                        <small class="text-danger"> {{ error }} </small>
+                    {% endfor %}
+            </div>
+            <div class="form-group col-lg-6">
+             <label class="control-label">{{form.conta.label_tag}}</label>
+                <div class="input-group">
+                   {% render_field form.conta class="form-control" type=text placeholder=form.conta.label  %}
+                </div>
+                {% for error in form.conta.errors %}
+                   <small class="text-danger"> {{ error }} </small>
+                {% endfor %}
+           </div>
+          </div>
+
+
+           <div class="form-group">
+            <label class="control-label">{{form.descricao.label_tag}}</label>
+                <div class="input-group">
+                    {% render_field form.descricao class="form-control" type=text placeholder=form.descricao.label  %}
+                </div>
+                {% for error in form.descricao.errors %}
+                    <small class="text-danger"> {{ error }} </small>
+                {% endfor %}
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    {% render_field form.usa_limite type="checkbox" %}
+                    <label for="id_usa_limite">Usa Limite</label>
+                </div>
+                <div class="form-group col-lg-6 vlr_limite">
+                        <label class="control-label">{{form.vlr_limite.label_tag}}</label>
+                    <div class="input-group">
+                        {% render_field form.vlr_limite class="form-control" type=text placeholder=form.vlr_limite.label  %}
+                    </div>
+                    {% for error in form.vlr_limite.errors %}
+                        <small class="text-danger"> {{ error }} </small>
+                    {% endfor %}
+           </div>
+            </div>
+
+            <div class="demo-checkbox">
+                    {% render_field form.conta_pagamento type="checkbox" %}
+                    <label for="id_conta_pagamento">Conta de Pagamento ?</label>
+                    {% render_field form.conta_recebimento type="checkbox" %}
+                    <label for="id_conta_recebimento">Conta de Recebimento ?</label>
+            </div>
+            <div class="form-group m-b-0">
+                <div class="offset-sm-3">
+                    <button type="submit" class="btn btn-success waves-effect waves-light m-t-10">Cadastrar</button>
+                </div>
+            </div>
+        </form>
+</div>
+{% endif %}

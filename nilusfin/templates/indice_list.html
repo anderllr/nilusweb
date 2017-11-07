@@ -1,0 +1,221 @@
+{% extends "menu.html" %}
+{% load static widget_tweaks humanize %}
+
+
+
+<!-- Bread crumb and right sidebar toggle -->
+{% block title_page %} Indices e Cotações {% endblock %}
+
+{% block page_body %}
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Indices</h4>
+        <h6 class="card-subtitle">Indices e Cotações de moedas.
+            <div class="col-lg-3 col-md-4 pull-right new_add">
+                     <a class="btn btn-success btn new_add_ind" title="Novo Indice " href="{% url 'create_indice' %}"><i class="fa fa-plus"></i><small> Indice</small></a>
+                     <a class="btn btn-info btn new_add_cot" title="Nova Cotação " href="{% url 'create_cotacao' %}"><i class="fa fa-plus"></i><small> Cotação</small></a>
+            </div>
+        </h6>
+
+        <div class="table-responsive table_data">
+          {% include '_table_indice.html' %}
+        </div>
+    </div>
+</div>
+
+
+<div id="modal-create-ind" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Criar Indice</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="modal-create-cot" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Inserir Cotação</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-list-cotacoes" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Cotações Cadastradas</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
+
+
+{% block javascript %}
+
+
+
+
+function loading_data(){
+      $('.table_data').load('{{ request.path }}');
+	}
+
+
+ $('#myTable').DataTable({
+     "language": {
+         "lengthMenu": "Mostrando _MENU_ registros por página",
+         "search" : "Procurar: ",
+         "info" : "Exibindo de _START_ a _END_ de _TOTAL_ registros",
+         "infoEmpty": "Nenhum registro encontrado",
+         "infoFiltered": "(filtrado entre _MAX_ registros)",
+         "paginate" : {
+           "first":      "Primeiro",
+           "last":       "Último",
+           "next":       "Próximo",
+           "previous":   "Anterior"
+         },
+     }
+});
+
+
+
+
+
+
+<!-- Create Indice -->
+$(".new_add").on("click",".new_add_ind", function(e){
+				e.preventDefault();
+				$("#modal-create-ind .modal-body").load("{% url 'create_indice' %}", function(){
+				  $('#modal-create-ind').modal("show");
+                });
+
+});
+
+$("#modal-create-ind .modal-body").on("submit","form",function(e){
+	 	 e.preventDefault();
+	 	 var dados = $(this).serialize();
+	 	 $.post("{% url 'create_indice' %}",dados,function(result){
+	 	    $("#modal-create-ind .modal-body").html(result);
+	 	    if(close_modal==true){
+	 	       $('#modal-create-ind').modal("hide");
+               loading_data();
+               window.location.reload()
+	 	    }
+	 	    else{
+	 	       $('#modal-create-ind').modal("show");
+	 	    }
+	 	 });
+	 });
+
+
+
+
+
+<!--Create Cotação -->
+$(".new_add").on("click",".new_add_cot", function(e){
+				e.preventDefault();
+				$("#modal-create-cot .modal-body").load("{% url 'create_cotacao' %}", function(){
+				  $('#modal-create-cot').modal("show");
+                });
+
+});
+
+$("#modal-create-cot .modal-body").on("submit","form",function(e){
+	 	 e.preventDefault();
+	 	 var dados = $(this).serialize();
+	 	 $.post("{% url 'create_cotacao' %}",dados,function(result){
+	 	    $("#modal-create-cot .modal-body").html(result);
+	 	    if(close_modal==true){
+	 	       $('#modal-create-cot').modal("hide");
+               loading_data();
+               window.location.reload()
+	 	    }
+	 	    else{
+	 	       $('#modal-create-cot').modal("show");
+	 	    }
+	 	 });
+	 });
+
+
+ $(".table_data").on("click", ".list_cotacao", function(e){
+        e.preventDefault();
+  		$("#modal-list-cotacoes .modal-body").load($(this).attr('href'), function(){
+              $('#modal-list-cotacoes').modal("show");
+			});
+	});
+
+
+
+    $(".delete_registro").on("click", function(e){
+
+        e.preventDefault();
+        var linkURL = $(this).attr("href");
+        swal({
+            title: "Tem certeza?",
+            text: "Ao aceitar esta registro será excluido!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Sim, Excluir!",
+            cancelButtonText: "Não, Cancelar!",
+            closeOnConfirm: false,
+            closeOnCancel: false
+        },
+        function(isConfirm){
+                if (isConfirm) {
+                    swal("Excluido!", "Registro excluido com sucesso!", "success");
+                    window.location.href = linkURL;
+                }
+                else {
+                    swal("Cancelado", "Exclusão cancelada", "error");
+                }
+        });
+	});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}
+
+
+

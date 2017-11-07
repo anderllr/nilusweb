@@ -41,8 +41,10 @@ class EditPermissions(LoginRequiredMixin,UpdateView):
             raise Http404
 
 
+
     model = Permissions
     fields = ['nilusCadastro','nilusFinanceiro','nilusCompras','nilusProducao','nilusMaquinas','nilusFiscalCont']
+
 
 
     def get_success_url(self):
@@ -67,15 +69,27 @@ class ConfiguracaoConta(LoginRequiredMixin, UpdateView):
         else:
             raise Http404
 
-    def get_form_kwargs(self):
-        kwargs=super(ConfiguracaoConta,self).get_form_kwargs()
-        kwargs['user']=self.request.user.user_master
-        return kwargs
+    # def get_form_kwargs(self):
+    #     kwargs=super(ConfiguracaoConta,self).get_form_kwargs()
+    #     kwargs['user']=self.request.user.user_master
+    #     return kwargs
 
 
 
     model = User
+    # fields = ['company_p','propriety_p']
     form_class = FormConfigUsuario
+
+
+    def get_object(self):
+        return self.request.user
+
+
+    def get_form_kwargs(self):
+        kwargs=super(ConfiguracaoConta,self).get_form_kwargs()
+        kwargs['user']=self.request.user
+        return kwargs
+
 
     def form_valid(self,form):
         form.save()

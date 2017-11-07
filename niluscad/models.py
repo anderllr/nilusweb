@@ -175,7 +175,7 @@ class PlanoFinan(models.Model):
     master_user = models.ForeignKey('accounts.User',models.CASCADE,verbose_name='Uusario Master')
     # dados principais
     num_plfin = models.IntegerField('Código')
-    descricao = models.CharField('Descricao',max_length=60)
+    descricao = models.CharField('Descricão',max_length=60)
     sinal = models.CharField('Sinal Conta',max_length=1,choices=Scategoria_Choices)
 
 

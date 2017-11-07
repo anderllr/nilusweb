@@ -1,0 +1,53 @@
+{% load static widget_tweaks %}
+{% if success %}
+   <script>
+	   close_modal=true;
+   </script>
+{% else %}
+<div>
+
+        <form class="form-horizontal"  method="post">
+          {% csrf_token %}
+            {% for error in form.non_field_errors %}
+            <div class="alert-danger alert">
+                {{ error }}
+            </div>
+
+          {% endfor %}
+          <div class="row">
+            <div class="form-group col-lg-7">
+                <label class="control-label">{{form.indice.label_tag}}</label>
+                    <div class="input-group">
+                        {% render_field form.indice class="form-control" type=text placeholder=form.indice.label  %}
+                    </div>
+                    {% for error in form.indice.errors %}
+                        <small class="text-danger"> {{ error }} </small>
+                    {% endfor %}
+            </div>
+            <div class="form-group col-lg-4">
+             <label class="control-label">{{form.data_indice.label_tag}}</label>
+                <div class="input-group">
+                   {% render_field form.data_indice class="form-control" type=text placeholder=form.data_indice.label  %}
+                </div>
+                {% for error in form.data_indice.errors %}
+                   <small class="text-danger"> {{ error }} </small>
+                {% endfor %}
+           </div>
+           <div class="form-group col-lg-4">
+             <label class="control-label">{{form.valor_cotacao.label_tag}}</label>
+                <div class="input-group">
+                   {% render_field form.valor_cotacao class="form-control" type=text placeholder=form.valor_cotacao.label  %}
+                </div>
+                {% for error in form.valor_cotacao.errors %}
+                   <small class="text-danger"> {{ error }} </small>
+                {% endfor %}
+           </div>
+          </div>
+            <div class="form-group m-b-0">
+                <div class="offset-sm-3">
+                    <button type="submit" class="btn btn-success waves-effect waves-light m-t-10">Cadastrar</button>
+                </div>
+            </div>
+        </form>
+</div>
+{% endif %}

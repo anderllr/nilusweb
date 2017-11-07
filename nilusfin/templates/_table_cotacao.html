@@ -1,0 +1,18 @@
+    <table id="myTable" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Indice</th>
+                        <th>Valor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for cc in cotacao %}
+                    <tr>
+                        <td><small>{{ cc.data_indice|date:'d/m/Y'  }}</small></td>
+                        <td><small>{{ cc.indice }}</small></td>
+                        <td><small>{{ cc.valor_cotacao }}</small></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>

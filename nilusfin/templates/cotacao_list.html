@@ -1,0 +1,136 @@
+{% extends "menu.html" %}
+{% load static widget_tweaks humanize %}
+
+
+
+<!-- Bread crumb and right sidebar toggle -->
+{% block title_page %} Cotações {% endblock %}
+
+{% block page_body %}
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Cotações</h4>
+        <h6 class="card-subtitle">
+            <div class="col-lg-2 col-md-4 pull-right new_add">
+                     <a class="btn btn-success btn new_add_btn" title="Cadastrar " href=""><i class="fa fa-plus"></i><small> Cadastrar</small></a>
+            </div>
+        </h6>
+
+        <div class="table-responsive table_data">
+          {% include '_table_cotacao.html' %}
+        </div>
+    </div>
+</div>
+
+
+<div id="modal-create" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Criar Conta</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+{% endblock %}
+
+
+{% block javascript %}
+
+
+
+
+function loading_data(){
+      $('.table_data').load('{{ request.path }}');
+	}
+
+
+ $('#myTable').DataTable({
+     "language": {
+         "lengthMenu": "Mostrando _MENU_ registros por página",
+         "search" : "Procurar: ",
+         "info" : "Exibindo de _START_ a _END_ de _TOTAL_ registros",
+         "infoEmpty": "Nenhum registro encontrado",
+         "infoFiltered": "(filtrado entre _MAX_ registros)",
+         "paginate" : {
+           "first":      "Primeiro",
+           "last":       "Último",
+           "next":       "Próximo",
+           "previous":   "Anterior"
+         },
+     }
+});
+
+
+
+
+
+
+<!-- Create Viewer -->
+
+
+
+
+
+
+
+
+
+    $(".delete_registro").on("click", function(e){
+
+        e.preventDefault();
+        var linkURL = $(this).attr("href");
+        swal({
+            title: "Tem certeza?",
+            text: "Ao aceitar esta registro será excluido!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Sim, Excluir!",
+            cancelButtonText: "Não, Cancelar!",
+            closeOnConfirm: false,
+            closeOnCancel: false
+        },
+        function(isConfirm){
+                if (isConfirm) {
+                    swal("Excluido!", "Registro excluido com sucesso!", "success");
+                    window.location.href = linkURL;
+                }
+                else {
+                    swal("Cancelado", "Exclusão cancelada", "error");
+                }
+        });
+	});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}
+
+
+

@@ -204,7 +204,7 @@
                                     </li>
                                     <li role="separator" class="divider"></li>
                                     <li><a href="{% url 'profile' %}"><i class="ti-user"></i> Minha Conta</a></li>
-                                    <li><a href="{% url 'config_conta' %}" id="config_conta"><i class="ti-settings"></i> Configurações do Usuário</a></li>
+                                    <li><a href="{% url 'config_conta'  %}" id="config_conta"><i class="ti-settings"></i> Configurações do Usuário</a></li>
                                     <li role="separator" class="divider"></li>
                                     <li><a href="{% url 'logout' %}"><i class="fa fa-power-off"></i> Logout</a></li>
                                 </ul>
@@ -271,6 +271,27 @@
  $(document).ready(function() {
 
 
+         $("#config_conta").on("click", function(e){
+        e.preventDefault();
+  		$(".modal-body").load("{% url 'config_conta' %}", function(){
+              $('#modal-config_conta').modal("show");
+			});
+	});
+
+	 $(".modal-body").on("submit","form",function(e){
+	 	 e.preventDefault();
+	 	 var dados = $(this).serialize();
+	 	 $.post("{% url 'config_conta' %}",dados,function(result){
+	 	    $(".modal-body").html(result);
+	 	    if(close_modal==true){
+	 	       $('#modal-config_conta').modal("hide");
+	 	    }
+	 	    else{
+	 	       $('#modal-config_conta').modal("show");
+	 	    }
+
+	 	 });
+	 });
 
 
 

@@ -1,0 +1,23 @@
+    <table id="myTable" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Agencia/Conta</th>
+                        <th>Descrição</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for cc in conta %}
+                    <tr>
+                        <td><small>{{ cc.num_conta }}</small></td>
+                        <td><small>{{ cc.agencia }} / {{ cc.conta }}</small></td>
+                        <td><small>{{ cc.descricao }}</small></td>
+                        <td><a class="btn btn-success btn edit_registro" title="Editar " href="{% url 'edit_conta' cc.pk %}"><i class="fa fa-edit"></i><small> Alterar</small></a>
+                            <a class="btn btn-danger btn delete_registro" title="Excluir " href="{% url 'delete_conta' cc.pk %}"><i class="fa fa-trash-o"></i><small> Excluir</small></a>
+                        </td>
+
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>

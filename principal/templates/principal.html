@@ -6,56 +6,12 @@
 <!-- Bread crumb and right sidebar toggle -->
 {% block title_page %} Principal {% endblock %}
 
-{% block page_body %} teste blocos e paginas
+{% block page_body %} teste blocos e paginas {% endblock %}
 
 
 
-<div id="modal-config_conta" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Configurações da Conta</h4>
-      </div>
-      <div class="modal-body">
-
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-dismiss="modal">Fechar</button>
-      </div>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
 
 
 
-{% endblock %}
 
-{% block javascript %}
-
-$("#config_conta").on("click", function(e){
-        e.preventDefault();
-  		$(".modal-body").load("{% url 'config_conta' %}", function(){
-              $('#modal-config_conta').modal("show");
-			});
-	});
-
-	 $(".modal-body").on("submit","form",function(e){
-	 	 e.preventDefault();
-	 	 var dados = $(this).serialize();
-	 	 $.post("{% url 'config_conta' %}",dados,function(result){
-	 	    $(".modal-body").html(result);
-	 	    if(close_modal==true){
-	 	       $('#modal-config_conta').modal("hide");
-	 	    }
-	 	    else{
-	 	       $('#modal-config_conta').modal("show");
-	 	    }
-
-	 	 });
-	 });
-
-
-
-{% endblock %}
 

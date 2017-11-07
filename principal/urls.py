@@ -8,5 +8,6 @@ urlpatterns = [
     url(r'^alterar_senha/$',views.update_password, name='altera_senha'),
     url(r'^adm/', include('nilusadm.urls')),
     url(r'^cad/', include('niluscad.urls')),
+    url(r'^fin/', include('nilusfin.urls')),
 
 ]

@@ -9,11 +9,25 @@ from django.contrib.auth import update_session_auth_hash
 from django.http import HttpResponse,Http404
 
 from accounts.models import User
+from .models import Instancia
 
 # Create your views here.
 
 @login_required
 def principal(request):
+
+
+   # dados_usuario = User.objects.get(user=request.user)
+
+   dados_instancia = Instancia.objects.filter(user=request.user)
+
+   if dados_instancia:
+      dados_instancia = Instancia.objects.get(user=request.user)
+      dados_instancia.company = request.user.company_p
+      dados_instancia.propriety = request.user.propriety_p
+      dados_instancia.save()
+
+
 
 
    return render(request,'principal.html')
