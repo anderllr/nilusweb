@@ -1,1 +1,1 @@
-web: gunicorn blockcells.wsgi --log-file=-
+web: gunicorn nilusweb.wsgi --log-file=-
