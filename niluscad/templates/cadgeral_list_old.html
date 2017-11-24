@@ -1,0 +1,92 @@
+{% extends "menu.html" %}
+{% load static widget_tweaks humanize %}
+
+
+
+<!-- Bread crumb and right sidebar toggle -->
+{% block title_page %} Cadastro Geral {% endblock %}
+
+{% block page_body %}
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Cadastro Geral</h4>
+        <h6 class="card-subtitle">Cadastro geral (Fornecedores e Clientes)
+            <div class="col-lg-2 col-md-4 pull-right">
+                     <a class="btn btn-success btn edit_company" title="Novo " href="{% url 'create_cadgeral' %}"><i class="fa fa-plus"></i><small> Cadastrar</small></a>
+            </div>
+        </h6>
+         <br>
+        <div>
+          {% include '_table_cadgeral.html' %}
+        </div>
+    </div>
+</div>
+
+
+
+
+{% endblock %}
+
+
+{% block javascript %}
+
+ $('#example23').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            'excel', 'pdf','print'
+        ],
+        "language": {
+         "lengthMenu": "Mostrando _MENU_ registros por página",
+         "search" : "Procurar: ",
+         "info" : "Exibindo de _START_ a _END_ de _TOTAL_ registros",
+         "infoEmpty": "Nenhum registro encontrado",
+         "infoFiltered": "(filtrado entre _MAX_ registros)",
+         "paginate" : {
+           "first":      "Primeiro",
+           "last":       "Último",
+           "next":       "Próximo",
+           "previous":   "Anterior"
+         },
+     }
+    });
+
+
+$(".delete_cadgeral").on("click", function(e){
+
+    e.preventDefault();
+    var linkURL = $(this).attr("href");
+    swal({
+        title: "Tem certeza?",
+        text: "Ao aceitar esta cadastro será excluido!",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Sim, Excluir!",
+        cancelButtonText: "Não, Cancelar!",
+        closeOnConfirm: false,
+        closeOnCancel: false
+    },
+    function(isConfirm){
+        if (isConfirm) {
+
+            swal("Excluido!", "Registro excluido com sucesso!", "success");
+            window.location.href = linkURL;
+        }
+        else {
+
+            swal("Cancelado", "Exclusão cancelada", "error");
+        }
+});
+
+	});
+
+
+
+
+
+
+{% endblock %}
+
+
+

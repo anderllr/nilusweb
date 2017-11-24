@@ -21,9 +21,9 @@
                             <small><span class="label label-default">Inativo</span></small>
                             {% endif %}</td>
                         <td><small>{{ emp.data_cadastro|date:'d/m/Y'  }}</small></td>
-                        <td><a class="btn btn-success btn edit_company" title="Editar " href="{% url 'edit_company' emp.pk  %}"><i class="fa fa-edit"></i><small> Alterar</small></a>
-                            <a class="btn btn-danger btn delete_company" title="Editar " href="{% url 'delete_company' emp.pk  %}"><i class="fa fa-trash-o"></i><small> Excluir</small></a>
-                            <a class="btn btn-info btn edit_company2" title="Propriedades " href="{% url 'edit_company_prop' emp.pk  %}"><i class="fa fa-edit"></i><small> Propriedades</small></a>
+                        <td><a class="btn btn-success btn edit_company btn-sm" title="Editar " href="{% url 'edit_company' emp.pk  %}"><i class="fa fa-edit"></i></a>
+                            <a class="btn btn-danger btn delete_company btn-sm" title="Editar " href="{% url 'delete_company' emp.pk  %}"><i class="fa fa-trash-o"></i></a>
+
 
                         </td>
                     </tr>

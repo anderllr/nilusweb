@@ -6,7 +6,7 @@
 {% else %}
 <div>
     <p class="text-muted m-b-30 font-13">Cadastrar Conta</p>
-        <form class="form-horizontal"  method="post">
+        <form class="form-horizontal"  >
           {% csrf_token %}
             {% for error in form.non_field_errors %}
             <div class="alert-danger alert">

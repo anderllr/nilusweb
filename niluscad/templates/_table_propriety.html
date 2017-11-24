@@ -1,8 +1,9 @@
-    <table id="myTable" class="table table-bordered table-striped users_viewers">
+    <table id="myTable" class="table table-bordered table-striped">
                 <thead>
                     <tr>
                         <th>Propriedade</th>
                         <th>I.E</th>
+                        <th>Empresa</th>
                         <th>Situação</th>
                         <th>Data Cadastro</th>
                         <th></th>
@@ -13,14 +14,15 @@
                     <tr>
                         <td><small>{{ prop.razao }}</small></td>
                         <td><small>{{ prop.ie }}</small></td>
+                        <td><small>{{ prop.company }}</small></td>
                         <td>{% if prop.situacao == True %}
                             <small><span class="label label-success">Ativo</span></small>
                             {% else %}
                             <small><span class="label label-default">Inativo</span></small>
                             {% endif %}</td>
                         <td><small>{{ prop.data_cadastro|date:'d/m/Y' }}</small></td>
-                        <td><a class="btn btn-success btn edit_viewer" title="Editar " href="{% url 'edit_propriety' prop.pk  %}"><i class="fa fa-edit"></i><small> Alterar</small></a>
-                            <a class="btn btn-danger btn delete_company" title="Editar " href="{% url 'delete_propriety' prop.pk  %}"><i class="fa fa-trash-o"></i><small> Excluir</small></a>
+                        <td><a class="btn btn-success btn btn-sm edit_propriety" title="Editar " href="{% url 'edit_propriety' prop.pk  %}"><i class="fa fa-edit"></i><small></small></a>
+                            <a class="btn btn-danger btn btn-sm delete_company" title="Editar " href="{% url 'delete_propriety' prop.pk  %}"><i class="fa fa-trash-o"></i><small></small></a>
                         </td>
 
                     </tr>

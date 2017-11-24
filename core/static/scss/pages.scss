@@ -25,7 +25,7 @@ File: scss
         position: absolute;
     }
     .footer {
-        display: 10px;
+        display: none;
     }
 }
 
@@ -1157,6 +1157,7 @@ File upload
     }
 }
 
+
 .fileinput .form-control {
     padding-top: 7px;
     padding-bottom: 5px;
@@ -1283,6 +1284,9 @@ Form addons page
                 background: $light;
             }
         }
+    }
+    .show>.dropdown-menu {
+        display: block;
     }
     .show>.dropdown-menu {
         display: block;
@@ -4350,18 +4354,6 @@ Email inbox Page
     }
 }
 
-.calendar-events {
-    padding: 8px 10px;
-    border: 1px solid $white;
-    cursor: move;
-    &:hover {
-        border: 1px dashed $border;
-    }
-    i {
-        margin-right: 8px;
-    }
-}
-
 
 
 /*******************
@@ -4499,4 +4491,16 @@ Table-Jsgrid table
 
 .jsgrid-pager-page.jsgrid-pager-current-page {
     padding: 0.5em 1em !important;
+}
+
+.calendar-events {
+    padding: 8px 10px;
+    border: 1px solid $white;
+    cursor: move;
+    &:hover {
+        border: 1px dashed $border;
+    }
+    i {
+        margin-right: 8px;
+    }
 }

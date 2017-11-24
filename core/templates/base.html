@@ -14,7 +14,10 @@
     <title>Nilus - Agronegócio | Versão Web</title>
     <!-- Bootstrap Core CSS -->
     <link href="{% static 'assets/plugins/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/css_chosen.css' %}" rel="stylesheet">
+    <link href="{% static 'css/modal-xxl.css' %}" rel="stylesheet">
     <link href="{% static 'assets/plugins/bootstrap-table/dist/bootstrap-table.min.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'assets/plugins/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css" />
 
     <!-- Custom CSS -->
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
@@ -246,11 +249,14 @@
     <script src="{% static 'assets/plugins/styleswitcher/jQuery.style.switcher.js' %}"></script>
     <!--Datatable -->
     <script src="{% static 'assets/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/select2/dist/js/select2.full.min.js' %}" type="text/javascript"></script>
 
     <!-- Toast -->
     <script src="{% static 'assets/plugins/toast-master/js/jquery.toast.js' %}"></script>
 
 
+    <script src="{% static 'assets/plugins/dinmoney-datepicker/js/bootstrap-datepicker.js' %}"></script>
+    <script src="{% static 'assets/plugins/dinmoney-datepicker/locales/bootstrap-datepicker.pt-BR.min.js' %}"></script>
     <!--SweetAlert -->
     <script src="{% static 'assets/plugins/toast-master/js/jquery.toast.js' %}"></script>
     <script src="{% static 'assets/plugins/sweetalert/sweetalert.min.js' %}"></script>
@@ -265,6 +271,12 @@
     <script src="https://cdn.datatables.net/buttons/1.2.2/js/buttons.print.min.js"></script>
 
 
+    <script src="{% static 'js/chosen_js_mjc.js' %}"></script>
+    <script src="{% static 'js/mask.js' %}"></script>
+    <script src="{% static 'js/jquery.maskMoney.js' %}"></script>
+
+
+
 
 <script>
 
@@ -273,16 +285,16 @@
 
          $("#config_conta").on("click", function(e){
         e.preventDefault();
-  		$(".modal-body").load("{% url 'config_conta' %}", function(){
+  		$("#modal-config_conta .modal-body").load("{% url 'config_conta' %}", function(){
               $('#modal-config_conta').modal("show");
 			});
 	});
 
-	 $(".modal-body").on("submit","form",function(e){
+	 $("#modal-config_conta .modal-body").on("submit","form",function(e){
 	 	 e.preventDefault();
 	 	 var dados = $(this).serialize();
 	 	 $.post("{% url 'config_conta' %}",dados,function(result){
-	 	    $(".modal-body").html(result);
+	 	    $("#modal-config_conta .modal-body").html(result);
 	 	    if(close_modal==true){
 	 	       $('#modal-config_conta').modal("hide");
 	 	    }
@@ -294,6 +306,15 @@
 	 });
 
 
+
+
+
+     $(".datepicker").datepicker({
+		todayBtn: true,
+    	language: "pt-BR",
+		autoclose: true,
+    	todayHighlight: true
+	});
 
 
 

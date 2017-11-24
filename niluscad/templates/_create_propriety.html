@@ -1,5 +1,10 @@
 {% load static widget_tweaks %}
-                     <div>
+{% if success %}
+   <script>
+  	 close_modal=true;
+   </script>
+{% else %}
+ <div>
                         <div class="card">
                             <div class="card-body">
                                 <div class="alert alert-danger alert-rounded campo_obrigatorio"><i class="fa fa-warning"></i>   Existe campos obrigatórios não preenchidos.
@@ -17,7 +22,7 @@
                                         <div  class="notify contato"> <span class="heartbit"></span> <span class="point"></span> </div>
                                     </span></a> </li>
                                 </ul>
-                                <form method="post" class="criapropriedade" id="form_cria_empresa" enctype="multipart/form-data"  action="{% url 'create_propriety' company.pk %}">
+                                <form method="post" class="criapropriedade" id="form_cria_empresa" enctype="multipart/form-data">
                                  {% csrf_token %}
                                     {% for error in form.non_field_errors %}
                                     <div class="alert-danger alert">
@@ -28,6 +33,15 @@
                                         <div class="tab-content tabcontent-border">
                                             <div class="tab-pane active p-20" id="principal" role="tabpanel">
                                                 <div class="row p-t-20">
+                                                    <div class="col-md-7">
+                                                        <div class="form-group">
+                                                            <label class="control-label">{{form.company.label_tag}}<span class="text-danger pos_submit_ie">*</span></label>
+                                                            {% render_field form.company class="form-control" placeholder=form.ie.label %}
+                                                            {% for error in form.company.errors %}
+                                                            <small class="form-control-feedback"> {{ error }} </small>
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
                                                     <div class="col-md-7">
                                                         <div class="form-group">
                                                             <label class="control-label">{{form.ie.label_tag}}<span class="text-danger pos_submit_ie">*</span></label>
@@ -149,9 +163,10 @@
                                         <br>
                                        <div class="form-actions">
                                         <button type="submit" class="btn btn-success submit"> <i class="fa fa-check"></i> Salvar</button>
-                                        <a type="button" class="btn btn-inverse " href="{% url 'edit_company' company.pk %}">Cancelar</a>
                                     </div>
                                 </form>
                             </div>
                         </div>
                     </div>
+{% endif %}
+

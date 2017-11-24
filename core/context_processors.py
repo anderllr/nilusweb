@@ -1,5 +1,6 @@
 from accounts.models import User
 from nilusadm.models import Permissions
+from principal.models import Instancia
 from django.contrib.auth.decorators import login_required
 
 
@@ -11,3 +12,6 @@ def permissions(request):
         return {'permissions': permissions}
     else:
         return {'permissions':[]}
+
+
+

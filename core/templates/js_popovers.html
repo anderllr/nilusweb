@@ -1,0 +1,64 @@
+
+<!--
+$(".new_planofin").on("click",function(e){
+    $(".dpdown_planofinan").load("{% url 'create_planofinan' %}", function(){
+      e.preventDefault();
+    });
+
+});
+-->
+
+function form_planofinan(){
+ $(".dpdown_planofinan").load("{% url 'create_planofinan' %}", function(){
+
+
+  });
+}
+
+
+function form_ccusto(){
+    $(".dpdown_ccusto").load("{% url 'create_ccusto' %}", function(){
+
+  });
+
+}
+
+form_planofinan();
+form_ccusto();
+
+
+
+    $('button[data-toggle=popover]').popover({
+        html : true,
+        //trigger: "click",
+        content: function() {
+          $(".dpdown_planofinan").load("{% url 'create_planofinan' %}", function(){
+           e.preventDefault();
+          });
+          return $('#popover_content_wrapper').html();
+        }
+    })
+
+
+
+$(document).on("submit","form",function(e){
+         e.preventDefault();
+	 	 var dados = $(this).serialize();
+	 	 $.post("{% url 'create_planofinan' %}",dados,function(result){
+	 	    $("#popover_content_wrapper").html(result);
+	 	    if(close_modal==true){
+	 	       $('*').popover('hide');
+               $('#id_plr_financeiro').append("<option value='" + id_planofinan + "'>"+ descricao + "</option>");
+			   $('#id_plr_financeiro').val(id_planofinan);
+			   $('#id_plr_financeiro').trigger('chosen:updated');
+	 	    }
+	 	    else{
+	 	       $('.dpdown_planofinan').popover("show");
+	 	    }
+	 	 });
+});
+
+
+
+
+

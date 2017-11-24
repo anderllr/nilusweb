@@ -1,4 +1,10 @@
 {% load static widget_tweaks %}
+{% if success %}
+   <script>
+	 close_modal=true;
+   </script>
+{% else %}
+
                      <div>
                         <div class="card">
                             <div class="card-body">
@@ -16,9 +22,7 @@
                                     <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#contato" role="tab"><span class="hidden-sm-up"><i class="ti-email"></i></span> <span class="hidden-xs-down">Contato
                                         <div  class="notify contato"> <span class="heartbit"></span> <span class="point"></span> </div>
                                     </span></a> </li>
-                                    <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#propriedades" role="tab"><span class="hidden-sm-up"><i class="ti-email"></i></span> <span class="hidden-xs-down">Propriedades
-                                        <div hidden  class="notify propriedades"> <span class="heartbit"></span> <span class="point"></span> </div>
-                                    </span></a> </li>
+
                                 </ul>
                                 <form method="post" class="criaempresa" id="form_cria_empresa" action="{% url 'edit_company' object.pk %}">
                                  {% csrf_token %}
@@ -33,16 +37,18 @@
                                                 <div class="row">
                                                     <div class="col-md-4">
                                                         <div class="form-group">
-                                                            <label class="control-label">{{form.cnpj_cpf.label_tag}}<span class="text-danger pos_submit_cnpj">*</span></label>
-                                                            <div class="input-group">
-                                                                {% render_field form.cnpj_cpf class="form-control" type=text placeholder=form.cnpj_cpf.label  %}
-                                                            <span class="input-group-btn btn_busca">
-                                                                <a class="btn btn-success btn"    id="btn_busca_cnpj"><i class="fa  fa-search"> </i></a>
-                                                            </span>
+                                                            <label class="control-label">Código:<span class="text-danger pos_submit_cnpj">*</span></label>
+                                                             <div class="col-md-9">
+                                                                 <p class="form-control-static">{{ dados_cadastro.num_company }}</p>
                                                             </div>
-                                                            {% for error in form.cnpj_cpf.errors %}
-                                                            <small class="text-danger"> {{ error }} </small>
-                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label class="control-label">Cnpj/Cpf:<span class="text-danger pos_submit_cnpj">*</span></label>
+                                                             <div class="col-md-9">
+                                                                 <p class="form-control-static">{{ dados_cadastro.cnpj_cpf }}</p>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                     <!--/span-->
@@ -154,47 +160,14 @@
                                                     </div>
                                                 </div>
                                              </div>
-                                             <div class="tab-pane p-20" id="propriedades" role="tabpanel">
-                                                <div class="row">
-                                                     <div class="col-lg-12">
-                                                          <a href="{% url 'create_propriety' object.pk %}" type="button" class="btn btn-success btn-circle pull-right pull-right" id="add_prop" title="Adicionar Propriedade"><i class="icon-plus"></i></a>
-                                                         <h4 class="card-title">Propriedades</h4>
-                                                            <h6 class="card-subtitle">Cadastre as propriedades desta empresa</h6>
-                                                            <table data-toggle="table" data-height="220" class="table-striped table_propriety">
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th>Código</th>
-                                                                        <th>I.E</th>
-                                                                        <th>Nome</th>
-                                                                        <th></th>
-
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                    {% for prop in propriety_list %}
-                                                                    <tr class="tr-class">
-                                                                        <td class="td-class"> {{ prop.num_propriety }} </td>
-                                                                        <td>{{ prop.ie }}</td>
-                                                                        <td>{{ prop.razao }}</td>
-                                                                        <td><a class="btn btn-success btn edit_propriety" title="Editar " href="{% url 'edit_propriety' prop.pk  %}"><i class="fa fa-edit"></i><small> Alterar </small></a>
-                                                                            <a class="btn btn-danger btn delete_propriety" title="Excluir " href="{% url 'delete_propriety' prop.pk  %}"><i class="fa fa-trash-o"></i><small> Excluir</small></a>
-                                                                        </td>
-                                                                    </tr>
-                                                                    {% endfor %}
-                                                                </tbody>
-                                                            </table>
-                                                     </div>
-                                                </div>
-                                             </div>
                                         </div>
                                         <br>
                                        <div class="form-actions">
                                         <button type="submit"  class="btn btn-success submit"> <i class="fa fa-check"></i> Salvar</button>
-                                        <a type="button" class="btn btn-inverse" href="{% url 'company_list' %}">Cancelar</a>
                                     </div>
                                 </form>
                             </div>
                         </div>
                     </div>
-
+{% endif %}
 

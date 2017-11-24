@@ -1,26 +1,24 @@
 {% load static widget_tweaks %}
+
                      <div>
                         <div class="card">
                             <div class="card-body">
                                 <div class="alert alert-danger alert-rounded campo_obrigatorio"><i class="fa fa-warning"></i>   Existe campos obrigatórios não preenchidos.
                                             <button type="button" class="close" data-dismiss="alert" aria-label="Close"> <span aria-hidden="true">×</span> </button>
-                                        </div>
+                                </div>
                                 <!-- Nav tabs -->
                                 <ul class="nav nav-tabs" role="tablist">
-                                    <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#principal" role="tab"><span class="hidden-sm-up"><i class="ti-home"></i></span> <span class="hidden-xs-down">Principal
+                                    <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#principal" role="tab"><span class="hidden-sm-up"><i class="ti-home"></i></span> <span class="hidden-xs-down">Principal
                                         <div class="notify principal"> <span class="heartbit"></span> <span class="point"></span> </div>
-                                    </span></a></li>
+                                    </span></a> </li>
                                     <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#endereco" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Endereço
                                         <div  class="notify endereco"> <span class="heartbit"></span> <span class="point"></span> </div>
                                     </span></a> </li>
                                     <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#contato" role="tab"><span class="hidden-sm-up"><i class="ti-email"></i></span> <span class="hidden-xs-down">Contato
                                         <div  class="notify contato"> <span class="heartbit"></span> <span class="point"></span> </div>
                                     </span></a> </li>
-                                    <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#propriedades" role="tab"><span class="hidden-sm-up"><i class="ti-email"></i></span> <span class="hidden-xs-down">Propriedades
-                                        <div  class="notify propriedades"> <span class="heartbit"></span> <span class="point"></span> </div>
-                                    </span></a> </li>
                                 </ul>
-                                <form method="post" class="criaempresa" id="form_cria_empresa" action="{% url 'edit_company' object.pk %}">
+                                <form method="post" class="criapropriedade" id="form_cria_empresa" enctype="multipart/form-data"  action="{% url 'create_propriety' %}">
                                  {% csrf_token %}
                                     {% for error in form.non_field_errors %}
                                     <div class="alert-danger alert">
@@ -29,30 +27,24 @@
                                     {% endfor %}
                                 <!-- Tab panes -->
                                         <div class="tab-content tabcontent-border">
-                                            <div class="tab-pane p-20" id="principal" role="tabpanel">
-                                                <div class="row">
-                                                    <div class="col-md-4">
+                                            <div class="tab-pane active p-20" id="principal" role="tabpanel">
+                                                <div class="row p-t-20">
+                                                    <div class="col-md-7">
                                                         <div class="form-group">
-                                                            <label class="control-label">{{form.cnpj_cpf.label_tag}}<span class="text-danger pos_submit_cnpj">*</span></label>
-                                                            <div class="input-group">
-                                                                {% render_field form.cnpj_cpf class="form-control" type=text placeholder=form.cnpj_cpf.label  %}
-                                                            <span class="input-group-btn btn_busca">
-                                                                <a class="btn btn-success btn"    id="btn_busca_cnpj"><i class="fa  fa-search"> </i></a>
-                                                            </span>
-                                                            </div>
-                                                            {% for error in form.cnpj_cpf.errors %}
-                                                            <small class="text-danger"> {{ error }} </small>
+                                                            <label class="control-label">{{form.ie.label_tag}}<span class="text-danger pos_submit_ie">*</span></label>
+                                                            {% render_field form.ie class="form-control" placeholder=form.ie.label %}
+                                                            {% for error in form.ie.errors %}
+                                                            <small class="form-control-feedback"> {{ error }} </small>
                                                             {% endfor %}
                                                         </div>
                                                     </div>
                                                     <!--/span-->
-
                                                 </div>
                                                 <div class="row p-t-20">
                                                      <div class="col-md-7">
                                                         <div class="form-group">
                                                             <label class="control-label">{{form.razao.label_tag}}<span class="text-danger pos_submit_razao">*</span></label>
-                                                             {% render_field form.razao class="form-control" placeholder=form.razao.label  required="false"  %}
+                                                             {% render_field form.razao class="form-control" placeholder=form.razao.label  value=test  %}
                                                             {% for error in form.razao.errors %}
                                                             <small class="form-control-feedback"> {{ error }} </small>
                                                             {% endfor %}
@@ -154,47 +146,13 @@
                                                     </div>
                                                 </div>
                                              </div>
-                                             <div class="tab-pane active p-20" id="propriedades" role="tabpanel">
-                                                <div class="row">
-                                                     <div class="col-lg-12">
-                                                          <a href="{% url 'create_propriety' object.pk %}" type="button" class="btn btn-success btn-circle pull-right pull-right" id="add_prop" title="Adicionar Propriedade"><i class="icon-plus"></i></a>
-                                                         <h4 class="card-title">Propriedades</h4>
-                                                            <h6 class="card-subtitle">Cadastre as propriedades desta empresa</h6>
-                                                            <table data-toggle="table" data-height="220" class="table-striped table_propriety">
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th>Código</th>
-                                                                        <th>I.E</th>
-                                                                        <th>Nome</th>
-                                                                        <th></th>
-
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                    {% for prop in propriety_list %}
-                                                                    <tr class="tr-class">
-                                                                        <td class="td-class"> {{ prop.num_propriety }} </td>
-                                                                        <td>{{ prop.ie }}</td>
-                                                                        <td>{{ prop.razao }}</td>
-                                                                        <td><a class="btn btn-success btn edit_propriety" title="Editar " href="{% url 'edit_propriety' prop.pk  %}"><i class="fa fa-edit"></i><small> Alterar </small></a>
-                                                                            <a class="btn btn-danger btn delete_propriety" title="Excluir " href="{% url 'delete_propriety' prop.pk  %}"><i class="fa fa-trash-o"></i><small> Excluir</small></a>
-                                                                        </td>
-                                                                    </tr>
-                                                                    {% endfor %}
-                                                                </tbody>
-                                                            </table>
-                                                     </div>
-                                                </div>
-                                             </div>
                                         </div>
                                         <br>
                                        <div class="form-actions">
-                                        <button type="submit"  class="btn btn-success submit"> <i class="fa fa-check"></i> Salvar</button>
-                                        <a type="button" class="btn btn-inverse" href="{% url 'company_list' %}">Cancelar</a>
+                                        <button type="submit" class="btn btn-success submit"> <i class="fa fa-check"></i> Salvar</button>
+                                        <a type="button" class="btn btn-inverse ">Cancelar</a>
                                     </div>
                                 </form>
                             </div>
                         </div>
                     </div>
-
-

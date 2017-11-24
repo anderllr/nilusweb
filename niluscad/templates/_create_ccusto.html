@@ -2,6 +2,9 @@
 {% if success %}
    <script>
 	   close_modal=true;
+	   close_popover = true;
+	   id_ccusto = {{ form.instance.pk }};
+	   ccusto = "{{ form.instance.descricao }}";
    </script>
 {% else %}
 <div>

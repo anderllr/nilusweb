@@ -8,6 +8,7 @@ from django.http import HttpResponse,Http404
 from accounts.models import User
 from nilusadm.models import Sequenciais
 from .models import Company,Propriety,Cadgeral,Ccusto,PlanoFinan
+from .forms import FormPropriety
 
 from django.db.models import Max,Count
 
@@ -26,8 +27,10 @@ from django.db.models import Max,Count
 @login_required
 def company_list(request):
 
-
-   template_name = 'company_list.html'
+   if request.is_ajax():
+        template_name = '_table_companys.html'
+   else:
+       template_name = 'company_list.html'
 
    # user = User.objects.get(user=request.user.pk)
 
@@ -46,11 +49,18 @@ def company_list(request):
 
 
 class CreateCompany(LoginRequiredMixin,CreateView):
+
     def get_template_names(self):
+        if self.request.is_ajax():
+            return ["_create_company.html"]
+        else:
             return ["create_company.html"]
 
 
-
+    def get_context_data(self, **kwargs):
+        context = super(CreateCompany, self).get_context_data(**kwargs)
+        context['texto_modal'] = 'Inclusão de Empresas'
+        return context
 
     model = Company
     fields = ['cnpj_cpf','razao','fantasia','cep','endereco','numero','complemento','bairro','cidade','uf',
@@ -86,8 +96,12 @@ class CreateCompany(LoginRequiredMixin,CreateView):
 
 
 class EditCompany(LoginRequiredMixin,UpdateView):
+
     def get_template_names(self):
-        return ["edit_company.html"]
+        if self.request.is_ajax():
+            return ["_edit_company.html"]
+        else:
+            return ["edit_company.html"]
 
     def get_success_url(self):
         return reverse_lazy('company_list')
@@ -96,11 +110,16 @@ class EditCompany(LoginRequiredMixin,UpdateView):
     def get_context_data(self, **kwargs):
         context = super(EditCompany,self).get_context_data(**kwargs)
         context['propriety_list'] = Propriety.objects.filter(company=self.kwargs['pk'])
+        context['dados_cadastro'] = Company.objects.get(pk=self.kwargs['pk'])
+
+
         return context
 
 
+
+
     model = Company
-    fields = ['cnpj_cpf', 'razao', 'fantasia', 'cep', 'endereco', 'numero', 'complemento', 'bairro', 'cidade', 'uf',
+    fields = [ 'razao', 'fantasia', 'cep', 'endereco', 'numero', 'complemento', 'bairro', 'cidade', 'uf',
               'email', 'telefone']
 
 
@@ -108,40 +127,12 @@ class EditCompany(LoginRequiredMixin,UpdateView):
         form.save()
 
         if self.request.is_ajax():
-            context = self.get_context_data(form=form,success=True)
+            context = self.get_context_data(form=form ,success=True,ok='ok')
             return self.render_to_response(context)
         else:
             return redirect(self.get_success_url())
 
 
-
-class EditCompany_prop(LoginRequiredMixin,UpdateView):
-    def get_template_names(self):
-        return ["edit_company_prop.html"]
-
-    def get_success_url(self):
-        return reverse_lazy('company_list')
-
-
-    def get_context_data(self, **kwargs):
-        context = super(EditCompany_prop,self).get_context_data(**kwargs)
-        context['propriety_list'] = Propriety.objects.filter(company=self.kwargs['pk'])
-        return context
-
-
-    model = Company
-    fields = ['cnpj_cpf', 'razao', 'fantasia', 'cep', 'endereco', 'numero', 'complemento', 'bairro', 'cidade', 'uf',
-              'email', 'telefone']
-
-
-    def form_valid(self,form):
-        form.save()
-
-        if self.request.is_ajax():
-            context = self.get_context_data(form=form,success=True)
-            return self.render_to_response(context)
-        else:
-            return redirect(self.get_success_url())
 
 
 
@@ -175,7 +166,12 @@ def delete_company(request, pk):
 def propriety_list(request):
 
 
-   template_name = 'propriety_list.html'
+   if request.is_ajax():
+        template_name = '_table_propriety.html'
+   else:
+        template_name = 'propriety_list.html'
+
+
 
 
    if request.user.is_masteruser is True:
@@ -198,26 +194,23 @@ class CreatePropriety(LoginRequiredMixin,CreateView):
         if self.request.is_ajax():
             return ["_create_propriety.html"]
         else:
-            return ["create_propriety.html"]
+            return ["create_propriety_old.html"]
 
-
-    def get_context_data(self, **kwargs):
-        context = super(CreatePropriety,self).get_context_data(**kwargs)
-        context['company'] = Company.objects.get(pk=self.kwargs['pk'])
-        return context
-
+    def get_form_kwargs(self):
+        kwargs = super(CreatePropriety, self).get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
 
 
     model = Propriety
-    fields = ['ie','razao','fantasia','cep','endereco','numero','complemento','bairro','cidade','uf',
-              'email','telefone']
+    form_class = FormPropriety
 
 
 
 
 
     def get_success_url(self):
-        return reverse_lazy('company_list')
+        return reverse_lazy('propriety_list')
 
     def form_valid(self,form):
         prop = form.save(commit=False)
@@ -230,7 +223,6 @@ class CreatePropriety(LoginRequiredMixin,CreateView):
 
 
         prop.num_propriety = seq_prop.propriedades + 1
-        prop.company = Company.objects.get(pk=self.kwargs['pk'])
         seq_prop.propriedades = prop.num_propriety
         seq_prop.save()
         prop.save()
@@ -249,23 +241,26 @@ class EditPropriety(LoginRequiredMixin,UpdateView):
         if self.request.is_ajax():
             return ["_edit_propriety.html"]
         else:
-            return ["edit_propriety.html"]
+            return ["create_propriety.html"]
 
     def get_success_url(self):
         return reverse_lazy('company_list')
 
+    def get_form_kwargs(self):
+        kwargs = super(EditPropriety, self).get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
 
 
     model = Propriety
-    fields = ['ie', 'razao', 'fantasia', 'cep', 'endereco', 'numero', 'complemento', 'bairro', 'cidade', 'uf',
-              'email', 'telefone']
+    form_class = FormPropriety
 
 
     def form_valid(self,form):
         form.save()
 
         if self.request.is_ajax():
-            context = self.get_context_data(form=form,success=True)
+            context = self.get_context_data(form=form,success=True,ok='ok')
             return self.render_to_response(context)
         else:
             return redirect(self.get_success_url())
@@ -285,7 +280,7 @@ def delete_propriety(request, pk):
 
 
     # messages.success(request, 'Grupo removido com sucesso !!')
-    return redirect('company_list')
+    return redirect('propriety_list')
 
 
 ########################################################################################################################
@@ -295,8 +290,10 @@ def delete_propriety(request, pk):
 @login_required
 def cadgeral_list(request):
 
-
-   template_name = 'cadgeral_list.html'
+   if request.is_ajax():
+       template_name = '_table_cadgeral.html'
+   else:
+       template_name = 'cadgeral_list.html'
 
 
    if request.user.is_masteruser is True:
@@ -316,6 +313,9 @@ def cadgeral_list(request):
 
 class CreateCadGeral(LoginRequiredMixin,CreateView):
     def get_template_names(self):
+        if self.request.is_ajax():
+            return ["_create_cadgeral.html"]
+        else:
             return ["create_cadgeral.html"]
 
 
@@ -349,13 +349,23 @@ class CreateCadGeral(LoginRequiredMixin,CreateView):
         Cadgeral.save()
 
 
+        if self.request.is_ajax():
+            context = self.get_context_data(form=form,success=True,ok='ok')
+            return self.render_to_response(context)
+        else:
+            return redirect(self.get_success_url())
 
-        return redirect(self.get_success_url())
+
+
 
 
 class EditCadGeral(LoginRequiredMixin,UpdateView):
 
+
     def get_template_names(self):
+        if self.request.is_ajax():
+            return ["_edit_cadgeral.html"]
+        else:
             return ["edit_cadgeral.html"]
 
     def get_success_url(self):
@@ -369,7 +379,12 @@ class EditCadGeral(LoginRequiredMixin,UpdateView):
     def form_valid(self,form):
         form.save()
 
-        return redirect(self.get_success_url())
+        if self.request.is_ajax():
+            context = self.get_context_data(form=form,success=True,ok='ok')
+            return self.render_to_response(context)
+        else:
+            return redirect(self.get_success_url())
+
 
 
 @login_required
@@ -627,8 +642,13 @@ def delete_planofinan(request, pk):
 
 
 
+
+
+
+
+
 edit_company = EditCompany.as_view()
-edit_company_prop = EditCompany_prop.as_view()
+# edit_company_prop = EditCompany_prop.as_view()
 create_company =  CreateCompany.as_view()
 edit_propriety = EditPropriety.as_view()
 create_propriety = CreatePropriety.as_view()
@@ -638,3 +658,4 @@ edit_ccusto = EditCcusto.as_view()
 create_ccusto = CreateCcusto.as_view()
 edit_planofinan = EditPlanofinan.as_view()
 create_planofinan = CreatePlanoFinan.as_view()
+

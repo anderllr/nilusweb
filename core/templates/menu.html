@@ -23,7 +23,7 @@
                 <li> <a class="has-arrow waves-effect waves-dark" href="#" aria-expanded="false"><i class="mdi mdi-book-open-page-variant"></i><span class="hide-menu"> Cadastros</span></a>
                     <ul aria-expanded="" class="collapse">
                         <li><a href="{% url 'company_list' %}"><i class="mdi mdi-home"></i> Empresas</a></li>
-                        <li><a hidden href="{% url 'propriety_list' %}"><i class="mdi mdi-image-filter-hdr"></i> Propriedades</a></li>
+                        <li><a href="{% url 'propriety_list' %}"><i class="mdi mdi-image-filter-hdr"></i> Propriedades</a></li>
                         <li><a href="{% url 'cadgeral_list' %}"><i class="fa  fa-folder-o"></i> Fornecedores/Clientes</a></li>
                         <li><a href="{% url 'ccusto_list' %}"><i class="fa  fa-tasks"></i> Centro de Custo</a></li>
                         <li><a href="{% url 'planofinan_list' %}"><i class="fa  fa-money"></i> Plano Financeiro</a></li>
@@ -38,9 +38,9 @@
                     <ul aria-expanded="" class="collapse">
                         <li><a  href="{% url 'conta_list' %}"><i class="mdi mdi-bank"></i> Conta</a></li>
                         <li><a  href="{% url 'indice_list' %}"><i class="fa  fa-money"></i> Indices e Cotações</a></li>
-                        <li><a class="has-arrow waves-effect waves-dark" href="#" aria-expanded="false"><i class="fa fa-book"></i><span class="hide-menu"> Lançamentos</span></a>
+                        <li><a class="has-arrow waves-effect waves-dark" href="#" aria-expanded="false"><i class="fa fa-book"></i><span class="hide-menu"> </span> Lançamentos</a>
                            <ul aria-expanded="" class="collapse">
-                               <li><a  href="">Recebimentos</a></li>
+                               <li><a  href="{% url 'titrec_list' %}">Recebimentos</a></li>
                                <li><a  href="">Pagamentos</a></li>
                            </ul>
                         </li>
@@ -68,8 +68,7 @@
     <!-- ============================================================== -->
     <div class="row">
         <div class="col-12">
-            <div class="card">
-                <div class="card-body">
+
                    {% block page_body %} {% endblock %}
 
 <div id="modal-config_conta" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog">
@@ -91,8 +90,7 @@
 
 
 
-                </div>
-            </div>
+
         </div>
     </div>
 

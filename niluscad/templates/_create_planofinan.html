@@ -2,11 +2,13 @@
 {% if success %}
    <script>
 	   close_modal=true;
+	   id_planofinan = {{ form.instance.pk }};
+  	   descricao = "{{ form.instance.descricao }}";
    </script>
 {% else %}
 <div>
     <p class="text-muted m-b-30 font-13">Cadastrar Plano Financeiro</p>
-        <form class="form-horizontal"  method="post">
+        <form class="form-horizontal planofinan_create"  method="post">
           {% csrf_token %}
             {% for error in form.non_field_errors %}
             <div class="alert-danger alert">
@@ -25,7 +27,7 @@
    {% endfor %}
             <div class="form-group m-b-0">
                 <div class="offset-sm-3">
-                    <button type="submit" class="btn btn-success waves-effect waves-light m-t-10">Cadastrar</button>
+                    <button type="submit" id="create-planofinan-btn" class="btn btn-success waves-effect waves-light m-t-10">Cadastrar</button>
                 </div>
             </div>
         </form>

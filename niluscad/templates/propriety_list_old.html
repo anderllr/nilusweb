@@ -1,0 +1,84 @@
+{% extends "menu.html" %}
+{% load static widget_tweaks humanize %}
+
+
+
+<!-- Bread crumb and right sidebar toggle -->
+{% block title_page %} Propriedades {% endblock %}
+
+{% block page_body %}
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Cadastros</h4>
+        <h6 class="card-subtitle">Cadastro de Propriedades
+            <div class="col-lg-2 col-md-4 pull-right">
+                     <a class="btn btn-success btn edit_company" title="Editar " href="{% url 'create_propriety' %}"><i class="fa fa-plus"></i><small> Cadastrar</small></a>
+            </div>
+
+        </h6>
+        <br>
+        <div class="table-responsive table_viewers">
+          {% include '_table_propriety.html' %}
+        </div>
+    </div>
+</div>
+
+
+
+
+{% endblock %}
+
+
+{% block javascript %}
+
+
+
+$(".delete_company").on("click", function(e){
+
+    e.preventDefault();
+    var linkURL = $(this).attr("href");
+    swal({
+        title: "Tem certeza?",
+        text: "Ao aceitar esta propriedade será excluida!",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Sim, Excluir!",
+        cancelButtonText: "Não, Cancelar!",
+        closeOnConfirm: false,
+        closeOnCancel: false
+    },
+    function(isConfirm){
+        if (isConfirm) {
+
+            swal("Excluido!", "Registro excluido com sucesso!", "success");
+            window.location.href = linkURL;
+        }
+        else {
+
+            swal("Cancelado", "Exclusão cancelada", "error");
+        }
+});
+
+	});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}
+
+
+

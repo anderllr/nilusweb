@@ -1,0 +1,4 @@
+{% load l10n %}
+{% for prop in propriety %}
+    <option{% if user.propriety_p == prop  %} selected{% endif %} value="{{ prop.pk|unlocalize }}">{{ prop.razao }}</option>
+{% endfor %}

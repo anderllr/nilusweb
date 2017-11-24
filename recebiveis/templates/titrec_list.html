@@ -1,0 +1,538 @@
+{% extends "menu.html" %}
+{% load static widget_tweaks humanize  l10n  %}
+
+
+
+<!-- Bread crumb and right sidebar toggle -->
+{% block title_page %} Financeiro > Contas a Receber {% endblock %}
+
+{% block page_body %}
+<div>
+    <form>
+        <div>
+          <div>
+            <div class="row">
+                <div class="col-md-6">
+                    <h5 class="box-title">{{ form.empresa.label_tag }}</h5>
+                               {% render_field form.empresa class="chosen-select" %}
+
+                </div>
+                <div class="col-md-6">
+                    <h5 class="box-title">{{ form.propriedade.label_tag }}</h5>
+                              {% render_field form.propriedade class="chosen-select"  %}
+                </div>
+
+            </div>
+
+            <div id="accordion" class="nav-accordion" role="tablist" aria-multiselectable="true">
+
+                <div class="card">
+                    <div class="card-header" role="tab" id="headingOne">
+                        <h5 class="mb-0">
+                      <button class="btn btn-success" type="submit">Consultar</button>
+
+                    <button title="Filtros" class="btn waves-effect waves-light btn-secondary" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" class="collapsed">
+                      <i class="fa fa-filter"></i>
+                    </button>
+                  </h5>
+
+                    </div>
+                    <div id="collapseOne" class="collapse" role="tabpanel" aria-labelledby="headingOne" style="">
+                        <div class="card-body">
+                             <div class="row p-t-10">
+                                <div class="col-md-4">
+                                    <h5 class="box-title">Lançamento:</h5>
+                                    <div class="input-daterange input-group datepicker" id="date-range">
+                                        <span class="input-group-addon bg-blank ">de:</span>
+                                        {% render_field form.data_lanc_ini data-mask="99/99/9999" %}
+                                        <span class="input-group-addon bg-blank  ">até:</span>
+                                        {% render_field form.data_lanc_fim  %}
+                                    </div>
+                                </div>
+                                <div class="col-md-2"></div>
+                                <div class="col-md-4">
+                                    <h5 class="box-title">Vencimento:</h5>
+                                    <div class="input-daterange input-group datepicker" id="date-range2">
+                                        <span class="input-group-addon bg-blank ">de:</span>
+                                        {% render_field form.data_venc_ini data-mask="99/99/9999" %}
+                                        <span class="input-group-addon bg-blank ">até:</span>
+                                        {% render_field form.data_venc_fim data-mask="99/99/9999" %}
+                                    </div>
+                                </div>
+                             </div>
+                             <div class="row p-t-10">
+                                <div class="col-md-6">
+                                  <h5 class="box-title">{{ form.cliente.label_tag }}</h5>
+                                            {% render_field form.cliente  class="chosen-select"  %}
+                                </div>
+                                <div class="col-md-3">
+                                    <h5 class="box-title">{{ form.plano_finan.label_tag }}</h5>
+                                            {% render_field form.plano_finan  class="chosen-select"  %}
+                                </div>
+                                <div class="col-md-3">
+                                    <h5 class="box-title">{{ form.c_custo.label_tag }}</h5>
+                                            {% render_field form.c_custo  class="chosen-select" %}
+                                </div>
+                             </div>
+                        </div>
+                    </div>
+                    <div class="row">
+
+            </div>
+                </div>
+            </div>
+             </div>
+          </div>
+        </div>
+    </form>
+    <div class="row">
+        <div>
+            <div class="card">
+                <div class="card-body">
+                    <div class="row p-t-10">
+                        <div>
+                            <button type="button" title="Novo Titulo" class="btn btn-success btn-circle btn-xl new_titrec"><i class="fa fa-plus"></i> </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-md-11">
+             <div class="card card-outline-info form_new_titrec">
+                 <div class="card-header">
+                     <h4 class="m-b-0 text-white">Inclusão de título à receber<button type="button" class="close cancel_create">×</button></h4>
+                            </div>
+                 <div class="card-body">
+
+
+                 </div>
+            </div>
+            <div class="card">
+                <div class="card-body col-md-12">
+                   <div class="table-responsive table_titrec">
+                      {% include '_table_titrec.html' %}
+                   </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div id="modal-update-titrec" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog" >
+        <div class="modal-content" style="width: 160%;  height: 100%;  padding: 0;">
+            <div class="modal-header">
+                <h4 class="modal-title" id="title-modal-update"></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="modal-cadgeral" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="title-modal"></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div id="popover_content_wrapper" class="dpdown_planofinan" style="display: none">
+
+</div>
+
+
+<div id="popover_content_wrapper2" class="dpdown_ccusto" style="display: none">
+
+</div>
+
+
+<div id="popover_content_wrapper3" class="dpdown_planofinan_modal" style="display: none">
+
+</div>
+
+
+
+
+{% endblock %}
+
+
+{% block javascript %}
+
+  $('.form_new_titrec').hide();
+
+  function load_titrec(){
+    $('.table_titrec').load('{{ request.path }}');
+  }
+
+
+
+    function load_propriety2(){
+        var company_id = $('#id_empresa').val();
+        if(company_id != ''){
+            var url = '{% url 'company_propriety' %}';
+            url = url+'?company_id='+company_id;
+            $("#id_propriedade").load(url,function(){
+                $("#id_propriedade").trigger("chosen:updated");
+             });
+        }
+        else{
+          $("#id_propriedade").html('');
+        }
+    }
+
+
+
+              $("#id_empresa").on("change",function(e){
+
+                  load_propriety2();
+              });
+
+              load_propriety2();
+
+
+
+$('.chosen-select').chosen({ width: '100%' });
+
+ table = $('#example23').DataTable({
+        "language": {
+         "lengthMenu": "Mostrando _MENU_ registros por página",
+         "search" : "Procurar: ",
+         "info" : "Exibindo de _START_ a _END_ de _TOTAL_ registros",
+         "infoEmpty": "Nenhum registro encontrado",
+         "infoFiltered": "(filtrado entre _MAX_ registros)",
+         "paginate" : {
+           "first":      "Primeiro",
+           "last":       "Último",
+           "next":       "Próximo",
+           "previous":   "Anterior"
+         },
+     }
+    });
+
+
+$(".new_titrec").on("click",function(e){
+    e.preventDefault();
+
+        $(".form_new_titrec .card-body").load("{% url 'create_titrec' %}", function(){
+              $('.form_new_titrec').show();
+              $("#id_valor_text").maskMoney();
+              $(".parcela").hide();
+              $('.chosen-select').chosen({ width: '100%' });
+               {% include 'js_inclusoes.html' %}
+               {% include 'js_popovers.html'  %}
+
+
+              $(".titrec").on("change", "#id_parcela", function(e){
+                        if ($(this).is(":checked")){
+                            $(".parcela").show();
+                        }
+                        else {
+                            $(".parcela").hide();
+
+                        }
+              });
+              $(".datepicker").datepicker({
+		            todayBtn: true,
+    	            language: "pt-BR",
+		            autoclose: true,
+    	            todayHighlight: true
+	          });
+
+              function load_proprietyform(){
+                var company_id = $('#id_company').val();
+                if(company_id != ''){
+                    var url = '{% url 'company_propriety' %}';
+                    url = url+'?company_id='+company_id;
+                     $("#id_propriety").load(url,function(){
+                    $("#id_propriety").trigger("chosen:updated");
+                    });
+                }
+                else{
+                    $("#id_propriety").html('');
+                }
+              }
+
+              $("#id_company").on("change",function(e){
+                  load_proprietyform();
+              });
+              load_proprietyform();
+
+
+              $(".cancel_create").on("click",function(e){
+                $('.form_new_titrec').hide();
+              });
+        });
+
+        <!-- JS de modais e inclusoes -->
+
+});
+
+    $(".form_new_titrec .card-body").on("submit","form",function(e){
+	 	 e.preventDefault();
+	 	 var dados = $(this).serialize();
+	 	 $.post("{% url 'create_titrec' %}",dados,function(result){
+	 	    $(".form_new_titrec .card-body").html(result);
+	 	    if(close_modal==true){
+	 	       $('.form_new_titrec').hide();
+                window.location.reload();
+     	    }
+ 	        else{
+ 	           $('.form_new_titrec .card-body').show();
+ 	        }
+	 	 });
+	});
+
+
+
+
+
+<!-- inicio processo de inclusão e edição de titulos a receber -->
+$(".new_titrec2").on("click",function(e){
+    e.preventDefault();
+
+        $("#modal-titrec .modal-body").load("{% url 'create_titrec' %}", function(){
+              var height = $(window).height();
+              $(this).find(".modal-body").css("max-height", height)
+              $('#title-modal').text("Inclusão de recebível");
+              $('#modal-titrec').modal("show");
+              $("#id_valor_text").maskMoney();
+              $(".parcela").hide();
+              $('.chosen-select').chosen({ width: '100%' });
+              $(".select2").select2({ width: '100%' });
+
+
+
+
+
+              $(".titrec").on("change", "#id_parcela", function(e){
+                        if ($(this).is(":checked")){
+                            $(".parcela").show();
+                        }
+                        else {
+                            $(".parcela").hide();
+
+                        }
+              });
+              $(".datepicker").datepicker({
+		            todayBtn: true,
+    	            language: "pt-BR",
+		            autoclose: true,
+    	            todayHighlight: true
+	          });
+
+              function load_propriety(){
+                var company_id = $('#id_company').val();
+                if(company_id != ''){
+                    var url = '{% url 'company_propriety' %}';
+                    url = url+'?company_id='+company_id;
+                    $("#id_propriety").load(url);
+                    $('#id_client').trigger('chosen:updated');
+                }
+                else{
+                    $("#id_propriety").html('');
+                }
+              }
+
+
+
+              $("#id_company").on("change",function(e){
+                  load_propriety();
+              });
+
+              load_propriety();
+
+
+
+
+
+
+
+
+        });
+});
+
+
+$("#modal-titrec .modal-body").on("submit","form",function(e){
+	 	 e.preventDefault();
+	 	 var dados = $(this).serialize();
+	 	 $.post("{% url 'create_titrec' %}",dados,function(result){
+	 	    $("#modal-titrec .modal-body").html(result);
+	 	    if(close_modal==true){
+	 	       $('#modal-titrec').modal("hide");
+               $('#example23').DataTable({
+        "language": {
+         "lengthMenu": "Mostrando _MENU_ registros por página",
+         "search" : "Procurar: ",
+         "info" : "Exibindo de _START_ a _END_ de _TOTAL_ registros",
+         "infoEmpty": "Nenhum registro encontrado",
+         "infoFiltered": "(filtrado entre _MAX_ registros)",
+         "paginate" : {
+           "first":      "Primeiro",
+           "last":       "Último",
+           "next":       "Próximo",
+           "previous":   "Anterior"
+         },
+     }
+    });
+
+
+
+	 	    }
+	 	    else{
+	 	       $('#modal-titrec').modal("show");
+	 	    }
+	 	 });
+	 });
+
+
+
+
+
+var ok = {{ ok }}
+
+$(".table_titrec").on("click", ".edit_titrec", function(e){
+        e.preventDefault();
+  		$("#modal-update-titrec .modal-body").load($(this).attr('href'), function(){
+              $('#title-modal-update').text("Editar recebível");
+              $('#modal-update-titrec').modal("show");
+              $("#id_valor_text").maskMoney();
+              $('.chosen-select').chosen({ width: '100%' });
+              $(".select2").select2({ width: '100%' });
+              $(".datepicker").datepicker({
+		          todayBtn: true,
+    	          language: "pt-BR",
+		          autoclose: true,
+    	          todayHighlight: true
+	          });
+               $('button[data-toggle=popover3]').popover({
+                    html : true,
+                    //trigger: "click",
+                    content: function() {
+                    $(".dpdown_planofinan_modal").load("{% url 'create_planofinan' %}", function(){
+                    e.preventDefault();
+                 });
+                    return $('#popover_content_wrapper3').html();
+                }
+
+        })
+
+
+
+$(document).on("submit","form",function(e){
+         e.preventDefault();
+	 	 var dados = $(this).serialize();
+	 	 $.post("{% url 'create_planofinan' %}",dados,function(result){
+	 	    $("#popover_content_wrapper3").html(result);
+	 	    if(close_modal==true){
+	 	       $('*').popover('hide');
+               $('#id_plr_financeiro').append("<option value='" + id_planofinan + "'>"+ descricao + "</option>");
+			   $('#id_plr_financeiro').val(id_planofinan);
+			   $('#id_plr_financeiro').trigger('chosen:updated');
+               form_ccusto();
+
+
+
+	 	    }
+	 	    else{
+	 	       $('.dpdown_planofinan').popover("show");
+	 	    }
+	 	 });
+});
+
+
+
+	    });
+	});
+
+
+
+$("#modal-update-titrec .modal-body").on("submit","form",function(e){
+	 	 e.preventDefault();
+
+
+         var tem_parcela = $('#tem_parcela').val();
+         if(tem_parcela == 'S'){
+			if(confirm("Lançamento tem outras parcelas, deseja alterar todas?")){
+				$('#confirma_parcela').val('S');
+			}
+         }
+
+	 	 var dados = $(this).serialize();
+	 	 $.post($(this).attr('action'),dados,function(result){
+	 	    $("modal-update-titrec .modal-body").html(result);
+	 	    if(ok==ok){
+	 	       $('#modal-update-titrec').modal("hide");
+                 window.location.reload();
+	 	    }
+	 	    else{
+	 	       $('#modal-update-titrec').modal("show");
+	 	    }
+	 	 });
+	 });
+
+
+
+
+$(".delete_titrec").on("click", function(e){
+
+    e.preventDefault();
+    var linkURL = $(this).attr("href");
+    swal({
+        title: "Tem certeza?",
+        text: "Ao aceitar esta empresa será excluida!",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Sim, Excluir!",
+        cancelButtonText: "Não, Cancelar!",
+        closeOnConfirm: false,
+        closeOnCancel: false
+    },
+    function(isConfirm){
+        if (isConfirm) {
+
+            swal("Excluido!", "Registro excluido com sucesso!", "success");
+            window.location.href = linkURL;
+        }
+        else {
+
+            swal("Cancelado", "Exclusão cancelada", "error");
+        }
+});
+
+	});
+
+
+
+
+
+
+
+
+{% endblock %}
+
+
+

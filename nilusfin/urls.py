@@ -25,4 +25,7 @@ urlpatterns = [
     # url(r'^cotacao/(?P<pk>\d+)/apagar/$', views.delete_cotacao, name='delete_cotacao'),
 
 
+    # Recebiveis
+    # url(r'^recebiveis/',include('recebiveis.urls')),
+
 ]

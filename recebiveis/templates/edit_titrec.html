@@ -1,0 +1,66 @@
+{% extends "menu.html" %}
+{% load static widget_tweaks humanize %}
+
+
+
+<!-- Bread crumb and right sidebar toggle -->
+{% block title_page %} Titulos a Receber {% endblock %}
+
+{% block page_body %}
+
+
+
+<div class="card card-outline-success">
+    <div class="card-header">
+        <h4 class="m-b-0 text-white">Edição de titulo </h4>
+    </div>
+    <div class="card-body edit">
+       {% include '_edit_titrec.html' %}
+    </div>
+</div>
+
+{% endblock %}
+
+
+{% block javascript %}
+
+
+$(".select2").select2();
+$("#id_valor_text").maskMoney();
+
+
+
+
+
+
+
+$(".edit").on("submit","form",function(e){
+		var tem_parcela = $('#tem_parcela').val();
+         if(tem_parcela == 'S'){
+			if(confirm("Lançamento tem outras parcelas, deseja alterar todas?")){
+				$('#confirma_parcela').val('S');
+			}
+         }
+	 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}
+
+
+

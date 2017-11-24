@@ -26,6 +26,15 @@
                             <div class="row p-t-20">
                                 <div class="col-md-7">
                                     <div class="form-group">
+                                        <label class="control-label">{{form.company.label_tag}}</label>
+                                        {% render_field form.company class="form-control" placeholder=form.company.label %}
+                                        {% for error in form.company.errors %}
+                                        <small class="form-control-feedback"> {{ error }} </small>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="col-md-7">
+                                    <div class="form-group">
                                         <label class="control-label">{{form.ie.label_tag}}</label>
                                         {% render_field form.ie class="form-control" placeholder=form.cnpj_cpf.label %}
                                         {% for error in form.ie.errors %}
@@ -145,7 +154,6 @@
                    <br>
                    <div class="form-actions">
                     <button type="submit" class="btn btn-success"> <i class="fa fa-check"></i> Salvar</button>
-                    <a type="button" class="btn btn-inverse" href="{% url 'propriety_list' %}">Cancelar</a>
                 </div>
             </form>
         </div>

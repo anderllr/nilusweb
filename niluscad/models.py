@@ -10,7 +10,7 @@ from django.db import models
 class Company(models.Model):
 
     # informação do dono da conta (usuario Master)
-    master_user = models.ForeignKey('accounts.User',models.CASCADE,verbose_name='Uusario Master')
+    master_user = models.ForeignKey('accounts.User',models.CASCADE,verbose_name='Usario Master')
     # dados principais
     num_company = models.IntegerField('Cod. Empresa')
     cnpj_cpf = models.CharField('CNPJ/CPF', max_length=20,unique=True)
@@ -39,20 +39,18 @@ class Company(models.Model):
     class Meta:
         verbose_name = 'Empresa'
         verbose_name_plural = 'Empresas'
-        unique_together = [
-           ('master_user', 'cnpj_cpf'),('master_user', 'num_company')
-        ]
+
 
 
     def __str__(self):
-        return '{} - {}'.format(self.num_company, self.razao)
+        return self.razao
 
 
 
 class Propriety(models.Model):
 
     # informação do dono da conta (usuario Master)
-    master_user = models.ForeignKey('accounts.User', models.CASCADE, verbose_name='Uusario Master')
+    master_user = models.ForeignKey('accounts.User', verbose_name='Uusario Master')
     company = models.ForeignKey('niluscad.Company',models.CASCADE,verbose_name='Empresa Vinculada')
     # dados principais
     num_propriety = models.IntegerField('Cod. Propriedade')
@@ -88,7 +86,7 @@ class Propriety(models.Model):
 
 
     def __str__(self):
-        return '{} - {}'.format(self.num_propriety, self.razao)
+        return self.razao
 
 
 
@@ -150,16 +148,16 @@ class Ccusto(models.Model):
     descricao = models.CharField('Descricao',max_length=60)
 
 
-class Meta:
-    verbose_name = 'C. Custo'
-    verbose_name_plural = 'C. Custos'
-    unique_together = [
-        ('master_user', 'num_ccusto')
-    ]
+    class Meta:
+        verbose_name = 'C. Custo'
+        verbose_name_plural = 'C. Custos'
+        unique_together = [
+             ('master_user', 'num_ccusto')
+        ]
 
 
-def __str__(self):
-    return self.descricao
+    def __str__(self):
+        return self.descricao
 
 
 
@@ -179,13 +177,13 @@ class PlanoFinan(models.Model):
     sinal = models.CharField('Sinal Conta',max_length=1,choices=Scategoria_Choices)
 
 
-class Meta:
-    verbose_name = 'Plano Financeiro'
-    verbose_name_plural = 'Plano Financeiro'
-    unique_together = [
-        ('master_user', 'num_plfin')
-    ]
+    class Meta:
+        verbose_name = 'Plano Financeiro'
+        verbose_name_plural = 'Plano Financeiro'
+        unique_together = [
+            ('master_user', 'num_plfin')
+        ]
 
 
-def __str__(self):
-    return self.descricao
+    def __str__(self):
+        return self.descricao

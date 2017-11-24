@@ -10,16 +10,18 @@ urlpatterns = [
     url(r'^ccusto/$',views.ccusto_list,name='ccusto_list'),
     url(r'^planofinan/$',views.planofinan_list,name='planofinan_list'),
 
+
     # Empresas
     url(r'^insere_empresa/$',views.create_company,name='create_company'),
     url(r'^insere_empresa/(?P<pk>\d+)$',views.edit_company,name='edit_company'),
-    url(r'^insere_empresa/prop/(?P<pk>\d+)$',views.edit_company_prop,name='edit_company_prop'),
+    # url(r'^insere_empresa/prop/(?P<pk>\d+)$',views.edit_company_prop,name='edit_company_prop'),
     url(r'^empresas/(?P<pk>\d+)/apagar/$', views.delete_company, name='delete_company'),
 
+
     # Propriedades
-    url(r'^insere_empresa/(?P<pk>\d+)/insere_propriedade/$', views.create_propriety, name='create_propriety'),
-    url(r'^insere_empresa/(?P<pk>\d+)/apaga_propriedade/$', views.delete_propriety, name='delete_propriety'),
-    url(r'^propriedade/(?P<pk>\d+)/edita_propriedade/$', views.edit_propriety, name='edit_propriety'),
+    url(r'^propriedades/insere_propriedade/$', views.create_propriety, name='create_propriety'),
+    url(r'^propriedades/(?P<pk>\d+)/apaga_propriedade/$', views.delete_propriety, name='delete_propriety'),
+    url(r'^propriedades/(?P<pk>\d+)/edita_propriedade/$', views.edit_propriety, name='edit_propriety'),
 
     # Cadastros Gerais
       url(r'^insere_cadastro/$', views.create_cadgeral, name='create_cadgeral'),

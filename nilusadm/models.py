@@ -38,6 +38,7 @@ class Sequenciais(models.Model):
     planofinan = models.IntegerField('Seq PlanoFinan', default=0)
     conta = models.IntegerField('Seq Conta', default=0)
     indice = models.IntegerField('Seq Indice', default=0)
+    recebiveis = models.IntegerField('Seq Tit. Receber', default=0)
 
 
 
