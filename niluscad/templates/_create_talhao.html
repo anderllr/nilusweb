@@ -1,0 +1,41 @@
+{% load static widget_tweaks %}
+{% if success %}
+   <script>
+  	 close_form=true;
+  	  talhao = "{{ form.instance.talhao }}";
+	  area = {{ form.instance.area }};
+	  pk = {{ form.instance.pk }};
+	  url = '{% url 'delete_talhao' form.instance.pk %}';
+   </script>
+{% else %}
+<form class="form-horizontal" name="formtalhao" id="form_talhao">
+    {% csrf_token %}
+    <div class="form-body">
+            <div class="form-group">
+                <label class="control-label">{{ form.talhao.label_tag }}</label>
+                <div>
+                    {% render_field form.talhao class="form-control" placeholder=form.talhao.label %}
+                    {% for error in form.talhao.errors %}
+                    <small class="form-control-feedback"> {{ error }} </small>
+                    {% endfor %}
+                </div>
+            </div>
+        <div>
+            <div class="form-group">
+                <label class="control-label">{{ form.area.label_tag }}</label>
+                <div>
+                    {% render_field form.area class="form-control" placeholder=form.area.label %}
+                    {% for error in form.area.errors %}
+                    <small class="form-control-feedback"> {{ error }} </small>
+                    {% endfor %}
+                </div >
+                <br>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-success" value="Salvar"  id="btn_salva_talhao">Salvar</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</form>
+{% endif %}

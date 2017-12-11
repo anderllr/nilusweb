@@ -20,6 +20,7 @@ class Recebiveis(models.Model):
     dt_lancamento = models.DateTimeField('Data Lançamento',auto_now_add=True)
     dt_vencimento = models.DateField('Data Vencimento')
     plr_financeiro = models.ForeignKey('niluscad.Planofinan',verbose_name='Plano Financeiro')
+    conta_receb = models.ForeignKey('nilusfin.Contafinanceira',verbose_name='Conta Recebimento')
     c_custo = models.ForeignKey('niluscad.Ccusto',verbose_name='Centro de Custo')
     vlr_lancamento = models.DecimalField('Valor do Lançamento',max_digits=13,decimal_places=2,blank=True,null=True)
     valor_text = models.CharField(verbose_name='Valor',  max_length=20)
@@ -27,6 +28,7 @@ class Recebiveis(models.Model):
     #Dados Cotação/Indice
     indice = models.ForeignKey('nilusfin.Indice',null=True,blank=True)
     cotacao = models.ForeignKey('nilusfin.Cotacao',null=True,blank=True)
+
 
 
     #Dados Baixa e Situação
@@ -39,6 +41,14 @@ class Recebiveis(models.Model):
     situacao = models.CharField('Situação',max_length=1,choices=statusTit_Choices)
     data_baixa = models.DateTimeField('Data de Recebimento',null=True,blank=True)
     lancamento_pai = models.ForeignKey('self',models.SET_NULL,blank=True,null=True,verbose_name='Lançamento Pai')
+
+    # Dados Baixa e Situação
+    tipoLancto_Choices = (
+        ('R', 'Recebimento'),
+        ('P', 'Pagamento'),
+    )
+
+    tipo_lancamento = models.CharField('Tipo', max_length=1, choices=tipoLancto_Choices)
 
 
     def verifica_parcela(self):
@@ -62,3 +72,13 @@ class Recebiveis(models.Model):
                 plr_financeiro=self.plr_financeiro, c_custo=self.c_custo,valor_text=self.valor_text,
                 vlr_lancamento=self.vlr_lancamento, indice=self.indice, cotacao=self.cotacao
             )
+
+    class Meta:
+        verbose_name = 'Lançamento'
+        verbose_name_plural = 'Lançamentos'
+        unique_together = [
+            ('master_user', 'num_rec')
+        ]
+
+    def __str__(self):
+        'Lançamento #{}'.format(self.num_lanc)

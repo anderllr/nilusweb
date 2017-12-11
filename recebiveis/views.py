@@ -102,17 +102,6 @@ def titrec_list(request):
 
 
 
-@login_required
-def company_propriety(request):
-
-    company_id = request.GET.get('company_id',None)
-    if company_id:
-        company = get_object_or_404(Company, pk=company_id)
-        propriety = Propriety.objects.filter(company = company)
-        context = {'company' : company, 'propriety': propriety}
-        return render(request,'_select_propriety.html',context)
-    raise Http404
-
 
 
 
@@ -162,9 +151,7 @@ class CreateTitRec(LoginRequiredMixin,CreateView):
 
         if form.cleaned_data.get('parcela',False):
             qtd = form.cleaned_data['qtd']
-            print(qtd)
             tipo_rept = form.cleaned_data['tipo_rept']
-            print(tipo_rept)
             if tipo_rept == 'M':
                 for i in range(qtd-1):
                     titrec.pk = None

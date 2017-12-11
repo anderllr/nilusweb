@@ -25,7 +25,9 @@ urlpatterns = [
     # url(r'^cotacao/(?P<pk>\d+)/apagar/$', views.delete_cotacao, name='delete_cotacao'),
 
 
-    # Recebiveis
-    # url(r'^recebiveis/',include('recebiveis.urls')),
+    # # Lançamentos
+    # url(r'lancamentos',views.lancto_list,name='lancto_list'),
+    # url(r'însere_lanc_r',views.create_titrec,name='create_titrec'),
+    # url(r'edit_lancto/(?<pk>\d+)$',views.edit_lancto,name='edit_lancto'),
 
 ]

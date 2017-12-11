@@ -3,24 +3,13 @@
                 <tr>
                     <th><small>Nº</small></th>
                     <th><small>Cliente</small></th>
-                    <th><small>Lanç.</small></th>
-                    <th><small>Venc.</small></th>
-                    <th><small>Val.</small></th>
-                    <th><small>Sit.</small></th>
+                    <th><small>Lançamento.</small></th>
+                    <th><small>Vencimento.</small></th>
+                    <th><small>Valor.</small></th>
+                    <th><small>Situação.</small></th>
                     <th></th>
                 </tr>
             </thead>
-            <tfoot>
-                <tr>
-                   <th><small>Nº</small></th>
-                    <th><small>Cliente</small></th>
-                    <th><small>Lanç.</small></th>
-                    <th><small>Venc.</small></th>
-                    <th><small>Val.</small></th>
-                    <th><small>Sit.</small></th>
-                    <th></th>
-                </tr>
-            </tfoot>
             <tbody>
             {% for tit in titrec %}
                 <tr>
@@ -28,8 +17,12 @@
                     <td><small>{{ tit.client }}</small></td>
                     <td><small>{{ tit.dt_lancamento|date:'d/m/Y' }}</small></td>
                     <td><small>{{ tit.dt_vencimento|date:'d/m/Y'  }}</small></td>
-                    <td><small>{{ tit.vlr_lancamento }}</small></td>
-                    <td><small>{{ tit.situacao }}</small></td>
+                    <td><h5 class="text-success"><strong>{{ tit.valor_text }}</strong></h5></td>
+                    {% if tit.situacao == 'A' %}
+                    <td><button type="button" class="btn waves-effect waves-light btn-xs">Aberto</button></td>
+                    {% else %}
+                    <td><button type="button" class="btn waves-effect waves-light btn-xs text-white" style="background-color: #21610B; border-color: #21610B;">Recebido</button></td>
+                    {% endif %}
                     <td>
                         <a class="btn btn-success btn btn-sm edit_titrec" title="Editar " href="{% url 'edit_titrec' tit.pk %}"><i class="fa fa-edit"></i><small></small></a>
                         <a class="btn btn-danger btn  btn-sm delete_titrec" title="Excluir " href="{% url 'delete_titrec' tit.pk %}"><i class="fa fa-trash-o"></i><small></small></a>

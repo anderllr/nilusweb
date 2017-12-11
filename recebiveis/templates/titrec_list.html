@@ -86,24 +86,14 @@
         </div>
     </form>
     <div class="row">
-        <div>
-            <div class="card">
-                <div class="card-body">
-                    <div class="row p-t-10">
-                        <div>
-                            <button type="button" title="Novo Titulo" class="btn btn-success btn-circle btn-xl new_titrec"><i class="fa fa-plus"></i> </button>
-                        </div>
-                    </div>
-                </div>
+        <div class="col-md-12">
+             <div class="card card-outline-success form_new_titrec">
+
             </div>
-        </div>
-
-
-        <div class="col-md-11">
-             <div class="card card-outline-info form_new_titrec">
+            <div class="card card-outline-warning form_edit_lancto">
                  <div class="card-header">
-                     <h4 class="m-b-0 text-white">Inclusão de título à receber<button type="button" class="close cancel_create">×</button></h4>
-                            </div>
+                     <h4 class="m-b-0 text-white">Editar Lançamento<button type="button" class="close cancel_create">×</button></h4>
+                 </div>
                  <div class="card-body">
 
 
@@ -111,6 +101,18 @@
             </div>
             <div class="card">
                 <div class="card-body col-md-12">
+                    <div class="btn-group">
+                <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Ações
+                </button>
+                <div class="dropdown-menu animated flipInX">
+                    <a class="dropdown-item new_titrec" href="#"><button class="btn waves-effect waves-light btn-block btn-success"><i class="fa fa-arrow-up"><i class="fa fa-dollar"></i></i> Nova Receita</button></a>
+                    <a class="dropdown-item" href="#"><button class="btn waves-effect waves-light btn-block btn-danger"><i class="fa fa-arrow-down"><i class="fa fa-dollar"></i></i> Nova Despesa</button></a>
+                    <a class="dropdown-item" href="#">Pagar / Receber</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#">Separated link</a>
+                </div>
+            </div>
                    <div class="table-responsive table_titrec">
                       {% include '_table_titrec.html' %}
                    </div>
@@ -124,7 +126,7 @@
 
 <div id="modal-update-titrec" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
     <div class="modal-dialog" >
-        <div class="modal-content" style="width: 160%;  height: 100%;  padding: 0;">
+        <div class="modal-content modal-lg">
             <div class="modal-header">
                 <h4 class="modal-title" id="title-modal-update"></h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -159,6 +161,25 @@
 
 
 
+<div id="modal-conta" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="title-modal-conta"></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body">
+aba salve os templates
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 <div id="popover_content_wrapper" class="dpdown_planofinan" style="display: none">
 
 </div>
@@ -169,75 +190,81 @@
 </div>
 
 
-<div id="popover_content_wrapper3" class="dpdown_planofinan_modal" style="display: none">
-
-</div>
-
-
-
-
 {% endblock %}
 
 
 {% block javascript %}
 
-  $('.form_new_titrec').hide();
+$('.form_new_titrec').hide();
+$('.form_edit_lancto').hide();
+$('.naomostra').hide();
 
-  function load_titrec(){
-    $('.table_titrec').load('{{ request.path }}');
-  }
+function load_titrec(){
+$('.table_titrec').load('{{ request.path }}');
+}
 
 
 
-    function load_propriety2(){
-        var company_id = $('#id_empresa').val();
-        if(company_id != ''){
-            var url = '{% url 'company_propriety' %}';
-            url = url+'?company_id='+company_id;
-            $("#id_propriedade").load(url,function(){
-                $("#id_propriedade").trigger("chosen:updated");
-             });
-        }
-        else{
-          $("#id_propriedade").html('');
-        }
+function load_propriety2(){
+    var company_id = $('#id_empresa').val();
+    if(company_id != ''){
+        var url = '{% url 'company_propriety' %}';
+        url = url+'?company_id='+company_id;
+        $("#id_propriedade").load(url,function(){
+            $("#id_propriedade").trigger("chosen:updated");
+         });
     }
+    else{
+      $("#id_propriedade").html('');
+    }
+}
 
 
 
-              $("#id_empresa").on("change",function(e){
+$("#id_empresa").on("change",function(e){
 
-                  load_propriety2();
-              });
+  load_propriety2();
+});
 
-              load_propriety2();
+load_propriety2();
 
 
 
 $('.chosen-select').chosen({ width: '100%' });
 
- table = $('#example23').DataTable({
-        "language": {
-         "lengthMenu": "Mostrando _MENU_ registros por página",
-         "search" : "Procurar: ",
-         "info" : "Exibindo de _START_ a _END_ de _TOTAL_ registros",
-         "infoEmpty": "Nenhum registro encontrado",
-         "infoFiltered": "(filtrado entre _MAX_ registros)",
-         "paginate" : {
-           "first":      "Primeiro",
-           "last":       "Último",
-           "next":       "Próximo",
-           "previous":   "Anterior"
-         },
-     }
-    });
+table = $('#example23').DataTable({
+    "language": {
+     "lengthMenu": "Mostrando _MENU_ registros por página",
+     "search" : "Procurar: ",
+     "info" : "Exibindo de _START_ a _END_ de _TOTAL_ registros",
+     "infoEmpty": "Nenhum registro encontrado",
+     "infoFiltered": "(filtrado entre _MAX_ registros)",
+     "paginate" : {
+       "first":      "Primeiro",
+       "last":       "Último",
+       "next":       "Próximo",
+       "previous":   "Anterior"
+     },
+     responsive: {
+            details: {
+                type: 'column'
+            }
+        },
+        columnDefs: [ {
+            className: 'control',
+            orderable: false,
+            targets:   0
+        } ],
+        order: [ 1, 'asc' ]
+ }
+});
 
 
 $(".new_titrec").on("click",function(e){
     e.preventDefault();
 
-        $(".form_new_titrec .card-body").load("{% url 'create_titrec' %}", function(){
-              $('.form_new_titrec').show();
+        $(".form_new_titrec").load("{% url 'create_titrec' %}", function(){
+              $('.form_new_titrec').show("puff");
               $("#id_valor_text").maskMoney();
               $(".parcela").hide();
               $('.chosen-select').chosen({ width: '100%' });
@@ -245,12 +272,13 @@ $(".new_titrec").on("click",function(e){
                {% include 'js_popovers.html'  %}
 
 
+
               $(".titrec").on("change", "#id_parcela", function(e){
                         if ($(this).is(":checked")){
-                            $(".parcela").show();
+                            $(".parcela").show("puff");
                         }
                         else {
-                            $(".parcela").hide();
+                            $(".parcela").hide("drop");
 
                         }
               });
@@ -282,8 +310,13 @@ $(".new_titrec").on("click",function(e){
 
 
               $(".cancel_create").on("click",function(e){
-                $('.form_new_titrec').hide();
+                $('.form_new_titrec').hide("drop");
               });
+
+
+
+
+
         });
 
         <!-- JS de modais e inclusoes -->
@@ -309,115 +342,16 @@ $(".new_titrec").on("click",function(e){
 
 
 
-<!-- inicio processo de inclusão e edição de titulos a receber -->
-$(".new_titrec2").on("click",function(e){
-    e.preventDefault();
-
-        $("#modal-titrec .modal-body").load("{% url 'create_titrec' %}", function(){
-              var height = $(window).height();
-              $(this).find(".modal-body").css("max-height", height)
-              $('#title-modal').text("Inclusão de recebível");
-              $('#modal-titrec').modal("show");
-              $("#id_valor_text").maskMoney();
-              $(".parcela").hide();
-              $('.chosen-select').chosen({ width: '100%' });
-              $(".select2").select2({ width: '100%' });
-
-
-
-
-
-              $(".titrec").on("change", "#id_parcela", function(e){
-                        if ($(this).is(":checked")){
-                            $(".parcela").show();
-                        }
-                        else {
-                            $(".parcela").hide();
-
-                        }
-              });
-              $(".datepicker").datepicker({
-		            todayBtn: true,
-    	            language: "pt-BR",
-		            autoclose: true,
-    	            todayHighlight: true
-	          });
-
-              function load_propriety(){
-                var company_id = $('#id_company').val();
-                if(company_id != ''){
-                    var url = '{% url 'company_propriety' %}';
-                    url = url+'?company_id='+company_id;
-                    $("#id_propriety").load(url);
-                    $('#id_client').trigger('chosen:updated');
-                }
-                else{
-                    $("#id_propriety").html('');
-                }
-              }
-
-
-
-              $("#id_company").on("change",function(e){
-                  load_propriety();
-              });
-
-              load_propriety();
-
-
-
-
-
-
-
-
-        });
-});
-
-
-$("#modal-titrec .modal-body").on("submit","form",function(e){
-	 	 e.preventDefault();
-	 	 var dados = $(this).serialize();
-	 	 $.post("{% url 'create_titrec' %}",dados,function(result){
-	 	    $("#modal-titrec .modal-body").html(result);
-	 	    if(close_modal==true){
-	 	       $('#modal-titrec').modal("hide");
-               $('#example23').DataTable({
-        "language": {
-         "lengthMenu": "Mostrando _MENU_ registros por página",
-         "search" : "Procurar: ",
-         "info" : "Exibindo de _START_ a _END_ de _TOTAL_ registros",
-         "infoEmpty": "Nenhum registro encontrado",
-         "infoFiltered": "(filtrado entre _MAX_ registros)",
-         "paginate" : {
-           "first":      "Primeiro",
-           "last":       "Último",
-           "next":       "Próximo",
-           "previous":   "Anterior"
-         },
-     }
-    });
-
-
-
-	 	    }
-	 	    else{
-	 	       $('#modal-titrec').modal("show");
-	 	    }
-	 	 });
-	 });
-
-
 
 
 
 var ok = {{ ok }}
 
-$(".table_titrec").on("click", ".edit_titrec", function(e){
+ $(".table_titrec").on("click", ".edit_titrec", function(e){
         e.preventDefault();
-  		$("#modal-update-titrec .modal-body").load($(this).attr('href'), function(){
-              $('#title-modal-update').text("Editar recebível");
-              $('#modal-update-titrec').modal("show");
+  		$(".form_edit_lancto .card-body").load($(this).attr('href'), function(){
+              $('.form_edit_lancto').show("slide");
+              $('.table_titrec').hide("puff");
               $("#id_valor_text").maskMoney();
               $('.chosen-select').chosen({ width: '100%' });
               $(".select2").select2({ width: '100%' });
@@ -427,45 +361,12 @@ $(".table_titrec").on("click", ".edit_titrec", function(e){
 		          autoclose: true,
     	          todayHighlight: true
 	          });
-               $('button[data-toggle=popover3]').popover({
-                    html : true,
-                    //trigger: "click",
-                    content: function() {
-                    $(".dpdown_planofinan_modal").load("{% url 'create_planofinan' %}", function(){
-                    e.preventDefault();
-                 });
-                    return $('#popover_content_wrapper3').html();
-                }
-
-        })
-
-
-
-$(document).on("submit","form",function(e){
-         e.preventDefault();
-	 	 var dados = $(this).serialize();
-	 	 $.post("{% url 'create_planofinan' %}",dados,function(result){
-	 	    $("#popover_content_wrapper3").html(result);
-	 	    if(close_modal==true){
-	 	       $('*').popover('hide');
-               $('#id_plr_financeiro').append("<option value='" + id_planofinan + "'>"+ descricao + "</option>");
-			   $('#id_plr_financeiro').val(id_planofinan);
-			   $('#id_plr_financeiro').trigger('chosen:updated');
-               form_ccusto();
-
-
-
-	 	    }
-	 	    else{
-	 	       $('.dpdown_planofinan').popover("show");
-	 	    }
-	 	 });
-});
-
-
-
+               $(".cancel_create").on("click",function(e){
+                $('.form_edit_lancto').hide("drop");
+                   $('.table_titrec').show("puff");
+              });
 	    });
-	});
+ });
 
 
 
@@ -521,9 +422,14 @@ $(".delete_titrec").on("click", function(e){
 
             swal("Cancelado", "Exclusão cancelada", "error");
         }
+
 });
 
+
+
 	});
+
+
 
 
 

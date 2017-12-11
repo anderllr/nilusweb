@@ -35,27 +35,15 @@
                                         <div class="tab-content tabcontent-border">
                                             <div class="tab-pane active p-20" id="principal" role="tabpanel">
                                                 <div class="row">
-                                                    <div class="col-md-4">
-                                                        <div class="form-group">
-                                                            <label class="control-label">Código:<span class="text-danger pos_submit_cnpj">*</span></label>
-                                                             <div class="col-md-9">
-                                                                 <p class="form-control-static">{{ dados_cadastro.num_company }}</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-4">
-                                                        <div class="form-group">
-                                                            <label class="control-label">Cnpj/Cpf:<span class="text-danger pos_submit_cnpj">*</span></label>
-                                                             <div class="col-md-9">
-                                                                 <p class="form-control-static">{{ dados_cadastro.cnpj_cpf }}</p>
-                                                            </div>
-                                                        </div>
+                                                    <div class="card bg-secondary text-white p-3 text-center col-lg-12">
+                                                        <p>Código Empresa: <strong> {{ dados_cadastro.num_company }}</strong></p>
+                                                        <p>Cnpj/CPF: <strong> {{ dados_cadastro.cnpj_cpf }}</strong></p>
+
                                                     </div>
                                                     <!--/span-->
-
                                                 </div>
                                                 <div class="row p-t-20">
-                                                     <div class="col-md-7">
+                                                     <div class="col-md-6">
                                                         <div class="form-group">
                                                             <label class="control-label">{{form.razao.label_tag}}<span class="text-danger pos_submit_razao">*</span></label>
                                                              {% render_field form.razao class="form-control" placeholder=form.razao.label  required="false"  %}
@@ -65,13 +53,20 @@
                                                         </div>
                                                      </div>
 
-                                                    <div class="col-md-5">
+                                                    <div class="col-md-4">
                                                            <label class="control-label">{{form.fantasia.label_tag}}</label>
                                                              {% render_field form.fantasia class="form-control" placeholder=form.fantasia.label %}
                                                             {% for error in form.fantasia.errors %}
                                                             <small class="form-control-feedback"> {{ error }} </small>
                                                             {% endfor %}
+
                                                     </div>
+
+                                                    <div class="col-md-2">
+                                                        {% render_field form.situacao type="checkbox" %}
+
+                                                    </div>
+
                                                 </div>
                                              </div>
                                              <div class="tab-pane  p-20" id="endereco" role="tabpanel">

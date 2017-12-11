@@ -15,7 +15,6 @@ function form_planofinan(){
   });
 }
 
-
 function form_ccusto(){
     $(".dpdown_ccusto").load("{% url 'create_ccusto' %}", function(){
 
@@ -23,25 +22,24 @@ function form_ccusto(){
 
 }
 
+
 form_planofinan();
 form_ccusto();
 
+<!-- Plano Financeiro -->
+$('button[data-toggle=popover]').popover({
+    html : true,
+    //trigger: "click",
+    content: function() {
+      $(".dpdown_planofinan").load("{% url 'create_planofinan' %}", function(){
+       e.preventDefault();
+      });
+      return $('#popover_content_wrapper').html();
+    }
+})
 
 
-    $('button[data-toggle=popover]').popover({
-        html : true,
-        //trigger: "click",
-        content: function() {
-          $(".dpdown_planofinan").load("{% url 'create_planofinan' %}", function(){
-           e.preventDefault();
-          });
-          return $('#popover_content_wrapper').html();
-        }
-    })
-
-
-
-$(document).on("submit","form",function(e){
+$(document).on("submit","#planofinan_create",function(e){
          e.preventDefault();
 	 	 var dados = $(this).serialize();
 	 	 $.post("{% url 'create_planofinan' %}",dados,function(result){
@@ -58,6 +56,36 @@ $(document).on("submit","form",function(e){
 	 	 });
 });
 
+
+<!-- C Custo -->
+$('button[data-toggle=popover2]').popover({
+    html : true,
+    //trigger: "click",
+    content: function() {
+      $(".dpdown_ccusto").load("{% url 'create_ccusto' %}", function(){
+       e.preventDefault();
+      });
+      return $('#popover_content_wrapper2').html();
+    }
+})
+
+
+$(document).on("submit","#ccusto_create",function(e){
+         e.preventDefault();
+	 	 var dados = $(this).serialize();
+	 	 $.post("{% url 'create_ccusto' %}",dados,function(result){
+	 	    $("#popover_content_wrapper2").html(result);
+	 	    if(close_modal==true){
+	 	       $('*').popover('hide');
+               $('#c_custo_id2').append("<option value='" + id_ccusto + "'>"+ ccusto + "</option>");
+			   $('#c_custo_id2').val(id_ccusto);
+			   $('#c_custo_id2').trigger('chosen:updated');
+	 	    }
+	 	    else{
+	 	       $('.dpdown_ccusto').popover("show");
+	 	    }
+	 	 });
+});
 
 
 

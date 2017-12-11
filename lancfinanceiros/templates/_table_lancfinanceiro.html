@@ -1,0 +1,34 @@
+        <table id="example23" class="display nowrap table table-hover table-striped table-bordered col-lg-2" >
+            <thead>
+                <tr>
+                    <th><small>Nº</small></th>
+                    <th><small>Cadastro</small></th>
+                    <th><small>Lançamento.</small></th>
+                    <th><small>Vencimento.</small></th>
+                    <th><small>Valor.</small></th>
+                    <th><small>Situação.</small></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for lanc in lanctos %}
+                <tr>
+                    <td><small>{{ lanc.num_lan }}</small></td>
+                    <td><small>{{ lanc.cadgeral }}</small></td>
+                    <td><small>{{ lanc.dt_lancamento|date:'d/m/Y' }}</small></td>
+                    <td><small>{{ lanc.dt_vencimento|date:'d/m/Y'  }}</small></td>
+                    <td><h5 class="text-success"><strong>{{ lanc.valor_text }}</strong></h5></td>
+                    {% if lanc.situacao == 'A' %}
+                    <td><button type="button" class="btn waves-effect waves-light btn-xs">Aberto</button></td>
+                    {% else %}
+                    <td><button type="button" class="btn waves-effect waves-light btn-xs text-white" style="background-color: #21610B; border-color: #21610B;">Recebido</button></td>
+                    {% endif %}
+                    <td>
+                        <a class="btn btn-success btn btn-sm edit_lancto" title="Editar " href="{% url 'edit_receita' lanc.pk %}"><i class="fa fa-edit"></i><small></small></a>
+                        <a class="btn btn-danger btn  btn-sm delete_lancto" title="Excluir " href="{% url 'delete_receita' lanc.pk %}"><i class="fa fa-trash-o"></i><small></small></a>
+                    </td>
+                </tr>
+
+            {% endfor %}
+            </tbody>
+        </table>

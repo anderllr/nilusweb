@@ -1,0 +1,13 @@
+$('#body-table-talhao').on('click','.delete_talhao',function(e){
+  e.preventDefault();
+  var $this = $(this);
+  if(confirm('Deseja excluir este Talhão?')){
+
+      $.get($(this).attr('href'),function(data){
+         $this.closest('tr').remove();
+        });
+    }
+});
+
+
+

@@ -34,6 +34,8 @@ class FormCreateTitRec(forms.ModelForm):
             self.fields['c_custo'].queryset = Ccusto.objects.filter(master_user=user)
             self.fields['indice'].queryset = Indice.objects.filter(master_user=user)
             self.fields['cotacao'].queryset = Cotacao.objects.filter(master_user=user)
+            self.fields['conta_receb'].queryset = Contafinanceira.objects.filter(master_user=user,
+                                                                                 conta_recebimento=True)
         else:
             self.fields['company'].queryset = Company.objects.filter(master_user=user.user_master)
             self.fields['propriety'].queryset = Propriety.objects.filter(master_user=user.user_master)
@@ -42,17 +44,17 @@ class FormCreateTitRec(forms.ModelForm):
             self.fields['c_custo'].queryset = Ccusto.objects.filter(master_user=user.user_master)
             self.fields['indice'].queryset = Indice.objects.filter(master_user=user.user_master)
             self.fields['cotacao'].queryset = Cotacao.objects.filter(master_user=user.user_master)
+            self.fields['conta_receb'].queryset = Contafinanceira.objects.filter(master_user=user.user_master,
+                                                                                 conta_recebimento=True)
 
     class Meta:
         model = Recebiveis
-        fields = ['company','propriety','client','dt_vencimento','plr_financeiro','c_custo','valor_text',
+        fields = ['company','propriety','client','dt_vencimento','plr_financeiro','c_custo','conta_receb','valor_text',
                   'indice','cotacao']
 
 
 
 class FormEditTitRec(forms.ModelForm):
-
-
 
     def __init__(self,user,*args,**kwargs):
         super(FormEditTitRec,self).__init__(*args,**kwargs)
@@ -61,15 +63,19 @@ class FormEditTitRec(forms.ModelForm):
             self.fields['c_custo'].queryset = Ccusto.objects.filter(master_user=user)
             self.fields['indice'].queryset = Indice.objects.filter(master_user=user)
             self.fields['cotacao'].queryset = Cotacao.objects.filter(master_user=user)
+            self.fields['conta_receb'].queryset = Contafinanceira.objects.filter(master_user=user,
+                                                                                 conta_recebimento=True)
         else:
             self.fields['plr_financeiro'].queryset = PlanoFinan.objects.filter(master_user=user.user_master, sinal='R')
             self.fields['c_custo'].queryset = Ccusto.objects.filter(master_user=user.user_master)
             self.fields['indice'].queryset = Indice.objects.filter(master_user=user.user_master)
             self.fields['cotacao'].queryset = Cotacao.objects.filter(master_user=user.user_master)
+            self.fields['conta_receb'].queryset = Contafinanceira.objects.filter(master_user=user.user_master,
+                                                                                 conta_recebimento=True)
 
     class Meta:
         model = Recebiveis
-        fields = ['dt_vencimento','plr_financeiro','c_custo','valor_text',
+        fields = ['dt_vencimento','plr_financeiro','c_custo','conta_receb','valor_text',
                   'indice','cotacao']
 
 

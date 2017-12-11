@@ -2,17 +2,18 @@
 {% if success %}
    <script>
 	   close_modal=true;
+	   id_conta = {{  form.instance.pk  }};
+	   conta = {{  'form.instance.descricao'  }};
    </script>
 {% else %}
 <div>
     <p class="text-muted m-b-30 font-13">Cadastrar Conta</p>
-        <form class="form-horizontal"  >
+        <form class="form-horizontal" id="conta_create">
           {% csrf_token %}
             {% for error in form.non_field_errors %}
             <div class="alert-danger alert">
                 {{ error }}
             </div>
-
           {% endfor %}
           <div class="row">
             <div class="form-group col-lg-4">

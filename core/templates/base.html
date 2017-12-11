@@ -17,10 +17,12 @@
     <link href="{% static 'css/css_chosen.css' %}" rel="stylesheet">
     <link href="{% static 'css/modal-xxl.css' %}" rel="stylesheet">
     <link href="{% static 'assets/plugins/bootstrap-table/dist/bootstrap-table.min.css' %}" rel="stylesheet" type="text/css" />
-    <link href="{% static 'assets/plugins/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css" />
 
     <!-- Custom CSS -->
+    <link href="{% static 'assets/plugins/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css" />
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'css/extra.css' %}" rel="stylesheet">
+    <link href="{% static 'css/table_overflow.css' %}" rel="stylesheet">
     <!-- You can change the theme colors from here -->
     <link href="{% static 'css/colors/megna.css' %}" id="theme" rel="stylesheet">
     <link href="{% static 'assets/plugins/toast-master/css/jquery.toast.css' %}" rel="stylesheet">
@@ -241,6 +243,8 @@
     <script src="{% static 'assets/plugins/sparkline/jquery.sparkline.min.js' %}"></script>
     <!--Custom JavaScript -->
     <script src="{% static 'js/custom.min.js' %}"></script>
+
+
     <script src="{% static 'assets/plugins/bootstrap-table/dist/bootstrap-table.min.js' %}"></script>
 
     <!-- ============================================================== -->
@@ -253,6 +257,10 @@
 
     <!-- Toast -->
     <script src="{% static 'assets/plugins/toast-master/js/jquery.toast.js' %}"></script>
+
+
+    <script src="{% static 'assets/plugins/bootstrap-table/dist/bootstrap-table.min.js' %}  "></script>
+
 
 
     <script src="{% static 'assets/plugins/dinmoney-datepicker/js/bootstrap-datepicker.js' %}"></script>
@@ -271,9 +279,15 @@
     <script src="https://cdn.datatables.net/buttons/1.2.2/js/buttons.print.min.js"></script>
 
 
+
+
     <script src="{% static 'js/chosen_js_mjc.js' %}"></script>
     <script src="{% static 'js/mask.js' %}"></script>
     <script src="{% static 'js/jquery.maskMoney.js' %}"></script>
+    <script src="{% static 'assets/plugins/bootstrap-table/dist/bootstrap-table.min.js' %}"></script>
+
+
+
 
 
 
@@ -283,7 +297,9 @@
  $(document).ready(function() {
 
 
-         $("#config_conta").on("click", function(e){
+
+
+    $("#config_conta").on("click", function(e){
         e.preventDefault();
   		$("#modal-config_conta .modal-body").load("{% url 'config_conta' %}", function(){
               $('#modal-config_conta').modal("show");

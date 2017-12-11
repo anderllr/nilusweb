@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render,get_object_or_404
 from django.views.generic import UpdateView,FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.urlresolvers import reverse_lazy
@@ -10,6 +10,7 @@ from django.http import HttpResponse,Http404
 
 from accounts.models import User
 from .models import Instancia
+from niluscad.models import Company,Propriety
 
 # Create your views here.
 
@@ -79,6 +80,22 @@ class UpdatePasswordView(LoginRequiredMixin, FormView):
          return self.render_to_response(context)
       else:
          return super(UpdatePasswordView, self).form_valid(form)
+
+
+@login_required
+def company_propriety(request):
+
+    company_id = request.GET.get('company_id',None)
+    if company_id:
+        company = get_object_or_404(Company, pk=company_id)
+        propriety = Propriety.objects.filter(company = company)
+        context = {'company' : company, 'propriety': propriety}
+        return render(request,'_select_propriety.html',context)
+    raise Http404
+
+
+
+
 
 
 profile = UpdateUserView.as_view()

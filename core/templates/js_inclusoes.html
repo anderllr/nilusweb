@@ -180,9 +180,9 @@ $("#modal-cadgeral .modal-body").on("submit","form",function(e){
 	 	    $("#modal-cadgeral .modal-body").html(result);
 	 	    if(close_modal==true){
 	 	       $('#modal-cadgeral').modal("hide");
-               $('#id_client').append("<option value='" + id_cliente + "'>"+ nome_cliente + "</option>");
-			   $('#id_client').val(id_cliente);
-			   $('#id_client').trigger('chosen:updated');
+               $('#id_cadgeralt').append("<option value='" + id_cliente + "'>"+ nome_cliente + "</option>");
+			   $('#id_cadgeral').val(id_cliente);
+			   $('#id_cadgeral').trigger('chosen:updated');
 
 
 
@@ -192,3 +192,40 @@ $("#modal-cadgeral .modal-body").on("submit","form",function(e){
 	 	    }
 	 	 });
 	 });
+
+
+$(".new_conta").on("click",function(e){
+				e.preventDefault();
+				$("#modal-conta .modal-body").load("{% url 'create_conta' %}", function(){
+				  $('#modal-conta').modal("show");
+                  $(".vlr_limite").hide();
+
+                  $(".modal").on("change", "#id_usa_limite", function(e){
+                        if ($(this).is(":checked")){
+                            $(".vlr_limite").show();
+                        }
+                        else {
+                            $(".vlr_limite").hide();
+                        }
+                    });
+                });
+
+});
+
+$("#modal-conta .modal-body").on("submit","form",function(e){
+	 	 e.preventDefault();
+	 	 var dados = $(this).serialize();
+	 	 $.post("{% url 'create_conta' %}",dados,function(result){
+	 	    $("#modal-conta .modal-body").html(result);
+	 	    if(close_modal==true){
+	 	       $('#modal-conta').modal("hide");
+               $('#id_conta_finan').append("<option value='" + id_conta + "'>"+ conta + "</option>");
+			   $('#id_conta_finan').val(id_conta);
+			   $('#id_conta_finan').trigger('chosen:updated');
+	 	    }
+	 	    else{
+	 	       $('#modal-conta').modal("show");
+	 	    }
+	 	 });
+	 });
+

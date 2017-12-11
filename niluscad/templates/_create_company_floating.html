@@ -1,0 +1,78 @@
+{% load static widget_tweaks %}
+{% if success %}
+   <script>
+  	 close_modal=true;
+   </script>
+{% else %}
+ <div>
+    <div class="card">
+        <div class="card-body">
+            <div class="alert alert-danger alert-rounded campo_obrigatorio"><i class="fa fa-warning"></i>   Existe campos obrigatórios não preenchidos.
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"> <span aria-hidden="true">×</span> </button>
+                    </div>
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs customtab" role="tablist">
+                <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#principal" role="tab"><span class="hidden-sm-up"><i class="ti-home"></i></span> <span class="hidden-xs-down">Principal
+                    <div class="notify principal"> <span class="heartbit"></span> <span class="point"></span> </div>
+                </span></a></li>
+                <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#endereco" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Endereço
+                    <div  class="notify endereco"> <span class="heartbit"></span> <span class="point"></span> </div>
+                </span></a> </li>
+                <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#contato" role="tab"><span class="hidden-sm-up"><i class="ti-email"></i></span> <span class="hidden-xs-down">Contato
+                    <div  class="notify contato"> <span class="heartbit"></span> <span class="point"></span> </div>
+                </span></a> </li>
+            </ul>
+            <form method="post" class="form_company floating-labels m-t-40" id="form_create">
+             {% csrf_token %}
+                {% for error in form.non_field_errors %}
+                <div class="alert-danger alert">
+                {{ error }}
+                </div>
+                {% endfor %}
+            <!-- Tab panes -->
+                    <div class="tab-content tabcontent-border">
+                        <div class="tab-pane active p-40" id="principal" role="tabpanel">
+                            <div class="row">
+                                <div class="form-group m-b-20">
+                                        {% render_field form.cnpj_cpf class="form-control" type=text  %}
+                                        <span class="bar"></span>
+                                        <label for="cnpj_cpf_id">{{form.cnpj_cpf.label_tag}}<span class="text-danger pos_submit_cnpj">*</span></label>
+                                        {% for error in form.cnpj_cpf.errors %}
+                                        <small class="text-danger"> {{ error }} </small>
+                                        {% endfor %}
+                                 </div>
+                                <div class="form-group m-b-20">
+                                       <button>aaa</button>
+                                 </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group m-b-20 col-md-7">
+                                    {% render_field form.razao class="form-control" placeholder=form.razao.label  required="false"  %}
+                                    <span class="bar"></span>
+                                    <label for="razao_id">{{form.razao.label_tag}}<span class="text-danger pos_submit_cnpj">*</span></label>
+                                    {% for error in form.razao.errors %}
+                                    <small class="form-control-feedback"> {{ error }} </small>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                         </div>
+                         <div class="tab-pane  p-20" id="endereco" role="tabpanel">
+
+
+
+                         </div>
+                         <div class="tab-pane p-20" id="contato" role="tabpanel">
+
+                         </div>
+                    </div>
+                    <br>
+                   <div class="form-actions">
+                    <button type="submit"  class="btn btn-success submit"> <i class="fa fa-check"></i> Salvar</button>
+                    <a type="button" class="btn btn-inverse cancel_create" href="#">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+

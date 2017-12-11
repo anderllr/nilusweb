@@ -11,18 +11,18 @@
                                             <button type="button" class="close" data-dismiss="alert" aria-label="Close"> <span aria-hidden="true">×</span> </button>
                                 </div>
                                 <!-- Nav tabs -->
-                                <ul class="nav nav-tabs" role="tablist">
+                                <ul class="nav nav-tabs customtab" role="tablist">
                                     <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#principal" role="tab"><span class="hidden-sm-up"><i class="ti-home"></i></span> <span class="hidden-xs-down">Principal
                                         <div class="notify principal"> <span class="heartbit"></span> <span class="point"></span> </div>
                                     </span></a> </li>
                                     <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#endereco" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Endereço
                                         <div  class="notify endereco"> <span class="heartbit"></span> <span class="point"></span> </div>
                                     </span></a> </li>
-                                    <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#contato" role="tab"><span class="hidden-sm-up"><i class="ti-email"></i></span> <span class="hidden-xs-down">Contato
-                                        <div  class="notify contato"> <span class="heartbit"></span> <span class="point"></span> </div>
+                                    <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#area-talhao" role="tab"><span class="hidden-sm-up"><i class="ti-email"></i></span> <span class="hidden-xs-down">Área / Talhões
+
                                     </span></a> </li>
                                 </ul>
-                                <form method="post" class="criapropriedade" id="form_cria_empresa" enctype="multipart/form-data">
+                                <form method="post" class="criapropriedade form-material" id="form_cria_empresa" enctype="multipart/form-data">
                                  {% csrf_token %}
                                     {% for error in form.non_field_errors %}
                                     <div class="alert-danger alert">
@@ -31,18 +31,19 @@
                                     {% endfor %}
                                 <!-- Tab panes -->
                                         <div class="tab-content tabcontent-border">
-                                            <div class="tab-pane active p-20" id="principal" role="tabpanel">
-                                                <div class="row p-t-20">
-                                                    <div class="col-md-7">
-                                                        <div class="form-group">
-                                                            <label class="control-label">{{form.company.label_tag}}<span class="text-danger pos_submit_ie">*</span></label>
-                                                            {% render_field form.company class="form-control" placeholder=form.ie.label %}
+                                            <div class="tab-pane active p-10" id="principal" role="tabpanel">
+                                                <div class="row p-t-10">
+                                                    <div class="col-md-5">
+                                                        <div class="form-group2">
+                                                            <label>{{form.company.label_tag}}<span class="text-danger pos_submit_ie">*</span></label>
+                                                            {% render_field form.company class="chosen-select" placeholder='ie' %}
                                                             {% for error in form.company.errors %}
                                                             <small class="form-control-feedback"> {{ error }} </small>
                                                             {% endfor %}
                                                         </div>
+
                                                     </div>
-                                                    <div class="col-md-7">
+                                                    <div class="col-md-5">
                                                         <div class="form-group">
                                                             <label class="control-label">{{form.ie.label_tag}}<span class="text-danger pos_submit_ie">*</span></label>
                                                             {% render_field form.ie class="form-control" placeholder=form.ie.label %}
@@ -53,7 +54,7 @@
                                                     </div>
                                                     <!--/span-->
                                                 </div>
-                                                <div class="row p-t-20">
+                                                <div class="row p-t-10">
                                                      <div class="col-md-7">
                                                         <div class="form-group">
                                                             <label class="control-label">{{form.razao.label_tag}}<span class="text-danger pos_submit_razao">*</span></label>
@@ -73,8 +74,8 @@
                                                     </div>
                                                 </div>
                                              </div>
-                                             <div class="tab-pane  p-20" id="endereco" role="tabpanel">
-                                                 <div class="row p-t-20">
+                                             <div class="tab-pane  p-10" id="endereco" role="tabpanel">
+                                                 <div class="row p-t-10">
                                                     <div class="col-md-3">
                                                         <div class="form-group">
                                                             <label class="control-label">{{form.cep.label_tag}}</label>
@@ -138,31 +139,39 @@
                                                     </div>
                                                 </div>
                                              </div>
-                                             <div class="tab-pane p-20" id="contato" role="tabpanel">
-                                                <div class="row p-t-20">
-                                                    <div class="col-md-7">
-                                                        <div class="form-group">
-                                                            <label class="control-label">{{form.email.label_tag}}</label>
-                                                            {% render_field form.email class="form-control" placeholder=form.email.label %}
-                                                            {% for error in form.email.errors %}
-                                                            <small class="form-control-feedback"> {{ error }} </small>
-                                                            {% endfor %}
+                                             <div class="tab-pane p-10" id="area-talhao" role="tabpanel">
+                                             <div class="container">
+                                                  <div class="row">
+                                                      <div class="panel panel-default">
+                                                        <div class="panel-heading">
+                                                          <h4>
+                                                            Talhoes Cadastratos
+                                                              <div class="pull-right col-md-2">
+                                                                    <button type="button" title="Adicionar Talhão" class="btn btn-warning btn-circle new_talhao" data-container="body" data-toggle="popover_talhao" data-placement="bottom"><i class="fa fa-plus"></i> </button>
+                                                             </div>
+                                                          </h4>
                                                         </div>
-                                                    </div>
-                                                    <!--/span-->
-                                                    <div class="col-md-4">
-                                                        <label class="control-label">{{form.telefone.label_tag}}</label>
-                                                             {% render_field form.telefone class="form-control" placeholder=form.telefone.label %}
-                                                            {% for error in form.telefone.errors %}
-                                                            <small class="form-control-feedback"> {{ error }} </small>
-                                                            {% endfor %}
-                                                    </div>
+                                                        <table class="table table-fixed table-bordered">
+                                                          <thead>
+                                                            <tr>
+                                                              <th>Talhão</th>
+                                                              <th>Área</th>
+                                                              <th></th>
+                                                            </tr>
+                                                          </thead>
+                                                          <tbody id="body-table-talhao">
+
+                                                          </tbody>
+                                                        </table>
+                                                      </div>
+                                                  </div>
                                                 </div>
-                                             </div>
+                                         </div>
                                         </div>
                                         <br>
                                        <div class="form-actions">
                                         <button type="submit" class="btn btn-success submit"> <i class="fa fa-check"></i> Salvar</button>
+                                          <a type="button" class="btn btn-inverse cancel_create" href="#">Cancelar</a>
                                     </div>
                                 </form>
                             </div>

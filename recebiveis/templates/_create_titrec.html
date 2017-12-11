@@ -4,7 +4,11 @@
   	 close_modal=true;
    </script>
 {% else %}
-<form  class="form-horizontal titrec" method="post">
+<div class="card-header">
+    <h4 class="m-b-0 text-white">Inclusão Receita<button type="button" class="close cancel_create">×</button></h4>
+</div>
+<div class="card-body">
+ <form  class="form-horizontal titrec" method="post">
 {% csrf_token %}
 {% for error in form.non_field_errors %}
     <div class="alert-danger alert">
@@ -107,12 +111,24 @@
                 <div class="form-group row">
                     <label class="control-label col-md-4">{{ form.c_custo.label_tag }}</label>
                     <div class="col-md-7">
-                            {% render_field form.c_custo class="chosen-select" style="width: 100%; height:36px;" %}
+                            {% render_field form.c_custo class="chosen-select" style="width: 100%; height:36px;" id="c_custo_id2" %}
                         {% for error in form.c_custo.errors %}
                         <small class="text-danger form-control-feedback"> {{ error }} </small>
                         {% endfor %}
                     </div>
                        <button type="button" class="btn btn-warning btn-circle new_ccusto" title="Novo Centro de Custo" data-container="body" data-toggle="popover2" data-placement="bottom"><i class="fa fa-plus"></i> </button>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group row">
+                    <label class="control-label col-md-4">{{ form.conta_receb.label_tag }}</label>
+                    <div class="col-md-7">
+                            {% render_field form.conta_receb class="chosen-select" style="width: 100%; height:36px;" %}
+                        {% for error in form.conta_receb.errors %}
+                        <small class="text-danger form-control-feedback"> {{ error }} </small>
+                        {% endfor %}
+                    </div>
+                    <button type="button" class="btn btn-warning btn-circle new_conta" title="Nova Conta de Recebimento" data-container="body" data-toggle="popover3" data-placement="bottom"><i class="fa fa-plus"></i> </button>
                 </div>
             </div>
             <!--/span-->
@@ -200,5 +216,7 @@
         </div>
     </div>
 </form>
+</div>
+
 {% endif %}
 

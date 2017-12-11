@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'niluscad',
     'nilusfin',
     'recebiveis',
+    'lancfinanceiros',
 
 
 ]

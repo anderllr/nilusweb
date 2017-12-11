@@ -83,9 +83,3 @@ class Meta:
     def __str__(self):
         'Cotacao #{}'.format(self.indice)
 
-
-
-
-
-
-

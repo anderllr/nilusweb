@@ -7,7 +7,7 @@ from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponse,Http404
 from accounts.models import User
 from nilusadm.models import Sequenciais
-from .models import Company,Propriety,Cadgeral,Ccusto,PlanoFinan
+from .models import Company,Propriety,Cadgeral,Ccusto,PlanoFinan,Talhao
 from .forms import FormPropriety
 
 from django.db.models import Max,Count
@@ -87,7 +87,7 @@ class CreateCompany(LoginRequiredMixin,CreateView):
 
 
         if self.request.is_ajax():
-            context = self.get_context_data(form=form, success=True)
+            context = self.get_context_data(form=form,ok='ok', success=True)
             return self.render_to_response(context)
         else:
             return redirect(self.get_success_url())
@@ -120,7 +120,7 @@ class EditCompany(LoginRequiredMixin,UpdateView):
 
     model = Company
     fields = [ 'razao', 'fantasia', 'cep', 'endereco', 'numero', 'complemento', 'bairro', 'cidade', 'uf',
-              'email', 'telefone']
+              'email', 'telefone','situacao']
 
 
     def form_valid(self,form):
@@ -202,9 +202,14 @@ class CreatePropriety(LoginRequiredMixin,CreateView):
         return kwargs
 
 
+    def get_context_data(self, **kwargs):
+        context = super(CreatePropriety,self).get_context_data(**kwargs)
+        context['talhao'] = Talhao.objects.filter(propriety=None,user_cad=self.request.user)
+        return context
+
+
     model = Propriety
     form_class = FormPropriety
-
 
 
 
@@ -226,6 +231,11 @@ class CreatePropriety(LoginRequiredMixin,CreateView):
         seq_prop.propriedades = prop.num_propriety
         seq_prop.save()
         prop.save()
+
+        talhao_inclusoes = Talhao.objects.filter(propriety=None, user_cad=self.request.user)
+        talhao_inclusoes.update(
+            propriety=prop
+        )
 
         if self.request.is_ajax():
             context = self.get_context_data(form=form, success=True)
@@ -251,13 +261,24 @@ class EditPropriety(LoginRequiredMixin,UpdateView):
         kwargs['user'] = self.request.user
         return kwargs
 
+    def get_context_data(self, **kwargs):
+        context = super(EditPropriety, self).get_context_data(**kwargs)
+        context['talhao'] = Talhao.objects.filter(propriety=self.kwargs['pk'])
+        return context
+
 
     model = Propriety
     form_class = FormPropriety
 
 
+
     def form_valid(self,form):
-        form.save()
+        prop = form.save(commit=False)
+        talhao_inclusoes = Talhao.objects.filter(propriety=None, user_cad=self.request.user)
+        talhao_inclusoes.update(
+            propriety=prop.pk
+        )
+        prop.save()
 
         if self.request.is_ajax():
             context = self.get_context_data(form=form,success=True,ok='ok')
@@ -585,6 +606,7 @@ class CreatePlanoFinan(LoginRequiredMixin,CreateView):
             seq_planofinan = Sequenciais.objects.get(user=self.request.user.user_master)
 
 
+
         planofinan.num_plfin = seq_planofinan.planofinan + 1
         seq_planofinan.planofinan = planofinan.num_plfin
         seq_planofinan.save()
@@ -642,13 +664,66 @@ def delete_planofinan(request, pk):
 
 
 
+########################################################################################################################
+#                                      Talhões                                                                         #
+########################################################################################################################
+
+
+class CreateTalhao(LoginRequiredMixin,CreateView):
+    def get_template_names(self):
+        if self.request.is_ajax():
+            return ["_create_talhao.html"]
+        else:
+            raise Http404
+
+
+    # def get_context_data(self,**kwargs):
+    #     context = super(CreatePropriety,self).get_context_data(**kwargs)
+    #     context['test'] = 'Luan'
+    #
+    #     return context
+
+
+
+    model = Talhao
+    fields = ['talhao','area']
+
+
+    def get_success_url(self):
+        return reverse_lazy('propriety_list')
+
+
+    def form_valid(self,form):
+        talhao = form.save(commit=False)
+        talhao.user_cad = self.request.user
+        talhao.save()
+
+        if self.request.is_ajax():
+            context = self.get_context_data(form=form, success=True)
+            return self.render_to_response(context)
+        else:
+            return redirect(self.get_success_url())
+
+
+
+
+
+
+@login_required
+def delete_talhao(request, pk):
+    talhao = get_object_or_404(Talhao,pk=pk,user_cad=request.user)
+    talhao.delete()
+    return HttpResponse('ok')
+
+
+
+
 
 
 
 
 
 edit_company = EditCompany.as_view()
-# edit_company_prop = EditCompany_prop.as_view()
 create_company =  CreateCompany.as_view()
 edit_propriety = EditPropriety.as_view()
 create_propriety = CreatePropriety.as_view()
@@ -658,4 +733,4 @@ edit_ccusto = EditCcusto.as_view()
 create_ccusto = CreateCcusto.as_view()
 edit_planofinan = EditPlanofinan.as_view()
 create_planofinan = CreatePlanoFinan.as_view()
-
+create_talhao = CreateTalhao.as_view()
