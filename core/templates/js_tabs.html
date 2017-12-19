@@ -1,0 +1,12 @@
+$('[data-toggle="tabs"]:not(.js-tabs-enabled)').add('.js-tabs:not(.js-tabs-enabled)').each(function(){
+            var el = jQuery(this);
+
+            // Add .js-tabs-enabled class to tag it as activated
+            el.addClass('js-tabs-enabled');
+
+            // Init
+            el.find('a').on('click.cb.helpers.core', function(e){
+                e.preventDefault();
+                jQuery(this).tab('show');
+            });
+        });

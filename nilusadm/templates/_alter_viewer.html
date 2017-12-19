@@ -2,59 +2,78 @@
 {% if success %}
    <script>
 	   close_modal=true;
+	   var ok = 'ok';
    </script>
 {% else %}
-<div>
-    <p class="text-muted m-b-30 font-13">Alterar os dados do usuário abaixo</p>
-        <form class="form"  method="post" enctype="multipart/form-data" action="{% url 'edit_viewer' object.pk %}">
-          {% csrf_token %}
-            {% for error in form.non_field_errors %}
-            <div class="alert-danger alert">
-                {{ error }}
-            </div>
-          {% endfor %}
-    <div class="form-group">
-
-            {{ form.name.label_tag }}
-            {% render_field form.name class='form-control form-control-success' placeholder=name.label  %}
-             {% for error in form.name.errors %}
-             <div class="alert alert-danger">{{ error }}</div>
-             {% endfor %}
+<form action="{% url 'edit_viewer' object.pk %}" enctype="multipart/form-data" class="edit_viewer" method="post" onsubmit="return false;">
+    {% csrf_token %}
+    {% for error in form.non_field_errors %}
+    <div class="alert-danger alert">
+        {{ error }}
     </div>
-
-    <div class="form-group">
-
-            {{ form.email.label_tag }}
-            {% render_field form.email class='form-control form-control-success' placeholder=email.label  %}
-             {% for error in form.email.errors %}
-             <div class="alert alert-danger">{{ error }}</div>
-             {% endfor %}
-
-    </div>
-    <div class="form-group">
-        <div class="checkbox checkbox-success">
-            {% render_field form.is_active type="checkbox" %}
-             {{ form.is_active.label_tag }}
-             {% for error in form.is_active.errors %}
-             <div class="alert alert-danger">{{ error }}</div>
-             {% endfor %}
-        </div>
-        <div class="checkbox checkbox-success">
-            {% render_field form.is_masteruser type="checkbox" %}
-             {{ form.is_masteruser.label_tag }}
-             {% for error in form.is_masteruser.errors %}
-             <div class="alert alert-danger">{{ error }}</div>
-             {% endfor %}
-        </div>
-    </div>
-            <div class="form-group m-b-0">
-                <div class="offset-sm-3">
-                    <button type="submit" class="btn btn-success waves-effect waves-light m-t-10">Salvar Alterações</button>
+    {% endfor %}
+    <div>
+        <div class="block block-link-pop">
+            <div class="block-header ribbon ribbon-success ribbon-left">
+                <h3 class="block-title antes_insert">Editar dados de Usuário</h3>
+                <div class="block-options antes_insert">
+                    <button type="button" class="btn-block-option cancel_form">
+                        <i class="fa fa-close"></i>
+                    </button>
                 </div>
             </div>
-        </form>
+            <div class="block-content ">
+                <div class="col-md-9">
+                    <div class="form-material floating">
+                        {% render_field  form.name class='form-control' %}
+                        <label for="{{  form.name.id }}">Nome</label>
+                        {% for error in form.name.errors %}
+                        <div class="alert alert-danger alert-dismissable">
+                            <p class="mb-0">{{ error }}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <div class="form-material floating">
+                        {% render_field  form.email class='form-control' %}
+                        <label for="{{  form.email.id }}">Email</label>
+                        {% for error in form.email.errors %}
+                        <div class="alert alert-danger alert-dismissable">
+                            <p class="mb-0">{{ error }}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <br>
 
-       <a href="{% url 'reset_password' object.pk %}" class="btn btn-warning waves-effect waves-light m-t-10">Resetar Senha</a>
+                <div class="col-md-9 form-group row">
+                    <label class="css-control css-control-sm css-control-primary css-switch col-md-5">
+                        {% render_field form.is_active type="checkbox" class='css-control-input' %}
+                        <span class="css-control-indicator"></span> Ativo
+                    </label>
+                    <div class="col-md-2"></div>
+                    <div class="col-md-2">
+                        <a href="{% url 'reset_password' object.pk %}" class="btn btn-outline-primary min-width-125 js-click-ripple-enabled">Resetar Senha</a>
+                    </div>
+                    <div class="col-md-7"></div>
+                    <div class="col-md-2">
+                        <a href="{% url 'edit_permissions' object.pk %}" class="btn btn-outline-secondary min-width-125 js-click-ripple-enabled edit_permissoes">Alterar Permissões</a>
+                    </div>
 
-</div>
+
+
+                </div>
+                <br>
+
+                <div class="form-group row password">
+                    <div class="col-md-9">
+                        <button type="submit" class="btn btn-alt-primary">Salvar</button>
+                        <button type="button"  class="btn btn-alt-secondary  cancel_form">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
 {% endif %}

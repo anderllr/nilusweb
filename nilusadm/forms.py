@@ -20,3 +20,8 @@ class FormConfigUsuario(forms.ModelForm):
     class Meta:
         model = User
         fields = ['company_p','propriety_p']
+
+
+
+
+

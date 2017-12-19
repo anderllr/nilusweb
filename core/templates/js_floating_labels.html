@@ -1,0 +1,18 @@
+$('.form-material.floating > .form-control').each(function(){
+            var input  = jQuery(this);
+            var parent = input.parent('.form-material');
+
+            setTimeout(function() {
+                if (input.val() ) {
+                    parent.addClass('open');
+                }
+            }, 150);
+
+            input.off('change.cb.inputs').on('change.cb.inputs', function(){
+                if (input.val()) {
+                    parent.addClass('open');
+                } else {
+                    parent.removeClass('open');
+                }
+            });
+        });

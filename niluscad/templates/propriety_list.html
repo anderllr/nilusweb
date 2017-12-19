@@ -1,57 +1,38 @@
 {% extends "menu.html" %}
-{% load static widget_tweaks humanize  l10n  %}
+{% load static widget_tweaks humanize %}
 
 
 
 <!-- Bread crumb and right sidebar toggle -->
-{% block title_page %} Propriedades {% endblock %}
+{% block title %} Cadastro de Propriedades {% endblock %}
 
 {% block page_body %}
 
-
-<div class="card">
-    <div class="card-body">
-        <h4 class="card-title">Cadastros</h4>
-        <h6 class="card-subtitle">Cadastro de Propriedades
-            <div class="col-md-2 pull-right">
-                     <a class="btn btn-success btn new_propriety" title="Nova Propriedade " href="{% url 'create_propriety' %}"><i class="fa fa-plus"></i><small> Cadastrar</small></a>
+<div class="block">
+    <div class="block-content">
+        <div class="row pull-right btn-insert">
+        <button type="button" class="btn btn-outline-primary mr-5 mb-5  new_propriety">
+                 <i class="fa fa-plus mr-5"></i> Nova Propriedade
+        </button>
+        </div>
+        <div>
+            <div class="row">
+                <div class="form_inc col-md-12">
+                </div>
             </div>
-        </h6>
-        <br>
-        <div class="card card-outline-success form_new_registro">
-                 <div class="card-header">
-                     <h4 class="m-b-0 text-white">Incluir Propriedade<button type="button" class="close cancel_create">×</button></h4>
-                            </div>
-                 <div class="card-body">
-
-
-                 </div>
-        </div>
-
-        <div class="card card-outline-warning form_edit_registro">
-                 <div class="card-header">
-                     <h4 class="m-b-0 text-white">Editar Propriedade<button type="button" class="close cancel_create">×</button></h4>
-                            </div>
-                 <div class="card-body">
-
-
-                 </div>
+            <div class="row">
+                <div class="form_edit col-md-12"></div>
+            </div>
         </div>
 
 
-        <div class="table-responsive table_propriety">
-            {% include '_table_propriety.html' %}
-        </div>
 
+        </div>
+        <div class="row table table_propriedade">
+         {% include '_table_propriety.html' %}
+        </div>
     </div>
 </div>
-
-
-<div id="popover_content_wrapper_talhao" class="dpdown_talhao" style="display: none;">
-
-</div>
-
-
 
 
 {% endblock %}
@@ -60,31 +41,19 @@
 {% block javascript %}
 
 
+
 $('.chosen-select').chosen({ width: '100%' });
+$('.form_inc').hide();
+$('.form_edit').hide();
 
-$('.form_new_registro').hide();
-$('.form_edit_registro').hide();
-$('.naomostra').hide();
+var close_modal
 
-
-
-
-function form_talhao(){
- $(".dpdown_talhao").load("{% url 'create_talhao' %}", function(){
-  });
+function loading_propriety(){
+      $('.table_propriedade').load('{{ request.path }}');
 }
 
 
-
-function load_companys(){
-      $('.table_propriety').load('{{ request.path }}');
-      }
-
-
-
-
-
-table = $('#myTable').DataTable({
+table = $('#tabela_propriedades').DataTable({
     "language": {
      "lengthMenu": "Mostrando _MENU_ registros por página",
      "search" : "Procurar: ",
@@ -112,333 +81,141 @@ table = $('#myTable').DataTable({
 });
 
 
+<!-- Create Company -->
+
 $(".new_propriety").on("click",function(e){
-    e.preventDefault();
-
-        $(".form_new_registro .card-body").load("{% url 'create_propriety' %}", function(){
-              $('.form_new_registro').show("puff");
-              $(".campo_obrigatorio").hide();
-              $(".principal").hide();
-              $(".endereco").hide();
-              $(".contato").hide();
-              $(".pos_submit_ie").hide();
-              $(".pos_submit_razao").hide();
-              form_talhao();
-              $(".pos_submit_endereco").hide();
-              $("#id_ie").focus();
-              $('.chosen-select').chosen({ width: '100%' });
-              {% include 'js_tabelas_formularios.html' %}
-               $('.floating-labels .form-control').on('focus blur', function (e) {
-                    $(this).parents('.form-group').toggleClass('focused', (e.type === 'focus' || this.value.length > 0));
-              }).trigger('blur');
-
-              <!-- Talhao -->
-              $('button[data-toggle=popover_talhao]').popover({
-                  html : true,
-                  //trigger: "click",
-                  content: function() {
-                    $(".dpdown_talhao").load("{% url 'create_talhao' %}", function(){
-                     e.preventDefault();
-                    });
-                    return $('#popover_content_wrapper_talhao').html();
-                  }
-              })
-
-              $(document).on("submit","#form_talhao",function(e){
-                        e.preventDefault();
-                        var dados = $(this).serialize();
-                        $.post("{% url 'create_talhao' %}",dados,function(result){
-                           $("#popover_content_wrapper_talhao").html(result);
-                           if(close_form==true){
-                              $('*').popover('hide');
-                              $('#body-table-talhao').append("<tr><td class='col-xs-8'><small>"+ talhao +"</small></td><td class='col-xs-2'>"+ area +"</td><td class='col-xs-2'><a class='btn btn-danger btn btn-sm delete_talhao' href='"+ url+"'><i class='fa fa-trash'></i></a></td></tr>");
-                           }
-                           else{
-                              $('.dpdown_talhao').popover("show");
-                           }
-                        });
-              });
-
-              function limpa_formulário_cep() {
-                    // Limpa valores do formulário de cep.
-                        $("#id_endereco").val("");
-                        $("#id_bairro").val("");
-                        $("#id_cidade").val("");
-                        $("#id_uf").val("");
-                      }
-
-                      $("#id_cep").blur(function() {
-
-                        //Nova variável "cep" somente com dígitos.
-                        var cep = $(this).val().replace(/\D/g, '');
-
-                        //Verifica se campo cep possui valor informado.
-                        if (cep != "") {
-
-                            //Expressão regular para validar o CEP.
-                            var validacep = /^[0-9]{8}$/;
-
-                            //Valida o formato do CEP.
-                            if(validacep.test(cep)) {
-
-                                //Preenche os campos com "..." enquanto consulta webservice.
-                                $("#id_endereco").val("...");
-                                $("#id_bairro").val("...");
-                                $("#id_cidade").val("...");
-                                $("#id_uf").val("...");
-
-                                //Consulta o webservice viacep.com.br/
-                                $.getJSON("//viacep.com.br/ws/"+ cep +"/json/?callback=?", function(dados) {
-
-                                    if (!("erro" in dados)) {
-                                        //Atualiza os campos com os valores da consulta.
-                                        $("#id_endereco").val(dados.logradouro);
-                                        $("#id_bairro").val(dados.bairro);
-                                        $("#id_cidade").val(dados.localidade);
-                                        $("#id_uf").val(dados.uf);
-                                    } //end if.
-                                    else {
-                                        //CEP pesquisado não foi encontrado.
-                                        limpa_formulário_cep();
-                                        alert("CEP não encontrado.");
-                                    }
-                                });
-                            } //end if.
-                            else {
-                                //cep é inválido.
-                                limpa_formulário_cep();
-                                alert("Formato de CEP inválido.");
-                            }
-                        } //end if.
-                        else {
-                            //cep sem valor, limpa formulário.
-                            limpa_formulário_cep();
-                        }
-                      });
+     e.preventDefault();
+     $(".form_inc").load("{% url 'create_propriety' %}", function(){
+        $('.form_inc').show("puff");
+        $('.new_propriety').hide("drop");
+        $('.table_propriedade').hide("drop");
+        $('.chosen-select').chosen({ width: '100%' });
 
 
-                    $(".submit").on("click",function(e){
-                          if($("#id_ie").val().length < 0){
-                               $(".pos_submit_ie").hide();
-                               $(".campo_obrigatorio").show();
-                               $(".principal").show();
-                               e.preventDefault();
-                          }
-
-
-                        if($("#id_razao").val().length == 0){
-                            $(".pos_submit_razao").hide();
-                            $(".campo_obrigatorio").show();
-                            $(".principal").show();
-                            e.preventDefault();
-
-                        }
-
-                        if($("#id_endereco").val().length == 0){
-                            $(".pos_submit_endereco").show();
-                            $(".campo_obrigatorio").show();
-                            $(".endereco").show();
-                            e.preventDefault();
-                        }
-                    });
-
-
-
-              $(".cancel_create").on("click",function(e){
-                $('.form_new_registro').hide("drop");
-                $('#form_talhao').remove();
-              });
+        $('.js-dataTable-simple').dataTable({
+            pageLength: 4,
+            lengthMenu: [[5, 2, 2], [5, 2, 2]],
+            autoWidth: false,
+            searching: false,
+            "language": {
+                "lengthMenu": "Mostrando _MENU_ registros por página",
+                "info" : "Exibindo de _START_ a _END_ de _TOTAL_ registros",
+                "infoEmpty": "Nenhum registro encontrado",
+                "infoFiltered": "(filtrado entre _MAX_ registros)",
+                "paginate" : {
+                        "first":      "Primeiro",
+                        "last":       "Último",
+                        "next":       "Próximo",
+                        "previous":   "Anterior"
+                }
+                },
+            dom: "<'row'<'col-sm-12'tr>>" +
+                "<'row'<'col-sm-6'i><'col-sm-6'p>>"
         });
 
-        <!-- JS de modais e inclusoes -->
 
+        {% include 'js_floating_labels.html' %}
+        {% include 'js_tabs.html' %}
+        {% include 'js_pesquisas_cnpj_cep.html' %}
+
+          $(".form_inc .cancel_form").on("click",function(e){
+             $('.form_inc').hide("drop");
+             $('.new_propriety').show();
+             $('.table_propriedade').show();
+          });
+     });
 });
 
 
-var ok = {{ ok }}
 
-    $(".form_new_registro .card-body").on("submit","form",function(e){
+    $(".form_inc").on("submit","form",function(e){
 	 	 e.preventDefault();
 	 	 var dados = $(this).serialize();
 	 	 $.post("{% url 'create_propriety' %}",dados,function(result){
-	 	    $(".form_new_registro .card-body").html(result);
-	 	    if(ok==ok){
-	 	       $('.form_new_registro').hide();
-               $('#form_talhao').remove();
-                window.location.reload();
+	 	    $(".form_inc").html(result);
+	 	    if(close_modal==true){
+	 	       $('.form_inc').hide("drop");
+               $('.new_propriety').show();
+               loading_propriety();
+               $('.table_propriedade').show();
+
+
+
+
+
+
+
      	    }
  	        else{
- 	           $('.form_new_registro .card-body').show();
+                    $(".form_inc").show();
+                    {% include 'js_floating_labels.html' %}
+                    {% include 'js_tabs.html' %}
+                    {% include 'js_pesquisas_cnpj_cep.html' %}
+
+                   $(".form_inc .cancel_form").on("click",function(e){
+                        $('.form_inc').hide("drop");
+                        $('.new_propriety').show();
+                        $('.table_propriedade').show();
+                    });
  	        }
 	 	 });
 	});
 
+<!-- Edit Company -->
+$('.table_propriedade').on('click', '.edit_propriety',function(e){
+    e.preventDefault();
+    $(".form_edit ").load($(this).attr('href'), function(){
+              $('.form_edit').show("slide");
+               $('.new_propriety').hide("drop");
+              $('.table_propriedade').hide("puff");
 
 
+              {% include 'js_floating_labels.html' %}
+              {% include 'js_tabs.html' %}
+              {% include 'js_pesquisas_cnpj_cep.html' %}
 
-
-
-
-
-
-
-var ok = {{ ok }}
-
-$(".table_propriety").on("click", ".edit_propriety", function(e){
-        e.preventDefault();
-  		$(".form_edit_registro .card-body").load($(this).attr('href'), function(){
-              $('.form_edit_registro').show("slide");
-              $('.table_propriety').hide("puff");
-               $(".btn_busca").hide();
-              $(".campo_obrigatorio").hide();
-              $(".principal").hide();
-              $(".endereco").hide();
-              $(".contato").hide();
-              form_talhao();
-              $(".pos_submit_ie").hide();
-              $(".pos_submit_razao").hide();
-              $(".pos_submit_endereco").hide();
-              $("#id_ie").focus();
-              $('.chosen-select').chosen({ width: '100%' });
-              {% include 'js_tabelas_formularios.html' %}
-
-
-              $('button[data-toggle=popover_talhao]').popover({
-                  html : true,
-                  //trigger: "click",
-                  content: function() {
-                    $(".dpdown_talhao").load("{% url 'create_talhao' %}", function(){
-                     e.preventDefault();
-                    });
-                    return $('#popover_content_wrapper_talhao').html();
-                  }
-              })
-
-              $(document).on("submit","#form_talhao",function(e){
-                        e.preventDefault();
-                        var dados = $(this).serialize();
-                        $.post("{% url 'create_talhao' %}",dados,function(result){
-                           $("#popover_content_wrapper_talhao").html(result);
-                           if(close_form==true){
-                              $('*').popover('hide');
-                              $('#body-table-talhao').append("<tr><td><small>"+ talhao +"</small></td><td>"+ area +"</td><td><a class='btn btn-danger btn btn-sm delete_talhao' href='"+ url+"'><i class='fa fa-trash'></i></a></td></tr>");
-                           }
-                           else{
-                              $('.dpdown_talhao').popover("show");
-                           }
-                        });
+              $(".form_edit .cancel_form").on("click",function(e){
+                  $('.form_edit').hide("drop");
+                  $('.new_company').show();
+                  $('.table_propriedade').show();
               });
-
-
-              function limpa_formulário_cep() {
-                // Limpa valores do formulário de cep.
-                $("#id_endereco").val("");
-                $("#id_bairro").val("");
-                $("#id_cidade").val("");
-                $("#id_uf").val("");
-              }
-
-              $("#id_cep").blur(function() {
-
-                //Nova variável "cep" somente com dígitos.
-                var cep = $(this).val().replace(/\D/g, '');
-
-                //Verifica se campo cep possui valor informado.
-                if (cep != "") {
-
-                    //Expressão regular para validar o CEP.
-                    var validacep = /^[0-9]{8}$/;
-
-                    //Valida o formato do CEP.
-                    if(validacep.test(cep)) {
-
-                        //Preenche os campos com "..." enquanto consulta webservice.
-                        $("#id_endereco").val("...");
-                        $("#id_bairro").val("...");
-                        $("#id_cidade").val("...");
-                        $("#id_uf").val("...");
-
-                        //Consulta o webservice viacep.com.br/
-                        $.getJSON("//viacep.com.br/ws/"+ cep +"/json/?callback=?", function(dados) {
-
-                            if (!("erro" in dados)) {
-                                //Atualiza os campos com os valores da consulta.
-                                $("#id_endereco").val(dados.logradouro);
-                                $("#id_bairro").val(dados.bairro);
-                                $("#id_cidade").val(dados.localidade);
-                                $("#id_uf").val(dados.uf);
-                            } //end if.
-                            else {
-                                //CEP pesquisado não foi encontrado.
-                                limpa_formulário_cep();
-                                alert("CEP não encontrado.");
-                            }
-                        });
-                    } //end if.
-                    else {
-                        //cep é inválido.
-                        limpa_formulário_cep();
-                        alert("Formato de CEP inválido.");
-                    }
-                } //end if.
-                else {
-                    //cep sem valor, limpa formulário.
-                    limpa_formulário_cep();
-                }
-              });
-
-
-            $(".submit").on("click",function(e){
-
-
-                if($("#id_razao").val().length == 0){
-                    $(".pos_submit_razao").hide();
-                    $(".campo_obrigatorio").show();
-                    $(".principal").show();
-                    e.preventDefault();
-
-                }
-
-                if($("#id_endereco").val().length == 0){
-                    $(".pos_submit_endereco").show();
-                    $(".campo_obrigatorio").show();
-                    $(".endereco").show();
-                    e.preventDefault();
-                }
-            });
-
-             $(".cancel_create").on("click",function(e){
-                $('.form_edit_registro').hide("drop");
-                $('#form_talhao').remove();
-                $('.table_propriety').show("puff");
-              });
-
-	          });
-
+    });
 
 
 });
 
-$(".form_edit_registro .card-body").on("submit","form",function(e){
+
+
+$(".form_edit").on("submit","form",function(e){
 	 	 e.preventDefault();
 
 	 	 var dados = $(this).serialize();
 	 	 $.post($(this).attr('action'),dados,function(result){
-	 	    $(".form_edit_registro .card-body").html(result);
+	 	    $(".form_edit").html(result);
 	 	    if(ok==ok){
-	 	       $('.form_edit_registro').hide("drop");
+	 	       $('.form_edit').hide("drop");
                  window.location.reload();
+
 	 	    }
 	 	    else{
-	 	       $('.form_edit_registro .card-body').show("puff");
-	 	    }
+	 	       $('.form_edit').show("puff");
+                $('.btn_busca').hide();
+                {% include 'js_floating_labels.html' %}
+                {% include 'js_tabs.html' %}
+                {% include 'js_pesquisas_cnpj_cep.html' %}
+
+                $(".form_inc .cancel_form").on("click",function(e){
+                    $('.form_edit').hide("drop");
+                    $('.new_company').show();
+                    $('.table_empresas').show();
+	 	        });
+            }
 	 	 });
 	 });
 
 
 
-
-$(".delete_company").on("click", function(e){
+    $(".delete_company").on("click", function(e){
 
     e.preventDefault();
     var linkURL = $(this).attr("href");
@@ -463,13 +240,9 @@ $(".delete_company").on("click", function(e){
 
             swal("Cancelado", "Exclusão cancelada", "error");
         }
-});
-
 	});
 
-
-
-
+});
 
 
 

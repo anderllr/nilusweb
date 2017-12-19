@@ -2,32 +2,93 @@
 {% if success %}
    <script>
 	   close_modal=true;
+	   viewer = {{ form.instance.pk }};
+	   url = '{% url 'edit_permissions' form.instance.pk %}';
    </script>
-{% else %}
-<div>
-    <p class="text-muted m-b-30 font-13">Informe os dados abaixo dos usuários que irão utilizar o sistema na sua empresa;</p>
-        <form class="form-horizontal"  method="post">
-          {% csrf_token %}
+{% endif %}
+    <form action="" class="create_viewer" method="post" onsubmit="return false;">
+            {% csrf_token %}
             {% for error in form.non_field_errors %}
             <div class="alert-danger alert">
                 {{ error }}
             </div>
-          {% endfor %}
-           {% for field in form %}
-    <div class="form-group">
-        <div class="col-xs-12">
-            {% render_field field class='form-control form-control-success' placeholder=field.label  %}
-             {% for error in field.errors %}
-             <div class="alert alert-danger">{{ error }}</div>
-             {% endfor %}
-        </div>
-     <br>
-   {% endfor %}
-            <div class="form-group m-b-0">
-                <div class="offset-sm-3">
-                    <button type="submit" class="btn btn-success waves-effect waves-light m-t-10">Cadastrar</button>
+            {% endfor %}
+            <div>
+                <div class="block block-link-pop">
+                    <div class="block-header ribbon ribbon-success ribbon-left">
+                        <h3 class="block-title antes_insert">Novo Usuário</h3>
+                        <div class="ribbon-box apos_insert">Usuário Cadastrado!!</div>
+                        <div class="block-options antes_insert">
+                            <button type="button" class="btn-block-option cancel_form">
+                                <i class="fa fa-close"></i>
+                            </button>
+                        </div>
+
+                    </div>
+                    <div class="block-content ">
+
+                        <div class="col-md-9">
+                            <div class="form-material floating">
+                                {% render_field  form.username class='form-control' %}
+                                <label for="{{  form.username.id }}">Usuário</label>
+                                {% for error in form.username.errors %}
+                                <div class="alert alert-danger alert-dismissable">
+                                    <p class="mb-0">{{ error }}</p>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="form-material floating">
+                                {% render_field  form.name class='form-control' %}
+                                <label for="{{  form.name.id }}">Nome</label>
+                                {% for error in form.name.errors %}
+                                <div class="alert alert-danger alert-dismissable">
+                                    <p class="mb-0">{{ error }}</p>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <div class="form-material floating">
+                                {% render_field  form.email class='form-control' %}
+                                <label for="{{  form.email.id }}">Email</label>
+                                {% for error in form.email.errors %}
+                                <div class="alert alert-danger alert-dismissable">
+                                    <p class="mb-0">{{ error }}</p>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="col-md-9 password">
+                            <div class="form-material floating">
+                                {% render_field  form.password1 class='form-control' %}
+                                <label for="{{  form.password1.id }}">Senha</label>
+                                {% for error in form.password1.errors %}
+                                <div class="alert alert-danger alert-dismissable">
+                                    <p class="mb-0">{{ error }}</p>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="col-md-9 password">
+                            <div class="form-material floating">
+                                {% render_field  form.password2 class='form-control' %}
+                                <label for="{{  form.password2.id }}">Confirmação de Senha</label>
+                                {% for error in form.password2.errors %}
+                                <div class="alert alert-danger alert-dismissable">
+                                    <p class="mb-0">{{ error }}</p>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <br>
+                        <div class="form-group row password">
+                            <div class="col-md-9">
+                                <button type="submit" class="btn btn-alt-primary">Salvar</button>
+                                <button type="button"  class="btn btn-alt-secondary  cancel_form">Cancelar</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
         </form>
-</div>
-{% endif %}

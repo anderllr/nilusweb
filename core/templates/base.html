@@ -1,351 +1,318 @@
-<!DOCTYPE html>
 {% load static widget_tweaks %}
-<html lang="en">
+<!doctype html>
+<!--[if lte IE 9]>     <html lang="en" class="no-focus lt-ie10 lt-ie10-msg"> <![endif]-->
+<!--[if gt IE 9]><!--> <html lang="en" class="no-focus"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
 
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <!-- Tell the browser to be responsive to screen width -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <!-- Favicon icon -->
-    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'assets/images/favicon.png' %}">
-    <title>Nilus - Agronegócio | Versão Web</title>
-    <!-- Bootstrap Core CSS -->
-    <link href="{% static 'assets/plugins/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
-    <link href="{% static 'css/css_chosen.css' %}" rel="stylesheet">
-    <link href="{% static 'css/modal-xxl.css' %}" rel="stylesheet">
-    <link href="{% static 'assets/plugins/bootstrap-table/dist/bootstrap-table.min.css' %}" rel="stylesheet" type="text/css" />
+        <title>Nilus - Soluções para o Agronegócio &amp; Versão WEB</title>
 
-    <!-- Custom CSS -->
-    <link href="{% static 'assets/plugins/select2/dist/css/select2.min.css' %}" rel="stylesheet" type="text/css" />
-    <link href="{% static 'css/style.css' %}" rel="stylesheet">
-    <link href="{% static 'css/extra.css' %}" rel="stylesheet">
-    <link href="{% static 'css/table_overflow.css' %}" rel="stylesheet">
-    <!-- You can change the theme colors from here -->
-    <link href="{% static 'css/colors/megna.css' %}" id="theme" rel="stylesheet">
-    <link href="{% static 'assets/plugins/toast-master/css/jquery.toast.css' %}" rel="stylesheet">
-    <link href="{% static 'assets/plugins/sweetalert/sweetalert.css' %}" rel="stylesheet">
+        <meta name="description" content="Nilus - Soluções para o Agronegócio &amp; Versão WEB">
+        <meta name="author" content="pixelcave">
+        <meta name="robots" content="noindex, nofollow">
+
+        <!-- Open Graph Meta -->
+        <meta property="og:title" content="Nilus - Soluções para o Agronegócio &amp; Versão WEB">
+        <meta property="og:site_name" content="Nilus">
+        <meta property="og:description" content="Nilus - Soluções para o Agronegócio &amp; Versão WEB">
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="">
+        <meta property="og:image" content="">
+
+        <!-- Icons -->
+        <!-- The following icons can be replaced with your own, they are used by desktop and mobile browsers -->
+        <link rel="shortcut icon" href="{% static 'assets/img/favicons/favicon.png' %}">
+        <link rel="icon" type="image/png" sizes="192x192" href="{% static 'assets/img/favicons/favicon-192x192.png' %}">
+        <link rel="apple-touch-icon" sizes="180x180" href="{% static 'assets/img/favicons/apple-touch-icon-180x180.png' %}">
+
+        <!-- END Icons -->
+
+        <!-- Stylesheets -->
+        <!-- Codebase framework -->
+        <link rel="stylesheet" id="css-main" href="{% static 'assets/css/codebase.min.css' %}">
+        <link rel="stylesheet" id="css-theme" href="{% static 'assets/css/themes/flat.min.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/js/plugins/datatables/dataTables.bootstrap4.min.css' %}">
+        <link href="{% static 'assets/plugins/sweetalert/sweetalert.css' %}" rel="stylesheet">
+        <link src="{% static 'assets/plugins/mini/mini-lite.css' %}" rel="stylesheet">
 
 
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-<![endif]-->
-</head>
+        <link href="{% static 'assets/css/css_chosen.css' %}" rel="stylesheet">
 
-<body class="fix-header card-no-border">
 
-<div class="preloader">
-        <svg class="circular" viewBox="25 25 50 50">
-            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" /> </svg>
-    </div>
-<div id="main-wrapper">
-  <header class="topbar">
-            <nav class="navbar top-navbar navbar-expand-md navbar-light">
-                <!-- ============================================================== -->
-                <!-- Logo -->
-                <!-- ============================================================== -->
-                <div class="navbar-header">
-                    <a class="navbar-brand" href="{% url 'principal' %}">
-                        <!-- Logo icon --><b>
-                            <!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
-                            <!-- Dark Logo icon -->
-                            <img src="{% static 'assets/images/logo_circulo.png' %}"  height="50" width="50" alt="homepage" class="dark-logo" />
-                            <!-- Light Logo icon -->
 
-                        </b>
-                        <!--End Logo icon -->
-                        <!-- Logo text --><span>
-                         <!-- dark Logo text -->
 
-                         <!-- Light Logo text -->
-                         </span> </a>
+
+        <!-- You can include a specific file from css/themes/ folder to alter the default color theme of the template. eg: -->
+        <!-- <link rel="stylesheet" id="css-theme" href="assets/css/themes/flat.min.css"> -->
+        <!-- END Stylesheets -->
+    </head>
+    <body>
+        <!-- Page Container -->
+        <!--
+            Available classes for #page-container:
+
+        GENERIC
+
+            'enable-cookies'                            Remembers active color theme between pages (when set through color theme helper Codebase() -> uiHandleTheme())
+
+        SIDEBAR & SIDE OVERLAY
+
+            'sidebar-r'                                 Right Sidebar and left Side Overlay (default is left Sidebar and right Side Overlay)
+            'sidebar-mini'                              Mini hoverable Sidebar (screen width > 991px)
+            'sidebar-o'                                 Visible Sidebar by default (screen width > 991px)
+            'sidebar-o-xs'                              Visible Sidebar by default (screen width < 992px)
+            'sidebar-inverse'                           Dark themed sidebar
+
+            'side-overlay-hover'                        Hoverable Side Overlay (screen width > 991px)
+            'side-overlay-o'                            Visible Side Overlay by default
+
+            'side-scroll'                               Enables custom scrolling on Sidebar and Side Overlay instead of native scrolling (screen width > 991px)
+
+        HEADER
+
+            ''                                          Static Header if no class is added
+            'page-header-fixed'                         Fixed Header
+
+        HEADER STYLE
+
+            ''                                          Classic Header style if no class is added
+            'page-header-modern'                        Modern Header style
+            'page-header-inverse'                       Dark themed Header (works only with classic Header style)
+            'page-header-glass'                         Light themed Header with transparency by default
+                                                        (absolute position, perfect for light images underneath - solid light background on scroll if the Header is also set as fixed)
+            'page-header-glass page-header-inverse'     Dark themed Header with transparency by default
+                                                        (absolute position, perfect for dark images underneath - solid dark background on scroll if the Header is also set as fixed)
+
+        MAIN CONTENT LAYOUT
+
+            ''                                          Full width Main Content if no class is added
+            'main-content-boxed'                        Full width Main Content with a specific maximum width (screen width > 1200px)
+            'main-content-narrow'                       Full width Main Content with a percentage width (screen width > 1200px)
+        -->
+        <div id="page-container" class="sidebar-o side-scroll page-header-fixed page-header-glass main-content-boxed">
+            <!-- Side Overlay-->
+
+            <!-- END Side Overlay -->
+
+            <!-- Sidebar -->
+            <!--
+                Helper classes
+
+                Adding .sidebar-mini-hide to an element will make it invisible (opacity: 0) when the sidebar is in mini mode
+                Adding .sidebar-mini-show to an element will make it visible (opacity: 1) when the sidebar is in mini mode
+                    If you would like to disable the transition, just add the .sidebar-mini-notrans along with one of the previous 2 classes
+
+                Adding .sidebar-mini-hidden to an element will hide it when the sidebar is in mini mode
+                Adding .sidebar-mini-visible to an element will show it only when the sidebar is in mini mode
+                    - use .sidebar-mini-visible-b if you would like to be a block when visible (display: block)
+            -->
+            <nav id="sidebar">
+                <!-- Sidebar Scroll Container -->
+                <div id="sidebar-scroll">
+                    <!-- Sidebar Content -->
+                    <div class="sidebar-content">
+                        <!-- Side Header -->
+                        <div class="content-header content-header-fullrow px-15">
+                            <!-- Normal Mode -->
+                            <div class="content-header-section text-center align-parent sidebar-mini-hidden">
+                                <!-- Close Sidebar, Visible only on mobile screens -->
+                                <!-- Layout API, functionality initialized in Codebase() -> uiApiLayout() -->
+
+                                <!-- END Close Sidebar -->
+
+                                <!-- Logo -->
+                                <div class="content-header-item">
+                                    <a class="link-effect font-w700" href="{% url 'principal' %}">
+
+                                        <img src="{% static 'assets/img/favicons/logo_circulo.png' %}"  height="50" width="50" alt="homepage" class="dark-logo" />
+                                    </a>
+                                </div>
+                                <!-- END Logo -->
+                            </div>
+                            <!-- END Normal Mode -->
+                        </div>
+                        <!-- END Side Header -->
+
+                        <!-- Side User -->
+
+                        <!-- END Side User -->
+
+                        <!-- Side Navigation MJC>>MENU LATERAL -->
+                        <div class="content-side content-side-full">
+                            <ul class="nav-main">
+                                {% if user.is_masteruser == True %}
+                                <li>
+                                    <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="si si-lock"></i><span class="sidebar-mini-hide">Administração</span></a>
+                                    <ul>
+                                        <li>
+                                            <a href="{% url 'users_viewers_list' %}">Usuários/Permissões</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                {% endif %}
+                                {% if permissions.nilusCadastro == True %}
+                                <li>
+                                    <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="si si-puzzle"></i><span class="sidebar-mini-hide">Cadastros</span></a>
+                                    <ul>
+                                        <li>
+                                            <a href="{% url 'company_list' %}">Empresas</a>
+                                            <a href="{% url 'propriety_list' %}">Propriedades</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                {% endif %}
+                                {% if permissions.nilusFinanceiro == True %}
+                                <li>
+                                    <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="si si-wallet"></i><span class="sidebar-mini-hide">Financeiro</span></a>
+                                    <ul>
+                                        <li>
+                                            <a href="be_pages_dashboard.html">Lançamentos</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                            {% endif %}
+                        </div>
+                        <!-- END Side Navigation -->
+                    </div>
+                    <!-- Sidebar Content -->
                 </div>
-                <!-- ============================================================== -->
-                <!-- End Logo -->
-                <!-- ============================================================== -->
-                <div class="navbar-collapse">
-                    <!-- ============================================================== -->
-                    <!-- toggle and nav items -->
-                    <!-- ============================================================== -->
-                    <ul class="navbar-nav mr-auto mt-md-0">
-                        <!-- This is  -->
-                        <li class="nav-item"> <a class="nav-link nav-toggler hidden-md-up text-muted waves-effect waves-dark" href="javascript:void(0)"><i class="mdi mdi-menu"></i></a> </li>
-                        <li class="nav-item m-l-10"> <a class="nav-link sidebartoggler hidden-sm-down text-muted waves-effect waves-dark" href="javascript:void(0)"><i class="ti-menu"></i></a> </li>
-                        <!-- ============================================================== -->
-                        <!-- Comment -->
-                        <!-- ============================================================== -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-muted text-muted waves-effect waves-dark" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="mdi mdi-message"></i>
-                                <div class="notify"> <span class="heartbit"></span> <span class="point"></span> </div>
-                            </a>
-                            <div class="dropdown-menu mailbox scale-up-left">
-                                <ul>
-                                    <li>
-                                        <div class="drop-title">Notifications</div>
-                                    </li>
-                                    <li>
-                                        <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 250px;"><div class="message-center" style="overflow: hidden; width: auto; height: 250px;">
-                                            <!-- Message -->
-                                            <a href="#">
-                                                <div class="btn btn-danger btn-circle"><i class="fa fa-link"></i></div>
-                                                <div class="mail-contnet">
-                                                    <h5>Luanch Admin</h5> <span class="mail-desc">Just see the my new admin!</span> <span class="time">9:30 AM</span> </div>
-                                            </a>
-                                            <!-- Message -->
-                                            <a href="#">
-                                                <div class="btn btn-success btn-circle"><i class="ti-calendar"></i></div>
-                                                <div class="mail-contnet">
-                                                    <h5>Event today</h5> <span class="mail-desc">Just a reminder that you have event</span> <span class="time">9:10 AM</span> </div>
-                                            </a>
-                                            <!-- Message -->
-                                            <a href="#">
-                                                <div class="btn btn-info btn-circle"><i class="ti-settings"></i></div>
-                                                <div class="mail-contnet">
-                                                    <h5>Settings</h5> <span class="mail-desc">You can customize this template as you want</span> <span class="time">9:08 AM</span> </div>
-                                            </a>
-                                            <!-- Message -->
-                                            <a href="#">
-                                                <div class="btn btn-primary btn-circle"><i class="ti-user"></i></div>
-                                                <div class="mail-contnet">
-                                                    <h5>Pavan kumar</h5> <span class="mail-desc">Just see the my admin!</span> <span class="time">9:02 AM</span> </div>
-                                            </a>
-                                        </div><div class="slimScrollBar" style="background: rgb(220, 220, 220); width: 5px; position: absolute; top: 0px; opacity: 0.4; display: block; border-radius: 7px; z-index: 99; right: 1px; height: 192.901px;"></div><div class="slimScrollRail" style="width: 5px; height: 100%; position: absolute; top: 0px; display: none; border-radius: 7px; background: rgb(51, 51, 51); opacity: 0.2; z-index: 90; right: 1px;"></div></div>
-                                    </li>
-                                    <li>
-                                        <a class="nav-link text-center" href="javascript:void(0);"> <strong>Check all notifications</strong> <i class="fa fa-angle-right"></i> </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-                        <!-- ============================================================== -->
-                        <!-- End Comment -->
-                        <!-- ============================================================== -->
-                        <!-- ============================================================== -->
-                        <!-- Messages -->
-                        <!-- ============================================================== -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark" href="" id="2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="mdi mdi-email"></i>
-                                <div class="notify"> <span class="heartbit"></span> <span class="point"></span> </div>
-                            </a>
-                            <div class="dropdown-menu mailbox scale-up-left" aria-labelledby="2">
-                                <ul>
-                                    <li>
-                                        <div class="drop-title">You have 4 new messages</div>
-                                    </li>
-                                    <li>
-                                        <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 250px;"><div class="message-center" style="overflow: hidden; width: auto; height: 250px;">
-                                            <!-- Message -->
-                                            <a href="#">
-                                                <div class="user-img"> <img src="../assets/images/users/1.jpg" alt="user" class="img-circle"> <span class="profile-status online pull-right"></span> </div>
-                                                <div class="mail-contnet">
-                                                    <h5>Pavan kumar</h5> <span class="mail-desc">Just see the my admin!</span> <span class="time">9:30 AM</span> </div>
-                                            </a>
-                                            <!-- Message -->
-                                            <a href="#">
-                                                <div class="user-img"> <img src="../assets/images/users/2.jpg" alt="user" class="img-circle"> <span class="profile-status busy pull-right"></span> </div>
-                                                <div class="mail-contnet">
-                                                    <h5>Sonu Nigam</h5> <span class="mail-desc">I've sung a song! See you at</span> <span class="time">9:10 AM</span> </div>
-                                            </a>
-                                            <!-- Message -->
-                                            <a href="#">
-                                                <div class="user-img"> <img src="../assets/images/users/3.jpg" alt="user" class="img-circle"> <span class="profile-status away pull-right"></span> </div>
-                                                <div class="mail-contnet">
-                                                    <h5>Arijit Sinh</h5> <span class="mail-desc">I am a singer!</span> <span class="time">9:08 AM</span> </div>
-                                            </a>
-                                            <!-- Message -->
-                                            <a href="#">
-                                                <div class="user-img"> <img src="../assets/images/users/4.jpg" alt="user" class="img-circle"> <span class="profile-status offline pull-right"></span> </div>
-                                                <div class="mail-contnet">
-                                                    <h5>Pavan kumar</h5> <span class="mail-desc">Just see the my admin!</span> <span class="time">9:02 AM</span> </div>
-                                            </a>
-                                        </div><div class="slimScrollBar" style="background: rgb(220, 220, 220); width: 5px; position: absolute; top: 0px; opacity: 0.4; display: block; border-radius: 7px; z-index: 99; right: 1px; height: 183.824px;"></div><div class="slimScrollRail" style="width: 5px; height: 100%; position: absolute; top: 0px; display: none; border-radius: 7px; background: rgb(51, 51, 51); opacity: 0.2; z-index: 90; right: 1px;"></div></div>
-                                    </li>
-                                    <li>
-                                        <a class="nav-link text-center" href="javascript:void(0);"> <strong>See all e-Mails</strong> <i class="fa fa-angle-right"></i> </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-                        <!-- ============================================================== -->
-                        <!-- End Messages -->
-                        <!-- ============================================================== -->
-                        <!-- ============================================================== -->
-                        <!-- Messages -->
-                        <!-- ============================================================== -->
-
-                        <!-- ============================================================== -->
-                        <!-- End Messages -->
-                        <!-- ============================================================== -->
-                    </ul>
-                    <!-- ============================================================== -->
-                    <!-- User profile and search -->
-                    <!-- ============================================================== -->
-                    <ul class="navbar-nav my-lg-0">
-                        <!-- ============================================================== -->
-                        <!-- Search -->
-                        <!-- ============================================================== -->
-
-                        <!-- ============================================================== -->
-                        <!-- Profile -->
-                        <!-- ============================================================== -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img {% if user.img_user %} src="{{ user.img_user.url  }}" {% else %} src="" {% endif %}alt="Foto" class="profile-pic"  height="33"></a>
-                            <div class="dropdown-menu dropdown-menu-right scale-up">
-                                <ul class="dropdown-user">
-                                    <li>
-                                        <div class="dw-user-box">
-                                            <div class="u-img"><img {% if user.img_user %} src="{{ user.img_user.url  }}"{% else %} src="" {% endif %} alt="Foto"></div>
-                                            <div class="u-text">
-                                             <br>
-                                                <h4>{{ user.name }}</h4>
-                                                <p class="text-muted">{{ user.email }}</p>
-                                        </div>
-                                    </li>
-                                    <li role="separator" class="divider"></li>
-                                    <li><a href="{% url 'profile' %}"><i class="ti-user"></i> Minha Conta</a></li>
-                                    <li><a href="{% url 'config_conta'  %}" id="config_conta"><i class="ti-settings"></i> Configurações do Usuário</a></li>
-                                    <li role="separator" class="divider"></li>
-                                    <li><a href="{% url 'logout' %}"><i class="fa fa-power-off"></i> Logout</a></li>
-                                </ul>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
+                <!-- END Sidebar Scroll Container -->
             </nav>
-        </header>
-{% block body %} {% endblock %}
+            <!-- END Sidebar -->
 
-</div>
+            <!-- Header -->
+            <header id="page-header">
+                <!-- Header Content -->
+                <div class="content-header">
+                    <!-- Left Section -->
+                    <div class="content-header-section">
 
+                        <button type="button" class="btn btn-circle btn-dual-secondary" data-toggle="layout" data-action="sidebar_toggle">
+                            <i class="fa fa-navicon"></i>
+                        </button>
 
-  <!-- ============================================================== -->
-    <!-- All Jquery -->
-    <!-- ============================================================== -->
-    <script src="{% static 'assets/plugins/jquery/jquery.min.js' %}"></script>
-    <!-- Bootstrap tether Core JavaScript -->
-    <script src="{% static 'assets/plugins/bootstrap/js/popper.min.js' %}"></script>
+                    </div>
+                    <!-- END Left Section -->
 
-    <script src="{% static 'assets/plugins/bootstrap/js/bootstrap.min.js' %}"></script>
-    <!-- slimscrollbar scrollbar JavaScript -->
-    <script src="{% static 'js/jquery.slimscroll.js' %}"></script>
-    <!--Wave Effects -->
-    <script src="{% static 'js/waves.js' %}"></script>
-    <!--Menu sidebar -->
-    <script src="{% static 'js/sidebarmenu.js' %}"></script>
-    <!--stickey kit -->
-    <script src="{% static 'assets/plugins/sticky-kit-master/dist/sticky-kit.min.js' %}"></script>
-    <script src="{% static 'assets/plugins/sparkline/jquery.sparkline.min.js' %}"></script>
-    <!--Custom JavaScript -->
-    <script src="{% static 'js/custom.min.js' %}"></script>
+                    <!-- Right Section -->
+                    <div class="content-header-section">
+                        <!-- User Dropdown -->
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-rounded btn-dual-secondary" id="page-header-user-dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                {{ user.name }}<i class="fa fa-angle-down ml-5"></i>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right min-width-150" aria-labelledby="page-header-user-dropdown">
+                                <a class="dropdown-item" href="be_pages_generic_profile.html">
+                                    <i class="si si-user mr-5"></i> Perfil
+                                </a>
+                                <div class="dropdown-divider"></div>
 
+                                <!-- Toggle Side Overlay -->
+                                <!-- Layout API, functionality initialized in Codebase() -> uiApiLayout() -->
+                                <a class="dropdown-item" href="javascript:void(0)" data-toggle="layout" data-action="side_overlay_toggle">
+                                    <i class="si si-wrench mr-5"></i> Configurações
+                                </a>
+                                <!-- END Side Overlay -->
 
-    <script src="{% static 'assets/plugins/bootstrap-table/dist/bootstrap-table.min.js' %}"></script>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="{% url 'logout' %}">
+                                    <i class="si si-logout mr-5"></i> Sair
+                                </a>
+                            </div>
+                        </div>
+                        <!-- END User Dropdown -->
 
-    <!-- ============================================================== -->
-    <!-- Style switcher -->
-    <!-- ============================================================== -->
-    <script src="{% static 'assets/plugins/styleswitcher/jQuery.style.switcher.js' %}"></script>
-    <!--Datatable -->
-    <script src="{% static 'assets/plugins/datatables/jquery.dataTables.min.js' %}"></script>
-    <script src="{% static 'assets/plugins/select2/dist/js/select2.full.min.js' %}" type="text/javascript"></script>
+                        <!-- Toggle Side Overlay -->
+                        <!-- Layout API, functionality initialized in Codebase() -> uiApiLayout() -->
 
-    <!-- Toast -->
-    <script src="{% static 'assets/plugins/toast-master/js/jquery.toast.js' %}"></script>
+                        <!-- END Toggle Side Overlay -->
+                    </div>
+                    <!-- END Right Section -->
+                </div>
+                <!-- END Header Content -->
 
-
-    <script src="{% static 'assets/plugins/bootstrap-table/dist/bootstrap-table.min.js' %}  "></script>
-
-
-
-    <script src="{% static 'assets/plugins/dinmoney-datepicker/js/bootstrap-datepicker.js' %}"></script>
-    <script src="{% static 'assets/plugins/dinmoney-datepicker/locales/bootstrap-datepicker.pt-BR.min.js' %}"></script>
-    <!--SweetAlert -->
-    <script src="{% static 'assets/plugins/toast-master/js/jquery.toast.js' %}"></script>
-    <script src="{% static 'assets/plugins/sweetalert/sweetalert.min.js' %}"></script>
-
-    <!--Export Datatable -->
-    <script src="https://cdn.datatables.net/buttons/1.2.2/js/dataTables.buttons.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/1.2.2/js/buttons.flash.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"></script>
-    <script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/pdfmake.min.js"></script>
-    <script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/vfs_fonts.js"></script>
-    <script src="https://cdn.datatables.net/buttons/1.2.2/js/buttons.html5.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/1.2.2/js/buttons.print.min.js"></script>
+                <!-- Header Search -->
 
 
+                <!-- Header Loader -->
+                <!-- Please check out the Activity page under Elements category to see examples of showing/hiding it -->
+                <div id="page-header-loader" class="overlay-header bg-primary">
+                    <div class="content-header content-header-fullrow text-center">
+                        <div class="content-header-item">
+                            <i class="fa fa-sun-o fa-spin text-white"></i>
+                        </div>
+                    </div>
+                </div>
+                <!-- END Header Loader -->
+            </header>
+            <!-- END Header -->
 
+            <!-- Main Container -->
+            <main id="main-container">
+                <!-- Page Content -->
+                <div class="content">
+                    <h2 class="content-heading">{% block title %} {% endblock %}</h2>
 
-    <script src="{% static 'js/chosen_js_mjc.js' %}"></script>
-    <script src="{% static 'js/mask.js' %}"></script>
-    <script src="{% static 'js/jquery.maskMoney.js' %}"></script>
-    <script src="{% static 'assets/plugins/bootstrap-table/dist/bootstrap-table.min.js' %}"></script>
+                    <!-- Layout API, functionality initialized in Codebase() -> uiApiLayout() -->
 
+                    <div class="block">
+                        <div class="block-content block-content-full">
+                            {% block page_body %} {% endblock %}
+                        </div>
+                    </div>
+                    <!-- END Layout API -->
+                </div>
+                <!-- END Page Content -->
+            </main>
+            <!-- END Main Container -->
 
+            <!-- Footer -->
+            <footer id="page-footer" class="opacity-0">
+                <div class="content py-20 font-size-xs clearfix">
+                    <div class="float-right">
+                        Crafted with <i class="fa fa-heart text-pulse"></i> by <a class="font-w600" href="" target="_blank">mjcDEV</a>
+                    </div>
+                    <div class="float-left">
+                        <a class="font-w600" href="" target="_blank">NilusWEB 1.0</a> &copy; <span class="js-year-copy">2017</span>
+                    </div>
+                </div>
+            </footer>
+            <!-- END Footer -->
+        </div>
+        <!-- END Page Container -->
 
+        <!-- Codebase Core JS -->
+        <script src="{% static  'assets/js/core/jquery.min.js' %}"></script>
+        <script src="{% static 'assets/js/core/popper.min.js' %}"></script>
+        <script src="{% static 'assets/js/core/bootstrap.min.js' %}"></script>
+        <script src="{% static 'assets/js/core/jquery.slimscroll.min.js' %}"></script>
+        <script src="{% static 'assets/js/core/jquery.scrollLock.min.js' %}"></script>
+        <script src="{% static 'assets/js/core/jquery.appear.min.js' %}"></script>
+        <script src="{% static 'assets/js/core/jquery.countTo.min.js' %}"></script>
+        <script src="{% static 'assets/js/core/js.cookie.min.js' %}"></script>
+        <script src="{% static 'assets/js/codebase.js' %}"></script>
+        <script src="{% static 'assets/js/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+        <script src="{% static 'assets/js/plugins/datatables/dataTables.bootstrap4.min.js' %}"></script>
+        <script src="{% static 'assets/plugins/sweetalert/sweetalert.min.js' %}"></script>
 
-
-
-
-<script>
-
- $(document).ready(function() {
-
-
-
-
-    $("#config_conta").on("click", function(e){
-        e.preventDefault();
-  		$("#modal-config_conta .modal-body").load("{% url 'config_conta' %}", function(){
-              $('#modal-config_conta').modal("show");
-			});
-	});
-
-	 $("#modal-config_conta .modal-body").on("submit","form",function(e){
-	 	 e.preventDefault();
-	 	 var dados = $(this).serialize();
-	 	 $.post("{% url 'config_conta' %}",dados,function(result){
-	 	    $("#modal-config_conta .modal-body").html(result);
-	 	    if(close_modal==true){
-	 	       $('#modal-config_conta').modal("hide");
-	 	    }
-	 	    else{
-	 	       $('#modal-config_conta').modal("show");
-	 	    }
-
-	 	 });
-	 });
-
-
-
-
-
-     $(".datepicker").datepicker({
-		todayBtn: true,
-    	language: "pt-BR",
-		autoclose: true,
-    	todayHighlight: true
-	});
-
-
-
-          {% block javascript %}
-
-
-
-
-          {% endblock %}
-    });
-
-</script>
+        <script src="{% static 'assets/plugins/chosen/chosen_js_mjc.js' %}"></script>
 
 
 
 
-</body>
+
+        <script>
+                 $(document).ready(function() {
+                  {% block javascript %}
+                  {% endblock %}
+                 });
+
+        </script>
+
+    </body>
+
 </html>
+
+

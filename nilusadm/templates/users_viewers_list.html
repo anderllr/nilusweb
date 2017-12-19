@@ -4,63 +4,43 @@
 
 
 <!-- Bread crumb and right sidebar toggle -->
-{% block title_page %} Cadastro de Usuários {% endblock %}
+{% block title %} Cadastro de Usuários {% endblock %}
 
 {% block page_body %}
 
-<div class="card">
-    <div class="card-body">
-        <h4 class="card-title">Usuarios</h4>
-        <h6 class="card-subtitle">Cadastro de Usuários
-            <div class="col-lg-2 col-md-4 pull-right new_viewer">
-                     <a  href="{% url 'register_viewer' %}" id="create_user" type="button" class="btn waves-effect waves-light btn-block btn-success add_viewer_btn">Novo Usuario</a>
+<div class="block">
+    <div class="block-content">
+        <div class="row pull-right btn-insert">
+        <button type="button" class="btn btn-square btn-outline-success min-width-125 mb-10 new_viewer">
+                 <i class="fa fa-plus mr-5"></i> Novo Usuário
+        </button>
+        </div>
+        <div>
+            <div class="row">
+                <div class="form_inc col-md-6">
+                </div>
+                <div class="form_permissao col-md-6">
+                </div>
             </div>
-        </h6>
+            <div class="row">
 
-        <div class="table-responsive table_viewers">
-          {% include '_table_users_viewers.html' %}
+                <div class="form_edit col-md-6"></div>
+                <div class="form_edit_permissoes"></div>
+
+            </div>
+
+
+
+          </div>
+
+
+
+        </div>
+        <div class="row pt-20 table table_viewers">
+         {% include '_table_users_viewers.html' %}
         </div>
     </div>
 </div>
-
-
-<div id="modal-create-userView" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Criar Usuario</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            </div>
-            <div class="modal-body">
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Fechar</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-
-<div id="modal-update-userView" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Editar Usuário</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            </div>
-            <div class="modal-body">
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Fechar</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
 
 
 {% endblock %}
@@ -68,81 +48,139 @@
 
 {% block javascript %}
 
+
+$('.form_inc').hide();
+$('.form_edit').hide();
+
+var close_modal
+
 function loading_viewers(){
       $('.table_viewers').load('{{ request.path }}');
 	}
 
 
 
- $('#myTable').DataTable({
-     "language": {
-         "lengthMenu": "Mostrando _MENU_ registros por página",
-         "search" : "Procurar: ",
-         "info" : "Exibindo de _START_ a _END_ de _TOTAL_ registros",
-         "infoEmpty": "Nenhum registro encontrado",
-         "infoFiltered": "(filtrado entre _MAX_ registros)",
-         "paginate" : {
-           "first":      "Primeiro",
-           "last":       "Último",
-           "next":       "Próximo",
-           "previous":   "Anterior"
-         },
-     }
-});
-
 
 <!-- Create Viewer -->
-$(".new_viewer").on("click",".add_viewer_btn", function(e){
-				e.preventDefault();
-				$("#modal-create-userView .modal-body").load("{% url 'register_viewer' %}", function(){
-				  $('#modal-create-userView').modal("show");
-                });
 
+$(".new_viewer").on("click",function(e){
+     e.preventDefault();
+     $(".form_inc").load("{% url 'register_viewer' %}", function(){
+        $('.form_inc').show("puff");
+        $('.new_viewer').hide("drop");
+        $('.table_viewers').hide("drop");
+        $('.apos_insert').hide();
+
+        {% include 'js_floating_labels.html' %}
+
+
+          $(".form_inc .cancel_form").on("click",function(e){
+             $('.form_inc').hide("drop");
+             $('.new_viewer').show();
+             $('.table_viewers').show();
+        });
+    });
 });
 
-$("#modal-create-userView .modal-body").on("submit","form",function(e){
+ok =  {{ ok }}
+
+$(".form_inc").on("submit","form",function(e){
 	 	 e.preventDefault();
 	 	 var dados = $(this).serialize();
 	 	 $.post("{% url 'register_viewer' %}",dados,function(result){
-	 	    $("#modal-create-userView .modal-body").html(result);
-	 	    if(close_modal==true){
-	 	       $('#modal-create-userView').modal("hide");
-               loading_viewers();
+	 	    $(".form_inc").html(result);
+	 	    if(ok==ok){
+
+                {% include 'js_floating_labels.html' %}
+
+                $(".form_permissao").load(url, function(){
+                    $('.form_permissao').show("puff");
+                    $('.password').hide();
+                    $('.antes_insert').hide();
+                    $('.apos_insert').show();
+                });
 	 	    }
 	 	    else{
-	 	       $('#modal-create-userView').modal("show");
+	 	       $('.form_inc').show();
 	 	    }
 	 	 });
 	 });
 
 
 
-
-
-
-
 <!-- Update Viewer -->
 $(".table_viewers").on("click", ".edit_viewer", function(e){
         e.preventDefault();
-  		$("#modal-update-userView .modal-body").load($(this).attr('href'), function(){
-              $('#modal-update-userView').modal("show");
-			    });
+
+  		$(".form_edit").load($(this).attr('href'), function(){
+               $('.form_edit').show("puff");
+               $('.new_viewer').hide("drop");
+               $('.table_viewers').hide("drop");
+
+               {% include 'js_floating_labels.html' %}
+
+               $(".form_edit .cancel_form").on("click",function(e){
+                    $('.form_edit').hide("drop");
+                    $('.form_edit_permissoes').hide("drop");
+                    $('.new_viewer').show();
+                    $('.table_viewers').show();
+               });
+
+
+                $(".form_edit .edit_permissoes").on("click", function(e){
+                     e.preventDefault();
+
+                    $(".form_edit_permissoes").load($(this).attr('href'), function(){
+                           $('.form_edit_permissoes').show("drop");
+
+                           {% include 'js_floating_labels.html' %}
+
+                           $(".form_edit_permissoes .cancel_form").on("click",function(e){
+                                $('.form_edit').hide("drop");
+                                $('.form_edit_permissoes').hide("drop");
+                                $('.new_viewer').show();
+                                $('.table_viewers').show();
+                           });
+                    });
+                });
+
+                $(".form_edit_permissoes").on("submit","form",function(e){
+                         e.preventDefault();
+                         var dados = $(this).serialize();
+                         $.post($(this).attr('action'),dados,function(result){
+                            $(".form_edit_permissoes").html(result);
+                            if(ok==ok){
+                               $('.form_edit').hide("drop");
+                               $('.form_edit_permissoes').hide("drop");
+                               $('.new_viewer').show("puff");
+                               loading_viewers();
+                               $('.table_viewers').show("puff");
+
+                            }
+                            else{
+                               $(".form_edit").show();
+                               $('.form_edit_permissoes').show();
+                            }
+                         });
+                });
+		});
 	});
 
-$("#modal-update-userView .modal-body").on("submit","form",function(e){
+$(".form_edit").on("submit","form",function(e){
 	 	 e.preventDefault();
-
 	 	 var dados = $(this).serialize();
 	 	 $.post($(this).attr('action'),dados,function(result){
-	 	    $("#modal-update-userView .modal-body").html(result);
-	 	    if(close_modal==true){
-	 	       $('#modal-update-userView').modal("hide");
+	 	    $(".form_edit").html(result);
+	 	    if(ok==ok){
+	 	       $('.form_edit').hide("drop");
+               $('.form_edit_permissoes').hide("drop");
+               $('.new_viewer').show("puff");
                loading_viewers();
-               window.location.reload()
+               $('.table_viewers').show("puff");
 
 	 	    }
 	 	    else{
-	 	       $('#modal-update-userView').modal("show");
+	 	       $(".form_edit").show();
 	 	    }
 	 	 });
 	 });
@@ -151,34 +189,6 @@ $("#modal-update-userView .modal-body").on("submit","form",function(e){
 
 
 <!-- Permissions -->
-$(".table_viewers").on("click", ".permissions", function(e){
-        e.preventDefault();
-  		$("#modal-update-userView .modal-body").load($(this).attr('href'), function(){
-              $('#modal-update-userView').modal("show");
-			    });
-	});
-
-$("#modal-update-userView .modal-body").on("submit","form",function(e){
-	 	 e.preventDefault();
-
-	 	 var dados = $(this).serialize();
-	 	 $.post($(this).attr('action'),dados,function(result){
-	 	    $("#modal-update-userView .modal-body").html(result);
-	 	    if(close_modal==true){
-	 	       $('#modal-update-userView').modal("hide");
-               loading_viewers();
-               window.location.reload()
-
-	 	    }
-	 	    else{
-	 	       $('#modal-update-userView').modal("show");
-	 	    }
-	 	 });
-	 });
-
-
-
-
 
 
 

@@ -122,7 +122,7 @@ class RegisterUserViewer(LoginRequiredMixin,CreateView):
 
 
             if self.request.is_ajax():
-                context = self.get_context_data(form=form, success=True)
+                context = self.get_context_data(form=form, ok='ok',success=True)
                 return self.render_to_response(context)
             else:
                 return redirect(self.get_success_url())
@@ -141,7 +141,7 @@ class EditUserViewer(LoginRequiredMixin,UpdateView):
            raise Http404
 
     model = User
-    fields = ['name','email','is_active','is_masteruser']
+    fields = ['name','email','is_active']
 
     def get_success_url(self):
         return reverse_lazy('users_viewers_list')

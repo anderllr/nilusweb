@@ -1,6 +1,7 @@
-    <table id="myTable" class="table table-bordered table-striped">
+    <table id="tabela_propriedades" class="table table-bordered table-striped table-vcenter js-dataTable-full">
                 <thead>
                     <tr>
+                        <th></th>
                         <th>Propriedade</th>
                         <th>I.E</th>
                         <th>Empresa</th>
@@ -12,17 +13,23 @@
                 <tbody>
                 {% for prop in prop %}
                     <tr>
-                        <td><small>{{ prop.razao }}</small></td>
-                        <td><small>{{ prop.ie }}</small></td>
-                        <td><small>{{ prop.company }}</small></td>
+                        <td>{{ prop.num_propriety }}</td>
+                        <td class="font-w600">{{ prop.razao }}</td>
+                        <td>{{ prop.ie }}</td>
+                        <td>{{ prop.company }}</td>
                         <td>{% if prop.situacao == True %}
-                            <small><span class="label label-success">Ativo</span></small>
+                            <span class="badge badge-success">A</span>
                             {% else %}
-                            <small><span class="label label-default">Inativo</span></small>
+                            <span class="badge badge-danger">I</span>
                             {% endif %}</td>
-                        <td><small>{{ prop.data_cadastro|date:'d/m/Y' }}</small></td>
-                        <td><a class="btn btn-success btn btn-sm edit_propriety" title="Editar " href="{% url 'edit_propriety' prop.pk  %}"><i class="fa fa-edit"></i><small></small></a>
-                            <a class="btn btn-danger btn btn-sm delete_company" title="Editar " href="{% url 'delete_propriety' prop.pk  %}"><i class="fa fa-trash-o"></i><small></small></a>
+                        <td>{{ prop.data_cadastro|date:'d/m/Y' }}</td>
+                        <td >
+                             <button type="button" class="btn btn-sm btn-outline-secondary edit_propriety"  href="{% url 'edit_propriety' prop.pk  %}" data-toggle="tooltip" data-placement="bottom" title="Editar">
+                                <i class="fa fa-pencil"></i>
+                             </button>
+                             <button type="button" class="btn btn-sm btn-outline-danger delete_propriety"  href="{% url 'delete_propriety' prop.pk  %}" data-toggle="tooltip" data-placement="bottom" title="Excluir">
+                                <i class="fa fa-trash-o"></i>
+                             </button>
                         </td>
 
                     </tr>

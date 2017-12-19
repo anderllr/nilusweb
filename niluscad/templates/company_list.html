@@ -1,54 +1,38 @@
 {% extends "menu.html" %}
-{% load static widget_tweaks humanize  l10n  %}
+{% load static widget_tweaks humanize %}
 
 
 
 <!-- Bread crumb and right sidebar toggle -->
-{% block title_page %} Empresas {% endblock %}
+{% block title %} Cadastro de Empresas {% endblock %}
 
 {% block page_body %}
 
-
-<div class="card">
-    <div class="card-body">
-        <h4 class="card-title">Cadastros</h4>
-        <h6 class="card-subtitle">Cadastro de Empresas
-            <div class="col-md-2 pull-right">
-                     <a class="btn btn-success btn new_company" title="Nova Empresa " href="{% url 'create_company' %}"><i class="fa fa-plus"></i><small> Cadastrar</small></a>
+<div class="block">
+    <div class="block-content">
+        <div class="row pull-right btn-insert">
+        <button type="button" class="btn btn-outline-primary mr-5 mb-5  new_company">
+                 <i class="fa fa-plus mr-5"></i> Nova Empresa
+        </button>
+        </div>
+        <div>
+            <div class="row">
+                <div class="form_inc col-md-12">
+                </div>
             </div>
-        </h6>
-        <br>
-        <div class="card card-outline-success form_new_registro">
-                 <div class="card-header">
-                     <h4 class="m-b-0 text-white">Incluir Empresa<button type="button" class="close cancel_create">×</button></h4>
-                            </div>
-                 <div class="card-body">
-
-
-                 </div>
-        </div>
-
-        <div class="card card-outline-warning form_edit_registro">
-                 <div class="card-header">
-                     <h4 class="m-b-0 text-white">Editar Empresa<button type="button" class="close cancel_create">×</button></h4>
-                            </div>
-                 <div class="card-body">
-
-
-                 </div>
+            <div class="row">
+                <div class="form_edit col-md-12"></div>
+            </div>
         </div>
 
 
-        <div class="table-responsive table_companys">
-          {% include '_table_companys.html' %}
+
+        </div>
+        <div class="row table table_empresas">
+         {% include '_table_companys.html' %}
         </div>
     </div>
 </div>
-
-
-
-
-
 
 
 {% endblock %}
@@ -56,23 +40,20 @@
 
 {% block javascript %}
 
-$('.form_new_registro').hide();
-$('.form_edit_registro').hide();
-$('.naomostra').hide();
-
-
-function load_companys(){
-      $('.table_companys').load('{{ request.path }}');
-      }
 
 
 
+$('.form_inc').hide();
+$('.form_edit').hide();
+
+var close_modal
+
+function loading_viewers(){
+      $('.table_empresas').load('{{ request.path }}');
+}
 
 
-
-
-
-table = $('#myTable').DataTable({
+table = $('#tabela_empresas').DataTable({
     "language": {
      "lengthMenu": "Mostrando _MENU_ registros por página",
      "search" : "Procurar: ",
@@ -100,399 +81,123 @@ table = $('#myTable').DataTable({
 });
 
 
+
+
+
+
+<!-- Create Company -->
+
 $(".new_company").on("click",function(e){
-    e.preventDefault();
+     e.preventDefault();
+     $(".form_inc").load("{% url 'create_company' %}", function(){
+        $('.form_inc').show("puff");
+        $('.new_company').hide("drop");
+        $('.table_empresas').hide("drop");
+        $('.btn_busca').hide();
 
-        $(".form_new_registro .card-body").load("{% url 'create_company' %}", function(){
-              $('.form_new_registro').show("puff");
-              $(".btn_busca").hide();
-              $(".campo_obrigatorio").hide();
-              $(".principal").hide();
-              $(".endereco").hide();
-              $(".contato").hide();
-              $(".pos_submit_cnpj").hide();
-              $(".pos_submit_razao").hide();
-              $(".pos_submit_endereco").hide();
-              $("#id_cnpj_cpf").focus();
-              $('.floating-labels .form-control').on('focus blur', function (e) {
-                    $(this).parents('.form-group').toggleClass('focused', (e.type === 'focus' || this.value.length > 0));
-              }).trigger('blur');
+        {% include 'js_floating_labels.html' %}
+        {% include 'js_tabs.html' %}
+        {% include 'js_pesquisas_cnpj_cep.html' %}
 
-
-              $("#id_cnpj_cpf").keyup(function(e){
-                if($(this).val().length > 12){
-                    $(".btn_busca").show();
-                }
-              });
-
-                      function limpa_formulario_cadastro(){
-                               $("#id_cnpj_cpf").val("");
-                               $("#id_razao").val("");
-                               $("#id_fantasia").val("");
-                               $("#id_cep").val("");
-                               $("#id_endereco").val("");
-                               $("#id_numero").val("");
-                               $("#id_complemento").val("");
-                               $("#id_bairro").val("");
-                               $("#id_uf").val("");
-                      }
-
-                      $("#btn_busca_cnpj").on("click",function(e){
-                            var cnpj = $("#id_cnpj_cpf").val().replace(/\D/g, '');
-
-
-                        if (cnpj != "") {
-                            //Preenche os campos com "..." enquanto consulta webservice.
-                                $("#id_razao").val("...");
-                                $(".retorno_busca").toggleClass("focused");
-                                $("#id_fantasia").val("...");
-                                $("#id_cep").val("...");
-                                $("#id_endereco").val("...");
-                                $("#id_numero").val("...");
-                                $("#id_cidade").val("...");
-                                $("#id_complemento").val("...");
-                                $("#id_bairro").val("...");
-                                $("#id_uf").val("...");
-
-                                //Consulta o webservice receitaws.com.br/
-                                $.getJSON("//www.receitaws.com.br/v1/cnpj/"+cnpj, function(dados) {
-                                var checkcnpj = dados.cnpj
-
-                                if(checkcnpj != undefined){
-                                           //Atualiza os campos com os valores da consulta.
-                                        $("#id_razao").val(dados.nome);
-                                        $("#id_fantasia").val(dados.fansasia);
-                                        $("#id_cep").val(dados.cep);
-                                        $("#id_endereco").val(dados.logradouro);
-                                        $("#id_numero").val(dados.numero);
-                                        $("#id_complemento").val(dados.complemento);
-                                        $("#id_bairro").val(dados.bairro);
-                                        $("#id_uf").val(dados.uf);
-                                }
-                                else {
-                                    limpa_formulario_cadastro();
-                                    alert("cnpj inválido");
-                                }
-
-
-                           });
-                          } //end if.
-                          else {
-                                 //CNPJ sem valor, limpa formulário.
-                                 limpa_formulario_cadastro();
-                          }
-                      });
-
-
-                      function limpa_formulário_cep() {
-                        // Limpa valores do formulário de cep.
-                        $("#id_endereco").val("");
-                        $("#id_bairro").val("");
-                        $("#id_cidade").val("");
-                        $("#id_uf").val("");
-                      }
-
-                      $("#id_cep").blur(function() {
-
-                        //Nova variável "cep" somente com dígitos.
-
-                        var cep = $(this).val().replace(/\D/g, '');
-
-                        //Verifica se campo cep possui valor informado.
-                        if (cep != "") {
-
-                            //Expressão regular para validar o CEP.
-                            var validacep = /^[0-9]{8}$/;
-
-                            //Valida o formato do CEP.
-                            if(validacep.test(cep)) {
-                                $(".cep").toggleClass("focused");
-                                //Preenche os campos com "..." enquanto consulta webservice.
-                                $("#id_endereco").val("...");
-                                $("#id_bairro").val("...");
-                                $("#id_cidade").val("...");
-                                $("#id_uf").val("...");
-
-                                //Consulta o webservice viacep.com.br/
-                                $.getJSON("//viacep.com.br/ws/"+ cep +"/json/?callback=?", function(dados) {
-
-                                    if (!("erro" in dados)) {
-                                        //Atualiza os campos com os valores da consulta.
-                                        $("#id_endereco").val(dados.logradouro);
-                                        $("#id_bairro").val(dados.bairro);
-                                        $("#id_cidade").val(dados.localidade);
-                                        $("#id_uf").val(dados.uf);
-                                    } //end if.
-                                    else {
-                                        //CEP pesquisado não foi encontrado.
-                                        limpa_formulário_cep();
-                                        alert("CEP não encontrado.");
-                                    }
-                                });
-                            } //end if.
-                            else {
-                                //cep é inválido.
-                                limpa_formulário_cep();
-                                alert("Formato de CEP inválido.");
-                            }
-                        } //end if.
-                        else {
-                            //cep sem valor, limpa formulário.
-                            limpa_formulário_cep();
-                        }
-                      });
-
-
-                    $(".submit").on("click",function(e){
-                        if($("#id_cnpj_cpf").val().length < 0){
-                            $(".pos_submit_cnpj").hide();
-                            $(".campo_obrigatorio").show();
-                            $(".principal").show();
-                            e.preventDefault();
-                        }
-
-                        if($("#id_razao").val().length == 0){
-                            $(".pos_submit_razao").hide();
-                            $(".campo_obrigatorio").show();
-                            $(".principal").show();
-                            e.preventDefault();
-
-                        }
-
-                        if($("#id_endereco").val().length == 0){
-                            $(".pos_submit_endereco").show();
-                            $(".campo_obrigatorio").show();
-                            $(".endereco").show();
-                            e.preventDefault();
-                        }
-                    });
+          $(".form_inc .cancel_form").on("click",function(e){
+             $('.form_inc').hide("drop");
+             $('.new_company').show();
+             $('.table_empresas').show();
+          });
 
 
 
-              $(".cancel_create").on("click",function(e){
-                $('.form_new_registro').hide("drop");
-              });
-        });
-
-        <!-- JS de modais e inclusoes -->
-
+    });
 });
 
 
-var ok = {{ ok }}
 
-    $(".form_new_registro .card-body").on("submit","form",function(e){
+    $(".form_inc").on("submit","form",function(e){
 	 	 e.preventDefault();
 	 	 var dados = $(this).serialize();
 	 	 $.post("{% url 'create_company' %}",dados,function(result){
-	 	    $(".form_new_registro .card-body").html(result);
-	 	    if(ok==ok){
-	 	       $('.form_new_registro').hide();
-                window.location.reload();
+	 	    $(".form_inc").html(result);
+	 	    if(close_modal==true){
+	 	       $('.form_inc').hide("drop");
+               $('.new_company').show();
+               loading_viewers();
+               $('.table_empresas').show();
+
      	    }
  	        else{
- 	           $('.form_new_registro .card-body').show();
+                $(".form_inc").show();
+                $('.btn_busca').hide();
+                {% include 'js_floating_labels.html' %}
+                {% include 'js_tabs.html' %}
+                {% include 'js_pesquisas_cnpj_cep.html' %}
+
+                   $(".form_inc .cancel_form").on("click",function(e){
+             $('.form_inc').hide("drop");
+             $('.new_company').show();
+             $('.table_empresas').show();
+          });
+
+
  	        }
 	 	 });
 	});
 
-
-
-
-
-
-
-
-
-
-var ok = {{ ok }}
-
-$(".table_companys").on("click", ".edit_company", function(e){
-        e.preventDefault();
-  		$(".form_edit_registro .card-body").load($(this).attr('href'), function(){
-              $('.form_edit_registro').show("slide");
-              $('.table_companys').hide("puff");
-               $(".btn_busca").hide();
-              $(".campo_obrigatorio").hide();
-              $(".principal").hide();
-              $(".endereco").hide();
-              $(".contato").hide();
-              $(".pos_submit_cnpj").hide();
-              $(".pos_submit_razao").hide();
-              $(".pos_submit_endereco").hide();
+<!-- Edit Company -->
+$('.table_empresas').on('click', '.edit_company',function(e){
+    e.preventDefault();
+    $(".form_edit ").load($(this).attr('href'), function(){
+              $('.form_edit').show("slide");
+               $('.new_company').hide("drop");
+              $('.table_empresas').hide("puff");
+              $(".btn_busca").hide();
               $("#id_cnpj_cpf").focus();
 
+              {% include 'js_floating_labels.html' %}
+              {% include 'js_tabs.html' %}
+              {% include 'js_pesquisas_cnpj_cep.html' %}
 
-
-
-              function limpa_formulario_cadastro(){
-                       $("#id_cnpj_cpf").val("");
-                       $("#id_razao").val("");
-                       $("#id_fantasia").val("");
-                       $("#id_cep").val("");
-                       $("#id_endereco").val("");
-                       $("#id_numero").val("");
-                       $("#id_complemento").val("");
-                       $("#id_bairro").val("");
-                       $("#id_uf").val("");
-              }
-
-              $("#btn_busca_cnpj").on("click",function(e){
-                    var cnpj = $("#id_cnpj_cpf").val().replace(/\D/g, '');
-
-                if (cnpj != "") {
-                    //Preenche os campos com "..." enquanto consulta webservice.
-                        $("#id_razao").val("...");
-                        $("#id_fantasia").val("...");
-                        $("#id_cep").val("...");
-                        $("#id_endereco").val("...");
-                        $("#id_numero").val("...");
-                        $("#id_complemento").val("...");
-                        $("#id_bairro").val("...");
-                        $("#id_uf").val("...");
-
-                        //Consulta o webservice receitaws.com.br/
-                        $.getJSON("//www.receitaws.com.br/v1/cnpj/"+cnpj, function(dados) {
-                        var checkcnpj = dados.cnpj
-
-                        if(checkcnpj != undefined){
-                                   //Atualiza os campos com os valores da consulta.
-                                $("#id_razao").val(dados.nome);
-                                $("#id_fantasia").val(dados.fansasia);
-                                $("#id_cep").val(dados.cep);
-                                $("#id_endereco").val(dados.logradouro);
-                                $("#id_numero").val(dados.numero);
-                                $("#id_complemento").val(dados.complemento);
-                                $("#id_bairro").val(dados.bairro);
-                                $("#id_uf").val(dados.uf);
-                        }
-                        else {
-                            limpa_formulario_cadastro();
-                            alert("cnpj inválido");
-                        }
-
-
-                   });
-                  } //end if.
-                  else {
-                         //CNPJ sem valor, limpa formulário.
-                         limpa_formulario_cadastro();
-                  }
+              $(".form_edit .cancel_form").on("click",function(e){
+                  $('.form_edit').hide("drop");
+                  $('.new_company').show();
+                  $('.table_empresas').show();
               });
-
-
-              function limpa_formulário_cep() {
-                // Limpa valores do formulário de cep.
-                $("#id_endereco").val("");
-                $("#id_bairro").val("");
-                $("#id_cidade").val("");
-                $("#id_uf").val("");
-              }
-
-              $("#id_cep").blur(function() {
-
-                //Nova variável "cep" somente com dígitos.
-                var cep = $(this).val().replace(/\D/g, '');
-
-                //Verifica se campo cep possui valor informado.
-                if (cep != "") {
-
-                    //Expressão regular para validar o CEP.
-                    var validacep = /^[0-9]{8}$/;
-
-                    //Valida o formato do CEP.
-                    if(validacep.test(cep)) {
-
-                        //Preenche os campos com "..." enquanto consulta webservice.
-                        $("#id_endereco").val("...");
-                        $("#id_bairro").val("...");
-                        $("#id_cidade").val("...");
-                        $("#id_uf").val("...");
-
-                        //Consulta o webservice viacep.com.br/
-                        $.getJSON("//viacep.com.br/ws/"+ cep +"/json/?callback=?", function(dados) {
-
-                            if (!("erro" in dados)) {
-                                //Atualiza os campos com os valores da consulta.
-                                $("#id_endereco").val(dados.logradouro);
-                                $("#id_bairro").val(dados.bairro);
-                                $("#id_cidade").val(dados.localidade);
-                                $("#id_uf").val(dados.uf);
-                            } //end if.
-                            else {
-                                //CEP pesquisado não foi encontrado.
-                                limpa_formulário_cep();
-                                alert("CEP não encontrado.");
-                            }
-                        });
-                    } //end if.
-                    else {
-                        //cep é inválido.
-                        limpa_formulário_cep();
-                        alert("Formato de CEP inválido.");
-                    }
-                } //end if.
-                else {
-                    //cep sem valor, limpa formulário.
-                    limpa_formulário_cep();
-                }
-              });
-
-
-            $(".submit").on("click",function(e){
-
-
-                if($("#id_razao").val().length == 0){
-                    $(".pos_submit_razao").hide();
-                    $(".campo_obrigatorio").show();
-                    $(".principal").show();
-                    e.preventDefault();
-
-                }
-
-                if($("#id_endereco").val().length == 0){
-                    $(".pos_submit_endereco").show();
-                    $(".campo_obrigatorio").show();
-                    $(".endereco").show();
-                    e.preventDefault();
-                }
-            });
-
-             $(".cancel_create").on("click",function(e){
-                $('.form_edit_registro').hide("drop");
-                   $('.table_companys').show("puff");
-              });
-
-	          });
-
+    });
 
 
 });
 
 
 
-
-$(".form_edit_registro .card-body").on("submit","form",function(e){
+$(".form_edit").on("submit","form",function(e){
 	 	 e.preventDefault();
 
 	 	 var dados = $(this).serialize();
 	 	 $.post($(this).attr('action'),dados,function(result){
-	 	    $(".form_edit_registro .card-body").html(result);
+	 	    $(".form_edit").html(result);
 	 	    if(ok==ok){
-	 	       $('.form_edit_registro').hide("drop");
+	 	       $('.form_edit').hide("drop");
                  window.location.reload();
 
 	 	    }
 	 	    else{
-	 	       $('.form_edit_registro .card-body').show("puff");
-	 	    }
+	 	       $('.form_edit').show("puff");
+                $('.btn_busca').hide();
+                {% include 'js_floating_labels.html' %}
+                {% include 'js_tabs.html' %}
+                {% include 'js_pesquisas_cnpj_cep.html' %}
+
+                $(".form_inc .cancel_form").on("click",function(e){
+                    $('.form_edit').hide("drop");
+                    $('.new_company').show();
+                    $('.table_empresas').show();
+	 	        });
+            }
 	 	 });
 	 });
 
 
 
-
-$(".delete_company").on("click", function(e){
+    $(".delete_company").on("click", function(e){
 
     e.preventDefault();
     var linkURL = $(this).attr("href");
@@ -517,13 +222,9 @@ $(".delete_company").on("click", function(e){
 
             swal("Cancelado", "Exclusão cancelada", "error");
         }
-});
-
 	});
 
-
-
-
+});
 
 
 

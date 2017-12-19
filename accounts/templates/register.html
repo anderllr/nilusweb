@@ -1,177 +1,302 @@
 {% load static widget_tweaks %}
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<!--[if lte IE 9]>     <html lang="en" class="no-focus lt-ie10 lt-ie10-msg"> <![endif]-->
+<!--[if gt IE 9]><!--> <html lang="en" class="no-focus"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
 
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <!-- Tell the browser to be responsive to screen width -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <!-- Favicon icon -->
-    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'assets/images/favicon.png' %}">
-    <title>Nilus - Agronegócio | Registro de Conta.</title>
-    <!-- Bootstrap Core CSS -->
-    <link href="{% static 'assets/plugins/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
-    <link href="{% static 'assets/plugins/wizard/stepsRegister.css' %}" rel="stylesheet">
-    <!--alerts CSS -->
-    <link href="{% static 'assets/plugins/sweetalert/sweetalert.css' %}" rel="stylesheet" type="text/css">
-    <!-- Custom CSS -->
-    <link href="{% static 'css/style.css' %}" rel="stylesheet">
-    <!-- You can change the theme colors from here -->
-    <link href="{% static 'css/colors/green.css' %}" id="theme" rel="stylesheet">
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-<![endif]-->
-</head>
+        <title>Nilus - Soluções para o Agronegócio &amp; Versão WEB</title>
 
-<body>
+        <meta name="description" content="Nilus - Soluções para o Agronegócio &amp; Versão WEB">
+        <meta name="author" content="pixelcave">
+        <meta name="robots" content="noindex, nofollow">
 
+        <!-- Open Graph Meta -->
+        <meta property="og:title" content="Nilus - Soluções para o Agronegócio &amp; Versão WEB">
+        <meta property="og:site_name" content="Nilus Agronegócio">
+        <meta property="og:description" content="Nilus - Soluções para o Agronegócio &amp; Versão WEB">
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="">
+        <meta property="og:image" content="">
 
-       <div class="login-register" style="background-image:url( {% static 'assets/images/background/login-nilus.jpg' %});">
-       <div class="row" id="validation">
+        <!-- Icons -->
+        <!-- The following icons can be replaced with your own, they are used by desktop and mobile browsers -->
+        <link rel="shortcut icon" href="{% static 'assets/img/favicons/favicon.png' %}">
+        <link rel="icon" type="image/png" sizes="192x192" href="{% static 'assets/img/favicons/favicon-192x192.png' %}">
+        <link rel="apple-touch-icon" sizes="180x180" href="{% static 'assets/img/favicons/apple-touch-icon-180x180.png' %}">
+        <!-- END Icons -->
 
-           <div class="col-2"></div>
-                    <div class="col-9">
-                        <div class="card wizard-content">
-                            <div class="card-body">
-                                <h4 class="card-title">Cadastro de Conta</h4>
-                                <h6 class="card-subtitle">Informe os dados abaixo para iniciar a utilização da aplicação</h6>
-                                <form action="" class="validation-wizard wizard-circle" method="post">
-                                     {% csrf_token %}
-                                     {% for error in form.non_field_errors %}
-                                         {{ error }}
-                                        {% endfor %}
-                                    <!-- Step 1 -->
-                                    <h6>Dados de Acesso</h6>
+        <!-- Stylesheets -->
+        <!-- Codebase framework -->
+        <link rel="stylesheet" id="css-main" href="{% static 'assets/css/codebase.min.css' %}">
+        <link rel="stylesheet" id="css-theme" href="{% static 'assets/css/themes/flat.min.css' %}">
 
-                                    <section>
-                                        <div class="row">
-                                            <div class="col-4">
-                                                <div class="form-group">
-                                                    <label for="username">{{ form.username.label_tag }} <span class="danger">*</span> </label>
+        <!-- You can include a specific file from css/themes/ folder to alter the default color theme of the template. eg: -->
+        <!-- <link rel="stylesheet" id="css-theme" href="assets/css/themes/flat.min.css"> -->
+        <!-- END Stylesheets -->
+    </head>
+    <body>
+        <!-- Page Container -->
+        <!--
+            Available classes for #page-container:
+
+        GENERIC
+
+            'enable-cookies'                            Remembers active color theme between pages (when set through color theme helper Codebase() -> uiHandleTheme())
+
+        SIDEBAR & SIDE OVERLAY
+
+            'sidebar-r'                                 Right Sidebar and left Side Overlay (default is left Sidebar and right Side Overlay)
+            'sidebar-mini'                              Mini hoverable Sidebar (screen width > 991px)
+            'sidebar-o'                                 Visible Sidebar by default (screen width > 991px)
+            'sidebar-o-xs'                              Visible Sidebar by default (screen width < 992px)
+            'sidebar-inverse'                           Dark themed sidebar
+
+            'side-overlay-hover'                        Hoverable Side Overlay (screen width > 991px)
+            'side-overlay-o'                            Visible Side Overlay by default
+
+            'side-scroll'                               Enables custom scrolling on Sidebar and Side Overlay instead of native scrolling (screen width > 991px)
+
+        HEADER
+
+            ''                                          Static Header if no class is added
+            'page-header-fixed'                         Fixed Header
+
+        HEADER STYLE
+
+            ''                                          Classic Header style if no class is added
+            'page-header-modern'                        Modern Header style
+            'page-header-inverse'                       Dark themed Header (works only with classic Header style)
+            'page-header-glass'                         Light themed Header with transparency by default
+                                                        (absolute position, perfect for light images underneath - solid light background on scroll if the Header is also set as fixed)
+            'page-header-glass page-header-inverse'     Dark themed Header with transparency by default
+                                                        (absolute position, perfect for dark images underneath - solid dark background on scroll if the Header is also set as fixed)
+
+        MAIN CONTENT LAYOUT
+
+            ''                                          Full width Main Content if no class is added
+            'main-content-boxed'                        Full width Main Content with a specific maximum width (screen width > 1200px)
+            'main-content-narrow'                       Full width Main Content with a percentage width (screen width > 1200px)
+        -->
+        <div id="page-container" class="main-content-boxed">
+            <!-- Main Container -->
+            <main id="main-container">
+                <!-- Page Content -->
+                <div class="bg-image" style="background-image: url('{% static 'assets/img/photos/login-nilus.jpg' %}');">
+                    <div class="row mx-0 bg-earth-op">
+                        <div class="hero-static col-md-6 col-xl-8 d-none d-md-flex align-items-md-end">
+                            <div class="p-30 invisible" data-toggle="appear">
+                                <p class="font-size-h3 font-w600 text-white mb-5">
+                                    O plantio deve continuar
+                                </p>
+                                <p class="font-size-h5 text-white">
+                                    <i class="fa fa-angles-right"></i> A Nilus estará sempre focada em apoiar o agronegócio pois entende que é a essência da sobrevivência humana
+                                </p>
+                                <p class="font-italic text-white-op">
+                                    Copyright &copy; <span class="js-year-copy">2017</span>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="hero-static col-md-6 col-xl-4 d-flex align-items-center bg-white">
+                            <div class="content content-full">
+                                <!-- Header -->
+                                <div class="px-30 py-10">
+                                    <a class="link-effect font-w700" href="index.html">
+                                        <img src="{% static 'assets/img/photos/logo_nilus_text.png' %}" height="80" width="180">
+                                    </a>
+                                    <h1 class="h3 font-w700 mt-30 mb-10">Criar nova conta.</h1>
+                                    <h2 class="h5 font-w400 text-muted mb-0">Informe seus dados abaixo.</h2>
+                                </div>
+                                <!-- END Header -->
+                                <br>
+                                <!-- Sign Up Form -->
+                                <!-- jQuery Validation (.js-validation-signup class is initialized in js/pages/op_auth_signup.js) -->
+                                <!-- For more examples you can check out https://github.com/jzaefferer/jquery-validation -->
+                                <div>
+                                    <div class="js-wizard-simple block">
+                                <!-- Wizard Progress Bar -->
+                                <div class="progress rounded-0" data-wizard="progress">
+                                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 34.3333%; height: 8px;" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                                <!-- END Wizard Progress Bar -->
+
+                                <!-- Step Tabs -->
+                                <ul class="nav nav-tabs nav-tabs-alt nav-fill" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" href="#wizard-progress2-step1" data-toggle="tab">1. Acesso</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#wizard-progress2-step2" data-toggle="tab">2. Info. da Conta</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#wizard-progress2-step3" data-toggle="tab">3. Senha</a>
+                                    </li>
+                                </ul>
+                                <!-- END Step Tabs -->
+
+                                <!-- Form -->
+                                <form action="" method="post">
+                                    <!-- Steps Content -->
+                                    <div class="block-content block-content-full tab-content" style="min-height: 274px;">
+                                        {% csrf_token %}
+                                             {% for error in form.non_field_errors %}
+                                                <div class="alert-danger alert">
+                                                {{ error }}
+                                                </div>
+                                             {% endfor %}
+                                        <!-- Step 1 -->
+                                        <div class="tab-pane active" id="wizard-progress2-step1" role="tabpanel">
+                                            <div class="form-group">
+                                                <div class="form-material floating">
                                                     {% render_field form.username class='form-control required' id="username" name="username" %}
+                                                    <label for="id_username">Usuário</label>
                                                     {% for error in form.username.errors %}
 			                                           <label class="text-danger">{{ error }}</label>
 			                                        {% endfor %}
                                                 </div>
                                             </div>
-                                            <div class="col-7">
-                                               <div class="form-group">
-                                                  <label for="name">{{ form.name.label_tag }} <span class="danger">*</span> </label>
-                                                  {% render_field form.name class='form-control required' id="name" name="name" %}
-                                                   {% for error in form.name.errors %}
+                                             <div class="form-group">
+                                                <div class="form-material floating">
+                                                    {% render_field form.name class='form-control required'  name="name" %}
+                                                    <label for="id_name">Nome</label>
+                                                    {% for error in form.name.errors %}
 			                                           <label class="text-danger">{{ error }}</label>
 			                                        {% endfor %}
-                                               </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-11">
-                                                <div class="form-group">
-                                                    <label for="email">{{ form.email.label_tag }} <span class="danger">*</span> </label>
-                                                    {% render_field form.email class='form-control required' id="email" name="firstName" %}
+                                             <div class="form-group">
+                                                <div class="form-material floating">
+                                                    {% render_field form.email class='form-control required' name="email" %}
+                                                    <label for="id_email">E-mail</label>
                                                     {% for error in form.email.errors %}
 			                                           <label class="text-danger">{{ error }}</label>
 			                                        {% endfor %}
                                                 </div>
                                             </div>
                                         </div>
-                                    </section>
-                                    <!-- Step 2 -->
-                                    <h6>Informações da Conta</h6>
-                                    <section>
-                                        <div class="row">
-                                            <div class="col-4">
-                                                <div class="form-group">
-                                                    <label for="qtd_users">{{ form.qtd_users.label_tag }} <span class="danger">*</span> </label>
-                                                    {% render_field form.qtd_users class='form-control required' id="qtd_users" name="username" %}
+                                        <!-- END Step 1 -->
+
+                                        <!-- Step 2 -->
+                                        <div class="tab-pane" id="wizard-progress2-step2" role="tabpanel">
+                                            <div class="form-group">
+                                                <div class="form-material floating">
+                                                    {% render_field form.qtd_users class='form-control required' %}
+                                                    <label for="id_qtd_users">Quantidade Usuários</label>
                                                     {% for error in form.qtd_users.errors %}
 			                                           <label class="text-danger">{{ error }}</label>
 			                                        {% endfor %}
                                                 </div>
                                             </div>
-                                            <div class="col-4">
-                                               <div class="form-group">
-                                                  <label for="qtd_unity">{{ form.qtd_unity.label_tag }} <span class="danger">*</span> </label>
-                                                  {% render_field form.qtd_unity class='form-control required' id="qtd_unity" name="qtd_unity" %}
-                                                   {% for error in form.qtd_unity.errors %}
+                                            <div class="form-group">
+                                                <div class="form-material floating">
+                                                    {% render_field form.qtd_unity class='form-control required' %}
+                                                    <label for="id_qtd_unity">Quantidade Empresas</label>
+                                                    {% for error in form.id_qtd_unity.errors %}
 			                                           <label class="text-danger">{{ error }}</label>
-			                                        {% endfor %}
-                                               </div>
-                                            </div>
-                                            <div class="col-4">
-                                               <div class="form-group">
-                                                  <label for="qtd_propriety">{{ form.qtd_propriety.label_tag }} <span class="danger">*</span> </label>
-                                                  {% render_field form.qtd_propriety class='form-control required' id="qtd_propriety" name="qtd_propriety" %}
-                                                   {% for error in form.qtd_propriety.errors %}
-			                                           <label class="text-danger">{{ error }}</label>
-			                                        {% endfor %}
-                                               </div>
-                                            </div>
-                                        </div>
-                                    </section>
-                                    <!-- Step 2 -->
-                                    <h6>Senhas</h6>
-                                    <section>
-                                        <div class="row">
-                                            <div class="col-4">
-                                                <div class="form-group">
-                                                    <label for="password1">{{ form.password1.label_tag }} <span class="danger">*</span> </label>
-                                                    {% render_field form.password1 class='form-control required' id="password1" name="password1" %}
-                                                   {% for error in form.password1.errors %}
-			                                            <label class="text-danger">{{ error }}</label>
 			                                        {% endfor %}
                                                 </div>
                                             </div>
-                                            <div class="col-4">
-                                               <div class="form-group">
-                                                  <label for="password2">{{ form.password2.label_tag }} <span class="danger">*</span> </label>
-                                                  {% render_field form.password2 class='form-control required' id="password2" name="password2" %}
-                                                  {% for error in form.password2.errors %}
-			                                            <div class="danger">{{ error }}</div>
+                                            <div class="form-group">
+                                                <div class="form-material floating">
+                                                    {% render_field form.qtd_propriety class='form-control required' %}
+                                                    <label for="id_qtd_propriety">Quantidade Propriedades</label>
+                                                    {% for error in form.qtd_propriety.errors %}
+			                                           <label class="text-danger">{{ error }}</label>
 			                                        {% endfor %}
-                                               </div>
+                                                </div>
                                             </div>
                                         </div>
-                                    </section>
+                                        <!-- END Step 2 -->
+
+                                        <!-- Step 3 -->
+                                        <div class="tab-pane" id="wizard-progress2-step3" role="tabpanel">
+                                            <div class="form-group">
+                                                <div class="form-material floating">
+                                                    {% render_field form.password1 class='form-control required' %}
+                                                    <label for="id_password1">Senha</label>
+                                                    {% for error in form.password1.errors %}
+			                                           <label class="text-danger">{{ error }}</label>
+			                                        {% endfor %}
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="form-material floating">
+                                                    {% render_field form.password2 class='form-control required' %}
+                                                    <label for="id_password2">Confirmação de Senha</label>
+                                                    {% for error in form.password2.errors %}
+			                                           <label class="text-danger">{{ error }}</label>
+			                                        {% endfor %}
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+                                        <!-- END Step 3 -->
+                                    </div>
+                                    <!-- END Steps Content -->
+
+                                    <!-- Steps Navigation -->
+                                    <div class="block-content block-content-sm block-content-full bg-body-light">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <button type="button" class="btn btn-alt-secondary disabled" data-wizard="prev">
+                                                    <i class="fa fa-angle-left mr-5"></i> Voltar
+                                                </button>
+                                            </div>
+                                            <div class="col-6 text-right">
+                                                <button type="button" class="btn btn-alt-secondary" data-wizard="next">
+                                                    Avançar <i class="fa fa-angle-right ml-5"></i>
+                                                </button>
+                                                <button type="submit" class="btn btn-alt-primary d-none" data-wizard="finish">
+                                                    <i class="fa fa-check mr-5"></i> Registrar
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- END Steps Navigation -->
                                 </form>
+                                <!-- END Form -->
+                            </div>
+                                </div>
+                                <!-- END Sign Up Form -->
                             </div>
                         </div>
                     </div>
                 </div>
+                <!-- END Page Content -->
+            </main>
+            <!-- END Main Container -->
+        </div>
+        <!-- END Page Container -->
 
-    </div>
-    <script src="{% static 'assets/plugins/jquery/jquery.min.js' %}"></script>
-    <!-- Bootstrap tether Core JavaScript -->
-    <script src="{% static 'assets/plugins/bootstrap/js/popper.min.js' %}"></script>
+        <!-- Terms Modal -->
 
-    <script src="{% static 'assets/plugins/bootstrap/js/bootstrap.min.js' %}"></script>
-    <!-- slimscrollbar scrollbar JavaScript -->
-    <script src="{% static 'js/jquery.slimscroll.js' %}"></script>
-    <!--Wave Effects -->
-    <script src="{% static 'js/waves.js' %}"></script>
-    <!--Menu sidebar -->
-    <script src="{% static 'js/sidebarmenu.js' %}"></script>
-    <!--stickey kit -->
-    <script src="{% static 'assets/plugins/sticky-kit-master/dist/sticky-kit.min.js' %}"></script>
-    <script src="{% static 'assets/plugins/sparkline/jquery.sparkline.min.js' %}"></script>
-    <!--Custom JavaScript -->
-    <script src="{% static 'js/custom.min.js' %}"></script>
-    <script src="{% static 'assets/plugins/moment/min/moment.min.js' %}"></script>
-    <script src="{% static 'assets/plugins/wizard/jquery.steps_pt-br.min.js' %}"></script>
-    <script src="{% static 'assets/plugins/wizard/jquery.validateptbr.min.js' %}"></script>
-    <!-- Sweet-Alert  -->
-    <script src="{% static 'assets/plugins/sweetalert/sweetalert.min.js' %}"></script>
-    <script src="{% static 'assets/plugins/wizard/stepsRegister.js' %}"></script>
-    <!-- ============================================================== -->
-    <!-- Style switcher -->
-    <!-- ============================================================== -->
-    <script src="{% static 'assets/plugins/styleswitcher/jQuery.style.switcher.js' %}"></script>
-</body>
+        <!-- END Terms Modal -->
 
+
+
+        <!-- Codebase Core JS -->
+        <script src="{% static  'assets/js/core/jquery.min.js' %}"></script>
+        <script src="{% static  'assets/js/core/popper.min.js' %}"></script>
+        <script src="{% static 'assets/js/core/bootstrap.min.js' %}"></script>
+        <script src="{% static 'assets/js/core/jquery.slimscroll.min.js' %}"></script>
+        <script src="{% static 'assets/js/core/jquery.scrollLock.min.js' %}"></script>
+        <script src="{% static 'assets/js/core/jquery.appear.min.js' %}"></script>
+        <script src="{% static 'assets/js/core/jquery.countTo.min.js' %}"></script>
+        <script src="{% static 'assets/js/core/js.cookie.min.js' %}"></script>
+        <script src="{% static 'assets/js/codebase.js' %}"></script>
+
+        <!-- Page JS Plugins -->
+
+
+        <!-- Page JS Code -->
+        <script src="{% static 'assets/js/plugins/bootstrap-wizard/jquery.bootstrap.wizard.js' %}"></script>
+        <script src="{% static 'assets/js/plugins/jquery-validation/jquery.validate.min.js' %}"></script>
+        <script src="{% static 'assets/js/plugins/jquery-validation/additional-methods.min.js' %}"></script>
+
+
+        <script src="{% static 'assets/js/pages/be_forms_wizard.js' %}"></script>
+
+    </body>
 </html>

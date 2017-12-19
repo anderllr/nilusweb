@@ -87,7 +87,7 @@ class CreateCompany(LoginRequiredMixin,CreateView):
 
 
         if self.request.is_ajax():
-            context = self.get_context_data(form=form,ok='ok', success=True)
+            context = self.get_context_data(form=form,success=True)
             return self.render_to_response(context)
         else:
             return redirect(self.get_success_url())
@@ -119,7 +119,7 @@ class EditCompany(LoginRequiredMixin,UpdateView):
 
 
     model = Company
-    fields = [ 'razao', 'fantasia', 'cep', 'endereco', 'numero', 'complemento', 'bairro', 'cidade', 'uf',
+    fields = ['cnpj_cpf','razao', 'fantasia', 'cep', 'endereco', 'numero', 'complemento', 'bairro', 'cidade', 'uf',
               'email', 'telefone','situacao']
 
 
@@ -201,6 +201,11 @@ class CreatePropriety(LoginRequiredMixin,CreateView):
         kwargs['user'] = self.request.user
         return kwargs
 
+
+    def get_initial(self):
+        initial = super(CreatePropriety,self).get_initial()
+        initial['company'] = self.request.user.company_p
+        return initial
 
     def get_context_data(self, **kwargs):
         context = super(CreatePropriety,self).get_context_data(**kwargs)

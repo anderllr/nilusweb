@@ -1,29 +1,37 @@
-    <table id="myTable" class="table table-bordered table-striped users_viewers">
-                <thead>
-                    <tr>
-                        <th>Nome</th>
-                        <th>Usuario</th>
-                        <th>Email</th>
-                        <th>Status</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                {% for users in users_viewers %}
-                    <tr>
-                        <td><small>{{ users.name }}</small></td>
-                        <td><small>{{ users.username }}</small></td>
-                        <td><small>{{ users.email }}</small></td>
-                        <td>{% if users.is_active == True %}
-                            <small><span class="label label-success">Ativo</span></small>
-                            {% else %}
-                            <small><span class="label label-default">Inativo</span></small>
-                            {% endif %}</td>
-                        <td><a class="btn btn-success btn edit_viewer" title="Editar " href="{% url 'edit_viewer' users.pk %}"><i class="fa fa-edit"></i><small> Alterar</small></a>
-                            <a class="btn btn-info btn permissions" title="Permissões " href="{% url 'edit_permissions' users.pk %}"><i class="fa fa-key"> </i><small> Permissões</small> </a>
-                        </td>
+<table class="table table-vcenter">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Usuário</th>
+            <th>E-mail</th>
+            <th class="d-none d-sm-table-cell" style="width: 25%;">Situação</th>
+            <th class="text-center" style="width: 100px;"></th>
+        </tr>
+    </thead>
+    <tbody>
+       {% for users in users_viewers %}
+        <tr>
+            <td>{{ users.name }}</td>
+            <td>{{ users.username }}</td>
+            <td>{{ users.email }}</td>
 
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+            <td class="d-none d-sm-table-cell">
+                {% if users.is_active == True %}
+                <span class="badge badge-success">Ativo</span>
+                {% else %}
+                <span class="badge badge-danger">Inativo</span>
+                {% endif %}
+            </td>
+            <td class="text-center">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-secondary edit_viewer"  href="{% url 'edit_viewer' users.pk %}" data-toggle="tooltip" data-placement="bottom" title="Editar">
+                        <i class="fa fa-pencil"></i>
+                    </button>
+
+
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

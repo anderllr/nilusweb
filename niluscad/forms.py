@@ -10,10 +10,19 @@ class FormPropriety(forms.ModelForm):
 
     def __init__(self,user,*args,**kwargs):
         super(FormPropriety,self).__init__(*args,**kwargs)
+
         if user.is_masteruser is True:
             self.fields['company'].queryset = Company.objects.filter(master_user=user)
+            self.fields['company'].empty_label = "Selecione a empresa"
         else:
             self.fields['company'].queryset = Company.objects.filter(master_user=user.user_master)
+            self.fields['company'].empty_label = "Selecione a empresa"
+
+
+    def get_initial(self):
+        initial = super(FormPropriety,self).get_initial()
+        initial['company'] = 'Empresa'
+        return initial
 
 
     class Meta:

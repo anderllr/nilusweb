@@ -1,168 +1,200 @@
 {% load static widget_tweaks %}
 {% if success %}
    <script>
-	 close_modal=true;
+  	 close_modal=true;
+  	 ok = true;
    </script>
 {% else %}
+<div class="block block-themed block-rounded">
+    <div class="block-header bg-flat-dark">
+        <h3 class="block-title">Alterar Empresa: {{ dados_cadastro.num_company }} - {{ dados_cadastro.razao }}</div></h3>
+    </div>
+    <ul class="nav nav-tabs nav-tabs-alt" data-toggle="tabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" href="#aba_principal_edit">Principal</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#aba_endereco_edit">Endereço</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#aba_contato_edit">Contatos</a>
+        </li>
+    </ul>
 
-                     <div>
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="alert alert-danger alert-rounded campo_obrigatorio"><i class="fa fa-warning"></i>   Existe campos obrigatórios não preenchidos.
-                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"> <span aria-hidden="true">×</span> </button>
-                                        </div>
-                                <!-- Nav tabs -->
-                                <ul class="nav nav-tabs" role="tablist">
-                                    <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#principal" role="tab"><span class="hidden-sm-up"><i class="ti-home"></i></span> <span class="hidden-xs-down">Principal
-                                        <div class="notify principal"> <span class="heartbit"></span> <span class="point"></span> </div>
-                                    </span></a></li>
-                                    <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#endereco" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Endereço
-                                        <div  class="notify endereco"> <span class="heartbit"></span> <span class="point"></span> </div>
-                                    </span></a> </li>
-                                    <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#contato" role="tab"><span class="hidden-sm-up"><i class="ti-email"></i></span> <span class="hidden-xs-down">Contato
-                                        <div  class="notify contato"> <span class="heartbit"></span> <span class="point"></span> </div>
-                                    </span></a> </li>
-
-                                </ul>
-                                <form method="post" class="criaempresa" id="form_cria_empresa" action="{% url 'edit_company' object.pk %}">
-                                 {% csrf_token %}
-                                    {% for error in form.non_field_errors %}
-                                    <div class="alert-danger alert">
-                                    {{ error }}
-                                    </div>
-                                    {% endfor %}
-                                <!-- Tab panes -->
-                                        <div class="tab-content tabcontent-border">
-                                            <div class="tab-pane active p-20" id="principal" role="tabpanel">
-                                                <div class="row">
-                                                    <div class="card bg-secondary text-white p-3 text-center col-lg-12">
-                                                        <p>Código Empresa: <strong> {{ dados_cadastro.num_company }}</strong></p>
-                                                        <p>Cnpj/CPF: <strong> {{ dados_cadastro.cnpj_cpf }}</strong></p>
-
-                                                    </div>
-                                                    <!--/span-->
-                                                </div>
-                                                <div class="row p-t-20">
-                                                     <div class="col-md-6">
-                                                        <div class="form-group">
-                                                            <label class="control-label">{{form.razao.label_tag}}<span class="text-danger pos_submit_razao">*</span></label>
-                                                             {% render_field form.razao class="form-control" placeholder=form.razao.label  required="false"  %}
-                                                            {% for error in form.razao.errors %}
-                                                            <small class="form-control-feedback"> {{ error }} </small>
-                                                            {% endfor %}
-                                                        </div>
-                                                     </div>
-
-                                                    <div class="col-md-4">
-                                                           <label class="control-label">{{form.fantasia.label_tag}}</label>
-                                                             {% render_field form.fantasia class="form-control" placeholder=form.fantasia.label %}
-                                                            {% for error in form.fantasia.errors %}
-                                                            <small class="form-control-feedback"> {{ error }} </small>
-                                                            {% endfor %}
-
-                                                    </div>
-
-                                                    <div class="col-md-2">
-                                                        {% render_field form.situacao type="checkbox" %}
-
-                                                    </div>
-
-                                                </div>
-                                             </div>
-                                             <div class="tab-pane  p-20" id="endereco" role="tabpanel">
-                                                 <div class="row p-t-20">
-                                                    <div class="col-md-3">
-                                                        <div class="form-group">
-                                                            <label class="control-label">{{form.cep.label_tag}}</label>
-                                                            {% render_field form.cep class="form-control" placeholder=form.cep.label %}
-                                                            {% for error in form.cep.errors %}
-                                                            <small class="form-control-feedback"> {{ error }} </small>
-                                                            {% endfor %}
-                                                        </div>
-                                                    </div>
-                                                    <!--/span-->
-                                                    <div class="col-md-6">
-                                                        <label class="control-label">{{form.endereco.label_tag}}<span class="text-danger pos_submit_endereco">*</span></label>
-                                                             {% render_field form.endereco class="form-control" placeholder=form.endereco.label %}
-                                                            {% for error in form.endereco.errors %}
-                                                            <small class="form-control-feedback"> {{ error }} </small>
-                                                            {% endfor %}
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                           <label class="control-label">{{form.numero.label_tag}}</label>
-                                                             {% render_field form.numero class="form-control" placeholder=form.numero.label %}
-                                                            {% for error in form.numero.errors %}
-                                                            <small class="form-control-feedback"> {{ error }} </small>
-                                                            {% endfor %}
-                                                        </div>
-                                                    <!--/span-->
-                                                </div>
-                                        <!--/row-->
-                                                <div class="row">
-                                                    <div class="col-md-3">
-                                                        <div class="form-group">
-                                                            <label class="control-label">{{form.complemento.label_tag}}</label>
-                                                             {% render_field form.complemento class="form-control" placeholder=form.complemento.label %}
-                                                            {% for error in form.complemento.errors %}
-                                                            <small class="form-control-feedback"> {{ error }} </small>
-                                                            {% endfor %}
-                                                        </div>
-                                                    </div>
-                                            <!--/span-->
-                                                    <div class="col-md-4">
-                                                           <label class="control-label">{{form.bairro.label_tag}}</label>
-                                                             {% render_field form.bairro class="form-control" placeholder=form.bairro.label %}
-                                                            {% for error in form.bairro.errors %}
-                                                            <small class="form-control-feedback"> {{ error }} </small>
-                                                            {% endfor %}
-                                                    </div>
-                                                    <div class="col-md-3">
-                                                        <div class="form-group">
-                                                            <label class="control-label">{{form.cidade.label_tag}}</label>
-                                                             {% render_field form.cidade class="form-control" placeholder=form.cidade.label %}
-                                                            {% for error in form.cidade.errors %}
-                                                            <small class="form-control-feedback"> {{ error }} </small>
-                                                            {% endfor %}
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                            <label class="control-label">{{form.uf.label_tag}}</label>
-                                                            {% render_field form.uf class="form-control" placeholder=form.uf.label %}
-                                                            {% for error in form.uf.errors %}
-                                                            <small class="form-control-feedback"> {{ error }} </small>
-                                                            {% endfor %}
-                                                    </div>
-                                                </div>
-                                             </div>
-                                             <div class="tab-pane p-20" id="contato" role="tabpanel">
-                                                <div class="row p-t-20">
-                                                    <div class="col-md-7">
-                                                        <div class="form-group">
-                                                            <label class="control-label">{{form.email.label_tag}}</label>
-                                                            {% render_field form.email class="form-control" placeholder=form.email.label %}
-                                                            {% for error in form.email.errors %}
-                                                            <small class="form-control-feedback"> {{ error }} </small>
-                                                            {% endfor %}
-                                                        </div>
-                                                    </div>
-                                                    <!--/span-->
-                                                    <div class="col-md-4">
-                                                        <label class="control-label">{{form.telefone.label_tag}}</label>
-                                                             {% render_field form.telefone class="form-control" placeholder=form.telefone.label %}
-                                                            {% for error in form.telefone.errors %}
-                                                            <small class="form-control-feedback"> {{ error }} </small>
-                                                            {% endfor %}
-                                                    </div>
-                                                </div>
-                                             </div>
-                                        </div>
-                                        <br>
-                                       <div class="form-actions">
-                                        <button type="submit"  class="btn btn-success submit"> <i class="fa fa-check"></i> Salvar</button>
-                                    </div>
-                                </form>
+    <form method="post" action="{% url 'edit_company' object.pk %}">
+             {% csrf_token %}
+                {% for error in form.non_field_errors %}
+                <div class="alert-danger alert">
+                {{ error }}
+                </div>
+                {% endfor %}
+             <div class="block-content tab-content">
+                <div class="tab-pane active" id="aba_principal_edit" role="tabpanel">
+                    <div class="form-group row">
+                        <div class="col-md-4">
+                            <div class="form-material floating input-group">
+                                {% render_field  form.cnpj_cpf class='form-control' %}
+                                <label for="{{  form.cnpj_cpf.id }}">CNPJ/CPF</label>
+                                <span class="input-group-addon">
+                                    <a class="btn btn-sm btn-circle btn-outline-info mr-5 mb-5 btn_busca" id="btn_busca_cnpj"><i class="fa fa-search"></i></a>
+                                </span>
                             </div>
+                                {% for error in form.cnpj_cpf.errors %}
+                                <div class="alert alert-danger alert-dismissable">{{ error }}</div>
+                                {% endfor %}
+                        </div>
+                        <div class="col-md-8">
+                             <label class="css-control css-control-sm css-control-primary css-switch col-md-5 pull-right">
+                                {% render_field form.situacao type="checkbox" class='css-control-input' %}
+                                <span class="css-control-indicator"></span> Ativo
+                            </label>
                         </div>
                     </div>
-{% endif %}
+                    <div class="form-group row">
+                       <div class="col-md-6">
+                            <div class="form-material floating retorno_busca">
+                                {% render_field  form.razao class='form-control' %}
+                                <label for="{{  form.razao.id }}">Razão Social/Nome</label>
+                                {% for error in form.razao.errors %}
+                                <div class="alert alert-danger alert-dismissable">
+                                    <p class="mb-0">{{ error }}</p>
+                                </div>
+                                {% endfor %}
+                            </div>
+                       </div>
+                       <div class="col-md-6">
+                           <div class="form-material floating retorno_busca">
+                               {% render_field  form.fantasia class='form-control' %}
+                               <label for="{{  form.fantasia.id }}">Nome Fantasia</label>
+                               {% for error in form.fantasia.errors %}
+                               <div class="alert alert-danger alert-dismissable">
+                                   <p class="mb-0">{{ error }}</p>
+                               </div>
+                               {% endfor %}
+                           </div>
+                        </div>
+                    </div>
+                </div>
+             <div class="tab-pane" id="aba_endereco_edit" role="tabpanel">
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <div class="form-material floating retorno_busca ret_cep">
+                            {% render_field  form.cep class='form-control' %}
+                            <label for="{{  form.cep.id }}">CEP</label>
+                            {% for error in form.cep.errors %}
+                            <div class="alert alert-danger alert-dismissable">
+                                <p class="mb-0">{{ error }}</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <div class="form-material floating retorno_busca ret_cep">
+                            {% render_field  form.endereco class='form-control' %}
+                            <label for="{{  form.endereco.id }}">Endereço</label>
+                            {% for error in form.endereco.errors %}
+                            <div class="alert alert-danger alert-dismissable">
+                                <p class="mb-0">{{ error }}</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-material floating retorno_busca">
+                            {% render_field  form.numero class='form-control' %}
+                            <label for="{{  form.numero.id }}">Nº</label>
+                            {% for error in form.numero.errors %}
+                            <div class="alert alert-danger alert-dismissable">
+                                <p class="mb-0">{{ error }}</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-3">
+                        <div class="form-material floating retorno_busca">
+                            {% render_field  form.complemento class='form-control' %}
+                            <label for="{{  form.complemento.id }}">Complemento</label>
+                            {% for error in form.complemento.errors %}
+                            <div class="alert alert-danger alert-dismissable">
+                                <p class="mb-0">{{ error }}</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-material floating retorno_busca ret_cep">
+                            {% render_field  form.bairro class='form-control' %}
+                            <label for="{{  form.bairro.id }}">Bairro</label>
+                            {% for error in form.bairro.errors %}
+                            <div class="alert alert-danger alert-dismissable">
+                                <p class="mb-0">{{ error }}</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-material floating retorno_busca ret_cep">
+                            {% render_field  form.cidade class='form-control' %}
+                            <label for="{{  form.cidade.id }}">Município</label>
+                            {% for error in form.cidade.errors %}
+                            <div class="alert alert-danger alert-dismissable">
+                                <p class="mb-0">{{ error }}</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-material floating retorno_busca ret_cep">
+                            {% render_field  form.uf class='form-control' %}
+                            <label for="{{  form.uf.id }}">UF</label>
+                            {% for error in form.uf.errors %}
+                            <div class="alert alert-danger alert-dismissable">
+                                <p class="mb-0">{{ error }}</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+             </div>
+             <div class="tab-pane" id="aba_contato_edit" role="tabpanel">
+                <div class="form-group row">
+                    <div class="col-md-7">
+                        <div class="form-material floating">
+                            {% render_field  form.email class='form-control' %}
+                            <label for="{{  form.email.id }}">Email</label>
+                            {% for error in form.contato.errors %}
+                            <div class="alert alert-danger alert-dismissable">
+                                <p class="mb-0">{{ error }}</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="form-material floating">
+                            {% render_field  form.telefone class='form-control' %}
+                            <label for="{{  form.telefone.id }}">Telefone</label>
+                            {% for error in form.telefone.errors %}
+                            <div class="alert alert-danger alert-dismissable">
+                                <p class="mb-0">{{ error }}</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+             </div>
+           </div>
+           <div class="row">
+           </div>
+          <br>
+          <br>
+         <div class="form-group row ">
+                <button type="submit" class="btn btn-alt-primary">Salvar</button>
+                <button type="button"  class="btn btn-alt-secondary  cancel_form">Cancelar</button>
+         </div>
+    </form>
 
+
+</div>
+{% endif %}
