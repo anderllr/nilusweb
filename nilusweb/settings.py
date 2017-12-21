@@ -30,7 +30,7 @@ SECRET_KEY = '9+4q3dx3-s^uq-_eek5b)n09fnli04=op=#!gnb_fjqjqiaj$2'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['nilusweb.herokuapp.com']
+ALLOWED_HOSTS = ['nilus.herokuapp.com']
 
 
 # Application definition
@@ -195,7 +195,7 @@ EMAIL_PORT = 587
 
 
 
-SITE_DOMAIN = 'http://nilusweb.herokuapp.com'
+SITE_DOMAIN = 'http://nilus.herokuapp.com'
 
 
 
