@@ -43,7 +43,8 @@ urlpatterns = [
     # url(r'^permissions/(?P<pk>\d+)',views.edit_permissions,name='edit_permissions'),
 
     # Talhoes
-       url(r'^insere_talhao/$', views.create_talhao, name='create_talhao'),
+       url(r'^insere_talhao/$', views.create_talhao_create_prop, name='create_talhao_create_prop'),
+       url(r'^insere_talhao_ep/$', views.create_talhao_edit_prop, name='create_talhao_edit_prop'),
        url(r'^delete_talhao/(?P<pk>\d+)/$',views.delete_talhao, name='delete_talhao'),
 
 ]

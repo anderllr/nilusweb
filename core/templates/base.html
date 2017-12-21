@@ -34,7 +34,8 @@
         <link rel="stylesheet" id="css-theme" href="{% static 'assets/css/themes/flat.min.css' %}">
         <link rel="stylesheet" href="{% static 'assets/js/plugins/datatables/dataTables.bootstrap4.min.css' %}">
         <link href="{% static 'assets/plugins/sweetalert/sweetalert.css' %}" rel="stylesheet">
-        <link src="{% static 'assets/plugins/mini/mini-lite.css' %}" rel="stylesheet">
+        <link href="{% static 'assets/plugins/table_header_fixed/tb_header_fixed.css' %}" rel="stylesheet">
+
 
 
         <link href="{% static 'assets/css/css_chosen.css' %}" rel="stylesheet">
@@ -158,6 +159,10 @@
                                         <li>
                                             <a href="{% url 'company_list' %}">Empresas</a>
                                             <a href="{% url 'propriety_list' %}">Propriedades</a>
+                                            <a href="{% url 'cadgeral_list' %}">Fornecedores/Clientes</a>
+                                            {% if permissions.nilusFinanceiro == True %}
+                                            <a href="{% url 'conta_list' %}">Contas (Banco / Caixa)</a>
+                                            {% endif %}
                                         </li>
                                     </ul>
                                 </li>
@@ -298,6 +303,7 @@
         <script src="{% static 'assets/plugins/sweetalert/sweetalert.min.js' %}"></script>
 
         <script src="{% static 'assets/plugins/chosen/chosen_js_mjc.js' %}"></script>
+        <script src="{% static 'assets/plugins/mask/jquery.mask.js' %}"></script>
 
 
 

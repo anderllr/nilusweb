@@ -1,7 +1,7 @@
-        <table id="myTable" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0">
+        <table id="tabela_cadgeral" class="table table-bordered table-striped table-vcenter js-dataTable-full">
             <thead>
                 <tr>
-                    <th>Código</th>
+                    <th>Cód</th>
                     <th>Nome</th>
                     <th>CPF/CNPJ</th>
                     <th>Cidade</th>
@@ -9,27 +9,21 @@
                     <th></th>
                 </tr>
             </thead>
-            <tfoot>
-                <tr>
-                    <th>Código</th>
-                    <th>Nome/Razão</th>
-                    <th>CPF/CNPJ</th>
-                    <th>Cidade</th>
-                    <th>UF</th>
-                    <th></th>
-                </tr>
-            </tfoot>
             <tbody>
             {% for cad in cad %}
                 <tr>
-                    <td><small>{{ cad.num_cad }}</small></td>
-                    <td><small>{{ cad.razao }}</small></td>
-                    <td><small>{{ cad.cnpj_cpf }}</small></td>
-                    <td><small>{{ cad.cidade }}</small></td>
-                    <td><small>{{ cad.uf }}</small></td>
+                    <td>{{ cad.num_cad }}</td>
+                    <td>{{ cad.razao }}</td>
+                    <td>{{ cad.cnpj_cpf }}</td>
+                    <td>{{ cad.cidade }}</td>
+                    <td>{{ cad.uf }}</td>
                     <td>
-                        <a class="btn btn-success btn edit_cadgeral btn-sm" title="Editar " href="{% url 'edit_cadgeral' cad.pk %}"><i class="fa fa-edit"></i><small></small></a>
-                        <a class="btn btn-danger btn delete_cadgeral btn-sm " title="Excluir " href="{% url 'delete_cadgeral' cad.pk %}"><i class="fa fa-trash-o"></i><small></small></a>
+                        <button type="button" class="btn btn-sm btn-outline-secondary edit_cadgeral"  href="{% url 'edit_cadgeral' cad.pk  %}" data-toggle="tooltip" data-placement="bottom" title="Editar">
+                            <i class="fa fa-pencil"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-danger delete_cadgeral"  href="{% url 'delete_cadgeral' cad.pk  %}" data-toggle="tooltip" data-placement="bottom" title="Excluir">
+                             <i class="fa fa-trash-o"></i>
+                        </button>
                     </td>
                 </tr>
             {% endfor %}

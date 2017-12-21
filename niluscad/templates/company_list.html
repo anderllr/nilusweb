@@ -10,7 +10,7 @@
 
 <div class="block">
     <div class="block-content">
-        <div class="row pull-right btn-insert">
+        <div class="row  btn-insert">
         <button type="button" class="btn btn-outline-primary mr-5 mb-5  new_company">
                  <i class="fa fa-plus mr-5"></i> Nova Empresa
         </button>
@@ -98,6 +98,7 @@ $(".new_company").on("click",function(e){
         {% include 'js_floating_labels.html' %}
         {% include 'js_tabs.html' %}
         {% include 'js_pesquisas_cnpj_cep.html' %}
+        {% include 'js_masks.html' %}
 
           $(".form_inc .cancel_form").on("click",function(e){
              $('.form_inc').hide("drop");
@@ -155,6 +156,7 @@ $('.table_empresas').on('click', '.edit_company',function(e){
               {% include 'js_floating_labels.html' %}
               {% include 'js_tabs.html' %}
               {% include 'js_pesquisas_cnpj_cep.html' %}
+              {% include 'js_masks.html' %}
 
               $(".form_edit .cancel_form").on("click",function(e){
                   $('.form_edit').hide("drop");

@@ -10,7 +10,7 @@
 
 <div class="block">
     <div class="block-content">
-        <div class="row pull-right btn-insert">
+        <div class="row  btn-insert">
         <button type="button" class="btn btn-outline-primary mr-5 mb-5  new_propriety">
                  <i class="fa fa-plus mr-5"></i> Nova Propriedade
         </button>
@@ -37,11 +37,11 @@
 
 
 <div class="modal fade" id="modal-talhao" tabindex="-1" role="dialog" aria-labelledby="modal-slideright" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-slideright" role="document">
+            <div class="modal-dialog modal-dialog-slideright modal-sm" role="document">
                 <div class="modal-content">
                     <div class="block block-themed block-transparent mb-0">
                         <div class="block-header bg-primary-dark">
-                            <h3 class="block-title">Terms &amp; Conditions</h3>
+                            <h3 class="block-title">Inserir Talhão</h3>
                             <div class="block-options">
                                 <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
                                     <i class="si si-close"></i>
@@ -49,15 +49,10 @@
                             </div>
                         </div>
                         <div class="block-content">
-                            <p>Dolor posuere proin blandit accumsan senectus netus nullam curae, ornare laoreet adipiscing luctus mauris adipiscing pretium eget fermentum, tristique lobortis est ut metus lobortis tortor tincidunt himenaeos habitant quis dictumst proin odio sagittis purus mi, nec taciti vestibulum quis in sit varius lorem sit metus mi.</p>
-                            <p>Dolor posuere proin blandit accumsan senectus netus nullam curae, ornare laoreet adipiscing luctus mauris adipiscing pretium eget fermentum, tristique lobortis est ut metus lobortis tortor tincidunt himenaeos habitant quis dictumst proin odio sagittis purus mi, nec taciti vestibulum quis in sit varius lorem sit metus mi.</p>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-alt-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-alt-success" data-dismiss="modal">
-                            <i class="fa fa-check"></i> Perfect
-                        </button>
+                        <button type="button" class="btn btn-alt-secondary" data-dismiss="modal">Fechar</button>
                     </div>
                 </div>
             </div>
@@ -124,43 +119,46 @@ $(".new_propriety").on("click",function(e){
         $('.chosen-select').chosen({ width: '100%' });
 
 
-        $('.js-dataTable-simple').dataTable({
-            pageLength: 4,
-            lengthMenu: [[5, 2, 2], [5, 2, 2]],
-            autoWidth: false,
-            searching: false,
-            "language": {
-                "lengthMenu": "Mostrando _MENU_ registros por página",
-                "info" : "Exibindo de _START_ a _END_ de _TOTAL_ registros",
-                "infoEmpty": "Nenhum registro encontrado",
-                "infoFiltered": "(filtrado entre _MAX_ registros)",
-                "paginate" : {
-                        "first":      "Primeiro",
-                        "last":       "Último",
-                        "next":       "Próximo",
-                        "previous":   "Anterior"
-                }
-                },
-            dom: "<'row'<'col-sm-12'tr>>" +
-                "<'row'<'col-sm-6'i><'col-sm-6'p>>"
-        });
-
-
         {% include 'js_floating_labels.html' %}
         {% include 'js_tabs.html' %}
         {% include 'js_pesquisas_cnpj_cep.html' %}
-
-
+        {% include 'js_tabelas_formularios.html' %}
 
         $(".new_talhao").on("click",function(e){
-				e.preventDefault();
-                $('#modal-talhao').modal("show");
+         var area_propriedade =  $('#id_area').val();
+                if(area_propriedade == 0){
+                    swal('Verificar área.', 'A área da propriedade deve conter algum valor!', 'error');
+                }
+                else{
+                    e.preventDefault();
+                    $("#modal-talhao .block-content").load("{% url 'create_talhao_create_prop' %}", function(){
+                        $('#modal-talhao').modal("show");
+                        {% include 'js_floating_labels.html' %}
+                    });
+                }
+
         });
 
+         $("#modal-talhao .block-content").on("submit","#form_talhao_create",function(e){
+                 e.preventDefault();
+                 var dados = $(this).serialize();
+                 $.post("{% url 'create_talhao_create_prop' %}",dados,function(result){
+                    $("#modal-talhao .block-content").html(result);
+                    if(close_form==true){
+                       $('#modal-talhao').modal("hide");
+                        var total_a = $('#id_area').val();
+                        $('.tb_body_talhao_create_form').append("<tr><td><small>"+ talhao +"</small></td><td>"+ area +"</td><td><button type='button' class='btn btn-sm btn-outline-danger delete_talhao' data-toggle='tooltip' data-placement='bottom' title='Excluir' href='"+ url+" '><i class='fa fa-trash'></i></button></td></tr>");
+                        if (total_a < total_area){
+                                     swal('Verificar área.', 'A área da propriedade é menor que a soma das áreas dos talhoes!', 'info');
+                                }
+                    }
+                    else{
+                       $('#modal-talhao').modal("show");
+                    }
+                 });
+         });
 
-
-
-          $(".form_inc .cancel_form").on("click",function(e){
+         $(".form_inc .cancel_form").on("click",function(e){
              $('.form_inc').hide("drop");
              $('.new_propriety').show();
              $('.table_propriedade').show();
@@ -180,13 +178,6 @@ $(".new_propriety").on("click",function(e){
                $('.new_propriety').show();
                loading_propriety();
                $('.table_propriedade').show();
-
-
-
-
-
-
-
      	    }
  	        else{
                     $(".form_inc").show();
@@ -208,17 +199,58 @@ $('.table_propriedade').on('click', '.edit_propriety',function(e){
     e.preventDefault();
     $(".form_edit ").load($(this).attr('href'), function(){
               $('.form_edit').show("slide");
-               $('.new_propriety').hide("drop");
+              $('.new_propriety').hide("drop");
               $('.table_propriedade').hide("puff");
+              $('.chosen-select').chosen({ width: '100%' });
 
 
               {% include 'js_floating_labels.html' %}
               {% include 'js_tabs.html' %}
               {% include 'js_pesquisas_cnpj_cep.html' %}
+              {% include 'js_tabelas_formularios.html' %}
+
+                  $(".new_talhao").on("click",function(e){
+                    var area_propriedade =  $('#id_area').val();
+                    if(area_propriedade == 0){
+                        swal('Verificar área.', 'A área da propriedade deve conter algum valor!', 'error');
+                    }
+                    else{
+                        e.preventDefault();
+                        $("#modal-talhao .block-content").load("{% url 'create_talhao_edit_prop' %}", function(){
+                           $('#modal-talhao').modal("show");
+                          {% include 'js_floating_labels.html' %}
+                        });
+                    }
+                  });
+
+                 $("#modal-talhao .block-content").on("submit","form",function(e){
+                         e.preventDefault();
+                         var dados = $(this).serialize();
+                         $.post("{% url 'create_talhao_edit_prop' %}",dados,function(result){
+                            $("#modal-talhao .block-content").html(result);
+                            if(close_form==true){
+                               $('#modal-talhao').modal("hide");
+                                var total_a = $('#id_area').val();
+                                $('.tb_body_talhao_edit_form').append("<tr><td>"+ talhao +"</td><td>"+ area +"</td><td><button type='button' class='btn btn-sm btn-outline-danger delete_talhao' data-toggle='tooltip' data-placement='bottom' title='Excluir' href='"+ url+" '><i class='fa fa-trash'></i></button></td></tr>");
+                                if (total_a < total_area){
+
+                                    swal('Verificar área.', 'A área da propriedade é menor que a soma das áreas dos talhoes!', 'info');
+                                }
+
+
+
+                            }
+                            else{
+                               $('#modal-talhao').modal("show");
+                            }
+                         });
+                 });
+
+
 
               $(".form_edit .cancel_form").on("click",function(e){
                   $('.form_edit').hide("drop");
-                  $('.new_company').show();
+                  $('.new_propriety').show();
                   $('.table_propriedade').show();
               });
     });
@@ -257,7 +289,7 @@ $(".form_edit").on("submit","form",function(e){
 
 
 
-    $(".delete_company").on("click", function(e){
+    $(".delete_propriety").on("click", function(e){
 
     e.preventDefault();
     var linkURL = $(this).attr("href");

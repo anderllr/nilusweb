@@ -1,4 +1,17 @@
-$('#body-table-talhao').on('click','.delete_talhao',function(e){
+$('.tb_body_talhao_create_form').on('click','.delete_talhao',function(e){
+  e.preventDefault();
+  var $this = $(this);
+  if(confirm('Deseja excluir este Talhão?')){
+
+      $.get($(this).attr('href'),function(data){
+         $this.closest('tr').remove();
+        });
+    }
+});
+
+
+
+$('.tb_body_talhao_edit_form').on('click','.delete_talhao',function(e){
   e.preventDefault();
   var $this = $(this);
   if(confirm('Deseja excluir este Talhão?')){

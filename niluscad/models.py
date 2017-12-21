@@ -195,7 +195,7 @@ class PlanoFinan(models.Model):
 class Talhao(models.Model):
 
     propriety = models.ForeignKey('niluscad.Propriety',verbose_name='Propriedade',null=True,blank=True)
-    area = models.PositiveIntegerField('Area',default=0)
+    area = models.DecimalField('Área',max_digits=13,decimal_places=2,blank=True,null=True)
     talhao = models.CharField('Nome Talhão',max_length=50)
     user_cad = models.ForeignKey('accounts.User',verbose_name='Usuario Criação')
 

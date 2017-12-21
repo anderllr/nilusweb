@@ -1,0 +1,180 @@
+{% load static widget_tweaks %}
+{% if success %}
+   <script>
+	   close_modal=true;
+   </script>
+{% else %}
+ <div id="#formulario_propriedade">
+    <div class="card">
+        <div class="card-body">
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#principal_edit" role="tab"><span class="hidden-sm-up"><i class="ti-home"></i></span> <span class="hidden-xs-down">Principal</span></a></li>
+                                    <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#endereco_edit" role="tab"><span class="hidden-sm-up"><i class="ti-user"></i></span> <span class="hidden-xs-down">Endereço</span></a></li>
+                                    <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#area-talhao_edit" role="tab"><span class="hidden-sm-up"><i class="ti-email"></i></span> <span class="hidden-xs-down">Área / Talhões</span></a></li>
+            </ul>
+            <form method="post" method="post" enctype="multipart/form-data" action="{% url 'edit_propriety' object.pk %}">
+             {% csrf_token %}
+                {% for error in form.non_field_errors %}
+                <div class="alert-danger alert">
+                {{ error }}
+                </div>
+                {% endfor %}
+            <!-- Tab panes -->
+                    <div class="tab-content tabcontent-border">
+                        <div class="tab-pane active p-10" id="principal_edit" role="tabpanel">
+                        <div class="row p-t-10">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label">{{form.company.label_tag}}<span class="text-danger pos_submit_ie">*</span></label>
+                                    {% render_field form.company class="chosen-select" placeholder=form.ie.label %}
+                                    {% for error in form.company.errors %}
+                                    <small class="form-control-feedback"> {{ error }} </small>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label">{{form.ie.label_tag}}<span class="text-danger pos_submit_ie">*</span></label>
+                                    {% render_field form.ie class="form-control" placeholder=form.ie.label %}
+                                    {% for error in form.ie.errors %}
+                                    <small class="form-control-feedback"> {{ error }} </small>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <!--/span-->
+                        </div>
+                        <div class="row p-t-10">
+                             <div class="col-md-6">
+                                <div class="form-group">
+                                    <label class="control-label">{{form.razao.label_tag}}<span class="text-danger pos_submit_razao">*</span></label>
+                                     {% render_field form.razao class="form-control" placeholder=form.razao.label  value=test  %}
+                                    {% for error in form.razao.errors %}
+                                    <small class="form-control-feedback"> {{ error }} </small>
+                                    {% endfor %}
+                                </div>
+                             </div>
+
+                            <div class="col-md-6">
+                                   <label class="control-label">{{form.fantasia.label_tag}}</label>
+                                     {% render_field form.fantasia class="form-control" placeholder=form.fantasia.label %}
+                                    {% for error in form.fantasia.errors %}
+                                    <small class="form-control-feedback"> {{ error }} </small>
+                                    {% endfor %}
+                            </div>
+                        </div>
+                     </div>
+                     <div class="tab-pane  p-10" id="endereco_edit" role="tabpanel">
+                         <div class="row p-t-10">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">{{form.cep.label_tag}}</label>
+                                    {% render_field form.cep class="form-control" placeholder=form.cep.label %}
+                                    {% for error in form.cep.errors %}
+                                    <small class="form-control-feedback"> {{ error }} </small>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <!--/span-->
+                            <div class="col-md-6">
+                                <label class="control-label">{{form.endereco.label_tag}}<span class="text-danger pos_submit_endereco">*</span></label>
+                                     {% render_field form.endereco class="form-control" placeholder=form.endereco.label %}
+                                    {% for error in form.endereco.errors %}
+                                    <small class="form-control-feedback"> {{ error }} </small>
+                                    {% endfor %}
+                            </div>
+                            <div class="col-md-3">
+                                   <label class="control-label">{{form.numero.label_tag}}</label>
+                                     {% render_field form.numero class="form-control" placeholder=form.numero.label %}
+                                    {% for error in form.numero.errors %}
+                                    <small class="form-control-feedback"> {{ error }} </small>
+                                    {% endfor %}
+                                </div>
+                            <!--/span-->
+                        </div>
+                <!--/row-->
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">{{form.complemento.label_tag}}</label>
+                                     {% render_field form.complemento class="form-control" placeholder=form.complemento.label %}
+                                    {% for error in form.complemento.errors %}
+                                    <small class="form-control-feedback"> {{ error }} </small>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                    <!--/span-->
+                            <div class="col-md-4">
+                                   <label class="control-label">{{form.bairro.label_tag}}</label>
+                                     {% render_field form.bairro class="form-control" placeholder=form.bairro.label %}
+                                    {% for error in form.bairro.errors %}
+                                    <small class="form-control-feedback"> {{ error }} </small>
+                                    {% endfor %}
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label class="control-label">{{form.cidade.label_tag}}</label>
+                                     {% render_field form.cidade class="form-control" placeholder=form.cidade.label %}
+                                    {% for error in form.cidade.errors %}
+                                    <small class="form-control-feedback"> {{ error }} </small>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                    <label class="control-label">{{form.uf.label_tag}}</label>
+                                    {% render_field form.uf class="form-control" placeholder=form.uf.label %}
+                                    {% for error in form.uf.errors %}
+                                    <small class="form-control-feedback"> {{ error }} </small>
+                                    {% endfor %}
+                            </div>
+                        </div>
+                     </div>
+                     <div class="tab-pane p-10" id="area-talhao_edit" role="tabpanel">
+                         <div class="row p-t-10 col-md-12">
+                            <div class="col-md-2">
+                                <label class="control-label">{{form.area.label_tag}}</label>
+                                  {% render_field form.area class="form-control" placeholder=form.area.label %}
+                                    {% for error in form.area.errors %}
+                                    <small class="form-control-feedback"> {{ error }} </small>
+                                    {% endfor %}
+                            </div>
+                            <div class="col-10">
+                                <div class="pull-right">
+                                    <button type="button" title="Adicionar Talhão" class="btn btn-warning btn-circle new_talhao" data-container="body" data-toggle="popover_talhao" data-placement="bottom"><i class="fa fa-plus"></i> </button>
+                                </div>
+                                   <div class="table-responsive tabela_formulario">
+                                    <table class="table table-hover table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Talhão</th>
+                                                <th>Área M²</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="body-table-talhao">
+                                              {% for talhao in talhao %}
+                                                    <tr>
+                                                        <td><small>{{ talhao.talhao }}</small></td>
+                                                        <td><small>{{ talhao.area }}</small></td>
+                                                        <td>
+                                                            <a class="btn btn-danger btn btn-sm delete_talhao" title="Editar " href="{% url 'delete_talhao' talhao.pk  %}"><i class="fa fa-trash-o"></i><small></small></a>
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                     </div>
+                </div>
+                   <br>
+                   <div class="form-actions">
+                    <button type="submit" class="btn btn-success"> <i class="fa fa-check"></i> Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %}
+

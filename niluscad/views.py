@@ -7,6 +7,7 @@ from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponse,Http404
 from accounts.models import User
 from nilusadm.models import Sequenciais
+from django.db.models import Sum
 from .models import Company,Propriety,Cadgeral,Ccusto,PlanoFinan,Talhao
 from .forms import FormPropriety
 
@@ -111,8 +112,6 @@ class EditCompany(LoginRequiredMixin,UpdateView):
         context = super(EditCompany,self).get_context_data(**kwargs)
         context['propriety_list'] = Propriety.objects.filter(company=self.kwargs['pk'])
         context['dados_cadastro'] = Company.objects.get(pk=self.kwargs['pk'])
-
-
         return context
 
 
@@ -202,6 +201,10 @@ class CreatePropriety(LoginRequiredMixin,CreateView):
         return kwargs
 
 
+
+
+
+
     def get_initial(self):
         initial = super(CreatePropriety,self).get_initial()
         initial['company'] = self.request.user.company_p
@@ -269,12 +272,13 @@ class EditPropriety(LoginRequiredMixin,UpdateView):
     def get_context_data(self, **kwargs):
         context = super(EditPropriety, self).get_context_data(**kwargs)
         context['talhao'] = Talhao.objects.filter(propriety=self.kwargs['pk'])
+        context['dados_cadastro'] = Propriety.objects.get(pk=self.kwargs['pk'])
         return context
+
 
 
     model = Propriety
     form_class = FormPropriety
-
 
 
     def form_valid(self,form):
@@ -397,9 +401,19 @@ class EditCadGeral(LoginRequiredMixin,UpdateView):
     def get_success_url(self):
         return reverse_lazy('cadgeral_list')
 
+    def get_context_data(self, **kwargs):
+        context = super(EditCadGeral, self).get_context_data(**kwargs)
+        context['dados_cadastro'] = Cadgeral.objects.get(pk=self.kwargs['pk'])
+        return context
+
+
+
     model = Cadgeral
     fields = ['cnpj_cpf', 'razao', 'fantasia', 'cep', 'endereco', 'numero', 'complemento', 'bairro', 'cidade', 'uf',
               'email', 'telefone','fornecedor','cliente']
+
+
+
 
 
     def form_valid(self,form):
@@ -674,20 +688,12 @@ def delete_planofinan(request, pk):
 ########################################################################################################################
 
 
-class CreateTalhao(LoginRequiredMixin,CreateView):
+class CreateTalhao_create_prop(LoginRequiredMixin,CreateView):
     def get_template_names(self):
         if self.request.is_ajax():
             return ["_create_talhao.html"]
         else:
             raise Http404
-
-
-    # def get_context_data(self,**kwargs):
-    #     context = super(CreatePropriety,self).get_context_data(**kwargs)
-    #     context['test'] = 'Luan'
-    #
-    #     return context
-
 
 
     model = Talhao
@@ -698,18 +704,49 @@ class CreateTalhao(LoginRequiredMixin,CreateView):
         return reverse_lazy('propriety_list')
 
 
+
+
     def form_valid(self,form):
         talhao = form.save(commit=False)
         talhao.user_cad = self.request.user
         talhao.save()
-
+        sum_new_talhoes = Talhao.objects.filter(user_cad=self.request.user).aggregate(area=Sum('area'))
         if self.request.is_ajax():
-            context = self.get_context_data(form=form, success=True)
+            context = self.get_context_data(form=form, success=True,sum_talhao=sum_new_talhoes)
             return self.render_to_response(context)
         else:
             return redirect(self.get_success_url())
 
 
+
+class CreateTalhao_edit_prop(LoginRequiredMixin,CreateView):
+    def get_template_names(self):
+        if self.request.is_ajax():
+            return ["_create_talhao_edit.html"]
+        else:
+            raise Http404
+
+
+    model = Talhao
+    fields = ['talhao','area']
+
+
+    def get_success_url(self):
+        return reverse_lazy('propriety_list')
+
+
+
+
+    def form_valid(self,form):
+        talhao = form.save(commit=False)
+        talhao.user_cad = self.request.user
+        talhao.save()
+        sum_new_talhoes = Talhao.objects.filter(user_cad=self.request.user).aggregate(area=Sum('area'))
+        if self.request.is_ajax():
+            context = self.get_context_data(form=form, success=True,sum_talhao=sum_new_talhoes)
+            return self.render_to_response(context)
+        else:
+            return redirect(self.get_success_url())
 
 
 
@@ -723,13 +760,8 @@ def delete_talhao(request, pk):
 
 
 
-
-
-
-
-
 edit_company = EditCompany.as_view()
-create_company =  CreateCompany.as_view()
+create_company = CreateCompany.as_view()
 edit_propriety = EditPropriety.as_view()
 create_propriety = CreatePropriety.as_view()
 edit_cadgeral = EditCadGeral.as_view()
@@ -738,4 +770,7 @@ edit_ccusto = EditCcusto.as_view()
 create_ccusto = CreateCcusto.as_view()
 edit_planofinan = EditPlanofinan.as_view()
 create_planofinan = CreatePlanoFinan.as_view()
-create_talhao = CreateTalhao.as_view()
+create_talhao_create_prop = CreateTalhao_create_prop.as_view()
+create_talhao_edit_prop = CreateTalhao_edit_prop.as_view()
+
+
