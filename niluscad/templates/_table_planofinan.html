@@ -1,4 +1,4 @@
-    <table id="myTable" class="table table-bordered table-striped">
+    <table id="tabela_planofinan" class="table table-bordered table-striped table-vcenter js-dataTable-full">
                 <thead>
                     <tr>
                         <th>Código</th>
@@ -10,11 +10,21 @@
                 <tbody>
                 {% for pf in plfin %}
                     <tr>
-                        <td><small>{{ pf.num_plfin }}</small></td>
-                        <td><small>{{ pf.descricao }}</small></td>
-                        <td><small>{{ pf.sinal }}</small></td>
-                        <td><a class="btn btn-success btn edit_planofinan" title="Editar " href="{% url 'edit_planofinan' pf.pk %}"><i class="fa fa-edit"></i><small> Alterar</small></a>
-                            <a class="btn btn-danger btn delete_planofinan" title="Excluir " href="{% url 'delete_planofinan' pf.pk %}"><i class="fa fa-trash-o"></i><small> Excluir</small></a>
+                        <td>{{ pf.num_plfin }}</td>
+                        <td>{{ pf.descricao }}</td>
+                        <td>{% if pf.sinal == 'R' %}
+                               <span class="badge badge-success">Receita</span>
+                            {% else  %}
+                               <span class="badge badge-danger">Despesa</span>
+                            {% endif %}
+                            </td>
+                        <td>
+                             <button type="button" class="btn btn-sm btn-outline-secondary edit_planofinan"  href="{% url 'edit_planofinan' pf.pk  %}" data-toggle="tooltip" data-placement="bottom" title="Editar">
+                                <i class="fa fa-pencil"></i>
+                             </button>
+                             <button type="button" class="btn btn-sm btn-outline-danger delete_planofinan"  href="{% url 'delete_planofinan' pf.pk  %}" data-toggle="tooltip" data-placement="bottom" title="Excluir">
+                                <i class="fa fa-trash-o"></i>
+                             </button>
                         </td>
 
                     </tr>

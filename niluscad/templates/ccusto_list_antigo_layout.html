@@ -1,0 +1,224 @@
+{% extends "menu.html" %}
+{% load static widget_tweaks humanize %}
+
+
+
+<!-- Bread crumb and right sidebar toggle -->
+{% block title_page %} Centros de Custo {% endblock %}
+
+{% block page_body %}
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Centros de Custo</h4>
+        <h6 class="card-subtitle">Centros de Custo cadastrados.
+            <div class="col-lg-2 col-md-4 pull-right new_ccusto">
+                     <a class="btn btn-success btn new_ccusto_btn" title="Cadastrar " href="{% url 'create_ccusto' %}"><i class="fa fa-plus"></i><small> Cadastrar</small></a>
+            </div>
+        </h6>
+
+        <div class="table-responsive table_ccusto">
+          {% include '_table_ccusto.html' %}
+        </div>
+    </div>
+</div>
+
+
+<div id="modal-create-ccusto" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Criar Centro de Custo</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div id="modal-update-ccusto" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Editar Centro de Custo</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+{% endblock %}
+
+
+{% block javascript %}
+
+function loading_ccusto(){
+      $('.table_ccusto').load('{{ request.path }}');
+	}
+
+
+
+ $('#myTable').DataTable({
+     "language": {
+         "lengthMenu": "Mostrando _MENU_ registros por página",
+         "search" : "Procurar: ",
+         "info" : "Exibindo de _START_ a _END_ de _TOTAL_ registros",
+         "infoEmpty": "Nenhum registro encontrado",
+         "infoFiltered": "(filtrado entre _MAX_ registros)",
+         "paginate" : {
+           "first":      "Primeiro",
+           "last":       "Último",
+           "next":       "Próximo",
+           "previous":   "Anterior"
+         },
+     }
+});
+
+
+<!-- Create Viewer -->
+$(".new_ccusto").on("click",".new_ccusto_btn", function(e){
+				e.preventDefault();
+				$("#modal-create-ccusto .modal-body").load("{% url 'create_ccusto' %}", function(){
+				  $('#modal-create-ccusto').modal("show");
+                });
+
+});
+
+$("#modal-create-ccusto .modal-body").on("submit","form",function(e){
+	 	 e.preventDefault();
+	 	 var dados = $(this).serialize();
+	 	 $.post("{% url 'create_ccusto' %}",dados,function(result){
+	 	    $("#modal-create-ccusto .modal-body").html(result);
+	 	    if(close_modal==true){
+	 	       $('#modal-create-ccusto').modal("hide");
+               loading_ccusto();
+               window.location.reload()
+	 	    }
+	 	    else{
+	 	       $('#modal-create-ccusto').modal("show");
+	 	    }
+	 	 });
+	 });
+
+
+
+
+
+
+
+<!-- Update Viewer -->
+$(".table_ccusto").on("click", ".edit_ccusto", function(e){
+        e.preventDefault();
+  		$("#modal-update-ccusto .modal-body").load($(this).attr('href'), function(){
+              $('#modal-update-ccusto').modal("show");
+			    });
+	});
+
+$("#modal-update-ccusto .modal-body").on("submit","form",function(e){
+	 	 e.preventDefault();
+
+	 	 var dados = $(this).serialize();
+	 	 $.post($(this).attr('action'),dados,function(result){
+	 	    $("#modal-update-ccusto .modal-body").html(result);
+	 	    if(close_modal==true){
+	 	       $('#modal-update-ccusto').modal("hide");
+               loading_ccusto();
+               window.location.reload()
+
+	 	    }
+	 	    else{
+	 	       $('#modal-update-ccusto').modal("show");
+	 	    }
+	 	 });
+	 });
+
+
+
+
+<!-- Permissions -->
+$(".table_viewers").on("click", ".permissions", function(e){
+        e.preventDefault();
+  		$("#modal-update-userView .modal-body").load($(this).attr('href'), function(){
+              $('#modal-update-userView').modal("show");
+			    });
+	});
+
+$("#modal-update-userView .modal-body").on("submit","form",function(e){
+	 	 e.preventDefault();
+
+	 	 var dados = $(this).serialize();
+	 	 $.post($(this).attr('action'),dados,function(result){
+	 	    $("#modal-update-userView .modal-body").html(result);
+	 	    if(close_modal==true){
+	 	       $('#modal-update-userView').modal("hide");
+               loading_viewers();
+               window.location.reload()
+
+	 	    }
+	 	    else{
+	 	       $('#modal-update-userView').modal("show");
+	 	    }
+	 	 });
+	 });
+
+
+
+    $(".delete_ccusto").on("click", function(e){
+
+        e.preventDefault();
+        var linkURL = $(this).attr("href");
+        swal({
+            title: "Tem certeza?",
+            text: "Ao aceitar esta registro será excluido!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Sim, Excluir!",
+            cancelButtonText: "Não, Cancelar!",
+            closeOnConfirm: false,
+            closeOnCancel: false
+        },
+        function(isConfirm){
+                if (isConfirm) {
+                    swal("Excluido!", "Registro excluido com sucesso!", "success");
+                    window.location.href = linkURL;
+                }
+                else {
+                    swal("Cancelado", "Exclusão cancelada", "error");
+                }
+        });
+	});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}
+
+
+

@@ -2,6 +2,7 @@ from django.contrib import admin
 
 from nilusadm.models import Permissions,Sequenciais
 from niluscad.models import Company,Propriety,Cadgeral,Ccusto,PlanoFinan,Talhao
+from nilusfin.models import Contafinanceira
 from principal.models import Instancia
 from nilusfin.models import Indice,Cotacao
 from recebiveis.models import Recebiveis
@@ -24,3 +25,4 @@ admin.site.register(Cotacao)
 admin.site.register(Recebiveis)
 admin.site.register(Talhao)
 admin.site.register(Lancamentos)
+admin.site.register(Contafinanceira)

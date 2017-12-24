@@ -4,36 +4,47 @@
 	   close_modal=true;
    </script>
 {% else %}
-<div>
-    <p class="text-muted m-b-30 font-13">Alterar Plano Financeiro</p>
-        <form class="form"  method="post" enctype="multipart/form-data" action="{% url 'edit_planofinan' object.pk %}">
-          {% csrf_token %}
-            {% for error in form.non_field_errors %}
-            <div class="alert-danger alert">
+<div class="block block-themed block-rounded">
+    <div class="block-header bg-flat-dark">
+        <h3 class="block-title">Alterar Plano: {{ dados_cadastro.num_planofinan }} - {{ dados_cadastro.descricao }}</h3>
+        <div class="block-options antes_insert">
+            <button type="button" class="btn-block-option cancel_form">
+                <i class="fa fa-close"></i>
+            </button>
+        </div>
+    </div>
+    <form method="post" class="form_planofinan" id="form_edit" action="{% url 'edit_planofinan' object.pk %}">
+             {% csrf_token %}
+                {% for error in form.non_field_errors %}
+                <div class="alert-danger alert">
                 {{ error }}
-            </div>
-          {% endfor %}
-        <div class="form-group">
-
-            {{ form.sinal.label_tag }}
-            {% render_field form.sinal class='form-control form-control-success' placeholder=sinal.label  %}
-             {% for error in form.sinal.errors %}
-             <div class="alert alert-danger">{{ error }}</div>
-             {% endfor %}
-    </div>
-    <div class="form-group">
-
-            {{ form.descricao.label_tag }}
-            {% render_field form.descricao class='form-control form-control-success' placeholder=descricao.label  %}
-             {% for error in form.descricao.errors %}
-             <div class="alert alert-danger">{{ error }}</div>
-             {% endfor %}
-    </div>
-            <div class="form-group m-b-0">
-                <div class="offset-sm-3">
-                    <button type="submit" class="btn btn-success waves-effect waves-light m-t-10">Salvar Alterações</button>
                 </div>
-            </div>
-        </form>
+                {% endfor %}
+             <div class="block-contentt">
+                 <div class="form-group row">
+                      <div class="col-md-8">
+                            <div class="form-material floating input-group">
+                                {% render_field  form.descricao class='form-control' %}
+                                <label for="{{  form.descricao.id }}">Descrição</label>
+                            </div>
+                                {% for error in form.descricao.errors %}
+                                <div class="alert alert-danger alert-dismissable">{{ error }}</div>
+                                {% endfor %}
+
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-material input-group">
+                                <label>Sinal</label>
+                                {% render_field form.sinal class="chosen-select" %}
+                                {% for error in form.sinal.errors %}
+                                <small class="form-control-feedback"> {{ error }} </small>
+                                {% endfor %}
+                            </div>
+                        </div>
+                 </div>
+                     <button type="submit" class="btn btn-alt-primary">Salvar</button>
+                     <button type="button"  class="btn btn-alt-secondary  cancel_form">Cancelar</button>
+             </div>
+    </form>
 </div>
 {% endif %}

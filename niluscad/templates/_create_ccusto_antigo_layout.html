@@ -1,0 +1,35 @@
+{% load static widget_tweaks %}
+{% if success %}
+   <script>
+	   close_modal=true;
+	   id_ccusto = {{ form.instance.pk }};
+	   ccusto = "{{ form.instance.descricao }}";
+   </script>
+{% else %}
+<div>
+    <p class="text-muted m-b-30 font-13">Cadastrar Centro de Custo</p>
+        <form class="form-horizontal"  id="ccusto_create" method="post">
+          {% csrf_token %}
+            {% for error in form.non_field_errors %}
+            <div class="alert-danger alert">
+                {{ error }}
+            </div>
+          {% endfor %}
+           {% for field in form %}
+    <div class="form-group">
+        <div class="col-xs-12">
+            {% render_field field class='form-control form-control-success' placeholder=field.label  %}
+             {% for error in field.errors %}
+             <div class="alert alert-danger">{{ error }}</div>
+             {% endfor %}
+        </div>
+     <br>
+   {% endfor %}
+            <div class="form-group m-b-0">
+                <div class="offset-sm-3">
+                    <button type="submit" class="btn btn-success waves-effect waves-light m-t-10">Cadastrar</button>
+                </div>
+            </div>
+        </form>
+</div>
+{% endif %}

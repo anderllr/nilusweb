@@ -5,10 +5,11 @@ from django.db import models
 class Contafinanceira(models.Model):
 
     # informação do dono da conta (usuario Master)
-    master_user = models.ForeignKey('accounts.User',models.CASCADE,verbose_name='Uusario Master')
+    master_user = models.ForeignKey('accounts.User',models.CASCADE,verbose_name='Usuario Master')
     num_conta = models.IntegerField('Código')
 
     # dados principais
+    conta_bancaria = models.BooleanField('Conta Bancária?',default=False)
     agencia = models.CharField('Agencia',null=True,blank=True,max_length=5)
     conta = models.CharField('Conta',null=True,blank=True,max_length=12)
     descricao = models.CharField('Nome Conta',max_length=60)
@@ -16,6 +17,7 @@ class Contafinanceira(models.Model):
     #dados de limite
     usa_limite = models.BooleanField('Utiliza Limite',default=False)
     vlr_limite = models.DecimalField('Valor Limite',decimal_places=2,max_digits=50,default=0)
+    vlr_limite_text = models.CharField('Valor Limite',null=True,blank=True,max_length=50)
 
     #dados de movimentação
     conta_pagamento = models.BooleanField('Conta de Pagamento?',default=False)
@@ -23,16 +25,16 @@ class Contafinanceira(models.Model):
 
 
 
-class Meta:
-    verbose_name = 'Contas'
-    verbose_name_plural = 'Contas'
-    unique_together = [
-        ('master_user', 'num_conta')
-    ]
+    class Meta:
+        verbose_name = 'Contas'
+        verbose_name_plural = 'Contas'
+        unique_together = [
+            ('master_user', 'num_conta')
+        ]
 
 
-def __str__(self):
-    return self.descricao
+    def __str__(self):
+        return self.descricao
 
 
 

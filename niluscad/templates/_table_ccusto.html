@@ -1,7 +1,7 @@
-    <table id="myTable" class="table table-bordered table-striped">
+    <table id="tabela_ccusto" class="table table-bordered table-striped table-vcenter js-dataTable-full">
                 <thead>
                     <tr>
-                        <th>Código</th>
+                        <th>Cód.</th>
                         <th>Descricao</th>
                         <th></th>
                     </tr>
@@ -9,10 +9,15 @@
                 <tbody>
                 {% for cc in ccusto %}
                     <tr>
-                        <td><small>{{ cc.num_ccusto }}</small></td>
-                        <td><small>{{ cc.descricao }}</small></td>
-                        <td><a class="btn btn-success btn edit_ccusto" title="Editar " href="{% url 'edit_ccusto' cc.pk %}"><i class="fa fa-edit"></i><small> Alterar</small></a>
-                            <a class="btn btn-danger btn delete_ccusto" title="Excluir " href="{% url 'delete_ccusto' cc.pk %}"><i class="fa fa-trash-o"></i><small> Excluir</small></a>
+                        <td>{{ cc.num_ccusto }}</td>
+                        <td>{{ cc.descricao }}</td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-outline-secondary edit_ccusto"  href="{% url 'edit_ccusto' cc.pk %}" data-toggle="tooltip" data-placement="bottom" title="Editar">
+                                <i class="fa fa-pencil"></i>
+                             </button>
+                             <button type="button" class="btn btn-sm btn-outline-danger delete_ccusto"  href="{% url 'delete_ccusto' cc.pk %}" data-toggle="tooltip" data-placement="bottom" title="Excluir">
+                                <i class="fa fa-trash-o"></i>
+                             </button>
                         </td>
 
                     </tr>

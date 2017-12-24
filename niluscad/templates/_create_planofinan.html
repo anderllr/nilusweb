@@ -6,30 +6,51 @@
   	   descricao = "{{ form.instance.descricao }}";
    </script>
 {% else %}
-<div>
-    <p class="text-muted m-b-30 font-13">Cadastrar Plano Financeiro</p>
-        <form class="form-horizontal planofinan_create" id="planofinan_create"  method="post">
-          {% csrf_token %}
-            {% for error in form.non_field_errors %}
-            <div class="alert-danger alert">
-                {{ error }}
-            </div>
-          {% endfor %}
-           {% for field in form %}
-    <div class="form-group">
-        <div class="col-xs-12">
-            {% render_field field class='form-control form-control-success' placeholder=field.label  %}
-             {% for error in field.errors %}
-             <div class="alert alert-danger">{{ error }}</div>
-             {% endfor %}
+<div class="block">
+    <div class="block-header ribbon ribbon-success ribbon-left">
+        <h3 class="block-title antes_insert">Novo Plano Financeiro</h3>
+        <div class="block-options antes_insert">
+            <button type="button" class="btn-block-option cancel_form">
+                <i class="fa fa-close"></i>
+            </button>
         </div>
-     <br>
-   {% endfor %}
-            <div class="form-group m-b-0">
-                <div class="offset-sm-3">
-                    <button type="submit" id="create-planofinan-btn" class="btn btn-success waves-effect waves-light m-t-10">Cadastrar</button>
+
+    </div>
+    <form method="post" class="form_planofinan" id="form_create">
+             {% csrf_token %}
+                {% for error in form.non_field_errors %}
+                <div class="alert-danger alert">
+                {{ error }}
                 </div>
-            </div>
-        </form>
+                {% endfor %}
+             <div class="block-contentt">
+                 <div class="form-group row">
+                      <div class="col-md-8">
+                            <div class="form-material floating input-group">
+                                {% render_field  form.descricao class='form-control' %}
+                                <label for="{{  form.descricao.id }}">Descrição</label>
+                            </div>
+                                {% for error in form.descricao.errors %}
+                                <div class="alert alert-danger alert-dismissable">{{ error }}</div>
+                                {% endfor %}
+
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-material input-group">
+                                <label>Sinal</label>
+                                {% render_field form.sinal class="chosen-select" %}
+                                {% for error in form.sinal.errors %}
+                                <small class="form-control-feedback"> {{ error }} </small>
+                                {% endfor %}
+                            </div>
+                        </div>
+                 </div>
+
+                     <button type="submit" class="btn btn-alt-primary">Salvar</button>
+                     <button type="button"  class="btn btn-alt-secondary  cancel_form">Cancelar</button>
+
+             </div>
+    </form>
 </div>
+
 {% endif %}

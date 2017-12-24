@@ -1,20 +1,38 @@
-    <table id="myTable" class="table table-bordered table-striped">
+    <table id="tabela_contas" class="table table-bordered table-striped table-vcenter js-dataTable-full">
                 <thead>
                     <tr>
                         <th>Código</th>
-                        <th>Agencia/Conta</th>
                         <th>Descrição</th>
+                        <th>Tipo Conta</th>
+                        <th>Tipo de Operação</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
                 {% for cc in conta %}
                     <tr>
-                        <td><small>{{ cc.num_conta }}</small></td>
-                        <td><small>{{ cc.agencia }} / {{ cc.conta }}</small></td>
-                        <td><small>{{ cc.descricao }}</small></td>
-                        <td><a class="btn btn-success btn edit_registro" title="Editar " href="{% url 'edit_conta' cc.pk %}"><i class="fa fa-edit"></i><small> Alterar</small></a>
-                            <a class="btn btn-danger btn delete_registro" title="Excluir " href="{% url 'delete_conta' cc.pk %}"><i class="fa fa-trash-o"></i><small> Excluir</small></a>
+                        <td>{{ cc.num_conta }}</td>
+                        <td>{{ cc.descricao }}</td>
+                        <td>{% if cc.conta_bancaria == True %}
+                              <span class="badge badge-primary">Bancária</span>
+                            {% else %}
+                              <span class="badge badge-secondary">Caixa</span>
+                            {% endif %}
+                        </td>
+                        <td>{% if cc.conta_pagamento == True %}
+                              <span class="badge badge-danger">Pagamento</span>
+                            {% endif %}
+                            {% if cc.conta_recebimento == True %}
+                              <span class="badge badge-success">Recebimento</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-outline-secondary edit_conta"  href="{% url 'edit_conta' cc.pk  %}" data-toggle="tooltip" data-placement="bottom" title="Editar">
+                                <i class="fa fa-pencil"></i>
+                             </button>
+                             <button type="button" class="btn btn-sm btn-outline-danger delete_conta"  href="{% url 'delete_conta' cc.pk  %}" data-toggle="tooltip" data-placement="bottom" title="Excluir">
+                                <i class="fa fa-trash-o"></i>
+                             </button>
                         </td>
 
                     </tr>

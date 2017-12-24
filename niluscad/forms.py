@@ -1,5 +1,5 @@
 from accounts.models import User
-from niluscad.models import Company,Propriety,Talhao
+from niluscad.models import Company,Propriety,Talhao,PlanoFinan
 from django import forms
 
 
@@ -29,6 +29,28 @@ class FormPropriety(forms.ModelForm):
         model = Propriety
         fields = ['company','ie', 'razao', 'fantasia', 'cep', 'endereco', 'numero', 'complemento', 'bairro', 'cidade',
                   'uf','area']
+
+
+
+
+class FormPlanoFinanceiro(forms.ModelForm):
+
+    def __init__(self,user,*args,**kwargs):
+        super(FormPlanoFinanceiro,self).__init__(*args,**kwargs)
+
+        self.fields['sinal'].empty_label = "Informe o Sinal da Conta"
+
+
+    def get_initial(self):
+        initial = super(FormPlanoFinanceiro,self).get_initial()
+        initial['sinal'] = 'Sinal'
+        return initial
+
+    class Meta:
+        model = PlanoFinan
+        fields = ['descricao','sinal']
+
+
 
 
 

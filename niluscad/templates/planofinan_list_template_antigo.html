@@ -1,0 +1,196 @@
+{% extends "menu.html" %}
+{% load static widget_tweaks humanize %}
+
+
+
+<!-- Bread crumb and right sidebar toggle -->
+{% block title_page %} Plano Financeiro {% endblock %}
+
+{% block page_body %}
+
+<div class="card">
+    <div class="card-body">
+        <h4 class="card-title">Plano Financeiro</h4>
+        <h6 class="card-subtitle">Plano Financeiro Cadastrados.
+            <div class="col-lg-2 col-md-4 pull-right new_planofinan">
+                     <a class="btn btn-success btn new_planofinan_btn" title="Cadastrar " href="{% url 'create_planofinan' %}"><i class="fa fa-plus"></i><small> Cadastrar</small></a>
+            </div>
+        </h6>
+
+        <div class="table-responsive table_planofinan">
+          {% include '_table_planofinan.html' %}
+        </div>
+    </div>
+</div>
+
+
+<div id="modal-create" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Criar Plano Financeiro</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div id="modal-update" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Editar Plano Financeiro</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+{% endblock %}
+
+
+{% block javascript %}
+
+function loading_planofinan(){
+      $('.table_planofinan').load('{{ request.path }}');
+	}
+
+
+
+ $('#myTable').DataTable({
+     "language": {
+         "lengthMenu": "Mostrando _MENU_ registros por página",
+         "search" : "Procurar: ",
+         "info" : "Exibindo de _START_ a _END_ de _TOTAL_ registros",
+         "infoEmpty": "Nenhum registro encontrado",
+         "infoFiltered": "(filtrado entre _MAX_ registros)",
+         "paginate" : {
+           "first":      "Primeiro",
+           "last":       "Último",
+           "next":       "Próximo",
+           "previous":   "Anterior"
+         },
+     }
+});
+
+
+<!-- Create Viewer -->
+$(".new_planofinan").on("click",".new_planofinan_btn", function(e){
+				e.preventDefault();
+				$("#modal-create .modal-body").load("{% url 'create_planofinan' %}", function(){
+				  $('#modal-create').modal("show");
+                });
+
+});
+
+$("#modal-create .modal-body").on("submit","form",function(e){
+	 	 e.preventDefault();
+	 	 var dados = $(this).serialize();
+	 	 $.post("{% url 'create_planofinan' %}",dados,function(result){
+	 	    $("#modal-create .modal-body").html(result);
+	 	    if(close_modal==true){
+	 	       $('#modal-create').modal("hide");
+               loading_planofinan();
+               window.location.reload()
+	 	    }
+	 	    else{
+	 	       $('#modal-create').modal("show");
+	 	    }
+	 	 });
+	 });
+
+
+
+
+
+
+
+<!-- Update Viewer -->
+$(".table_planofinan").on("click", ".edit_planofinan", function(e){
+        e.preventDefault();
+  		$("#modal-update .modal-body").load($(this).attr('href'), function(){
+              $('#modal-update').modal("show");
+			    });
+	});
+
+$("#modal-update .modal-body").on("submit","form",function(e){
+	 	 e.preventDefault();
+
+	 	 var dados = $(this).serialize();
+	 	 $.post($(this).attr('action'),dados,function(result){
+	 	    $("#modal-update .modal-body").html(result);
+	 	    if(close_modal==true){
+	 	       $('#modal-update').modal("hide");
+               loading_planofinan();
+               window.location.reload()
+
+	 	    }
+	 	    else{
+	 	       $('#modal-update').modal("show");
+	 	    }
+	 	 });
+	 });
+
+
+
+
+    $(".delete_planofinan").on("click", function(e){
+
+        e.preventDefault();
+        var linkURL = $(this).attr("href");
+        swal({
+            title: "Tem certeza?",
+            text: "Ao aceitar esta registro será excluido!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Sim, Excluir!",
+            cancelButtonText: "Não, Cancelar!",
+            closeOnConfirm: false,
+            closeOnCancel: false
+        },
+        function(isConfirm){
+                if (isConfirm) {
+                    swal("Excluido!", "Registro excluido com sucesso!", "success");
+                    window.location.href = linkURL;
+                }
+                else {
+                    swal("Cancelado", "Exclusão cancelada", "error");
+                }
+        });
+	});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}
+
+
+

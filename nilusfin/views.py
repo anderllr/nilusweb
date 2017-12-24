@@ -51,16 +51,8 @@ class CreateConta(LoginRequiredMixin,CreateView):
             raise Http404
 
 
-    # def get_context_data(self,**kwargs):
-    #     context = super(CreatePropriety,self).get_context_data(**kwargs)
-    #     context['test'] = 'Luan'
-    #
-    #     return context
-
-
-
     model = Contafinanceira
-    fields = ['agencia','conta','descricao','usa_limite','vlr_limite','conta_pagamento','conta_recebimento']
+    fields = ['conta_bancaria','agencia','conta','descricao','usa_limite','vlr_limite_text','conta_pagamento','conta_recebimento']
 
 
     def get_success_url(self):
@@ -80,6 +72,8 @@ class CreateConta(LoginRequiredMixin,CreateView):
         conta.num_conta = seq_conta.conta + 1
         seq_conta.conta = conta.num_conta
         seq_conta.save()
+        if conta.vlr_limite_text is not None:
+            conta.vlr_limite = conta.vlr_limite_text.replace('R$','').replace('.','').replace(',','.')
         conta.save()
 
         if self.request.is_ajax():
@@ -92,6 +86,12 @@ class CreateConta(LoginRequiredMixin,CreateView):
 
 class EditConta(LoginRequiredMixin,UpdateView):
 
+
+    def get_context_data(self, **kwargs):
+        context = super(EditConta, self).get_context_data(**kwargs)
+        context['dados_cadastro'] = Contafinanceira.objects.get(pk=self.kwargs['pk'])
+        return context
+
     def get_template_names(self):
         if self.request.is_ajax():
             return ["_edit_conta.html"]
@@ -102,7 +102,7 @@ class EditConta(LoginRequiredMixin,UpdateView):
         return reverse_lazy('conta_list')
 
     model = Contafinanceira
-    fields = ['agencia', 'conta', 'descricao', 'usa_limite', 'vlr_limite', 'conta_pagamento', 'conta_recebimento']
+    fields = ['conta_bancaria','agencia', 'conta', 'descricao', 'usa_limite', 'vlr_limite_text', 'conta_pagamento', 'conta_recebimento']
 
 
     def form_valid(self,form):

@@ -389,6 +389,7 @@ class CreateCadGeral(LoginRequiredMixin,CreateView):
 
 
 
+
 class EditCadGeral(LoginRequiredMixin,UpdateView):
 
 
@@ -531,6 +532,13 @@ class EditCcusto(LoginRequiredMixin,UpdateView):
     def get_success_url(self):
         return reverse_lazy('ccusto_list')
 
+
+
+    def get_context_data(self, **kwargs):
+        context = super(EditCcusto, self).get_context_data(**kwargs)
+        context['dados_cadastro'] = Ccusto.objects.get(pk=self.kwargs['pk'])
+        return context
+
     model = Ccusto
     fields = ['descricao']
 
@@ -599,11 +607,8 @@ class CreatePlanoFinan(LoginRequiredMixin,CreateView):
             raise Http404
 
 
-    # def get_context_data(self,**kwargs):
-    #     context = super(CreatePropriety,self).get_context_data(**kwargs)
-    #     context['test'] = 'Luan'
-    #
-    #     return context
+
+
 
 
 
@@ -650,6 +655,15 @@ class EditPlanofinan(LoginRequiredMixin,UpdateView):
     def get_success_url(self):
         return reverse_lazy('planofinan_list')
 
+
+
+    def get_context_data(self, **kwargs):
+        context = super(EditPlanofinan, self).get_context_data(**kwargs)
+        context['dados_cadastro'] = PlanoFinan.objects.get(pk=self.kwargs['pk'])
+        return context
+
+
+
     model = PlanoFinan
     fields = ['descricao','sinal']
 
@@ -658,7 +672,7 @@ class EditPlanofinan(LoginRequiredMixin,UpdateView):
         form.save()
 
         if self.request.is_ajax():
-            context = self.get_context_data(form=form,success=True)
+            context = self.get_context_data(form=form,success=True, ok='ok')
             return self.render_to_response(context)
         else:
             return redirect(self.get_success_url())

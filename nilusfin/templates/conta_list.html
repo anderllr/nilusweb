@@ -4,63 +4,35 @@
 
 
 <!-- Bread crumb and right sidebar toggle -->
-{% block title_page %} Contas Bancárias/Caixa {% endblock %}
+{% block title %} Cadastro de Contas (Caixa e Banco) {% endblock %}
 
 {% block page_body %}
 
-<div class="card">
-    <div class="card-body">
-        <h4 class="card-title">Contas</h4>
-        <h6 class="card-subtitle">Cadastro das contas (Bancárias e Contas de Caixa)
-            <div class="col-lg-2 col-md-4 pull-right new_add">
-                     <a class="btn btn-success btn new_add_btn" title="Cadastrar " href="{% url 'create_conta' %}"><i class="fa fa-plus"></i><small> Cadastrar</small></a>
+<div class="block">
+    <div class="block-content">
+        <div class="row  btn-insert">
+        <button type="button" class="btn btn-outline-primary mr-5 mb-5  new_conta">
+                 <i class="fa fa-plus mr-5"></i> Nova Conta
+        </button>
+        </div>
+        <div>
+            <div class="row">
+                <div class="form_inc col-md-12">
+                </div>
             </div>
-        </h6>
+            <div class="row">
+                <div class="form_edit col-md-12"></div>
+            </div>
+        </div>
 
-        <div class="table-responsive table_data">
-          {% include '_table_conta.html' %}
+
+
+        </div>
+        <div class="row table table_contas">
+         {% include '_table_conta.html' %}
         </div>
     </div>
 </div>
-
-
-<div id="modal-create" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Criar Conta</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            </div>
-            <div class="modal-body">
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Fechar</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-
-<div id="modal-update" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Atualizar dados de Conta</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            </div>
-            <div class="modal-body">
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Fechar</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
 
 
 {% endblock %}
@@ -71,145 +43,233 @@
 
 
 
-function loading_contas(){
-      $('.table_data').load('{{ request.path }}');
-	}
+$('.form_inc').hide();
+$('.form_edit').hide();
 
 
- $('#myTable').DataTable({
-     "language": {
-         "lengthMenu": "Mostrando _MENU_ registros por página",
-         "search" : "Procurar: ",
-         "info" : "Exibindo de _START_ a _END_ de _TOTAL_ registros",
-         "infoEmpty": "Nenhum registro encontrado",
-         "infoFiltered": "(filtrado entre _MAX_ registros)",
-         "paginate" : {
-           "first":      "Primeiro",
-           "last":       "Último",
-           "next":       "Próximo",
-           "previous":   "Anterior"
-         },
-     }
+function loading_viewers(){
+      $('.table_contas').load('{{ request.path }}');
+}
+
+
+table = $('#tabela_contas').DataTable({
+    "language": {
+     "lengthMenu": "Mostrando _MENU_ registros por página",
+     "search" : "Procurar: ",
+     "info" : "Exibindo de _START_ a _END_ de _TOTAL_ registros",
+     "infoEmpty": "Nenhum registro encontrado",
+     "infoFiltered": "(filtrado entre _MAX_ registros)",
+     "paginate" : {
+       "first":      "Primeiro",
+       "last":       "Último",
+       "next":       "Próximo",
+       "previous":   "Anterior"
+     },
+     responsive: {
+            details: {
+                type: 'column'
+            }
+        },
+        columnDefs: [ {
+            className: 'control',
+            orderable: false,
+            targets:   0
+        } ],
+        order: [ 1, 'asc' ]
+ }
 });
 
 
 
- $(".modal").on("change", "#id_usa_limite", function(e){
+
+
+
+<!-- Create Company -->
+
+$(".new_conta").on("click",function(e){
+     e.preventDefault();
+     $(".form_inc").load("{% url 'create_conta' %}", function(){
+        $('.form_inc').show("puff");
+        $('.new_conta').hide("drop");
+        $('.table_contas').hide("drop");
+        $('.vlr_limite').hide();
+        $('.conta_bancaria').hide();
+
+        {% include 'js_floating_labels.html' %}
+        {% include 'js_tabs.html' %}
+        {% include 'js_masks.html' %}
+
+
+
+         $(".form_inc").on("change", "#id_usa_limite", function(e){
 			if ($(this).is(":checked")){
 				$(".vlr_limite").show();
 			}
 			else {
 				$(".vlr_limite").hide();
 			}
+		 });
+
+          $(".form_inc").on("change", "#id_conta_bancaria", function(e){
+			if ($(this).is(":checked")){
+				$(".conta_bancaria").show();
+			}
+			else {
+				$(".conta_bancaria").hide();
+			}
 		});
 
 
 
+          $(".form_inc .cancel_form").on("click",function(e){
+             $('.form_inc').hide("drop");
+             $('.new_conta').show();
+             $('.table_contas').show();
+          });
 
-<!-- Create Viewer -->
-$(".new_add").on("click",".new_add_btn", function(e){
-				e.preventDefault();
-				$("#modal-create .modal-body").load("{% url 'create_conta' %}", function(){
-				  $('#modal-create').modal("show");
-                  $(".vlr_limite").hide();
-                });
 
+
+    });
 });
 
-$("#modal-create .modal-body").on("submit","form",function(e){
+    $(".form_inc").on("submit","form",function(e){
 	 	 e.preventDefault();
 	 	 var dados = $(this).serialize();
 	 	 $.post("{% url 'create_conta' %}",dados,function(result){
-	 	    $("#modal-create .modal-body").html(result);
+	 	    $(".form_inc").html(result);
 	 	    if(close_modal==true){
-	 	       $('#modal-create').modal("hide");
-               loading_contas();
-               window.location.reload()
-	 	    }
-	 	    else{
-	 	       $('#modal-create').modal("show");
-	 	    }
+	 	       $('.form_inc').hide("drop");
+               $('.new_conta').show();
+               $('.table_contas').show();
+               window.location.reload();
+
+     	    }
+ 	        else{
+                $(".form_inc").show();
+                {% include 'js_floating_labels.html' %}
+                {% include 'js_tabs.html' %}
+
+                   $(".form_inc .cancel_form").on("click",function(e){
+                        $('.form_inc').hide("drop");
+                        $('.new_conta').show();
+                        $('.table_contas').show();
+                   });
+
+
+ 	        }
 	 	 });
-	 });
-
-
-
-
-
-
-
-<!-- Update Viewer -->
-$(".table_data").on("click", ".edit_registro", function(e){
-        e.preventDefault();
-  		$("#modal-update .modal-body").load($(this).attr('href'), function(){
-              $('#modal-update').modal("show");
-                    if($("#id_usa_limite").is(":checked")){
-                        $(".vlr_limite").show();
-                    }
-                    else{
-                         $(".vlr_limite").hide();
-                    }
-
-
-			    });
 	});
 
-$("#modal-update .modal-body").on("submit","form",function(e){
+<!-- Edit Company -->
+$('.table_contas').on('click', '.edit_conta',function(e){
+    e.preventDefault();
+    $(".form_edit ").load($(this).attr('href'), function(){
+              $('.form_edit').show("slide");
+               $('.new_conta').hide("drop");
+               $('.table_contas').hide("puff");
+              {% include 'js_floating_labels.html' %}
+              {% include 'js_masks.html' %}
+
+
+              if($("#id_usa_limite").is(":checked")){
+                    $(".vlr_limite").show();
+               }else{
+                    $('.vlr_limite').hide();
+               }
+               if($("#id_conta_bancaria").is(":checked")){
+                    $(".conta_bancaria").show();
+               }else{
+                    $('.conta_bancaria').hide();
+               }
+
+
+              $(".form_edit").on("change", "#id_usa_limite", function(e){
+                if ($(this).is(":checked")){
+                    $(".vlr_limite").show();
+                }
+                else {
+                    $(".vlr_limite").hide();
+                }
+              });
+
+          $(".form_edit").on("change", "#id_conta_bancaria", function(e){
+                if ($(this).is(":checked")){
+                    $(".conta_bancaria").show();
+                }
+                else {
+                    $(".conta_bancaria").hide();
+                }
+     	  });
+
+
+
+              $(".form_edit .cancel_form").on("click",function(e){
+                  $('.form_edit').hide("drop");
+                  $('.new_conta').show();
+                  $('.table_contas').show();
+              });
+    });
+
+
+});
+
+
+
+$(".form_edit").on("submit","form",function(e){
 	 	 e.preventDefault();
 
 	 	 var dados = $(this).serialize();
 	 	 $.post($(this).attr('action'),dados,function(result){
-	 	    $("#modal-update .modal-body").html(result);
-	 	    if(close_modal==true){
-	 	       $('#modal-update').modal("hide");
-               loading_contas();
-               window.location.reload()
+	 	    $(".form_edit").html(result);
+	 	    if(ok==ok){
+	 	       $('.form_edit').hide("drop");
+                 window.location.reload();
 
 	 	    }
 	 	    else{
-	 	       $('#modal-update').modal("show");
-	 	    }
+	 	       $('.form_edit').show("puff");
+                {% include 'js_floating_labels.html' %}
+
+
+                $(".form_inc .cancel_form").on("click",function(e){
+                    $('.form_edit').hide("drop");
+                    $('.new_conta').show();
+                    $('.table_contas').show();
+	 	        });
+            }
 	 	 });
 	 });
 
 
 
+    $(".delete_conta").on("click", function(e){
 
-    $(".delete_registro").on("click", function(e){
+    e.preventDefault();
+    var linkURL = $(this).attr("href");
+    swal({
+        title: "Tem certeza?",
+        text: "Ao aceitar esta empresa será excluida!",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Sim, Excluir!",
+        cancelButtonText: "Não, Cancelar!",
+        closeOnConfirm: false,
+        closeOnCancel: false
+    },
+    function(isConfirm){
+        if (isConfirm) {
 
-        e.preventDefault();
-        var linkURL = $(this).attr("href");
-        swal({
-            title: "Tem certeza?",
-            text: "Ao aceitar esta registro será excluido!",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#DD6B55",
-            confirmButtonText: "Sim, Excluir!",
-            cancelButtonText: "Não, Cancelar!",
-            closeOnConfirm: false,
-            closeOnCancel: false
-        },
-        function(isConfirm){
-                if (isConfirm) {
-                    swal("Excluido!", "Registro excluido com sucesso!", "success");
-                    window.location.href = linkURL;
-                }
-                else {
-                    swal("Cancelado", "Exclusão cancelada", "error");
-                }
-        });
+            swal("Excluido!", "Registro excluido com sucesso!", "success");
+            window.location.href = linkURL;
+        }
+        else {
+
+            swal("Cancelado", "Exclusão cancelada", "error");
+        }
 	});
 
-
-
-
-
-
-
-
-
-
+});
 
 
 
