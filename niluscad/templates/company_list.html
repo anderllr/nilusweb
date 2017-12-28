@@ -121,8 +121,8 @@ $(".new_company").on("click",function(e){
 	 	    if(close_modal==true){
 	 	       $('.form_inc').hide("drop");
                $('.new_company').show();
-               loading_viewers();
                $('.table_empresas').show();
+               window.location.reload();
 
      	    }
  	        else{
