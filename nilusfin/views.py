@@ -194,11 +194,56 @@ class CreateIndice(LoginRequiredMixin,CreateView):
         seq_indice.save()
         indice.save()
 
+        cotacoes_indice = Cotacao.objects.filter(indice=None,user_cad=self.request.user)
+        cotacoes_indice.update(
+            indice=indice
+        )
+
         if self.request.is_ajax():
             context = self.get_context_data(form=form, success=True)
             return self.render_to_response(context)
         else:
             return redirect(self.get_success_url())
+
+
+class EditIndice(LoginRequiredMixin,UpdateView):
+
+
+    def get_context_data(self, **kwargs):
+        context = super(EditIndice, self).get_context_data(**kwargs)
+        context['dados_cadastro'] = Indice.objects.get(pk=self.kwargs['pk'])
+        context['cotacoes'] = Cotacao.objects.filter(indice=self.kwargs['pk']).order_by('data_indice')
+        return context
+
+    def get_template_names(self):
+        if self.request.is_ajax():
+            return ["_edit_indice.html"]
+        else:
+            raise Http404
+
+    def get_success_url(self):
+        return reverse_lazy('indice_list')
+
+    model = Indice
+    fields = ['descricao', 'simbolo']
+
+    def form_valid(self,form):
+        indice = form.save(commit=False)
+
+        cotacoes_indice = Cotacao.objects.filter(indice=None, user_cad=self.request.user)
+        cotacoes_indice.update(
+            indice=indice
+        )
+        indice.save()
+
+        if self.request.is_ajax():
+            context = self.get_context_data(form=form,success=True)
+            return self.render_to_response(context)
+        else:
+            return redirect(self.get_success_url())
+
+
+
 
 @login_required
 def delete_indice(request, pk):
@@ -232,32 +277,30 @@ def cotacao_list(request,pk):
 
     if request.user.is_masteruser is True:
          cotacao = Cotacao.objects.filter(indice=indice)
+
     else:
          cotacao = Cotacao.objects.filter(indice=indice)
 
 
 
     context = {
-       'cotacao' : cotacao
+       'cotacao' : cotacao,
+       'indice' : indice
     }
 
     return render(request, template_name, context)
 
 
-class CreateCotacao(LoginRequiredMixin,CreateView):
+class CreateCotacao_create_indice(LoginRequiredMixin,CreateView):
     def get_template_names(self):
         if self.request.is_ajax():
             return ["_create_cotacao.html"]
         else:
             raise Http404
 
-    def get_form_kwargs(self):
-        kwargs = super(CreateCotacao, self).get_form_kwargs()
-        kwargs['user'] = self.request.user
-        return kwargs
 
     model = Cotacao
-    form_class = FormCreateCotacao
+    fields = ['data_indice','valor_cotacao']
 
     def get_success_url(self):
         return reverse_lazy('indice_list')
@@ -265,10 +308,35 @@ class CreateCotacao(LoginRequiredMixin,CreateView):
 
     def form_valid(self,form):
         cotacao = form.save(commit=False)
-        if self.request.user.is_masteruser is True:
-            cotacao.master_user = self.request.user
+        cotacao.user_cad = self.request.user
+        cotacao.save()
+
+        if self.request.is_ajax():
+            context = self.get_context_data(form=form, success=True,ok='ok')
+            return self.render_to_response(context)
         else:
-            cotacao.master_user = self.request.user.user_master
+            return redirect(self.get_success_url())
+
+
+
+class CreateCotacao_edit_indice(LoginRequiredMixin,CreateView):
+    def get_template_names(self):
+        if self.request.is_ajax():
+            return ["_create_cotacao.html"]
+        else:
+            raise Http404
+
+
+    model = Cotacao
+    fields = ['data_indice', 'valor_cotacao']
+
+    def get_success_url(self):
+        return reverse_lazy('indice_list')
+
+
+    def form_valid(self,form):
+        cotacao = form.save(commit=False)
+        cotacao.user_cad = self.request.user
         cotacao.save()
 
         if self.request.is_ajax():
@@ -282,29 +350,21 @@ class CreateCotacao(LoginRequiredMixin,CreateView):
 
 
 
-
-
-
 @login_required
 def delete_cotacao(request, pk):
-    if request.user.is_masteruser is True:
-        cotacao = get_object_or_404(Cotacao,master_user=request.user,pk=pk)
-    else:
-        cotacao = get_object_or_404(Cotacao,master_user=request.user.user_master,pk=pk)
-
-
+    cotacao = get_object_or_404(Cotacao,pk=pk)
     cotacao.delete()
-
-
     # messages.success(request, 'Grupo removido com sucesso !!')
-    return redirect('indice_list')
+    return HttpResponse('ok')
 
 
 
 
 create_indice = CreateIndice.as_view()
+edit_indice = EditIndice.as_view()
 create_conta = CreateConta.as_view()
-create_cotacao = CreateCotacao.as_view()
+create_cotacao_create_indice = CreateCotacao_create_indice.as_view()
+create_cotacao_edit_indice = CreateCotacao_edit_indice.as_view()
 edit_conta = EditConta.as_view()
 
 

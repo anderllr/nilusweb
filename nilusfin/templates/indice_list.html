@@ -4,78 +4,93 @@
 
 
 <!-- Bread crumb and right sidebar toggle -->
-{% block title_page %} Indices e Cotações {% endblock %}
+{% block title %} Indices / Cotações {% endblock %}
 
 {% block page_body %}
 
-<div class="card">
-    <div class="card-body">
-        <h4 class="card-title">Indices</h4>
-        <h6 class="card-subtitle">Indices e Cotações de moedas.
-            <div class="col-lg-3 col-md-4 pull-right new_add">
-                     <a class="btn btn-success btn new_add_ind" title="Novo Indice " href="{% url 'create_indice' %}"><i class="fa fa-plus"></i><small> Indice</small></a>
-                     <a class="btn btn-info btn new_add_cot" title="Nova Cotação " href="{% url 'create_cotacao' %}"><i class="fa fa-plus"></i><small> Cotação</small></a>
-            </div>
-        </h6>
+<div class="block">
+    <div class="block-content">
+        <div class="row  btn-insert">
+        <button type="button" class="btn btn-outline-primary mr-5 mb-5  new_indice">
+                 <i class="fa fa-plus mr-5"></i> Novo Indice
+        </button>
+        </div>
+        <div>
+            <div class="row">
+                <div class="form_inc col-md-12">
+                    <div class="col-md-6 form_inc_indice">
 
-        <div class="table-responsive table_data">
-          {% include '_table_indice.html' %}
+                    </div>
+                    <div class="col-md-6 fom_inc_cotacao">
+
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form_edit col-md-12"></div>
+            </div>
+        </div>
+
+
+
+        </div>
+        <div class="row table table_indice">
+         {% include '_table_indice.html' %}
         </div>
     </div>
 </div>
 
 
-<div id="modal-create-ind" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Criar Indice</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            </div>
-            <div class="modal-body">
 
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Fechar</button>
+<div class="modal fade" id="modal-cotacao" tabindex="-1" role="dialog" aria-labelledby="modal-slideright" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-slideright modal-sm" role="document">
+                <div class="modal-content">
+                    <div class="block block-themed block-transparent mb-0">
+                        <div class="block-header bg-primary-dark">
+                            <h3 class="block-title">Inserir Cotação - Indice: </h3><h3 class="block-title info_modal"></h3>
+                            <div class="block-options">
+                                <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+                                    <i class="si si-close"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="block-content">
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-alt-secondary" data-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
 
 
-<div id="modal-create-cot" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Inserir Cotação</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            </div>
-            <div class="modal-body">
 
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Fechar</button>
+
+<div class="modal fade" id="modal-lista-cotacao" tabindex="-1" role="dialog" aria-labelledby="modal-slideright" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-slideright" role="document">
+                <div class="modal-content">
+                    <div class="block block-themed block-transparent mb-0">
+                        <div class="block-header bg-primary-dark">
+                            <h3 class="block-title">Histórico de Cotações</h3><h3 class="block-title info_modal"></h3>
+                            <div class="block-options">
+                                <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+                                    <i class="si si-close"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="block-content">
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-alt-secondary" data-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
 
-<div id="modal-list-cotacoes" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Cotações Cadastradas</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            </div>
-            <div class="modal-body">
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Fechar</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 
 {% endblock %}
@@ -85,26 +100,85 @@
 
 
 
+$('.chosen-select').chosen({ width: '100%' });
+$('.form_inc').hide();
+$('.form_edit').hide();
 
-function loading_data(){
-      $('.table_data').load('{{ request.path }}');
-	}
+
+function loading_indices(){
+      $('.table_indice').load('{{ request.path }}');
+}
 
 
- $('#myTable').DataTable({
-     "language": {
-         "lengthMenu": "Mostrando _MENU_ registros por página",
-         "search" : "Procurar: ",
-         "info" : "Exibindo de _START_ a _END_ de _TOTAL_ registros",
-         "infoEmpty": "Nenhum registro encontrado",
-         "infoFiltered": "(filtrado entre _MAX_ registros)",
-         "paginate" : {
-           "first":      "Primeiro",
-           "last":       "Último",
-           "next":       "Próximo",
-           "previous":   "Anterior"
-         },
-     }
+table = $('#tabela_indice').DataTable({
+    "language": {
+     "lengthMenu": "Mostrando _MENU_ registros por página",
+     "search" : "Procurar: ",
+     "info" : "Exibindo de _START_ a _END_ de _TOTAL_ registros",
+     "infoEmpty": "Nenhum registro encontrado",
+     "infoFiltered": "(filtrado entre _MAX_ registros)",
+     "paginate" : {
+       "first":      "Primeiro",
+       "last":       "Último",
+       "next":       "Próximo",
+       "previous":   "Anterior"
+     },
+     responsive: {
+            details: {
+                type: 'column'
+            }
+        },
+        columnDefs: [ {
+            className: 'control',
+            orderable: false,
+            targets:   0
+        } ],
+        order: [ 1, 'asc' ]
+ }
+});
+
+
+
+$(".lista_cotacoes").on("click",function(e){
+   e.preventDefault();
+   var indice = '{{ indice.descricao }}';
+   $("#modal-lista-cotacao .info_modal").text(indice);
+   $("#modal-lista-cotacao .block-content").load($(this).attr('href'), function(){
+       $('#modal-lista-cotacao').modal("show");
+       $('#tabela_cotacoes').dataTable({
+            pageLength: 5,
+            autoWidth: false,
+            searching: false,
+            "language": {
+     "lengthMenu": "Mostrando _MENU_ registros por página",
+     "search" : "Procurar: ",
+     "info" : "Exibindo de _START_ a _END_ de _TOTAL_ registros",
+     "infoEmpty": "Nenhum registro encontrado",
+     "infoFiltered": "(filtrado entre _MAX_ registros)",
+     "paginate" : {
+       "first":      "Primeiro",
+       "last":       "Último",
+       "next":       "Próximo",
+       "previous":   "Anterior"
+     },
+     responsive: {
+            details: {
+                type: 'column'
+            }
+        },
+        columnDefs: [ {
+            className: 'control',
+            orderable: false,
+            targets:   0
+        } ],
+        order: [ 1, 'asc' ]},
+
+            dom: "<'row'<'col-sm-12'tr>>" +
+                "<'row'<'col-sm-6'i><'col-sm-6'p>>"
+        });
+
+   });
+
 });
 
 
@@ -112,107 +186,212 @@ function loading_data(){
 
 
 
-<!-- Create Indice -->
-$(".new_add").on("click",".new_add_ind", function(e){
-				e.preventDefault();
-				$("#modal-create-ind .modal-body").load("{% url 'create_indice' %}", function(){
-				  $('#modal-create-ind').modal("show");
-                });
 
+<!-- Create Company -->
+
+$(".new_indice").on("click",function(e){
+     e.preventDefault();
+     $(".form_inc .form_inc_indice").load("{% url 'create_indice' %}", function(){
+        $('.form_inc').show("puff");
+        $('.new_indice').hide("drop");
+        $('.chosen-select').chosen({ width: '100%' });
+
+
+        {% include 'js_floating_labels.html' %}
+        {% include 'js_tabs.html' %}
+        {% include 'js_masks.html' %}
+        {% include 'js_tabelas_formularios.html' %}
+
+
+        $(".new_cotacao").on("click",function(e){
+            e.preventDefault();
+            var indice = $('#id_descricao').val();
+            $("#modal-cotacao .info_modal").text(indice);
+            $("#modal-cotacao .block-content").load("{% url 'create_cotacao_create_indice' %}", function(){
+            $('#modal-cotacao').modal("show");
+            {% include 'js_floating_labels.html' %}
+            $(".js-datepicker").datepicker({
+		            todayBtn: true,
+    	            language: "pt-BR",
+		            autoclose: true,
+    	            todayHighlight: true
+	          });
+
+
+            });
+        });
+
+        $("#modal-cotacao .block-content").on("submit","#form_cotacao_create",function(e){
+                 e.preventDefault();
+                 var dados = $(this).serialize();
+                 $.post("{% url 'create_cotacao_create_indice' %}",dados,function(result){
+                    $("#modal-cotacao .block-content").html(result);
+                    if(close_form==true){
+                       $('#modal-cotacao').modal("hide");
+                        $('.tb_body_cotacao_create_form').append("<tr><td><small>"+ data_cotacao +"</small></td><td>"+ valor +"</td><td><button type='button' class='btn btn-sm btn-outline-danger delete_cotacao' data-toggle='tooltip' data-placement='bottom' title='Excluir' href='"+ url+" '><i class='fa fa-trash'></i></button></td></tr>");
+                        $('#form_cotacao_create').remove();
+                    }
+                    else{
+                       $('#modal-talhao').modal("show");
+                    }
+                 });
+         });
+
+
+
+
+
+
+
+          $(".form_inc .cancel_form").on("click",function(e){
+             $('.form_inc').hide("drop");
+             $('.new_indice').show();
+             $('#form_cotacao_create').remove();
+          });
+    });
 });
 
-$("#modal-create-ind .modal-body").on("submit","form",function(e){
+    $(".form_inc").on("submit","form",function(e){
 	 	 e.preventDefault();
 	 	 var dados = $(this).serialize();
 	 	 $.post("{% url 'create_indice' %}",dados,function(result){
-	 	    $("#modal-create-ind .modal-body").html(result);
+	 	    $(".form_inc").html(result);
 	 	    if(close_modal==true){
-	 	       $('#modal-create-ind').modal("hide");
-               loading_data();
-               window.location.reload()
-	 	    }
-	 	    else{
-	 	       $('#modal-create-ind').modal("show");
-	 	    }
+	 	       $('.form_inc').hide("drop");
+               $('.new_indice').show();
+               window.location.reload();
+
+     	    }
+ 	        else{
+                $(".form_inc").show();
+                {% include 'js_floating_labels.html' %}
+                {% include 'js_tabs.html' %}
+                $('.chosen-select').chosen({ width: '100%' });
+
+                   $(".form_inc .cancel_form").on("click",function(e){
+                        $('.form_inc').hide("drop");
+                        $('.new_indice').show();
+                        $
+                   });
+
+
+ 	        }
 	 	 });
-	 });
+	});
+
+<!-- Edit Company -->
+$('.table_indice').on('click', '.edit_indice',function(e){
+    e.preventDefault();
+    $(".form_edit ").load($(this).attr('href'), function(){
+               $('.form_edit').show("slide");
+               $('.new_indice').hide("drop");
+               {% include 'js_floating_labels.html' %}
+               {% include 'js_masks.html' %}
+               {% include 'js_tabs.html' %}
+               {% include 'js_tabelas_formularios.html' %}
+               $('.chosen-select').chosen({ width: '100%' });
+
+
+              $(".new_cotacao").on("click",function(e){
+                    e.preventDefault();
+                    var indice = $('#id_descricao').val();
+                    $("#modal-cotacao .info_modal").text(indice);
+                    $("#modal-cotacao .block-content").load("{% url 'create_cotacao_edit_indice' %}", function(){
+                    $('#modal-cotacao').modal("show");
+                    {% include 'js_floating_labels.html' %}
+                    $(".js-datepicker").datepicker({
+                            todayBtn: true,
+                            language: "pt-BR",
+                            autoclose: true,
+                            todayHighlight: true
+                    });
+              });
+        });
+
+        $("#modal-cotacao .block-content").on("submit","#form_cotacao_create",function(e){
+                 e.preventDefault();
+                 var dados = $(this).serialize();
+                 $.post("{% url 'create_cotacao_edit_indice' %}",dados,function(result){
+                    $("#modal-cotacao .block-content").html(result);
+                    if(close_form==true){
+                       $('#modal-cotacao').modal("hide");
+                        $('.tb_body_cotacao_edit_form').append("<tr><td><small>"+ data_cotacao +"</small></td><td>"+ valor +"</td><td><button type='button' class='btn btn-sm btn-outline-danger delete_cotacao' data-toggle='tooltip' data-placement='bottom' title='Excluir' href='"+ url+" '><i class='fa fa-trash'></i></button></td></tr>");
+                        $('#form_cotacao_create').remove();
+                    }
+                    else{
+                       $('#modal-talhao').modal("show");
+                    }
+                 });
+         });
 
 
 
-
-
-<!--Create Cotação -->
-$(".new_add").on("click",".new_add_cot", function(e){
-				e.preventDefault();
-				$("#modal-create-cot .modal-body").load("{% url 'create_cotacao' %}", function(){
-				  $('#modal-create-cot').modal("show");
-                });
+              $(".form_edit .cancel_form").on("click",function(e){
+                  $('.form_edit').hide("drop");
+                  $('.new_indice').show();
+                  $('#form_cotacao_create').remove();
+              });
+    });
 
 });
 
-$("#modal-create-cot .modal-body").on("submit","form",function(e){
+
+
+$(".form_edit").on("submit","form",function(e){
 	 	 e.preventDefault();
+
 	 	 var dados = $(this).serialize();
-	 	 $.post("{% url 'create_cotacao' %}",dados,function(result){
-	 	    $("#modal-create-cot .modal-body").html(result);
+	 	 $.post($(this).attr('action'),dados,function(result){
+	 	    $(".form_edit").html(result);
 	 	    if(close_modal==true){
-	 	       $('#modal-create-cot').modal("hide");
-               loading_data();
-               window.location.reload()
+	 	       $('.form_edit').hide("drop");
+                 window.location.reload();
+
 	 	    }
 	 	    else{
-	 	       $('#modal-create-cot').modal("show");
-	 	    }
+	 	       $('.form_edit').show("puff");
+                {% include 'js_floating_labels.html' %}
+                $('.chosen-select').chosen({ width: '100%' });
+
+
+                $(".form_inc .cancel_form").on("click",function(e){
+                    $('.form_edit').hide("drop");
+                    $('.new_indice').show();
+                    $('#form_cotacao_create').remove();
+	 	        });
+            }
 	 	 });
 	 });
 
 
- $(".table_data").on("click", ".list_cotacao", function(e){
-        e.preventDefault();
-  		$("#modal-list-cotacoes .modal-body").load($(this).attr('href'), function(){
-              $('#modal-list-cotacoes').modal("show");
-			});
+    $(".delete_indice").on("click", function(e){
+
+    e.preventDefault();
+    var linkURL = $(this).attr("href");
+    swal({
+        title: "Tem certeza?",
+        text: "Ao aceitar esta empresa será excluida!",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Sim, Excluir!",
+        cancelButtonText: "Não, Cancelar!",
+        closeOnConfirm: false,
+        closeOnCancel: false
+    },
+    function(isConfirm){
+        if (isConfirm) {
+
+            swal("Excluido!", "Registro excluido com sucesso!", "success");
+            window.location.href = linkURL;
+        }
+        else {
+
+            swal("Cancelado", "Exclusão cancelada", "error");
+        }
 	});
 
-
-
-    $(".delete_registro").on("click", function(e){
-
-        e.preventDefault();
-        var linkURL = $(this).attr("href");
-        swal({
-            title: "Tem certeza?",
-            text: "Ao aceitar esta registro será excluido!",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#DD6B55",
-            confirmButtonText: "Sim, Excluir!",
-            cancelButtonText: "Não, Cancelar!",
-            closeOnConfirm: false,
-            closeOnCancel: false
-        },
-        function(isConfirm){
-                if (isConfirm) {
-                    swal("Excluido!", "Registro excluido com sucesso!", "success");
-                    window.location.href = linkURL;
-                }
-                else {
-                    swal("Cancelado", "Exclusão cancelada", "error");
-                }
-        });
-	});
-
-
-
-
-
-
-
-
-
-
-
-
+});
 
 
 {% endblock %}

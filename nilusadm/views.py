@@ -21,11 +21,11 @@ def users_viewers_list(request):
         template_name = 'users_viewers_list.html'
 
 
-    users_viewers = User.objects.filter(user_master=request.user.pk,is_masteruser = False)
+    users_viewers = User.objects.filter(user_master=request.user)
 
 
     context = {
-        'users_viewers' : users_viewers
+        'users_viewers' : users_viewers,
     }
     return render(request,template_name,context)
 

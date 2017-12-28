@@ -24,3 +24,29 @@ $('.tb_body_talhao_edit_form').on('click','.delete_talhao',function(e){
 
 
 
+$('.tb_body_cotacao_create_form').on('click','.delete_cotacao',function(e){
+  e.preventDefault();
+  var $this = $(this);
+  if(confirm('Deseja excluir esta Cotação?')){
+
+      $.get($(this).attr('href'),function(data){
+         $this.closest('tr').remove();
+        });
+    }
+});
+
+
+
+$('.tb_body_cotacao_edit_form').on('click','.delete_cotacao',function(e){
+  e.preventDefault();
+  var $this = $(this);
+  if(confirm('Deseja excluir esta Cotaçao?')){
+
+      $.get($(this).attr('href'),function(data){
+         $this.closest('tr').remove();
+        });
+    }
+});
+
+
+

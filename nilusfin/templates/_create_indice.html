@@ -4,47 +4,104 @@
 	   close_modal=true;
    </script>
 {% else %}
-<div>
+<div class="block">
+    <div class="block-header ribbon ribbon-success ribbon-left">
+                        <h3 class="block-title antes_insert">Novo Indice</h3>
+                        <div class="block-options antes_insert">
+                            <button type="button" class="btn-block-option cancel_form">
+                                <i class="fa fa-close"></i>
+                            </button>
+                        </div>
 
-        <form class="form-horizontal"  method="post">
-          {% csrf_token %}
-            {% for error in form.non_field_errors %}
-            <div class="alert-danger alert">
-                {{ error }}
-            </div>
-
-          {% endfor %}
-          <div class="row">
-            <div class="form-group col-lg-7">
-                <label class="control-label">{{form.descricao.label_tag}}</label>
-                    <div class="input-group">
-                        {% render_field form.descricao class="form-control" type=text placeholder=form.descricao.label  %}
                     </div>
-                    {% for error in form.descricao.errors %}
-                        <small class="text-danger"> {{ error }} </small>
-                    {% endfor %}
-            </div>
-            <div class="form-group col-lg-4">
-             <label class="control-label">{{form.simbolo.label_tag}}</label>
-                <div class="input-group">
-                   {% render_field form.simbolo class="form-control" type=text placeholder=form.simbolo.label  %}
+    <ul class="nav nav-tabs nav-tabs-alt" data-toggle="tabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" href="#aba_principal">Indice</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#aba_cotacao">Cotações</a>
+        </li>
+    </ul>
+
+    <form method="post" class="form_propriety" id="form_create">
+             {% csrf_token %}
+                {% for error in form.non_field_errors %}
+                <div class="alert-danger alert">
+                {{ error }}
                 </div>
-                {% for error in form.simbolo.errors %}
-                   <small class="text-danger"> {{ error }} </small>
                 {% endfor %}
-           </div>
-          </div>
-
-
-
-
-
-
-            <div class="form-group m-b-0">
-                <div class="offset-sm-3">
-                    <button type="submit" class="btn btn-success waves-effect waves-light m-t-10">Cadastrar</button>
+             <div class="block-content tab-content">
+                <div class="tab-pane active" id="aba_principal" role="tabpanel">
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            <div class="form-material floating input-group">
+                                {% render_field  form.descricao class='form-control' %}
+                                <label for="{{  form.descricao.id }}">Descrição</label>
+                            </div>
+                                {% for error in form.descricao.errors %}
+                                <div class="alert alert-danger alert-dismissable">{{ error }}</div>
+                                {% endfor %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                       <div class="col-md-6">
+                            <div class="form-material floating retorno_busca">
+                                {% render_field  form.simbolo class='form-control' %}
+                                <label for="{{  form.simbolo.id }}">Símbolo</label>
+                                {% for error in form.simbolo.errors %}
+                                <div class="alert alert-danger alert-dismissable">
+                                    <p class="mb-0">{{ error }}</p>
+                                </div>
+                                {% endfor %}
+                            </div>
+                       </div>
                 </div>
-            </div>
-        </form>
+             </div>
+             <div class="tab-pane" id="aba_cotacao" role="tabpanel">
+                <div class="form-group row ">
+                    <div>
+                        <br>
+                        <div class="row">
+                                <div class="col-md-5"></div>
+                                <button type="button" class="btn btn-sm btn-outline-primary mb-10 pull-right new_cotacao" id="new_cotacao">
+                                    <i class="fa fa-plus mr-5"></i> Cadastrar Cotações
+                                </button>
+                            </div>
+                    </div>
+                    <div class="col-md-1"></div>
+                    <div class="col-md-7">
+                        <div class="block-header ribbon ribbon-info ribbon-left">
+                                <div class="ribbon-box apos_insert">Cotações</div>
+                                <div class="row">
+                                    <div class="tabela_formulario">
+                                        <table class="table">
+                                            <thead>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                            </thead>
+                                            <tbody class="tb_body_cotacao_create_form">
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+             </div>
+           </div>
+           <div class="row">
+
+           </div>
+          <br>
+          <br>
+         <div class="form-group row ">
+
+                <button type="submit" class="btn btn-alt-primary">Salvar</button>
+                <button type="button"  class="btn btn-alt-secondary  cancel_form">Cancelar</button>
+         </div>
+    </form>
+
+
 </div>
 {% endif %}

@@ -1,22 +1,32 @@
-    <table id="myTable" class="table table-bordered table-striped">
+    <table id="tabela_indice" class="table table-bordered table-striped">
                 <thead>
                     <tr>
-                        <th>Código</th>
+                        <th style="width:20px;">Cód</th>
                         <th>Indice</th>
-                        <th>Simbolo</th>
+                        <th style="width:30px;">Símbolo</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
                 {% for in in indice %}
                     <tr>
-                        <td><small>{{ in.num_indice }}</small></td>
-                        <td><small>{{ in.descricao }}</small></td>
-                        <td><small>{{ in.simbolo }}</small></td>
-                        <td><a class="btn btn-info btn list_cotacao" title="Indices " href="{% url 'cotacao_list' in.pk  %}"><i class="fa fa-exclamation"></i><small> Cotações</small></a>
-                            <a class="btn btn-danger btn delete_registro" title="Excluir " href="{% url 'delete_indice' in.pk %}"><i class="fa fa-trash-o"></i><small> Excluir</small></a>
-                        </td>
+                        <td>{{ in.num_indice }}</td>
+                        <td>{{ in.descricao }}</td>
+                        <td>{{ in.simbolo }}</td>
+                        <td>
+                            <div class="pull-right">
+                             <button type="button" class="btn btn-sm btn-outline-secondary edit_indice"  href="{% url 'edit_indice' in.pk  %}" data-toggle="tooltip" data-placement="bottom" title="Editar">
+                                <i class="fa fa-pencil"></i>
+                             </button>
+                             <button type="button" class="btn btn-sm btn-outline-danger delete_indice"  href="{% url 'delete_indice' in.pk  %}" data-toggle="tooltip" data-placement="bottom" title="Excluir">
+                                <i class="fa fa-trash-o"></i>
+                             </button>
+                             <button type="button" class="btn btn-sm btn-outline-info lista_cotacoes"  href="{% url 'cotacao_list' in.pk  %}" data-toggle="tooltip" data-placement="bottom" title="Visualizar Cotações">
+                                 <i class="si si-layers"></i>
+                             </button>
+                            </div>
 
+                        </td>
                     </tr>
                 {% endfor %}
                 </tbody>

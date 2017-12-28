@@ -165,6 +165,7 @@ class Ccusto(models.Model):
 class PlanoFinan(models.Model):
 
     Scategoria_Choices = (
+        (None,'Informe o sinal'),
         ('D', 'Despesas'),
         ('R', 'Receitas'),
     )

@@ -171,7 +171,8 @@ def propriety_list(request):
         template_name = 'propriety_list.html'
 
 
-
+   talhao_sem_prop = Talhao.objects.filter(user_cad=request.user.pk,propriety=None)
+   talhao_sem_prop.delete()
 
    if request.user.is_masteruser is True:
         prop = Propriety.objects.filter(master_user=request.user.pk)

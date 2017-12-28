@@ -9,6 +9,30 @@
         </tr>
     </thead>
     <tbody>
+        {% for user_master in user_m %}
+        <tr>
+            <td>{{ user_master.name }}</td>
+            <td>{{ user_master.username }}</td>
+            <td>{{ user_master.email }}</td>
+
+            <td class="d-none d-sm-table-cell">
+                {% if user_master.is_active == True %}
+                <span class="badge badge-success">Ativo</span>
+                {% else %}
+                <span class="badge badge-danger">Inativo</span>
+                {% endif %}
+            </td>
+            <td class="text-center">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-secondary edit_viewer"  href="{% url 'edit_viewer' user_master.pk %}" data-toggle="tooltip" data-placement="bottom" title="Editar">
+                        <i class="fa fa-pencil"></i>
+                    </button>
+
+
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
        {% for users in users_viewers %}
         <tr>
             <td>{{ users.name }}</td>

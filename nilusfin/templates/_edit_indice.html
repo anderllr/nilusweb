@@ -4,70 +4,108 @@
 	   close_modal=true;
    </script>
 {% else %}
-<div>
-    <p class="text-muted m-b-30 font-13">Alterar Conta</p>
-        <form class="form"  method="post" enctype="multipart/form-data" action="{% url 'edit_conta' object.pk %}">
-          {% csrf_token %}
-            {% for error in form.non_field_errors %}
-            <div class="alert-danger alert">
+<div class="block">
+    <div class="block block-themed block-rounded">
+                 <div class="block-header bg-flat-dark">
+                    <h3 class="block-title">Alterar Indice: {{ dados_cadastro.num_indice }} - {{ dados_cadastro.descricao }}</h3>
+                </div>
+    <ul class="nav nav-tabs nav-tabs-alt" data-toggle="tabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" href="#aba_principal_edit">Indice</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#aba_cotacao_edit">Cotações</a>
+        </li>
+    </ul>
+
+    <form method="post" class="form_indice" id="form_edit"  enctype="multipart/form-data" action="{% url 'edit_indice' object.pk %}">
+             {% csrf_token %}
+                {% for error in form.non_field_errors %}
+                <div class="alert-danger alert">
                 {{ error }}
-            </div>
-          {% endfor %}
-          <div class="row">
-            <div class="form-group col-lg-4">
-                <label class="control-label">{{form.agencia.label_tag}}</label>
-                    <div class="input-group">
-                        {% render_field form.agencia class="form-control" type=text placeholder=form.agencia.label  %}
-                    </div>
-                    {% for error in form.agencia.errors %}
-                        <small class="text-danger"> {{ error }} </small>
-                    {% endfor %}
-            </div>
-            <div class="form-group col-lg-6">
-             <label class="control-label">{{form.conta.label_tag}}</label>
-                <div class="input-group">
-                   {% render_field form.conta class="form-control" type=text placeholder=form.conta.label  %}
                 </div>
-                {% for error in form.conta.errors %}
-                   <small class="text-danger"> {{ error }} </small>
                 {% endfor %}
+             <div class="block-content tab-content">
+                <div class="tab-pane active" id="aba_principal_edit" role="tabpanel">
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            <div class="form-material floating input-group">
+                                {% render_field  form.descricao class='form-control' %}
+                                <label for="{{  form.descricao.id }}">Descrição</label>
+                            </div>
+                                {% for error in form.descricao.errors %}
+                                <div class="alert alert-danger alert-dismissable">{{ error }}</div>
+                                {% endfor %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                       <div class="col-md-6">
+                            <div class="form-material floating retorno_busca">
+                                {% render_field  form.simbolo class='form-control' %}
+                                <label for="{{  form.simbolo.id }}">Símbolo</label>
+                                {% for error in form.simbolo.errors %}
+                                <div class="alert alert-danger alert-dismissable">
+                                    <p class="mb-0">{{ error }}</p>
+                                </div>
+                                {% endfor %}
+                            </div>
+                       </div>
+                </div>
+             </div>
+             <div class="tab-pane" id="aba_cotacao_edit" role="tabpanel">
+                <div class="form-group row ">
+                    <div>
+                        <br>
+                        <div class="row">
+                                <div class="col-md-5"></div>
+                                <button type="button" class="btn btn-sm btn-outline-primary mb-10 pull-right new_cotacao" id="new_cotacao">
+                                    <i class="fa fa-plus mr-5"></i> Cadastrar Cotações
+                                </button>
+                            </div>
+                    </div>
+                    <div class="col-md-1"></div>
+                    <div class="col-md-7">
+                        <div class="block-header ribbon ribbon-info ribbon-left">
+                            <div class="ribbon-box apos_insert">Data Cotação / Valor</div>
+                                <div class="row">
+                                    <div class="tabela_formulario">
+                                        <table class="table">
+                                            <thead>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                            </thead>
+                                            <tbody class="tb_body_cotacao_edit_form">
+                                            {% for cot in cotacoes %}
+                                            <tr>
+                                                <td><small>{{ cot.data_indice|date:'d/m/Y'  }}</small></td>
+                                                <td><small>{{ cot.valor_cotacao }}</small></td>
+                                                <td>
+                                                    <button type="button" class="btn btn-sm btn-outline-danger delete_cotacao" data-toggle="tooltip" data-placement="bottom" title="Excluir" href="{% url 'delete_cotacao' cot.pk  %}"><i class='fa fa-trash'></i></button>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+             </div>
            </div>
-          </div>
-           <div class="form-group">
-            <label class="control-label">{{form.descricao.label_tag}}</label>
-                <div class="input-group">
-                    {% render_field form.descricao class="form-control" type=text placeholder=form.descricao.label  %}
-                </div>
-                {% for error in form.descricao.errors %}
-                    <small class="text-danger"> {{ error }} </small>
-                {% endfor %}
-            </div>
-            <div class="row">
-                <div class="col-md-4">
-                    {% render_field form.usa_limite type="checkbox" %}
-                    <label for="id_usa_limite">Usa Limite</label>
-                </div>
-                <div class="form-group col-lg-6 vlr_limite">
-                        <label class="control-label">{{form.vlr_limite.label_tag}}</label>
-                    <div class="input-group">
-                        {% render_field form.vlr_limite class="form-control" type=text placeholder=form.vlr_limite.label  %}
-                    </div>
-                    {% for error in form.vlr_limite.errors %}
-                        <small class="text-danger"> {{ error }} </small>
-                    {% endfor %}
-                </div>
-            </div>
-            <div class="demo-checkbox">
-                    {% render_field form.conta_pagamento type="checkbox" %}
-                    <label for="id_conta_pagamento">Conta de Pagamento ?</label>
-                    {% render_field form.conta_recebimento type="checkbox" %}
-                    <label for="id_conta_recebimento">Conta de Recebimento ?</label>
-            </div>
-            <div class="form-group m-b-0">
-                <div class="offset-sm-3">
-                    <button type="submit" class="btn btn-success waves-effect waves-light m-t-10">Salvar Alterações</button>
-                </div>
-            </div>
-        </form>
+           <div class="row">
+
+           </div>
+          <br>
+          <br>
+         <div class="form-group row ">
+
+                <button type="submit" class="btn btn-alt-primary">Salvar</button>
+                <button type="button"  class="btn btn-alt-secondary  cancel_form">Cancelar</button>
+         </div>
+    </form>
+    </div>
+
 </div>
 {% endif %}

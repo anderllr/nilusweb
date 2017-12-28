@@ -1,8 +1,8 @@
-    <table id="myTable" class="table table-bordered table-striped">
+            <h3> Indice:<small>{% for ind in indice %} {{ ind.descricao }} {% endfor %}</small></h3>
+            <table id="tabela_cotacoes" class="table table-bordered table-striped table-vcenter js-dataTable-simple">
                 <thead>
                     <tr>
                         <th>Data</th>
-                        <th>Indice</th>
                         <th>Valor</th>
                     </tr>
                 </thead>
@@ -10,7 +10,6 @@
                 {% for cc in cotacao %}
                     <tr>
                         <td><small>{{ cc.data_indice|date:'d/m/Y'  }}</small></td>
-                        <td><small>{{ cc.indice }}</small></td>
                         <td><small>{{ cc.valor_cotacao }}</small></td>
                     </tr>
                 {% endfor %}

@@ -47,7 +47,7 @@ $('.form_inc').hide();
 $('.form_edit').hide();
 
 
-function loading_viewers(){
+function loading_planofinan(){
       $('.table_planofinan').load('{{ request.path }}');
 }
 
@@ -113,7 +113,7 @@ $(".new_planofinan").on("click",function(e){
 	 	    if(close_modal==true){
 	 	       $('.form_inc').hide("drop");
                $('.new_planofinan').show();
-               window.location.reload();
+                  window.location.reload();
 
      	    }
  	        else{

@@ -23,8 +23,8 @@
         <!-- Icons -->
         <!-- The following icons can be replaced with your own, they are used by desktop and mobile browsers -->
         <link rel="shortcut icon" href="{% static 'assets/img/favicons/favicon.png' %}">
-        <link rel="icon" type="image/png" sizes="192x192" href="{% static 'assets/img/favicons/favicon-192x192.png' %}">
-        <link rel="apple-touch-icon" sizes="180x180" href="{% static 'assets/img/favicons/apple-touch-icon-180x180.png' %}">
+        <link rel="icon" type="image/png" sizes="192x192" href="{% static 'assets/img/favicons/favicon.png' %}">
+        <link rel="apple-touch-icon" sizes="180x180" href="{% static 'assets/img/favicons/favicon.png' %}">
 
         <!-- END Icons -->
 
@@ -35,6 +35,8 @@
         <link rel="stylesheet" href="{% static 'assets/js/plugins/datatables/dataTables.bootstrap4.min.css' %}">
         <link href="{% static 'assets/plugins/sweetalert/sweetalert.css' %}" rel="stylesheet">
         <link href="{% static 'assets/plugins/table_header_fixed/tb_header_fixed.css' %}" rel="stylesheet">
+        <link rel="stylesheet" href="{% static 'assets/js/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css' %}">
+
 
 
 
@@ -124,9 +126,9 @@
 
                                 <!-- Logo -->
                                 <div class="content-header-item">
-                                    <a class="link-effect font-w700" href="{% url 'principal' %}">
+                                    <a href="{% url 'principal' %}">
 
-                                        <img src="{% static 'assets/img/favicons/logo_circulo.png' %}"  height="50" width="50" alt="homepage" class="dark-logo" />
+                                        <img src="{% static 'assets/img/favicons/favicon.png' %}"  height="50" width="50" class="dark-logo" />
                                     </a>
                                 </div>
                                 <!-- END Logo -->
@@ -161,7 +163,7 @@
                                             <a href="{% url 'propriety_list' %}">Propriedades</a>
                                             <a href="{% url 'cadgeral_list' %}">Fornecedores/Clientes</a>
                                             {% if permissions.nilusFinanceiro == True %}
-                                            <a href="{% url 'conta_list' %}">Contas (Banco / Caixa)</a>
+                                            <a href="{% url 'conta_list' %}">Contas Financeiras</a>
                                             <a href="{% url 'planofinan_list' %}"> Plano Financeiro</a>
                                             <a href="{% url 'ccusto_list' %}"> Centro de Custo</a>
                                             {% endif %}
@@ -174,6 +176,7 @@
                                     <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="si si-wallet"></i><span class="sidebar-mini-hide">Financeiro</span></a>
                                     <ul>
                                         <li>
+                                            <a  href="{% url 'indice_list' %}">Indices e Cotações</a>
                                             <a href="be_pages_dashboard.html">Lançamentos</a>
                                         </li>
                                     </ul>
@@ -306,6 +309,9 @@
 
         <script src="{% static 'assets/plugins/chosen/chosen_js_mjc.js' %}"></script>
         <script src="{% static 'assets/plugins/mask/jquery.mask.js' %}"></script>
+
+        <script src="{% static 'assets/js/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js' %}"></script>
+        <script src="{% static 'assets/plugins/dinmoney-datepicker/locales/bootstrap-datepicker.pt-BR.min.js' %}"></script>
 
 
 

@@ -80,6 +80,11 @@ def pre_save_user(instance,**kwargs):
 def post_save_user(instance,created,**kwargs):
     if created:
         if instance.is_masteruser is True:
+
+            usuario = instance
+            usuario.user_master = instance
+            usuario.save()
+
             # Insere permissões gerais.
             permissions = Permissions()
             permissions.user = instance
@@ -103,6 +108,8 @@ def post_save_user(instance,created,**kwargs):
             instancia = Instancia()
             instancia.user = instance
             instancia.save()
+
+
 
             from templated_email import send_templated_mail
             send_templated_mail(
@@ -130,6 +137,8 @@ def post_save_user(instance,created,**kwargs):
             instancia = Instancia()
             instancia.user = instance
             instancia.save()
+
+
 
 
 models.signals.pre_save.connect(pre_save_user,User)
