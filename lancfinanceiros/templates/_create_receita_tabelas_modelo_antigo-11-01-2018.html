@@ -1,0 +1,166 @@
+{% load static widget_tweaks %}
+{% if success %}
+   <script>
+  	 close_modal=true;
+  	 ok = true;
+   </script>
+{% else %}
+<div class="block">
+    <div class="block-header ribbon ribbon-success ribbon-left">
+                        <h3 class="block-title antes_insert">Nova Receita</h3>
+                        <div class="block-options antes_insert">
+                            <button type="button" class="btn-block-option cancel_form">
+                                <i class="fa fa-close"></i>
+                            </button>
+                        </div>
+
+                    </div>
+    <ul class="nav nav-tabs nav-tabs-alt" data-toggle="tabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" href="#aba_principal_titrec">Principal</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#aba_pacelas">Parcelas</a>
+        </li>
+    </ul>
+
+    <form method="post" class="form_receita" id="form_create">
+             {% csrf_token %}
+                {% for error in form.non_field_errors %}
+                <div class="alert-danger alert">
+                {{ error }}
+                </div>
+                {% endfor %}
+             <div class="block-content tab-content">
+                <div class="tab-pane active" id="aba_principal_titrec" role="tabpanel">
+                    <div class="form-group row">
+                        <div class="col-md-6">
+                            <div class="form-material input-group">
+                                <label>Empresa</label>
+                                {% render_field form.company class="chosen-select" %}
+                                {% for error in form.company.errors %}
+                                <small class="form-control-feedback"> {{ error }} </small>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-material input-group">
+                                <label>Cliente</label>
+                                {% render_field form.cadgeral class="chosen-select" %}
+                                {% for error in form.cadgeral.errors %}
+                                <small class="form-control-feedback"> {{ error }} </small>
+                                {% endfor %}
+                                <span class="input-group-btn">
+                                    <button type="button" title="Novo Cliente" class="btn btn-primary new_cadgeral"><i class="fa fa-plus"></i> </button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                       <div class="col-md-6">
+                            <div class="form-material input-group">
+                                <label>Plano Financeiro</label>
+                                {% render_field form.plr_financeiro class="chosen-select" %}
+                                {% for error in form.plr_financeiro.errors %}
+                                <small class="form-control-feedback"> {{ error }} </small>
+                                {% endfor %}
+                                 <span class="input-group-btn">
+                                    <button type="button" class="btn btn-primary new_planofinan" title="Novo Plano Financeiro" data-container="body" data-toggle="popover" data-placement="bottom"><i class="fa fa-plus"></i> </button>
+                                 </span>
+                            </div>
+                       </div>
+                       <div class="col-md-6">
+                           <div class="form-material input-group">
+                                <label>Centro Custo</label>
+                                {% render_field form.c_custo class="chosen-select" id="c_custo_id2" %}
+                                {% for error in form.c_custo.errors %}
+                                <small class="form-control-feedback"> {{ error }} </small>
+                                {% endfor %}
+                                <span class="input-group-btn">
+                                   <button type="button" class="btn btn-primary new_ccusto" title="Novo Centro de Custo" data-container="body" data-toggle="popover2" data-placement="bottom"><i class="fa fa-plus"></i> </button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                       <div class="col-md-4">
+                            <div class="form-material input-group">
+                                <label>Conta</label>
+                                {% render_field form.conta_finan class="chosen-select" %}
+                                {% for error in form.conta_finan.errors %}
+                                <small class="form-control-feedback"> {{ error }} </small>
+                                {% endfor %}
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-primary new_conta" title="Nova Conta de Recebimento" data-container="body" data-toggle="popover3" data-placement="bottom"><i class="fa fa-plus"></i> </button>
+                                 </span>
+                            </div>
+                       </div>
+                       <div class="col-md-4">
+                            <div class="form-material input-group">
+                                <label>Indice</label>
+                                {% render_field form.indice class="chosen-select" %}
+                                {% for error in form.indice.errors %}
+                                <small class="form-control-feedback"> {{ error }} </small>
+                                {% endfor %}
+                            </div>
+                       </div>
+                       <div class="col-md-4">
+                            <div class="form-material input-group">
+                                <label>Cotação</label>
+                                {% render_field form.cotacao class="chosen-select" %}
+                                {% for error in form.cotacao.errors %}
+                                <small class="form-control-feedback"> {{ error }} </small>
+                                {% endfor %}
+                            </div>
+                       </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-4">
+                           <div class="form-material input-group">
+                                <label>Vencimento</label>
+                                {% render_field form.dt_vencimento class="js-datepicker form-control" data-week-start="1" data-autoclose="true" data-today-highlight="true" data-date-format="dd/mm/yyyy" placeholder="dd/mm/yyyy" %}
+                                {% for error in form.dt_vencimento.errors %}
+                                <small class="form-control-feedback"> {{ error }} </small>
+                                {% endfor %}
+                            </div>
+                        </div>
+                       <div class="col-md-4">
+                            <div class="form-material floating">
+                                {% render_field  form.valor_text class='form-control money2' %}
+                                <label for="{{  form.valor_text.id }}">Valor Receita</label>
+                                {% for error in form.valor_text.errors %}
+                                <div class="alert alert-danger alert-dismissable">
+                                    <p class="mb-0">{{ error }}</p>
+                                </div>
+                                {% endfor %}
+                            </div>
+                       </div>
+                       <div class="col-md-4">
+                            <div class="ja_recebido p-t-20">
+                                <label class="css-control css-control-sm css-control-primary css-switch pull-right">
+                                    {% render_field form.ja_baixado type="checkbox" class='css-control-input' %}
+                                    <span class="css-control-indicator"></span> Já Recebido
+                                </label>
+                            </div>
+                       </div>
+
+                    </div>
+                </div>
+             <div class="tab-pane" id="aba_parcelas" role="tabpanel">
+             </div>
+           </div>
+           <div class="row">
+
+           </div>
+          <br>
+          <br>
+         <div class="form-group row ">
+
+                <button type="submit" class="btn btn-alt-primary">Salvar</button>
+                <button type="button"  class="btn btn-alt-secondary  cancel_form">Cancelar</button>
+         </div>
+    </form>
+
+
+</div>
+{% endif %}

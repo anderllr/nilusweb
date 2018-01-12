@@ -7,10 +7,10 @@
    </script>
 {% else %}
 <div class="block block-themed block-rounded">
-    <div class="block-header bg-earth">
+    <div class="block-header bg-gd-cherry">
         <h3 class="block-title antes_insert">
-            Alterar Receita : <small>Nº./Parcela: {{ dados_titulo.num_lan }}/{{ dados_titulo.parcela }}</small> -
-            Cliente/Descrição:<small> {% if dados_titulo.cadgeral == None %} Não Informado {% else %} {{dados_titulo.cadgeral}} {% endif %}
+            Alterar Despesa : <small>Nº./Parcela: {{ dados_titulo.num_lan }}/{{ dados_titulo.parcela }}</small> -
+            Fornecedor/Descrição:<small> {% if dados_titulo.cadgeral == None %} Não Informado {% else %} {{dados_titulo.cadgeral}} {% endif %}
                                                                    / {{dados_titulo.descricao}} </small></h3>
         <div class="block-options antes_insert">
             <button type="button" class="btn-block-option cancel_form">
@@ -19,7 +19,7 @@
         </div>
     </div>
 
-    <form method="post" class="form_edit" id="form_edit" action="{% url 'edit_receita' object.pk %}">
+    <form method="post" class="form_edit" id="form_edit" action="{% url 'edit_despesa' object.pk %}">
     <input type="hidden" name="tem_parcela" id="tem_parcela" value="{{ tem_parcela|yesno:'S,N' }}">
     <input type="hidden" name="confirma_parcela" id="confirma_parcela" value="">
 
@@ -43,7 +43,7 @@
                     <div class="col-md-4">
                         <div class="form-material form-material-success floating">
                             {% render_field  form.valor_text class='form-control money2' %}
-                            <label for="{{  form.valor_text.id }}">Valor Receita</label>
+                            <label for="{{  form.valor_text.id }}">Valor Despesa</label>
                             {% for error in form.valor_text.errors %}
                             <div class="alert alert-danger alert-dismissable">
                                 <p class="mb-0">{{ error }}</p>
@@ -55,7 +55,7 @@
                         <div class="ja_recebido">
                             <label class="css-control css-control-sm css-control-primary css-switch">
                                 {% render_field form.situacao type="checkbox" class='css-control-input' %}
-                                <span class="css-control-indicator"></span> Já Recebido
+                                <span class="css-control-indicator"></span> Já Pago
                             </label>
                         </div>
                     </div>
@@ -101,7 +101,7 @@
                 <div class="form-group row">
                     <div class="col-md-6">
                         <div class="form-material input-group">
-                            <label>Cliente</label>
+                            <label>Fornecedor</label>
                             {% render_field form.cadgeral class="chosen-select" %}
                             {% for error in form.cadgeral.errors %}
                             <small class="form-control-feedback"> {{ error }} </small>

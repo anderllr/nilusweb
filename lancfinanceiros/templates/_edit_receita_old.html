@@ -1,0 +1,150 @@
+{% load static widget_tweaks %}
+<form  class="titrec" id="form_edit" method="post" action="{% url 'edit_receita' object.pk %}">
+<input type="hidden" name="tem_parcela" id="tem_parcela" value="{{ tem_parcela|yesno:'S,N' }}">
+<input type="hidden" name="confirma_parcela" id="confirma_parcela" value="">
+
+{% csrf_token %}
+{% for error in form.non_field_errors %}
+    <div class="alert-danger alert">
+        {{ error }}
+    </div>
+{% endfor %}
+    <div class="form-body">
+        <h5 class="box-title">Empresa/Propriedade/Cliente</h5>
+        <div>
+            <div class="card" style="background-color: #D3D3D3; border-color: #D3D3D3;">
+                <div class="card-body">
+
+                </div>
+
+            </div>
+        </div>
+        <hr class="m-t-0 m-b-10">
+        <h5 class="box-title">Dados do Lançamento</h5>
+        <hr class="m-t-0 m-b-10">
+        <!--/row-->
+           <div class="row">
+               <div class="col-md-6">
+                <div class="form-group">
+                    <label>Vencimento:</label>
+                    <div>
+                        {% render_field form.dt_vencimento  placeholder='dd/mm/aaaa' class='form-control datepicker' %}
+                        <!--<input type="date" name="dt_vencimento"  class="form-control" placeholder="dd/mm/aaaa" required="" id="id_dt_vencimento">-->
+                        {% for error in form.dt_vencimento.errors %}
+                        <small class="text-danger form-control-feedback"> {{ error }} </small>
+                        {% endfor %}
+                    </div>
+                </div>
+               </div>
+              <div class="col-md-6">
+                  <div class="form-group">
+                    <label>{{ form.plr_financeiro.label_tag }}</label>
+                    <div>
+                         {% render_field form.plr_financeiro class="chosen-select" style="width: 100%; height:36px;" %}
+                        {% for error in form.plr_financeiro.errors %}
+                        <small class="text-danger form-control-feedback"> {{ error }} </small>
+                        {% endfor %}
+                    </div>
+              </div>
+
+                    <!--
+                    <div class="dropdown">
+                    <button type="button" title="Novo Plano Financeiro" class="btn btn-warning btn-circle new_planofin" data-toggle="dropdown"><i class="fa fa-plus"></i> </button>
+                        <div class="dropdown-menu dpdown_planofinan" style="padding: 10px;">
+
+                        </div>
+                    </div>
+                  -->
+                 </div>
+            </div>
+            <!--/span-->
+
+        <!--/row-->
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>{{ form.conta_finan.label_tag }}</label>
+                    <div>
+                         {% render_field form.conta_finan class="chosen-select" style="width: 100%; height:36px;" %}
+                        {% for error in form.conta_finan.errors %}
+                        <small class="text-danger form-control-feedback"> {{ error }} </small>
+                        {% endfor %}
+                    </div>
+                 </div>
+            </div>
+
+            <!--/span-->
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>{{ form.c_custo.label_tag }}</label>
+                    <div>
+                            {% render_field form.c_custo class="chosen-select" style="width: 100%; height:36px;" %}
+                        {% for error in form.c_custo.errors %}
+                        <small class="text-danger form-control-feedback"> {{ error }} </small>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <!--/span-->
+        </div>
+              <hr class="m-t-0 m-b-10">
+        <h5 class="box-title">Valores</h5>
+         <hr class="m-t-0 m-b-10">
+        <!--/row-->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group row">
+                    <label class="control-label text-right col-md-3">{{ form.valor_text.label_tag }}</label>
+                    <div class="col-md-9">
+                        {% render_field  form.valor_text class="form-control" data-thousands="." data-decimal="," data-prefix="R$ " %}
+                        {% for error in form.valor_text.errors %}
+                        <small class="text-danger form-control-feedback"> {{ error }} </small>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label text-right col-md-3">{{  form.cotacao.label_tag }}</label>
+                    <div>
+                        {% render_field form.cotacao class="chosen-select" style="width: 100%; height:36px;" %}
+                        {% for error in form.cotacao.errors %}
+                        <small class="form-control-feedback"> {{ error }} </small>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="control-label text-right col-md-3">{{ form.indice.label_tag }}</label>
+                    <div>
+                        {% render_field form.indice class="select2 form-control custom-select" style="width: 100%; height:36px;" %}
+                        {% for error in form.indice.errors %}
+                        <small class="form-control-feedback"> {{ error }} </small>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <!--/span-->
+    </div>
+    <hr>
+    <div class="form-actions">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-offset-3 col-md-9">
+                        <button type="submit" class="btn btn-success">Salvar</button>
+                        <a type="button" class="btn btn-inverse cancel_create" href="#">Cancelar</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6"> </div>
+        </div>
+    </div>
+</form>
+
+

@@ -177,7 +177,7 @@
                                     <ul>
                                         <li>
                                             <a  href="{% url 'indice_list' %}">Indices e Cotações</a>
-                                            <a href="be_pages_dashboard.html">Lançamentos</a>
+                                            <a href="{% url 'lancfin_list' %}">Lançamentos</a>
                                         </li>
                                     </ul>
                                 </li>
@@ -221,9 +221,9 @@
 
                                 <!-- Toggle Side Overlay -->
                                 <!-- Layout API, functionality initialized in Codebase() -> uiApiLayout() -->
-                                <a class="dropdown-item" href="javascript:void(0)" data-toggle="layout" data-action="side_overlay_toggle">
+                                <button class="dropdown-item" id="config_conta">
                                     <i class="si si-wrench mr-5"></i> Configurações
-                                </a>
+                                </button>
                                 <!-- END Side Overlay -->
 
                                 <div class="dropdown-divider"></div>
@@ -278,6 +278,33 @@
             </main>
             <!-- END Main Container -->
 
+
+<div class="modal fade" id="modal-config_conta" tabindex="-1" role="dialog" aria-labelledby="modal-slideright" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-slideright" role="document">
+        <div class="modal-content">
+            <div class="block block-themed block-transparent mb-0">
+                <div class="block-header bg-primary-dark">
+                    <h3 class="block-title titulo_modal">Configuração de Conta</h3>
+                    <div class="block-options">
+                        <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+                            <i class="si si-close"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="block-content">
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-alt-secondary" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
             <!-- Footer -->
             <footer id="page-footer" class="opacity-0">
                 <div class="content py-20 font-size-xs clearfix">
@@ -285,7 +312,7 @@
                         Crafted with <i class="fa fa-angellist text-pulse"></i> by <a class="font-w600" href="" target="_blank">mjcDEV</a>
                     </div>
                     <div class="float-left">
-                        <a class="font-w600" href="" target="_blank">NilusWEB 1.0</a> &copy; <span class="js-year-copy">2017</span>
+                        <a class="font-w600" href="" target="_blank">NilusWEB 1.1</a> &copy; <span class="js-year-copy">2017</span>
                     </div>
                 </div>
             </footer>
@@ -319,6 +346,13 @@
 
         <script>
                  $(document).ready(function() {
+
+                  {% include 'js_datepickers.html' %}
+                  {% include 'js_modal_config_user.html' %}
+
+
+
+
                   {% block javascript %}
                   {% endblock %}
                  });

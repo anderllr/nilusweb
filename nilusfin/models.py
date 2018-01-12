@@ -82,5 +82,5 @@ class Cotacao(models.Model):
         verbose_name_plural = 'Cotações'
 
 
-    # def __str__(self):
-    #     return  self.data_indice
+    def __str__(self):
+        return str(self.valor_cotacao)

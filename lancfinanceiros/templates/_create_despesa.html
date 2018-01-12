@@ -6,8 +6,8 @@
    </script>
 {% else %}
 <div class="block block-themed block-rounded">
-    <div class="block-header bg-flat-light">
-                        <h3 class="block-title antes_insert">Nova Receita</h3>
+    <div class="block-header bg-pulse-light">
+                        <h3 class="block-title antes_insert">Nova Despesa</h3>
                         <div class="block-options antes_insert">
                             <button type="button" class="btn-block-option cancel_form">
                                 <i class="fa fa-close"></i>
@@ -17,7 +17,7 @@
                     </div>
 
 
-    <form method="post" class="form_receita" id="form_create">
+    <form method="post" class="form_despesa" id="form_create">
              {% csrf_token %}
                 {% for error in form.non_field_errors %}
                 <div class="alert-danger alert">
@@ -36,9 +36,9 @@
                         </div>
                     </div>
                     <div class="col-md-5">
-                        <div class="form-material form-material-success floating">
+                        <div class="form-material form-material-danger floating">
                             {% render_field  form.valor_text class='form-control money2' %}
-                            <label for="{{  form.valor_text.id }}">Valor Receita</label>
+                            <label for="{{  form.valor_text.id }}">Valor Despesa</label>
                             {% for error in form.valor_text.errors %}
                             <div class="alert alert-danger alert-dismissable">
                                 <p class="mb-0">{{ error }}</p>
@@ -111,7 +111,7 @@
                         <div class="ja_recebido">
                             <label class="css-control css-control-sm css-control-primary css-switch">
                                 {% render_field form.situacao type="checkbox" class='css-control-input' %}
-                                <span class="css-control-indicator"></span> Já Recebido
+                                <span class="css-control-indicator"></span> Já Pago
                             </label>
                         </div>
                     </div>
@@ -129,7 +129,7 @@
                    </div>
                    <div class="col-md-8">
                         <div class="form-material input-group">
-                            <label>Cliente</label>
+                            <label>Fornecedor</label>
                             {% render_field form.cadgeral class="chosen-select" %}
                             {% for error in form.cadgeral.errors %}
                             <small class="form-control-feedback"> {{ error }} </small>

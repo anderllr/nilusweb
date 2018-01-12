@@ -1,0 +1,463 @@
+{% extends "menu.html" %}
+{% load static widget_tweaks humanize  l10n  %}
+
+
+<!-- Bread crumb and right sidebar toggle -->
+{% block title_page %} Lançamentos Financeiro  {% endblock %}
+
+{% block page_body %}
+<div>
+    <div class="form_busca">
+    <form>
+        <div>
+          <div>
+            <div class="row">
+                <div class="col-md-6">
+                    <h5 class="box-title">{{ form.empresa.label_tag }}</h5>
+                                   {% render_field form.empresa class="chosen-select" %}
+
+                </div>
+                <div class="col-md-6">
+                    <h5 class="box-title">{{ form.propriedade.label_tag }}</h5>
+                              {% render_field form.propriedade class="chosen-select"  %}
+                </div>
+
+            </div>
+
+            <div id="accordion" class="nav-accordion" role="tablist" aria-multiselectable="true">
+
+                <div class="card">
+                    <div class="card-header" role="tab" id="headingOne">
+                        <h5 class="mb-0">
+                      <button class="btn btn-success" type="submit">Consultar</button>
+
+                    <button title="Filtros" class="btn waves-effect waves-light btn-secondary" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" class="collapsed">
+                      <i class="fa fa-filter"></i>
+                    </button>
+                  </h5>
+
+                    </div>
+                    <div id="collapseOne" class="collapse" role="tabpanel" aria-labelledby="headingOne" style="">
+                        <div class="card-body">
+                             <div class="row p-t-10">
+                                <div class="col-md-4">
+                                    <h5 class="box-title">Lançamento:</h5>
+                                    <div class="input-daterange input-group datepicker" id="date-range">
+                                        <span class="input-group-addon bg-blank ">de:</span>
+                                        {% render_field form.data_lanc_ini data-mask="99/99/9999" %}
+                                        <span class="input-group-addon bg-blank  ">até:</span>
+                                        {% render_field form.data_lanc_fim  %}
+                                    </div>
+                                </div>
+                                <div class="col-md-2"></div>
+                                <div class="col-md-4">
+                                    <h5 class="box-title">Vencimento:</h5>
+                                    <div class="input-daterange input-group datepicker" id="date-range2">
+                                        <span class="input-group-addon bg-blank ">de:</span>
+                                        {% render_field form.data_venc_ini data-mask="99/99/9999" %}
+                                        <span class="input-group-addon bg-blank ">até:</span>
+                                        {% render_field form.data_venc_fim data-mask="99/99/9999" %}
+                                    </div>
+                                </div>
+                             </div>
+                             <div class="row p-t-10">
+                                <div class="col-md-6">
+                                  <h5 class="box-title">{{ form.cadgeral.label_tag }}</h5>
+                                            {% render_field form.cadgeral  class="chosen-select"  %}
+                                </div>
+                                <div class="col-md-3">
+                                    <h5 class="box-title">{{ form.plano_finan.label_tag }}</h5>
+                                            {% render_field form.plano_finan  class="chosen-select"  %}
+                                </div>
+                                <div class="col-md-3">
+                                    <h5 class="box-title">{{ form.c_custo.label_tag }}</h5>
+                                            {% render_field form.c_custo  class="chosen-select" %}
+                                </div>
+                             </div>
+                        </div>
+                    </div>
+                    <div class="row">
+
+            </div>
+                </div>
+            </div>
+             </div>
+          </div>
+        </div>
+    </form>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+             <div class="card card-outline-success form_new_lancto">
+
+            </div>
+            <div class="card card-outline-warning form_edit_lancto">
+                 <div class="card-header">
+                     <h4 class="m-b-0 text-white">Editar Lançamento<button type="button" class="close cancel_create">×</button></h4>
+                 </div>
+                 <div class="card-body">
+
+
+                 </div>
+            </div>
+            <div class="card">
+                <div class="card-body col-md-12">
+                    <div class="btn-group">
+                <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Clique aqui para lançar
+                </button>
+                <div class="dropdown-menu animated flipInX">
+                    <a class="dropdown-item new_receita" href="#"><button class="btn waves-effect waves-light btn-block btn-success"><i class="fa fa-arrow-up"><i class="fa fa-dollar"></i></i> Nova Receita</button></a>
+                    <a class="dropdown-item new_despesa" href="#"><button class="btn waves-effect waves-light btn-block btn-danger"><i class="fa fa-arrow-down"><i class="fa fa-dollar"></i></i> Nova Despesa</button></a>
+                    <a class="dropdown-item" href="#">Pagar / Receber</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#">Separated link</a>
+                </div>
+            </div>
+                   <div class="table-responsive table_lancfinanceiro">
+                      {% include '_table_lancfinanceiro.html' %}
+                   </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div id="modal-cadgeral" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="title-modal"></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div id="modal-conta" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="title-modal-conta"></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            </div>
+            <div class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div id="popover_content_wrapper" class="dpdown_planofinan" style="display: none">
+
+</div>
+
+
+<div id="popover_content_wrapper2" class="dpdown_ccusto" style="display: none">
+
+</div>
+
+
+{% endblock %}
+
+
+{% block javascript %}
+
+$('.form_new_lancto').hide();
+$('.form_edit_lancto').hide();
+$('.naomostra').hide();
+
+function load_lanctos(){
+$('.table_lancfinanceiro').load('{{ request.path }}');
+}
+
+
+
+function load_propriety2(){
+    var company_id = $('#id_empresa').val();
+    if(company_id != ''){
+        var url = '{% url 'company_propriety' %}';
+        url = url+'?company_id='+company_id;
+        $("#id_propriedade").load(url,function(){
+            $("#id_propriedade").trigger("chosen:updated");
+         });
+    }
+    else{
+      $("#id_propriedade").html('');
+    }
+}
+
+
+
+$("#id_empresa").on("change",function(e){
+
+  load_propriety2();
+});
+
+load_propriety2();
+
+
+
+$('.chosen-select').chosen({ width: '100%' });
+
+table = $('#example23').DataTable({
+    "language": {
+     "lengthMenu": "Mostrando _MENU_ registros por página",
+     "search" : "Procurar: ",
+     "info" : "Exibindo de _START_ a _END_ de _TOTAL_ registros",
+     "infoEmpty": "Nenhum registro encontrado",
+     "infoFiltered": "(filtrado entre _MAX_ registros)",
+     "paginate" : {
+       "first":      "Primeiro",
+       "last":       "Último",
+       "next":       "Próximo",
+       "previous":   "Anterior"
+     },
+     responsive: {
+            details: {
+                type: 'column'
+            }
+        },
+        columnDefs: [ {
+            className: 'control',
+            orderable: false,
+            targets:   0
+        } ],
+        order: [ 1, 'asc' ]
+ }
+});
+
+
+$(".new_receita").on("click",function(e){
+    e.preventDefault();
+
+        $(".form_new_lancto").load("{% url 'create_receita' %}", function(){
+              $('.form_new_lancto').show("puff");
+              $('.form_busca').hide("drop");
+              $("#id_valor_text").maskMoney();
+              $(".parcela").hide();
+              $('.chosen-select').chosen({ width: '100%' });
+               {% include 'js_inclusoes.html' %}
+               {% include 'js_popovers.html'  %}
+
+             $("#id_valor_text").blur(function(e){
+                var valor_parcelas = document.getElementById('id_valor_text').value;
+                $('#valor_total_parcelas').html(valor_parcelas);
+             });
+
+
+             $("#calcula_parcelas").on("click",function(e){
+                 var qtd_parcelas = document.getElementById('id_qtd').value;
+                 var dias_entre_vencto = document.getElementById('id_dias_entre_vencto').value;
+
+                 var vencimento_inicial = document.getElementById('id_primeiro_vencto').value;
+                 var arrvencimento_inicial = vencimento_inicial.split('/');
+                 var vencinicial_str = arrvencimento_inicial[1] + '-' + arrvencimento_inicial[0] + '-' + arrvencimento_inicial[2];
+                 var vencimento_inicial_date = new Date(vencinicial_str);
+
+                 var cont  = 0
+
+                 if(qtd_parcelas == 0){
+                 alert('Favor informar a quantidade de parcelas');
+                 }
+                 else{
+                    var str =  document.getElementById('id_valor_text').value
+                     str = str.replace("R$","");
+                     str = str.replace(".","");
+                    var valor_total = str.replace(",",".");
+                    var valor_parcela = (valor_total / qtd_parcelas);
+                    while (cont < qtd_parcelas){
+                        cont++;
+
+                        if(cont == 1){
+                        $('#tbody-itens_parcelas').append("<tr><td><small>"+ cont +"</small></td><td>"+ valor_parcela +"</td><td>"+ vencimento_inicial +"</td></tr>");
+                        }
+                        else{
+                        vencimento = vencimento_inicial_date.setDate(vencimento_inicial_date.getDate() + dias_entre_vencto);
+                        alert(vencimento_inicial_date);
+                        $('#tbody-itens_parcelas').append("<tr><td><small>"+ cont +"</small></td><td>"+ valor_parcela +"</td><td>"+ vencimento +"</td></tr>");
+                        dias_entre_vencto = dias_entre_vencto + dias_entre_vencto;
+                        }
+
+                    }
+                 }
+
+
+
+             });
+
+              $(".form_new_lancto").on("change", "#id_parcela", function(e){
+                        if ($(this).is(":checked")){
+                            $(".parcela").show("puff");
+                        }
+                        else {
+                            $(".parcela").hide("drop");
+
+                        }
+              });
+              $(".datepicker").datepicker({
+		            todayBtn: true,
+    	            language: "pt-BR",
+		            autoclose: true,
+    	            todayHighlight: true
+	          });
+
+              function load_proprietyform(){
+                var company_id = $('#id_company').val();
+                if(company_id != ''){
+                    var url = '{% url 'company_propriety' %}';
+                    url = url+'?company_id='+company_id;
+                     $("#id_propriety").load(url,function(){
+                    $("#id_propriety").trigger("chosen:updated");
+                    });
+                }
+                else{
+                    $("#id_propriety").html('');
+                }
+              }
+
+              $("#id_company").on("change",function(e){
+                  load_proprietyform();
+              });
+              load_proprietyform();
+
+
+              $(".cancel_create").on("click",function(e){
+                $('.form_new_lancto').hide("drop");
+              });
+        });
+
+        <!-- JS de modais e inclusoes -->
+
+});
+
+    $(".form_new_lancto").on("submit","form",function(e){
+	 	 e.preventDefault();
+	 	 var dados = $(this).serialize();
+	 	 $.post("{% url 'create_receita' %}",dados,function(result){
+	 	    $(".form_new_lancto").html(result);
+	 	    if(close_modal==true){
+	 	       $('.form_new_lancto').hide();
+                window.location.reload();
+     	    }
+ 	        else{
+ 	           $('.form_new_lancto .card-body').show();
+ 	        }
+	 	 });
+	});
+
+
+
+
+
+
+
+var ok = {{ ok }}
+
+ $(".table_lancfinanceiro").on("click", ".edit_lancto", function(e){
+        e.preventDefault();
+  		$(".form_edit_lancto .card-body").load($(this).attr('href'), function(){
+              $('.form_edit_lancto').show("slide");
+              $('.table_lancfinanceiro').hide("puff");
+              $("#id_valor_text").maskMoney();
+              $('.chosen-select').chosen({ width: '100%' });
+              $(".select2").select2({ width: '100%' });
+              $(".datepicker").datepicker({
+		          todayBtn: true,
+    	          language: "pt-BR",
+		          autoclose: true,
+    	          todayHighlight: true
+	          });
+               $(".cancel_create").on("click",function(e){
+                $('.form_edit_lancto').hide("drop");
+                   $('.table_lancfinanceiro').show("puff");
+              });
+	    });
+ });
+
+
+
+$(".form_edit_lancto").on("submit","form",function(e){
+	 	 e.preventDefault();
+
+
+         var tem_parcela = $('#tem_parcela').val();
+         if(tem_parcela == 'S'){
+			if(confirm("Lançamento tem outras parcelas, deseja alterar todas?")){
+				$('#confirma_parcela').val('S');
+			}
+         }
+
+	 	 var dados = $(this).serialize();
+	 	 $.post($(this).attr('action'),dados,function(result){
+	 	    $(".form_edit_lancto").html(result);
+	 	    if(ok==ok){
+	 	       $('.form_edit_lancto').hide("drop");
+                 window.location.reload();
+	 	    }
+	 	    else{
+	 	       $('.form_edit_lancto').show();
+	 	    }
+	 	 });
+	 });
+
+
+
+
+$(".delete_lancto").on("click", function(e){
+
+    e.preventDefault();
+    var linkURL = $(this).attr("href");
+    swal({
+        title: "Tem certeza?",
+        text: "Ao aceitar esta empresa será excluida!",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Sim, Excluir!",
+        cancelButtonText: "Não, Cancelar!",
+        closeOnConfirm: false,
+        closeOnCancel: false
+    },
+    function(isConfirm){
+        if (isConfirm) {
+
+            swal("Excluido!", "Registro excluido com sucesso!", "success");
+            window.location.href = linkURL;
+        }
+        else {
+
+            swal("Cancelado", "Exclusão cancelada", "error");
+        }
+});
+
+	});
+
+
+
+
+
+
+
+
+
+
+{% endblock %}
+
+
+

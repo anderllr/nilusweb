@@ -1,0 +1,22 @@
+    $("#config_conta").on("click", function(e){
+        e.preventDefault();
+  		$("#modal-config_conta .block-content").load("{% url 'config_conta' %}", function(){
+              $('#modal-config_conta').modal("show");
+			});
+	});
+
+	 $("#modal-config_conta .block-content").on("submit","form",function(e){
+	 	 e.preventDefault();
+	 	 var dados = $(this).serialize();
+	 	 $.post("{% url 'config_conta' %}",dados,function(result){
+	 	    $("#modal-config_conta .block-content").html(result);
+	 	    if(close_modal==true){
+               $('.chosen-select').chosen({ width: '100%' });
+	 	       $('#modal-config_conta').modal("hide");
+	 	    }
+	 	    else{
+	 	       $('#modal-config_conta').modal("show");
+	 	    }
+
+	 	 });
+	 });

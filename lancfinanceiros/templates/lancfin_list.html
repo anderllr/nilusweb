@@ -1,177 +1,223 @@
 {% extends "menu.html" %}
-{% load static widget_tweaks humanize  l10n  %}
+{% load static widget_tweaks humanize %}
 
 
 
 <!-- Bread crumb and right sidebar toggle -->
-{% block title_page %} Lançamentos Financeiro  {% endblock %}
+{% block title %} Lançamentos Financeiros {% endblock %}
 
 {% block page_body %}
-<div>
-    <div class="form_busca">
-    <form>
-        <div>
-          <div>
-            <div class="row">
-                <div class="col-md-6">
-                    <h5 class="box-title">{{ form.empresa.label_tag }}</h5>
-                               {% render_field form.empresa class="chosen-select" %}
 
+<div class="block">
+    <div class="block-content">
+        <div class="form_busca">
+            <form>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-material input-group">
+                            <label>{{ form.empresa.label_tag }}</label>
+                            {% render_field form.empresa class="chosen-select" %}
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-6">
-                    <h5 class="box-title">{{ form.propriedade.label_tag }}</h5>
-                              {% render_field form.propriedade class="chosen-select"  %}
-                </div>
+                <div class="filtros_extras">
+                    <div class="row">
 
-            </div>
+                        <div class="col-lg-4">
+                                <label for="id_data_lanc_ini">Data Lançamento</label>
+                                <div class="input-daterange input-group js-datepicker-enabled" data-date-format="dd/mm/yyyy" data-week-start="1" data-autoclose="true" data-today-highlight="true">
+                                    {% render_field form.data_lanc_ini class="form-control js-datepicker"   placeholder="de" data-week-start="1" data-autoclose="true" data-today-highlight="true"%}
+                                    <span class="input-group-addon font-w600">até</span>
+                                    {% render_field form.data_lanc_fim class="form-control js-datepicker"   placeholder="até" data-week-start="1" data-autoclose="true" data-today-highlight="true"%}
+                                </div>
+                            </div>
 
-            <div id="accordion" class="nav-accordion" role="tablist" aria-multiselectable="true">
-
-                <div class="card">
-                    <div class="card-header" role="tab" id="headingOne">
-                        <h5 class="mb-0">
-                      <button class="btn btn-success" type="submit">Consultar</button>
-
-                    <button title="Filtros" class="btn waves-effect waves-light btn-secondary" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne" class="collapsed">
-                      <i class="fa fa-filter"></i>
-                    </button>
-                  </h5>
+                        <div class="col-lg-4">
+                                <label for="id_data_venc_ini">Data Vencimento</label>
+                                <div class="input-daterange input-group js-datepicker-enabled" data-date-format="dd/mm/yyyy" data-week-start="1" data-autoclose="true" data-today-highlight="true">
+                                    {% render_field form.data_venc_ini class="form-control js-datepicker"   placeholder="de" data-week-start="1" data-autoclose="true" data-today-highlight="true"%}
+                                    <span class="input-group-addon font-w600">até</span>
+                                    {% render_field form.data_venc_fim class="form-control js-datepicker"   placeholder="até" data-week-start="1" data-autoclose="true" data-today-highlight="true"%}
+                                </div>
+                        </div>
+                        <div class="col-lg-4">
+                                <label for="id_data_venc_ini">Data Baixa</label>
+                                <div class="input-daterange input-group js-datepicker-enabled" data-date-format="dd/mm/yyyy" data-week-start="1" data-autoclose="true" data-today-highlight="true">
+                                    {% render_field form.data_venc_ini class="form-control js-datepicker"   placeholder="de" data-week-start="1" data-autoclose="true" data-today-highlight="true"%}
+                                    <span class="input-group-addon font-w600">até</span>
+                                    {% render_field form.data_venc_fim class="form-control js-datepicker"   placeholder="até" data-week-start="1" data-autoclose="true" data-today-highlight="true"%}
+                                </div>
+                        </div>
 
                     </div>
-                    <div id="collapseOne" class="collapse" role="tabpanel" aria-labelledby="headingOne" style="">
-                        <div class="card-body">
-                             <div class="row p-t-10">
-                                <div class="col-md-4">
-                                    <h5 class="box-title">Lançamento:</h5>
-                                    <div class="input-daterange input-group datepicker" id="date-range">
-                                        <span class="input-group-addon bg-blank ">de:</span>
-                                        {% render_field form.data_lanc_ini data-mask="99/99/9999" %}
-                                        <span class="input-group-addon bg-blank  ">até:</span>
-                                        {% render_field form.data_lanc_fim  %}
-                                    </div>
-                                </div>
-                                <div class="col-md-2"></div>
-                                <div class="col-md-4">
-                                    <h5 class="box-title">Vencimento:</h5>
-                                    <div class="input-daterange input-group datepicker" id="date-range2">
-                                        <span class="input-group-addon bg-blank ">de:</span>
-                                        {% render_field form.data_venc_ini data-mask="99/99/9999" %}
-                                        <span class="input-group-addon bg-blank ">até:</span>
-                                        {% render_field form.data_venc_fim data-mask="99/99/9999" %}
-                                    </div>
-                                </div>
-                             </div>
-                             <div class="row p-t-10">
-                                <div class="col-md-6">
-                                  <h5 class="box-title">{{ form.cadgeral.label_tag }}</h5>
-                                            {% render_field form.cadgeral  class="chosen-select"  %}
-                                </div>
-                                <div class="col-md-3">
-                                    <h5 class="box-title">{{ form.plano_finan.label_tag }}</h5>
-                                            {% render_field form.plano_finan  class="chosen-select"  %}
-                                </div>
-                                <div class="col-md-3">
-                                    <h5 class="box-title">{{ form.c_custo.label_tag }}</h5>
-                                            {% render_field form.c_custo  class="chosen-select" %}
-                                </div>
-                             </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-material input-group">
+                                <label>{{ form.cadgeral.label_tag }}</label>
+                                {% render_field form.cadgeral class="chosen-select" %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-material input-group">
+                                <label>{{ form.plano_finan.label_tag }}</label>
+                                {% render_field form.plano_finan class="chosen-select" %}
+                            </div>
                         </div>
                     </div>
                     <div class="row">
-
-            </div>
+                        <div class="col-md-6">
+                            <div class="form-material input-group">
+                                <label>{{ form.c_custo.label_tag }}</label>
+                                {% render_field form.c_custo class="chosen-select" %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-material input-group">
+                                <label>{{ form.sit_tit.label_tag }}</label>
+                                {% render_field form.sit_tit class="chosen-select" %}
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-             </div>
-          </div>
+                <br>
+                  <button type="submit"  class="btn  btn-outline-primary form_pesquisa"   data-toggle="tooltip" data-placement="bottom" title="Pesquisar">
+                        <i class="fa fa-search"></i>
+                  </button>
+                  <button type="button"  class="btn  btn-outline-info mais_filtros"   data-toggle="tooltip" data-placement="bottom" title="Mais Filtros">
+                        <i class="fa fa-filter"></i>
+                  </button>
+                  <button type="button"  class="btn  btn-outline-danger limpa_filtro_pesquisa"   data-toggle="tooltip" data-placement="bottom" title="Remover Filtros">
+                        <i class="fa fa-reply"></i>
+                  </button>
+
+            </form>
+         <br>
+         <div class="btn_lancamentos">
+                <button class="btn btn-outline-primary mr-5 mb-5 new_receita" style="width:18%;"><i class="fa fa-arrow-up"><i class="fa fa-dollar"></i></i> Nova Receita</button>
+              <button class="btn btn-outline-danger mr-5 mb-5  new_despesa" style="width:18%;"><i class="fa fa-arrow-down"><i class="fa fa-dollar"></i></i> Nova Despesa</button>
+              </div>
         </div>
-    </form>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-             <div class="card card-outline-success form_new_lancto">
+        <br>
 
-            </div>
-            <div class="card card-outline-warning form_edit_lancto">
-                 <div class="card-header">
-                     <h4 class="m-b-0 text-white">Editar Lançamento<button type="button" class="close cancel_create">×</button></h4>
-                 </div>
-                 <div class="card-body">
-
-
-                 </div>
-            </div>
-            <div class="card">
-                <div class="card-body col-md-12">
-                    <div class="btn-group">
-                <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Clique aqui para lançar
-                </button>
-                <div class="dropdown-menu animated flipInX">
-                    <a class="dropdown-item new_receita" href="#"><button class="btn waves-effect waves-light btn-block btn-success"><i class="fa fa-arrow-up"><i class="fa fa-dollar"></i></i> Nova Receita</button></a>
-                    <a class="dropdown-item new_despesa" href="#"><button class="btn waves-effect waves-light btn-block btn-danger"><i class="fa fa-arrow-down"><i class="fa fa-dollar"></i></i> Nova Despesa</button></a>
-                    <a class="dropdown-item" href="#">Pagar / Receber</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">Separated link</a>
+        <div>
+            <div class="row">
+                <div class="form_inc col-md-12">
+                </div>
+                <div class="form_inc_despesa col-md-12">
                 </div>
             </div>
-                   <div class="table-responsive table_lancfinanceiro">
-                      {% include '_table_lancfinanceiro.html' %}
-                   </div>
-                </div>
+            <div class="row">
+                <div class="form_edit col-md-12"></div>
             </div>
+        </div>
+
+        </div>
+
+
+
+        <div class="row table table_lancfinanceiro">
+         {% include '_table_lancfinanceiro.html' %}
         </div>
     </div>
 </div>
 
 
-
-<div id="modal-cadgeral" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+<div class="modal fade" id="modal-cadgeral" tabindex="-1" role="dialog" aria-labelledby="modal-slideright" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-slideright modal-lg" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="title-modal"></h4>
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            </div>
-            <div class="modal-body">
+            <div class="block block-themed block-transparent mb-0">
+                <div class="block-header bg-primary-dark">
+                    <h3 class="block-title titulo_modal"></h3><h3 class="block-title info_modal"></h3>
+                    <div class="block-options">
+                        <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+                            <i class="si si-close"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="block-content">
 
+                </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-alt-secondary" data-dismiss="modal">Fechar</button>
             </div>
         </div>
     </div>
 </div>
 
 
-
-<div id="modal-conta" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+<div class="modal fade" id="modal-conta" tabindex="-1" role="dialog" aria-labelledby="modal-slideright" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-slideright" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="title-modal-conta"></h4>
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            </div>
-            <div class="modal-body">
+            <div class="block block-themed block-transparent mb-0">
+                <div class="block-header bg-primary-dark">
+                    <h3 class="block-title titulo_modal"></h3><h3 class="block-title info_modal"></h3>
+                    <div class="block-options">
+                        <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+                            <i class="si si-close"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="block-content">
 
+                </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger waves-effect" data-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-alt-secondary" data-dismiss="modal">Fechar</button>
             </div>
         </div>
     </div>
 </div>
 
 
+<div class="modal fade" id="modal-planofinan" tabindex="-1" role="dialog" aria-labelledby="modal-slideright" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-slideright modal-lg" role="document">
+        <div class="modal-content">
+            <div class="block block-themed block-transparent mb-0">
+                <div class="block-header bg-primary-dark">
+                    <h3 class="block-title titulo_modal"></h3><h3 class="block-title info_modal"></h3>
+                    <div class="block-options">
+                        <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+                            <i class="si si-close"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="block-content">
 
-<div id="popover_content_wrapper" class="dpdown_planofinan" style="display: none">
-
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-alt-secondary" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 
-<div id="popover_content_wrapper2" class="dpdown_ccusto" style="display: none">
+<div class="modal fade" id="modal-ccusto" tabindex="-1" role="dialog" aria-labelledby="modal-slideright" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-slideright" role="document">
+        <div class="modal-content">
+            <div class="block block-themed block-transparent mb-0">
+                <div class="block-header bg-primary-dark">
+                    <h3 class="block-title titulo_modal"></h3><h3 class="block-title info_modal"></h3>
+                    <div class="block-options">
+                        <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+                            <i class="si si-close"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="block-content">
 
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-alt-secondary" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
 </div>
+
+
 
 
 {% endblock %}
@@ -179,15 +225,22 @@
 
 {% block javascript %}
 
-$('.form_new_lancto').hide();
-$('.form_edit_lancto').hide();
-$('.naomostra').hide();
-
-function load_lanctos(){
-$('.table_lancfinanceiro').load('{{ request.path }}');
-}
+$('.filtros_extras').hide();
+$('.limpa_filtro_pesquisa').hide();
+$('.form_inc').hide();
+$('.form_edit').hide();
+$('.chosen-select').chosen({ width: '100%' });
 
 
+$(".mais_filtros").on("click",function(e){
+   $('.filtros_extras').show("drop");
+   $('.mais_filtros').hide("puff");
+   $('.limpa_filtro_pesquisa').show("drop");
+});
+
+$(".limpa_filtro_pesquisa").on("click",function(e){
+   window.location="{% url 'lancfin_list' %}"
+});
 
 function load_propriety2(){
     var company_id = $('#id_empresa').val();
@@ -203,8 +256,6 @@ function load_propriety2(){
     }
 }
 
-
-
 $("#id_empresa").on("change",function(e){
 
   load_propriety2();
@@ -214,9 +265,13 @@ load_propriety2();
 
 
 
-$('.chosen-select').chosen({ width: '100%' });
 
-table = $('#example23').DataTable({
+function load_lanctos(){
+    $('.table_lancfinanceiro').load('{{ request.path }}');
+}
+
+
+table = $('#table_lanfinanceiro').DataTable({
     "language": {
      "lengthMenu": "Mostrando _MENU_ registros por página",
      "search" : "Procurar: ",
@@ -244,160 +299,289 @@ table = $('#example23').DataTable({
 });
 
 
+
+
+
+
+<!-- Criações -->
 $(".new_receita").on("click",function(e){
-    e.preventDefault();
+     e.preventDefault();
+     $(".form_inc").load("{% url 'create_receita' %}", function(){
+        $('.form_inc').show("puff");
+        $('.form_busca').hide("drop");
+        $('.table_lancfinanceiro').hide("drop");
+        $('.btn_lancamentos').hide("drop");
+        $('.e_titulo').hide();
+        $('.parcelamento').hide();
 
-        $(".form_new_lancto").load("{% url 'create_receita' %}", function(){
-              $('.form_new_lancto').show("puff");
-              $('.form_busca').hide("drop");
-              $("#id_valor_text").maskMoney();
-              $(".parcela").hide();
-              $('.chosen-select').chosen({ width: '100%' });
-               {% include 'js_inclusoes.html' %}
-               {% include 'js_popovers.html'  %}
+        $('.chosen-select').chosen({ width: '100%' });
 
-             $("#id_valor_text").blur(function(e){
-                var valor_parcelas = document.getElementById('id_valor_text').value;
-                $('#valor_total_parcelas').html(valor_parcelas);
-             });
+        {% include 'js_floating_labels.html' %}
+        {% include 'js_tabs.html' %}
+        {% include 'js_masks.html' %}
+        {% include 'js_inclusoes.html' %}
 
 
-             $("#calcula_parcelas").on("click",function(e){
-                 var qtd_parcelas = document.getElementById('id_qtd').value;
-                 var dias_entre_vencto = document.getElementById('id_dias_entre_vencto').value;
+        $(".form_inc").on("change", "#id_titulo", function(e){
+			if ($(this).is(":checked")){
+				$(".e_titulo").show();
+                $("#id_repetir").prop("checked",false)
+                $(".repetir").hide();
+			}
+			else {
+				$(".e_titulo").hide();
+			}
+		 });
 
-                 var vencimento_inicial = document.getElementById('id_primeiro_vencto').value;
-                 var arrvencimento_inicial = vencimento_inicial.split('/');
-                 var vencinicial_str = arrvencimento_inicial[1] + '-' + arrvencimento_inicial[0] + '-' + arrvencimento_inicial[2];
-                 var vencimento_inicial_date = new Date(vencinicial_str);
+        $(".form_inc").on("change", "#id_parcela", function(e){
+			if ($(this).is(":checked")){
+				$(".parcelamento").show();
+                $("#id_repetir").prop("checked",false)
+                $("#id_dt_vencimento").prop('required',true);
+                $("#id_qtd").prop('required',true);
+                $(".repetir").hide();
 
-                 var cont  = 0
-
-                 if(qtd_parcelas == 0){
-                 alert('Favor informar a quantidade de parcelas');
-                 }
-                 else{
-                    var str =  document.getElementById('id_valor_text').value
-                     str = str.replace("R$","");
-                     str = str.replace(".","");
-                    var valor_total = str.replace(",",".");
-                    var valor_parcela = (valor_total / qtd_parcelas);
-                    while (cont < qtd_parcelas){
-                        cont++;
-
-                        if(cont == 1){
-                        $('#tbody-itens_parcelas').append("<tr><td><small>"+ cont +"</small></td><td>"+ valor_parcela +"</td><td>"+ vencimento_inicial +"</td></tr>");
-                        }
-                        else{
-                        vencimento = vencimento_inicial_date.setDate(vencimento_inicial_date.getDate() + dias_entre_vencto);
-                        alert(vencimento_inicial_date);
-                        $('#tbody-itens_parcelas').append("<tr><td><small>"+ cont +"</small></td><td>"+ valor_parcela +"</td><td>"+ vencimento +"</td></tr>");
-                        dias_entre_vencto = dias_entre_vencto + dias_entre_vencto;
-                        }
-
+                $("#id_dias_entre_vencto").keyup(function() {
+                    if($(this).val().length > 0){
+                         $("#id_dia_fixo").prop('disabled',true);
                     }
-                 }
+                    else{
+                         $("#id_dia_fixo").prop('disabled',false);
+                    }
+                });
+
+                $(".form_inc").on("change", "#id_dia_fixo", function(e){
+                    if ($(this).is(":checked")){
+                        $("#id_dias_entre_vencto").prop('disabled',true);
+                    }
+                    else {
+                        $("#id_dias_entre_vencto").prop('disabled',false);
+                    }
+                });
+
+			}
+			else {
+				$(".parcelamento").hide();
+			}
+		});
+
+        $(".form_inc").on("change", "#id_repetir", function(e){
+			if ($(this).is(":checked")){
+				$(".repetir").show();
+                $("#id_parcela").prop("checked",false)
+                $(".parcelamento").hide();
+                $("#id_dt_vencimento").prop('required',true);
+                $("#id_qtd_repetir").prop('required',true);
 
 
 
-             });
-
-              $(".form_new_lancto").on("change", "#id_parcela", function(e){
-                        if ($(this).is(":checked")){
-                            $(".parcela").show("puff");
-                        }
-                        else {
-                            $(".parcela").hide("drop");
-
-                        }
-              });
-              $(".datepicker").datepicker({
-		            todayBtn: true,
-    	            language: "pt-BR",
-		            autoclose: true,
-    	            todayHighlight: true
-	          });
-
-              function load_proprietyform(){
-                var company_id = $('#id_company').val();
-                if(company_id != ''){
-                    var url = '{% url 'company_propriety' %}';
-                    url = url+'?company_id='+company_id;
-                     $("#id_propriety").load(url,function(){
-                    $("#id_propriety").trigger("chosen:updated");
-                    });
-                }
-                else{
-                    $("#id_propriety").html('');
-                }
-              }
-
-              $("#id_company").on("change",function(e){
-                  load_proprietyform();
-              });
-              load_proprietyform();
+			}
+			else {
+				$(".repetir").hide();
+                $("#id_dt_vencimento").prop('required',false);
+                $("#id_qtd_repetir").prop('required',false);
+			}
+		 });
 
 
-              $(".cancel_create").on("click",function(e){
-                $('.form_new_lancto').hide("drop");
-              });
+        $(".js-datepicker").datepicker({
+            todayBtn: true,
+            language: "pt-BR",
+            autoclose: true,
+            todayHighlight: true
         });
 
-        <!-- JS de modais e inclusoes -->
 
+          $(".form_inc .cancel_form").on("click",function(e){
+            $('.form_inc').hide("drop");
+            $('.form_busca').show("puff");
+            $('.table_lancfinanceiro').show("puff");
+            $('.btn_lancamentos').show("puff");
+          });
+    });
 });
 
-    $(".form_new_lancto").on("submit","form",function(e){
+$(".form_inc").on("submit","form",function(e){
+     e.preventDefault();
+     var dados = $(this).serialize();
+     $.post("{% url 'create_receita' %}",dados,function(result){
+        $(".form_inc").html(result);
+        if(close_modal==true){
+           $('.form_inc').hide("drop");
+           $('.table_lancfinanceiro').show("puff");
+           $('.btn_lancamentos').show();
+           window.location.reload();
+        }
+        else{
+            $(".form_inc").show();
+            {% include 'js_floating_labels.html' %}
+            {% include 'js_tabs.html' %}
+            $('.chosen-select').chosen({ width: '100%' });
+
+               $(".form_inc .cancel_form").on("click",function(e){
+                    $('.form_inc').hide("drop");
+                    $('.table_lancfinanceiro').hide("drop");
+                    $('.btn_lancamentos').show();
+               });
+
+
+        }
+     });
+});
+
+
+$(".new_despesa").on("click",function(e){
+     e.preventDefault();
+     $(".form_inc_despesa").load("{% url 'create_despesa' %}", function(){
+        $('.form_inc_despesa').show("puff");
+        $('.form_busca').hide("drop");
+        $('.table_lancfinanceiro').hide("drop");
+        $('.btn_lancamentos').hide("drop");
+        $('.e_titulo').hide();
+        $('.parcelamento').hide();
+
+        $('.chosen-select').chosen({ width: '100%' });
+
+        {% include 'js_floating_labels.html' %}
+        {% include 'js_tabs.html' %}
+        {% include 'js_masks.html' %}
+        {% include 'js_inclusoes.html' %}
+
+
+        $(".form_inc_despesa").on("change", "#id_titulo", function(e){
+			if ($(this).is(":checked")){
+				$(".e_titulo").show();
+                $("#id_repetir").prop("checked",false)
+                $(".repetir").hide();
+			}
+			else {
+				$(".e_titulo").hide();
+			}
+		 });
+
+        $(".form_inc_despesa").on("change", "#id_parcela", function(e){
+			if ($(this).is(":checked")){
+				$(".parcelamento").show();
+                $("#id_repetir").prop("checked",false)
+                $("#id_dt_vencimento").prop('required',true);
+                $("#id_qtd").prop('required',true);
+                $(".repetir").hide();
+
+                $("#id_dias_entre_vencto").keyup(function() {
+                    if($(this).val().length > 0){
+                         $("#id_dia_fixo").prop('disabled',true);
+                    }
+                    else{
+                         $("#id_dia_fixo").prop('disabled',false);
+                    }
+                });
+
+                $(".form_inc_despesa").on("change", "#id_dia_fixo", function(e){
+                    if ($(this).is(":checked")){
+                        $("#id_dias_entre_vencto").prop('disabled',true);
+                    }
+                    else {
+                        $("#id_dias_entre_vencto").prop('disabled',false);
+                    }
+                });
+
+			}
+			else {
+				$(".parcelamento").hide();
+			}
+		});
+
+        $(".form_inc_despesa").on("change", "#id_repetir", function(e){
+			if ($(this).is(":checked")){
+				$(".repetir").show();
+                $("#id_parcela").prop("checked",false)
+                $(".parcelamento").hide();
+                $("#id_dt_vencimento").prop('required',true);
+                $("#id_qtd_repetir").prop('required',true);
+			}
+			else {
+				$(".repetir").hide();
+                $("#id_dt_vencimento").prop('required',false);
+                $("#id_qtd_repetir").prop('required',false);
+			}
+		 });
+
+
+        $(".js-datepicker").datepicker({
+            todayBtn: true,
+            language: "pt-BR",
+            autoclose: true,
+            todayHighlight: true
+        });
+
+
+          $(".form_inc_despesa .cancel_form").on("click",function(e){
+            $('.form_inc_despesa').hide("drop");
+            $('.form_busca').show("puff");
+            $('.table_lancfinanceiro').show("puff");
+            $('.btn_lancamentos').show("puff");
+          });
+    });
+});
+
+
+$(".form_inc_despesa").on("submit","form",function(e){
+     e.preventDefault();
+     var dados = $(this).serialize();
+     $.post("{% url 'create_despesa' %}",dados,function(result){
+        $(".form_inc").html(result);
+        if(close_modal==true){
+           $('.form_inc').hide("drop");
+           $('.table_lancfinanceiro').show("puff");
+           $('.btn_lancamentos').show();
+           window.location.reload();
+        }
+        else{
+            $(".form_inc_despesa").show();
+            {% include 'js_floating_labels.html' %}
+            {% include 'js_tabs.html' %}
+            $('.chosen-select').chosen({ width: '100%' });
+
+            $(".form_inc .cancel_form").on("click",function(e){
+                 $('.form_inc').hide("drop");
+                 $('.table_lancfinanceiro').hide("drop");
+                 $('.btn_lancamentos').show();
+            });
+        }
+     });
+});
+
+
+
+<!-- Edições -->
+$(".table_lancfinanceiro").on("click", ".edit_lancto",function(e){
+    e.preventDefault();
+    $(".form_edit ").load($(this).attr('href'), function(){
+          $('.form_edit').show("slide");
+          $('.form_busca').hide("drop");
+          $('.table_lancfinanceiro').hide("drop");
+          $('.btn_lancamentos').hide("drop");
+
+          {% include 'js_floating_labels.html' %}
+          {% include 'js_masks.html' %}
+          $('.chosen-select').chosen({ width: '100%' });
+          $('.form_edit #id_vlr_text').focus();
+
+          $(".form_edit .cancel_form").on("click",function(e){
+              $('.form_edit').hide("drop");
+              $('.form_busca').show("puff");
+              $('.table_lancfinanceiro').show("puff");
+              $('.btn_lancamentos').show("puff");
+          });
+    });
+});
+
+
+$(".form_edit").on("submit","form",function(e){
 	 	 e.preventDefault();
-	 	 var dados = $(this).serialize();
-	 	 $.post("{% url 'create_receita' %}",dados,function(result){
-	 	    $(".form_new_lancto").html(result);
-	 	    if(close_modal==true){
-	 	       $('.form_new_lancto').hide();
-                window.location.reload();
-     	    }
- 	        else{
- 	           $('.form_new_lancto .card-body').show();
- 	        }
-	 	 });
-	});
 
 
-
-
-
-
-
-var ok = {{ ok }}
-
- $(".table_lancfinanceiro").on("click", ".edit_lancto", function(e){
-        e.preventDefault();
-  		$(".form_edit_lancto .card-body").load($(this).attr('href'), function(){
-              $('.form_edit_lancto').show("slide");
-              $('.table_lancfinanceiro').hide("puff");
-              $("#id_valor_text").maskMoney();
-              $('.chosen-select').chosen({ width: '100%' });
-              $(".select2").select2({ width: '100%' });
-              $(".datepicker").datepicker({
-		          todayBtn: true,
-    	          language: "pt-BR",
-		          autoclose: true,
-    	          todayHighlight: true
-	          });
-               $(".cancel_create").on("click",function(e){
-                $('.form_edit_lancto').hide("drop");
-                   $('.table_lancfinanceiro').show("puff");
-              });
-	    });
- });
-
-
-
-$(".form_edit_lancto").on("submit","form",function(e){
-	 	 e.preventDefault();
-
-
-         var tem_parcela = $('#tem_parcela').val();
+        var tem_parcela = $('#tem_parcela').val();
          if(tem_parcela == 'S'){
 			if(confirm("Lançamento tem outras parcelas, deseja alterar todas?")){
 				$('#confirma_parcela').val('S');
@@ -406,27 +590,18 @@ $(".form_edit_lancto").on("submit","form",function(e){
 
 	 	 var dados = $(this).serialize();
 	 	 $.post($(this).attr('action'),dados,function(result){
-	 	    $(".form_edit_lancto").html(result);
-	 	    if(ok==ok){
-	 	       $('.form_edit_lancto').hide("drop");
-                 window.location.reload();
-	 	    }
-	 	    else{
-	 	       $('.form_edit_lancto').show();
-	 	    }
+	 	    $(".form_edit").html(result);
+                window.location.reload();
 	 	 });
 	 });
 
-
-
-
-$(".delete_lancto").on("click", function(e){
+    $(".delete_lancto").on("click", function(e){
 
     e.preventDefault();
     var linkURL = $(this).attr("href");
     swal({
         title: "Tem certeza?",
-        text: "Ao aceitar esta empresa será excluida!",
+        text: "Ao aceitar este registro será excluido!",
         type: "warning",
         showCancelButton: true,
         confirmButtonColor: "#DD6B55",
@@ -445,17 +620,9 @@ $(".delete_lancto").on("click", function(e){
 
             swal("Cancelado", "Exclusão cancelada", "error");
         }
-});
-
 	});
 
-
-
-
-
-
-
-
+});
 
 
 {% endblock %}

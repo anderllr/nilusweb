@@ -183,10 +183,6 @@ $(".lista_cotacoes").on("click",function(e){
 
 
 
-
-
-
-
 <!-- Create Company -->
 
 $(".new_indice").on("click",function(e){
@@ -210,12 +206,7 @@ $(".new_indice").on("click",function(e){
             $("#modal-cotacao .block-content").load("{% url 'create_cotacao_create_indice' %}", function(){
             $('#modal-cotacao').modal("show");
             {% include 'js_floating_labels.html' %}
-            $(".js-datepicker").datepicker({
-		            todayBtn: true,
-    	            language: "pt-BR",
-		            autoclose: true,
-    	            todayHighlight: true
-	          });
+            {% include 'js_datepickers.html' %}
 
 
             });
