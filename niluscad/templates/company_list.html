@@ -46,7 +46,7 @@
 $('.form_inc').hide();
 $('.form_edit').hide();
 
-var close_modal
+
 
 function loading_viewers(){
       $('.table_empresas').load('{{ request.path }}');
@@ -111,19 +111,13 @@ $(".new_company").on("click",function(e){
     });
 });
 
-
-
     $(".form_inc").on("submit","form",function(e){
 	 	 e.preventDefault();
 	 	 var dados = $(this).serialize();
 	 	 $.post("{% url 'create_company' %}",dados,function(result){
 	 	    $(".form_inc").html(result);
-	 	    if(close_modal==true){
-	 	       $('.form_inc').hide("drop");
-               $('.new_company').show();
-               $('.table_empresas').show();
+	 	    if(close_form==true){
                window.location.reload();
-
      	    }
  	        else{
                 $(".form_inc").show();
@@ -133,10 +127,10 @@ $(".new_company").on("click",function(e){
                 {% include 'js_pesquisas_cnpj_cep.html' %}
 
                    $(".form_inc .cancel_form").on("click",function(e){
-             $('.form_inc').hide("drop");
-             $('.new_company').show();
-             $('.table_empresas').show();
-          });
+                             $('.form_inc').hide("drop");
+                             $('.new_company').show();
+                             $('.table_empresas').show();
+                   });
 
 
  	        }

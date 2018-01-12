@@ -86,7 +86,6 @@ class CreateCompany(LoginRequiredMixin,CreateView):
 
 
 
-
         if self.request.is_ajax():
             context = self.get_context_data(form=form,success=True)
             return self.render_to_response(context)
