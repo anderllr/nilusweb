@@ -7,6 +7,7 @@ urlpatterns = [
     url(r'^profile/$', views.profile,name='profile'),
     url(r'^alterar_senha/$',views.update_password, name='altera_senha'),
     url(r'^ajax/$', views.company_propriety, name='company_propriety'),
+    url(r'^ajax/indice$', views.indice_cotacao, name='indice_cotacao'),
     url(r'^adm/', include('nilusadm.urls')),
     url(r'^cad/', include('niluscad.urls')),
     url(r'^fin/', include('nilusfin.urls')),

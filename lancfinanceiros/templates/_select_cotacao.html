@@ -1,0 +1,4 @@
+{% load l10n %}
+{% for cot in cotacao %}
+    <option value="{{ cot.pk|unlocalize }}">{{ cot.valor_cotacao }} - {{ cot.data_indice|date:'d/m/Y' }}</option>
+{% endfor %}

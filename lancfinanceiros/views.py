@@ -9,13 +9,16 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.urlresolvers import reverse_lazy
 from core.utils import add_one_month
 from django.http import HttpResponse,Http404
-from .forms import FormCreateReceita,FormEditReceita,FiltroLancamentosForm,FormCreateDespesa,FormEditDespesa
+from .forms import FormCreateReceita,FormEditReceita,FiltroLancamentosForm,FormCreateDespesa,FormEditDespesa,FormBaixaLancamento
 from accounts.models import User
 from nilusadm.models import Sequenciais
+from nilusfin.models import Indice,Cotacao
 from principal.models import Instancia
 from lancfinanceiros.models import Lancamentos
 from niluscad.models import Company,Propriety,Cadgeral,PlanoFinan,Ccusto
+from nilusfin.models import Contafinanceira
 # Create your views here.
+
 
 
 
@@ -27,6 +30,15 @@ def lancfin_list(request):
     else:
         template_name = 'lancfin_list.html'
 
+
+    form_baixa = FormBaixaLancamento(request.POST or None)
+    if form_baixa.is_valid():
+        lancto = form_baixa.cleaned_data['lanc_baixa']
+        data_baixa = form_baixa.cleaned_data['data_baixa']
+
+        lancto.update(situacao=True,data_baixa=data_baixa)
+
+
     if request.user.is_masteruser is True:
         lanctos = Lancamentos.objects.filter(master_user=request.user.pk)
         empresa = Company.objects.filter(master_user=request.user.pk)
@@ -34,6 +46,7 @@ def lancfin_list(request):
         plano_finan = PlanoFinan.objects.filter(master_user=request.user.pk)
         c_custo = Ccusto.objects.filter(master_user=request.user.pk)
         empresa_init = Company.objects.filter(master_user=request.user.pk)
+        conta_finan = Contafinanceira.objects.filter(master_user=request.user.pk)
 
     else:
         lanctos = Lancamentos.objects.filet(master_user=request.user.user_master)
@@ -42,19 +55,22 @@ def lancfin_list(request):
         plano_finan = PlanoFinan.objects.filter(master_user=request.user.user_master)
         c_custo = Ccusto.objects.filter(master_user=request.user.user_master)
         empresa_init = Company.objects.filter(master_user=request.user.user_master)
+        conta_finan = Contafinanceira.objects.filter(master_user=request.user.user_master)
 
-    form = FiltroLancamentosForm(empresa,cadgeral,plano_finan,c_custo, request.GET or None)
-
+    form = FiltroLancamentosForm(empresa,cadgeral,plano_finan,c_custo,conta_finan, request.GET or None)
 
     if form.is_valid():
         data_venc_ini = form.cleaned_data.get('data_venc_ini', '')
         data_venc_fim = form.cleaned_data.get('data_venc_fim', '')
         data_lanc_ini = form.cleaned_data.get('data_lanc_ini', '')
         data_lanc_fim = form.cleaned_data.get('data_venc_fim', '')
+        data_baix_ini = form.cleaned_data.get('data_baix_ini', '')
+        data_baix_fim = form.cleaned_data.get('data_baix_fim', '')
         empresa = form.cleaned_data.get('empresa', '')
         cadgeral = form.cleaned_data.get('cadgeral', '')
         plano_finan = form.cleaned_data.get('plano_finan', '')
         c_custo = form.cleaned_data.get('c_custo', '')
+        conta_finan = form.cleaned_data.get('conta_finan','')
 
         if data_venc_ini:
             lanctos = lanctos.filter(dt_vencimento__gte=data_venc_ini)
@@ -68,6 +84,12 @@ def lancfin_list(request):
         if data_lanc_fim:
             lanctos = lanctos.filter(dt_lancamento__lt=data_lanc_fim + timedelta(days=1))
 
+        if data_baix_ini:
+            lanctos = lanctos.filter(data_baixa__gte=data_baix_ini)
+
+        if data_baix_fim:
+            lanctos = lanctos.filter(data_baixa__lt=data_baix_fim + timedelta(days=1))
+
         if empresa:
             lanctos = lanctos.filter(company=empresa)
 
@@ -80,7 +102,8 @@ def lancfin_list(request):
         if c_custo:
             lanctos = lanctos.filter(c_custo=c_custo)
 
-
+        if conta_finan:
+            lanctos = lanctos.filter(conta_finan=conta_finan)
 
     context = {
         'lanctos': lanctos,
@@ -130,11 +153,16 @@ class CreateReceita(LoginRequiredMixin,CreateView):
             seq_lanc = Sequenciais.objects.get(user=self.request.user)
         else:
             lancto.master_user = self.request.user.user_master
+
             seq_lanc = Sequenciais.objects.get(user=self.request.user.user_master)
 
         if lancto.dt_vencimento is None:
             lancto.dt_vencimento = datetime.now()
 
+        if lancto.situacao is True:
+            lancto.data_baixa = datetime.now()
+        else:
+            lancto.data_baixa is None
 
         lancto.vlr_lancamento = lancto.valor_text.replace('R$','').replace('.','').replace(',','.')
         lancto.num_lan = seq_lanc.lanc_financeiros + 1
@@ -143,6 +171,18 @@ class CreateReceita(LoginRequiredMixin,CreateView):
         seq_lanc.lanc_financeiros = lancto.num_lan
         seq_lanc.save()
 
+        if lancto.indice is None :
+            indice_padrao = Indice.objects.get(master_user=self.request.user.user_master,indice_padrao=True)
+            cotacao_padrao = Cotacao.objects.get(indice=indice_padrao,cotacao_padrao=True)
+            lancto.indice = indice_padrao
+            lancto.cotacao = cotacao_padrao
+            lancto.valor_original = lancto.vlr_lancamento
+        else:
+            lancto.valor_original = lancto.vlr_lancamento
+            cotacao = lancto.cotacao
+            valor_lancamento = lancto.valor_original
+            conta = float(valor_lancamento) * float(cotacao.valor_cotacao)
+            lancto.vlr_lancamento = conta
 
         if form.cleaned_data.get('parcela',False):
             qtd = form.cleaned_data['qtd']
@@ -209,11 +249,6 @@ class CreateReceita(LoginRequiredMixin,CreateView):
                     lancto.save()
                     seq_lanc.save()
 
-
-
-
-
-
         if self.request.is_ajax():
             context = self.get_context_data(form=form, success=True)
             return self.render_to_response(context)
@@ -254,6 +289,26 @@ class EditReceita(LoginRequiredMixin,UpdateView):
     def form_valid(self, form):
         lancto = form.save(commit=False)
         lancto.vlr_lancamento = lancto.valor_text.replace('R$','').replace('.','').replace(',','.')
+
+        if lancto.indice is None:
+            indice_padrao = Indice.objects.get(master_user=self.request.user.user_master, indice_padrao=True)
+            cotacao_padrao = Cotacao.objects.get(indice=indice_padrao, cotacao_padrao=True)
+            lancto.indice = indice_padrao
+            lancto.cotacao = cotacao_padrao
+            lancto.valor_original = lancto.vlr_lancamento
+        else:
+            lancto.valor_original = lancto.vlr_lancamento
+            cotacao = lancto.cotacao
+            valor_lancamento = lancto.valor_original
+            conta = float(valor_lancamento) * float(cotacao.valor_cotacao)
+            lancto.vlr_lancamento = conta
+
+        if lancto.situacao is True:
+            lancto.data_baixa = datetime.now()
+        else:
+            lancto.data_baixa is None
+
+
         lancto.save()
         confirma_parcela = self.request.POST.get('confirma_parcela','N')
         if confirma_parcela == 'S':
@@ -327,6 +382,10 @@ class CreateDespesa(LoginRequiredMixin,CreateView):
         if lancto.dt_vencimento is None:
             lancto.dt_vencimento = datetime.now()
 
+        if lancto.situacao is True:
+            lancto.data_baixa = datetime.now()
+        else:
+            lancto.data_baixa is None
 
         lancto.vlr_lancamento = lancto.valor_text.replace('R$','').replace('.','').replace(',','.')
         lancto.num_lan = seq_lanc.lanc_financeiros + 1
@@ -334,6 +393,21 @@ class CreateDespesa(LoginRequiredMixin,CreateView):
 
         seq_lanc.lanc_financeiros = lancto.num_lan
         seq_lanc.save()
+
+        if lancto.indice is None :
+            indice_padrao = Indice.objects.get(master_user=self.request.user.user_master,indice_padrao=True)
+            cotacao_padrao = Cotacao.objects.get(indice=indice_padrao,cotacao_padrao=True)
+            lancto.indice = indice_padrao
+            lancto.cotacao = cotacao_padrao
+            lancto.valor_original = lancto.vlr_lancamento
+        else:
+            lancto.valor_original = lancto.vlr_lancamento
+            cotacao = lancto.cotacao
+            valor_lancamento = lancto.valor_original
+            conta = float(valor_lancamento) * float(cotacao.valor_cotacao)
+            lancto.vlr_lancamento = conta
+
+
 
 
         if form.cleaned_data.get('parcela',False):
@@ -441,7 +515,28 @@ class EditDespesa(LoginRequiredMixin,UpdateView):
     def form_valid(self, form):
         lancto = form.save(commit=False)
         lancto.vlr_lancamento = lancto.valor_text.replace('R$','').replace('.','').replace(',','.')
+
+        if lancto.indice is None:
+            indice_padrao = Indice.objects.get(master_user=self.request.user.user_master, indice_padrao=True)
+            cotacao_padrao = Cotacao.objects.get(indice=indice_padrao, cotacao_padrao=True)
+            lancto.indice = indice_padrao
+            lancto.cotacao = cotacao_padrao
+            lancto.valor_original = lancto.vlr_lancamento
+        else:
+            lancto.valor_original = lancto.vlr_lancamento
+            cotacao = lancto.cotacao
+            valor_lancamento = lancto.valor_original
+            conta = float(valor_lancamento) * float(cotacao.valor_cotacao)
+            lancto.vlr_lancamento = conta
+
+        if lancto.situacao is True:
+            lancto.data_baixa = datetime.now()
+        else:
+            lancto.data_baixa is None
+
+
         lancto.save()
+
         confirma_parcela = self.request.POST.get('confirma_parcela','N')
         if confirma_parcela == 'S':
             lancto = form.instance

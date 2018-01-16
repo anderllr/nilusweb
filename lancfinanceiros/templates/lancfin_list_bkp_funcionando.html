@@ -93,9 +93,8 @@
          <br>
          <div class="btn_lancamentos">
                 <button class="btn btn-outline-primary mr-5 mb-5 new_receita" style="width:18%;"><i class="fa fa-arrow-up"><i class="fa fa-dollar"></i></i> Nova Receita</button>
-                <button class="btn btn-outline-danger mr-5 mb-5  new_despesa" style="width:18%;"><i class="fa fa-arrow-down"><i class="fa fa-dollar"></i></i> Nova Despesa</button>
-                <button class="btn btn-outline-info mr-5 mb-5 baixa"  data-placement="bottom" title="Pagar / Receber Lancamentos Selecionados" data-toggle="modal" data-target="#modal-databaixa"><i class="fa fa-check-circle"></i> Baixar Lanc. Selecionados</button>
-         </div>
+              <button class="btn btn-outline-danger mr-5 mb-5  new_despesa" style="width:18%;"><i class="fa fa-arrow-down"><i class="fa fa-dollar"></i></i> Nova Despesa</button>
+              </div>
         </div>
         <br>
 
@@ -116,12 +115,7 @@
 
 
         <div class="row table table_lancfinanceiro">
-         <form method="post" action="" id="form_baixa_lancamento">
-             <input type="hidden" name="data_baixa" id="data_baixa">
-             {% csrf_token %}
-             {% include '_table_lancfinanceiro.html' %}
-         </form>
-
+         {% include '_table_lancfinanceiro.html' %}
         </div>
     </div>
 </div>
@@ -149,7 +143,6 @@
         </div>
     </div>
 </div>
-
 
 
 <div class="modal fade" id="modal-conta" tabindex="-1" role="dialog" aria-labelledby="modal-slideright" aria-hidden="true">
@@ -225,46 +218,12 @@
 
 
 
-<div class="modal fade" id="modal-databaixa" tabindex="-1" role="dialog" aria-labelledby="modal-slideright" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-slideright modal-sm" role="document">
-        <div class="modal-content">
-            <div class="block block-themed block-transparent mb-0">
-                <div class="block-header bg-primary-dark">
-                    <h3 class="block-title titulo_modal"></h3><h3 class="block-title info_modal"></h3>
-                    <div class="block-options">
-                        <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
-                            <i class="si si-close"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="block-content">
-                    <div class="form-material input-group">
-                      <label>Data da Baixa</label>
-                      <input  type="text" name="data_baixa_modal" id="data_baixa_modal" class="js-datepicker form-control" data-week-start="1" data-autoclose="true" data-today-highlight="true" data-date-format="dd/mm/yyyy" placeholder="dd/mm/aaaa">
-                    </div>
-
-
-
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-alt-primary" id="confirma_baixa" data-dismiss="modal">OK</button>
-                <button type="button" class="btn btn-alt-secondary" data-dismiss="modal">Fechar</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-
-
 
 {% endblock %}
 
 
 {% block javascript %}
 
-$('.baixa').hide();
 $('.filtros_extras').hide();
 $('.limpa_filtro_pesquisa').hide();
 $('.form_inc').hide();
@@ -339,11 +298,6 @@ table = $('#table_lanfinanceiro').DataTable({
 });
 
 
-$("#form_baixa_lancamento").on("change", ".baixa_lancamento", function(e){
-			if ($(this).is(":checked")){
-				$('.baixa').show("drop");
-			}
-		 });
 
 
 
@@ -703,23 +657,8 @@ $(".form_edit").on("submit","form",function(e){
 	 	 });
 	 });
 
+    $(".delete_lancto").on("click", function(e){
 
-
-
-$("#confirma_baixa").on("click",function(e){
-    var data = $('#data_baixa_modal').val();
-    $('#data_baixa').val(data);
-    $('#form_baixa_lancamento').submit();
-
-});
-
-
-
-
-
-
-
-$(".delete_lancto").on("click", function(e){
     e.preventDefault();
     var linkURL = $(this).attr("href");
     swal({

@@ -11,6 +11,7 @@ from django.http import HttpResponse,Http404
 from accounts.models import User
 from .models import Instancia
 from niluscad.models import Company,Propriety
+from nilusfin.models import Indice,Cotacao
 
 # Create your views here.
 
@@ -95,6 +96,16 @@ def company_propriety(request):
 
 
 
+@login_required
+def indice_cotacao(request):
+
+   indice_id = request.GET.get('indice_id',None)
+   if indice_id:
+      indice = get_object_or_404(Indice,pk=indice_id)
+      cotacao = Cotacao.objects.filter(indice=indice)
+      context = {'indice' : indice, 'cotacao' : cotacao}
+      return render(request,'_select_cotacao.html',context)
+   raise Http404
 
 
 

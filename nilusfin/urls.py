@@ -20,6 +20,7 @@ urlpatterns = [
 
     # Cotações
     url(r'^insere_cotacao/$', views.create_cotacao_create_indice, name='create_cotacao_create_indice'),
+    url(r'^insere_cotacao/grid/$', views.create_cotacao_grid_indice, name='create_cotacao_grid_indice'),
     url(r'^insere_cotacao_edit/$', views.create_cotacao_edit_indice, name='create_cotacao_edit_indice'),
     url(r'^delete_cotacao/(?P<pk>\d+)/$', views.delete_cotacao, name='delete_cotacao'),
 

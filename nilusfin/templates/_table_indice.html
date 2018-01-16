@@ -9,7 +9,9 @@
                 </thead>
                 <tbody>
                 {% for in in indice %}
+                 {% if in.indice_padrao == False %}
                     <tr>
+
                         <td>{{ in.num_indice }}</td>
                         <td>{{ in.descricao }}</td>
                         <td>{{ in.simbolo }}</td>
@@ -18,16 +20,18 @@
                              <button type="button" class="btn btn-sm btn-outline-secondary edit_indice"  href="{% url 'edit_indice' in.pk  %}" data-toggle="tooltip" data-placement="bottom" title="Editar">
                                 <i class="fa fa-pencil"></i>
                              </button>
+
                              <button type="button" class="btn btn-sm btn-outline-danger delete_indice"  href="{% url 'delete_indice' in.pk  %}" data-toggle="tooltip" data-placement="bottom" title="Excluir">
                                 <i class="fa fa-trash-o"></i>
                              </button>
+
                              <button type="button" class="btn btn-sm btn-outline-info lista_cotacoes"  href="{% url 'cotacao_list' in.pk  %}" data-toggle="tooltip" data-placement="bottom" title="Visualizar Cotações">
                                  <i class="si si-layers"></i>
                              </button>
                             </div>
-
                         </td>
                     </tr>
+                 {% endif %}
                 {% endfor %}
                 </tbody>
             </table>

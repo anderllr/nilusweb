@@ -1,0 +1,42 @@
+{% load static widget_tweaks humanize %}
+{% if success %}
+  	  close_form=true;
+   <script>
+   </script>
+{% else %}
+<form class="form-horizontal" name="form_cotacao" id="form_cotacao_create">
+    {% csrf_token %}
+    <div class="form-group">
+        <div class="form-material input-group">
+            <label>Indice</label>
+            {% render_field form.indice class="chosen-select" %}
+            {% for error in form.indice.errors %}
+            <small class="form-control-feedback"> {{ error }} </small>
+            {% endfor %}
+        </div>
+        <div class="form-material floating">
+            {% render_field  form.data_indice class='js-datepicker form-control' data-week-start="1" data-autoclose="true" data-today-highlight="true" data-date-format="dd/mm/yyyy" %}
+            <label for="{{  form.data_indice.id }}">Data Cotação</label>
+            {% for error in form.data_indice.errors %}
+            <div class="alert alert-danger alert-dismissable">
+                <p class="mb-0">{{ error }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="form-material floating">
+            {% render_field  form.valor_cotacao class='form-control' %}
+            <label for="{{  form.valor_cotacao.id }}">Valor Cotação</label>
+            {% for error in form.valor_cotacao.errors %}
+            <div class="alert alert-danger alert-dismissable">
+                <p class="mb-0">{{ error }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    <br>
+        <button type="submit" class="btn btn-alt-primary">Salvar</button>
+
+
+    </div>
+
+</form>
+{% endif %}

@@ -13,6 +13,8 @@ urlpatterns = [
     url(r'^insere_receita/(?P<pk>\d+)$', views.edit_receita, name='edit_receita'),
     url(r'^insere_despesa/(?P<pk>\d+)$', views.edit_despesa, name='edit_despesa'),
     url(r'^receita/(?P<pk>\d+)/apagar/$', views.delete_receita, name='delete_receita'),
+    # url(r'^lancamentos/baixas',views.baixa_lancamentos,name='baixa_lancamentos'),
+    # url(r'^fin/lanc/baixas', include('nilusfin.urls')),
     # url(r'^despesa/(?P<pk>\d+)/apagar/$', views.delete_despesa, name='delete_despesa'),
 
 

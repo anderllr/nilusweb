@@ -10,10 +10,17 @@
 
 <div class="block">
     <div class="block-content">
-        <div class="row  btn-insert">
-        <button type="button" class="btn btn-outline-primary mr-5 mb-5  new_indice">
+        <div class="row btn-insert">
+         <div class="col-md-10">
+             <button type="button" class="btn btn-outline-primary mr-5 mb-5 new_indice">
                  <i class="fa fa-plus mr-5"></i> Novo Indice
-        </button>
+             </button>
+         </div>
+         <div class="col-md-2">
+             <button type="button" class="btn btn-outline-info mr-5 mb-5 nova_cotacao_grid">
+                 <i class="fa fa-plus mr-5"></i> Incluir Cotação
+             </button>
+         </div>
         </div>
         <div>
             <div class="row">
@@ -64,6 +71,30 @@
                 </div>
             </div>
         </div>
+
+<div class="modal fade" id="modal-cotacao_grid" tabindex="-1" role="dialog" aria-labelledby="modal-slideright" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-slideright modal-sm" role="document">
+                <div class="modal-content">
+                    <div class="block block-themed block-transparent mb-0">
+                        <div class="block-header bg-primary-dark">
+                            <h3 class="block-title">Inserir Cotação GRID</h3>
+                            <div class="block-options">
+                                <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+                                    <i class="si si-close"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="block-content">
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-alt-secondary" data-dismiss="modal">Fechar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
 
 
@@ -141,8 +172,6 @@ table = $('#tabela_indice').DataTable({
 
 $(".lista_cotacoes").on("click",function(e){
    e.preventDefault();
-   var indice = '{{ indice.descricao }}';
-   $("#modal-lista-cotacao .info_modal").text(indice);
    $("#modal-lista-cotacao .block-content").load($(this).attr('href'), function(){
        $('#modal-lista-cotacao').modal("show");
        $('#tabela_cotacoes').dataTable({
@@ -190,6 +219,7 @@ $(".new_indice").on("click",function(e){
      $(".form_inc .form_inc_indice").load("{% url 'create_indice' %}", function(){
         $('.form_inc').show("puff");
         $('.new_indice').hide("drop");
+        $('.nova_cotacao_grid').hide("drop");
         $('.chosen-select').chosen({ width: '100%' });
 
 
@@ -237,6 +267,7 @@ $(".new_indice").on("click",function(e){
           $(".form_inc .cancel_form").on("click",function(e){
              $('.form_inc').hide("drop");
              $('.new_indice').show();
+             $('.nova_cotacao_grid').show();
              $('#form_cotacao_create').remove();
           });
     });
@@ -250,6 +281,7 @@ $(".new_indice").on("click",function(e){
 	 	    if(close_modal==true){
 	 	       $('.form_inc').hide("drop");
                $('.new_indice').show();
+               $('.nova_cotacao_grid').show();
                window.location.reload();
 
      	    }
@@ -262,7 +294,7 @@ $(".new_indice").on("click",function(e){
                    $(".form_inc .cancel_form").on("click",function(e){
                         $('.form_inc').hide("drop");
                         $('.new_indice').show();
-                        $
+                        $('.nova_cotacao_grid').show();
                    });
 
 
@@ -270,12 +302,43 @@ $(".new_indice").on("click",function(e){
 	 	 });
 	});
 
+
+
+$(".nova_cotacao_grid").on("click",function(e){
+    e.preventDefault();
+    $("#modal-cotacao_grid .block-content").load("{% url 'create_cotacao_grid_indice' %}", function(){
+    $('#modal-cotacao_grid').modal("show");
+    {% include 'js_floating_labels.html' %}
+    {% include 'js_datepickers.html' %}
+    $('.chosen-select').chosen({ width: '100%' });
+    });
+});
+
+$("#modal-cotacao_grid .block-content").on("submit","#form_cotacao_create",function(e){
+     e.preventDefault();
+     var dados = $(this).serialize();
+     $.post("{% url 'create_cotacao_grid_indice' %}",dados,function(result){
+        $("#modal-cotacao_grid .block-content").html(result);
+        if(close_form==true){
+           $('#modal-cotacao_grid').modal("hide");
+           $('#form_cotacao_create').remove();
+        }
+        else{
+           $('#modal-cotacao').modal("show");
+        }
+     });
+ });
+
+
+
+
 <!-- Edit Company -->
 $('.table_indice').on('click', '.edit_indice',function(e){
     e.preventDefault();
     $(".form_edit ").load($(this).attr('href'), function(){
                $('.form_edit').show("slide");
                $('.new_indice').hide("drop");
+               $('.nova_cotacao_grid').hide("drop");
                {% include 'js_floating_labels.html' %}
                {% include 'js_masks.html' %}
                {% include 'js_tabs.html' %}
@@ -315,11 +378,10 @@ $('.table_indice').on('click', '.edit_indice',function(e){
                  });
          });
 
-
-
               $(".form_edit .cancel_form").on("click",function(e){
                   $('.form_edit').hide("drop");
                   $('.new_indice').show();
+                  $('.nova_cotacao_grid').show();
                   $('#form_cotacao_create').remove();
               });
     });
@@ -348,6 +410,7 @@ $(".form_edit").on("submit","form",function(e){
                 $(".form_inc .cancel_form").on("click",function(e){
                     $('.form_edit').hide("drop");
                     $('.new_indice').show();
+                    $('.nova_cotacao_grid').show();
                     $('#form_cotacao_create').remove();
 	 	        });
             }

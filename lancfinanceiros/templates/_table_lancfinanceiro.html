@@ -1,6 +1,7 @@
         <table id="table_lanfinanceiro" class="table table-bordered table-striped table-vcenter js-dataTable-full" >
             <thead>
                 <tr>
+                    <th><small>Baixar</small></th>
                     <th><small>Nº</small></th>
                     <th><small>Par</small></th>
                     <th><small>Cadastro/Descrição</small></th>
@@ -15,14 +16,17 @@
             <tbody>
             {% for lanc in lanctos %}
                 <tr>
-                    <td style="width:5%; heigth:10%;">{{ lanc.num_lan }}</td>
-                    <td style="width:5%; heigth:10%;">{{ lanc.parcela }}</td>
-                    <td style="width:30%; heigth:10%; ">{% if lanc.cadgeral == None %} Não Informado {% else %} {{lanc.cadgeral}} {% endif %}
-                                                                   / {{lanc.descricao}}</td>
-                    <td style="width:5%; heigth:10%;"><small>{{ lanc.dt_lancamento|date:'d/m/Y' }}</small></td>
-                    <td style="width:5%; heigth:10%;"><small>{{ lanc.dt_vencimento|date:'d/m/Y'  }}</small></td>
-                    <td style="width:5%; heigth:10%;">{% if lanc.tipo_lancamento == 'R' %}<h6 class="text-success">{{ lanc.valor_text }}</h6>
-                                          {% else %}   <h6 class="text-danger">{{ lanc.valor_text }}</h6>
+                    <td style="width:2%">
+                       <center><input class="baixa_lancamento"  name="lanc_baixa" value="{{ lanc.pk }}" type="checkbox"></center>
+                    </td>
+                    <td style="width:2%; heigth:10%;"><small>{{ lanc.num_lan }}</small></td>
+                    <td style="width:5%; heigth:10%;"><small>{{ lanc.parcela }}</small></td>
+                    <td style="width:25%; heigth:10%; "><small>{% if lanc.cadgeral == None %} Não Informado {% else %} {{lanc.cadgeral}} {% endif %}
+                        / {{lanc.descricao}}</small></td>
+                    <td style="width:3%; heigth:10%;"><small>{{ lanc.dt_lancamento|date:'d/m/Y' }}</small></td>
+                    <td style="width:3%; heigth:10%;"><small>{{ lanc.dt_vencimento|date:'d/m/Y'  }}</small></td>
+                    <td style="width:2%; heigth:10%;">{% if lanc.tipo_lancamento == 'R' %}<h6 class="text-success">{{ lanc.vlr_lancamento }}</h6>
+                                          {% else %}   <h6 class="text-danger">{{ lanc.vlr_lancamento }}</h6>
                                           {% endif %}
                     </td>
 
@@ -41,7 +45,7 @@
                         {% endif %}
                     </td>
 
-                    <td>
+                    <td style="width:10%">
                         <button type="button" class="btn btn-sm btn-outline-secondary edit_lancto" {% if lanc.tipo_lancamento == 'R' %}  href="{% url 'edit_receita' lanc.pk %}"
                                                                                                    {% else %}    href="{% url 'edit_despesa' lanc.pk %}" {% endif %}
                                                                                                     data-toggle="tooltip" data-placement="bottom" title="Editar">

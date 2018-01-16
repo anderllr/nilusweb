@@ -48,8 +48,7 @@ class Indice(models.Model):
     descricao = models.CharField('Nome Indice',max_length=20)
     simbolo = models.CharField('Simbolo', max_length=5)
 
-
-
+    indice_padrao = models.BooleanField('Indice Padrao',default=False)
 
 
     class Meta:
@@ -65,17 +64,16 @@ class Indice(models.Model):
 
 
 
-
-
-
-
 class Cotacao(models.Model):
     # informação do dono da conta (usuario Master)
+    # master_user = models.ForeignKey('accounts.User', models.CASCADE, verbose_name='Uusario Master')
     indice = models.ForeignKey('nilusfin.Indice',verbose_name='Indice',null=True,blank=True)
 
     data_indice = models.DateField('Data',null=True,blank=True)
     valor_cotacao = models.DecimalField('Valor',null=True,blank=True,decimal_places=4,max_digits=13)
     user_cad = models.ForeignKey('accounts.User', verbose_name='Usuario Criação')
+
+    cotacao_padrao = models.BooleanField('Cotação Padrão',default=False)
 
     class Meta:
         verbose_name = 'Cotacao'

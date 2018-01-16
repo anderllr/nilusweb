@@ -176,15 +176,26 @@ class FiltroLancamentosForm(forms.Form):
     data_lanc_ini = forms.DateField(label='Lançamento de:', required=False)
     data_lanc_fim = forms.DateField(label='Lançamento até:', required=False)
 
+    data_baix_ini = forms.DateField(label='Baixa de:', required=False)
+    data_baix_fim = forms.DateField(label='Baixa até:', required=False)
+
     empresa = forms.ModelChoiceField(label='Empresa', required=False, empty_label='Todos',
                                      queryset=Company.objects.none())
     cadgeral = forms.ModelChoiceField(label='Cliente / Fornecedor',empty_label='Todos', required=False, queryset=Cadgeral.objects.none())
     plano_finan = forms.ModelChoiceField(label='Plano Financeiro',empty_label='Todos' , required=False, queryset=PlanoFinan.objects.none())
     c_custo = forms.ModelChoiceField(label='Centro de Custo', empty_label='Todos', required=False, queryset=Ccusto.objects.none())
+    conta_finan = forms.ModelChoiceField(label='Conta Financeira',empty_label='Todas as Contas',required=False,queryset=Contafinanceira.objects.none())
 
-    def __init__(self, empresa, cliente, plano_finan, c_custo, *args, **kwargs):
+    def __init__(self, empresa, cliente, plano_finan, c_custo, conta_finan, *args, **kwargs):
         super(FiltroLancamentosForm, self).__init__(*args, **kwargs)
         self.fields['empresa'].queryset = empresa
         self.fields['cadgeral'].queryset = cliente
         self.fields['plano_finan'].queryset = plano_finan
         self.fields['c_custo'].queryset = c_custo
+        self.fields['conta_finan'].queryset = conta_finan
+
+
+
+class FormBaixaLancamento(forms.Form):
+    lanc_baixa = forms.ModelMultipleChoiceField(queryset=Lancamentos.objects.all())
+    data_baixa = forms.DateField()

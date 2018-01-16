@@ -22,14 +22,13 @@ class Lancamentos(models.Model):
     c_custo = models.ForeignKey('niluscad.Ccusto',verbose_name='Centro de Custo')
     vlr_lancamento = models.DecimalField('Valor do Lançamento',max_digits=13,decimal_places=2,blank=True,null=True)
     valor_text = models.CharField(verbose_name='Valor',  max_length=20)
-    # saldo = models.DecimalField('Saldo', max_digits=13,decimal_places=2,blank=True,null=True)
+    valor_original = models.DecimalField('Saldo', max_digits=13,decimal_places=2,blank=True,null=True)
     descricao = models.CharField(verbose_name='Observação', max_length=70,null=True)
     titulo = models.BooleanField('É Titulo', default=False)
 
     #Dados Cotação/Indice
     indice = models.ForeignKey('nilusfin.Indice',null=True,blank=True)
     cotacao = models.ForeignKey('nilusfin.Cotacao',null=True,blank=True)
-
 
 
 
@@ -60,14 +59,14 @@ class Lancamentos(models.Model):
             parcelas.update(
                 plr_financeiro=self.plr_financeiro,c_custo=self.c_custo,valor_text=self.valor_text,
                 vlr_lancamento = self.vlr_lancamento,indice=self.indice,cotacao=self.cotacao,
-                descricao=self.descricao
+                descricao=self.descricao,valor_original=self.valor_original
             )
         else:
             parcelas = Lancamentos.objects.filter(lancamento_pai = self)
             parcelas.update(
                 plr_financeiro=self.plr_financeiro, c_custo=self.c_custo,valor_text=self.valor_text,
                 vlr_lancamento=self.vlr_lancamento, indice=self.indice, cotacao=self.cotacao,
-                descricao=self.descricao
+                descricao=self.descricao,valor_original=self.valor_original
             )
 
     class Meta:

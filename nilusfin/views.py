@@ -158,7 +158,6 @@ def indice_list(request):
     context = {
        'indice' : indice
     }
-
     return render(request, template_name, context)
 
 
@@ -348,6 +347,39 @@ class CreateCotacao_edit_indice(LoginRequiredMixin,CreateView):
 
 
 
+class CreateCotacao_grid_indice(LoginRequiredMixin,CreateView):
+    def get_template_names(self):
+        if self.request.is_ajax():
+            return ["_create_cotacao_grid_indice.html"]
+        else:
+            raise Http404
+
+    def get_form_kwargs(self):
+        kwargs = super(CreateCotacao_grid_indice, self).get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    model = Cotacao
+    form_class = FormCreateCotacao
+
+    def get_success_url(self):
+        return reverse_lazy('indice_list')
+
+
+    def form_valid(self,form,**kwargs):
+        cotacao = form.save(commit=False)
+        cotacao.user_cad = self.request.user
+        cotacao.save()
+
+        if self.request.is_ajax():
+            context = self.get_context_data(form=form, success=True)
+            return self.render_to_response(context)
+        else:
+            return redirect(self.get_success_url())
+
+
+
+
 
 
 @login_required
@@ -366,6 +398,7 @@ create_conta = CreateConta.as_view()
 create_cotacao_create_indice = CreateCotacao_create_indice.as_view()
 create_cotacao_edit_indice = CreateCotacao_edit_indice.as_view()
 edit_conta = EditConta.as_view()
+create_cotacao_grid_indice = CreateCotacao_grid_indice.as_view()
 
 
 
