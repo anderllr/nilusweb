@@ -9,10 +9,14 @@ class FormCreateCotacao(forms.ModelForm):
         super(FormCreateCotacao,self).__init__(*args,**kwargs)
         if user.is_masteruser:
             self.fields['indice'].queryset=Indice.objects.filter(master_user=user)
+            self.fields['indice'].empty_label = 'Selecione um indice'
         else:
             self.fields['indice'].queryset = Indice.objects.filter(
                 master_user=user.user_master
             )
+            self.fields['indice'].empty_label = 'Selecione um indice'
+
+
 
 
     class Meta:

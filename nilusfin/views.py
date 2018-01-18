@@ -205,6 +205,54 @@ class CreateIndice(LoginRequiredMixin,CreateView):
             return redirect(self.get_success_url())
 
 
+
+class CreateIndice_lancto(LoginRequiredMixin,CreateView):
+    def get_template_names(self):
+        if self.request.is_ajax():
+            return ["_create_indice_lancto.html"]
+        else:
+            raise Http404
+
+
+
+    model = Indice
+    fields = ['descricao','simbolo']
+
+
+    def get_success_url(self):
+        return reverse_lazy('indice_list')
+
+
+    def form_valid(self,form):
+        indice = form.save(commit=False)
+        if self.request.user.is_masteruser is True:
+            indice.master_user = self.request.user
+            seq_indice = Sequenciais.objects.get(user=self.request.user)
+        else:
+            indice.master_user = self.request.user.user_master
+            seq_indice = Sequenciais.objects.get(user=self.request.user.user_master)
+
+
+        indice.num_indice = seq_indice.indice + 1
+        seq_indice.indice = indice.num_indice
+        seq_indice.save()
+        indice.save()
+
+        cotacoes_indice = Cotacao.objects.filter(indice=None,user_cad=self.request.user)
+        cotacoes_indice.update(
+            indice=indice
+        )
+
+        if self.request.is_ajax():
+            context = self.get_context_data(form=form, success=True,cad_ok='ok')
+            return self.render_to_response(context)
+        else:
+            return redirect(self.get_success_url())
+
+
+
+
+
 class EditIndice(LoginRequiredMixin,UpdateView):
 
 
@@ -359,6 +407,12 @@ class CreateCotacao_grid_indice(LoginRequiredMixin,CreateView):
         kwargs['user'] = self.request.user
         return kwargs
 
+    def get_initial(self):
+        initial = super(CreateCotacao_grid_indice,self).get_initial()
+        initial['indice'] = 'Teste'
+        return initial
+
+
     model = Cotacao
     form_class = FormCreateCotacao
 
@@ -399,7 +453,7 @@ create_cotacao_create_indice = CreateCotacao_create_indice.as_view()
 create_cotacao_edit_indice = CreateCotacao_edit_indice.as_view()
 edit_conta = EditConta.as_view()
 create_cotacao_grid_indice = CreateCotacao_grid_indice.as_view()
-
+create_indice_lancto = CreateIndice_lancto.as_view()
 
 
 

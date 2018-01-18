@@ -54,6 +54,13 @@ class FormCreateReceita(forms.ModelForm):
             self.fields['indice'].queryset = Indice.objects.filter(master_user=user.user_master)
             self.fields['conta_finan'].queryset = Contafinanceira.objects.filter(master_user=user.user_master,
                                                                                  conta_recebimento=True)
+        self.fields['company'].empty_label = 'Selecione uma empresa'
+        self.fields['cadgeral'].empty_label = 'Selecione um cadastro'
+        self.fields['plr_financeiro'].empty_label = 'Selecione um plano'
+        self.fields['c_custo'].empty_label = 'Selecione um centro de custo'
+        self.fields['conta_finan'].empty_label = 'Selecione uma conta'
+        self.fields['indice'].empty_label = 'Real'
+        self.fields['cotacao'].empty_label = '1,0000'
 
     class Meta:
         model = Lancamentos
@@ -77,6 +84,13 @@ class FormEditReceita(forms.ModelForm):
             self.fields['indice'].queryset = Indice.objects.filter(master_user=user.user_master)
             self.fields['conta_finan'].queryset = Contafinanceira.objects.filter(master_user=user.user_master,
                                                                                  conta_recebimento=True)
+
+        self.fields['cadgeral'].empty_label = 'Selecione um cadastro'
+        self.fields['plr_financeiro'].empty_label = 'Selecione um plano'
+        self.fields['c_custo'].empty_label = 'Selecione um centro de custo'
+        self.fields['conta_finan'].empty_label = 'Selecione uma conta'
+
+
     class Meta:
         model = Lancamentos
         fields = ['dt_vencimento','cadgeral', 'plr_financeiro', 'c_custo', 'conta_finan', 'valor_text',
@@ -133,6 +147,14 @@ class FormCreateDespesa(forms.ModelForm):
             self.fields['indice'].queryset = Indice.objects.filter(master_user=user.user_master)
             self.fields['conta_finan'].queryset = Contafinanceira.objects.filter(master_user=user.user_master,
                                                                                  conta_pagamento=True)
+        self.fields['company'].empty_label = 'Selecione uma empresa'
+        self.fields['cadgeral'].empty_label = 'Selecione um cadastro'
+        self.fields['plr_financeiro'].empty_label = 'Selecione um plano'
+        self.fields['c_custo'].empty_label = 'Selecione um centro de custo'
+        self.fields['conta_finan'].empty_label = 'Selecione uma conta'
+        self.fields['indice'].empty_label = 'Real'
+        self.fields['cotacao'].empty_label = '1,0000'
+
 
     class Meta:
         model = Lancamentos
@@ -158,7 +180,12 @@ class FormEditDespesa(forms.ModelForm):
             self.fields['c_custo'].queryset = Ccusto.objects.filter(master_user=user.user_master)
             self.fields['indice'].queryset = Indice.objects.filter(master_user=user.user_master)
             self.fields['conta_finan'].queryset = Contafinanceira.objects.filter(master_user=user.user_master,
-                                                                                 conta_pagamento=True)
+                                                                                                   conta_pagamento=True)
+        self.fields['cadgeral'].empty_label = 'Selecione um cadastro'
+        self.fields['plr_financeiro'].empty_label = 'Selecione um plano'
+        self.fields['c_custo'].empty_label = 'Selecione um centro de custo'
+        self.fields['conta_finan'].empty_label = 'Selecione uma conta'
+
     class Meta:
         model = Lancamentos
         fields = ['dt_vencimento','cadgeral', 'plr_financeiro', 'c_custo', 'conta_finan', 'valor_text',
@@ -179,12 +206,12 @@ class FiltroLancamentosForm(forms.Form):
     data_baix_ini = forms.DateField(label='Baixa de:', required=False)
     data_baix_fim = forms.DateField(label='Baixa até:', required=False)
 
-    empresa = forms.ModelChoiceField(label='Empresa', required=False, empty_label='Todos',
+    empresa = forms.ModelChoiceField(label='Empresa', required=False, empty_label='Todas',
                                      queryset=Company.objects.none())
     cadgeral = forms.ModelChoiceField(label='Cliente / Fornecedor',empty_label='Todos', required=False, queryset=Cadgeral.objects.none())
     plano_finan = forms.ModelChoiceField(label='Plano Financeiro',empty_label='Todos' , required=False, queryset=PlanoFinan.objects.none())
     c_custo = forms.ModelChoiceField(label='Centro de Custo', empty_label='Todos', required=False, queryset=Ccusto.objects.none())
-    conta_finan = forms.ModelChoiceField(label='Conta Financeira',empty_label='Todas as Contas',required=False,queryset=Contafinanceira.objects.none())
+    conta_finan = forms.ModelChoiceField(label='Conta Financeira',empty_label='Todas',required=False,queryset=Contafinanceira.objects.none())
 
     def __init__(self, empresa, cliente, plano_finan, c_custo, conta_finan, *args, **kwargs):
         super(FiltroLancamentosForm, self).__init__(*args, **kwargs)

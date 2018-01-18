@@ -102,7 +102,7 @@ def indice_cotacao(request):
    indice_id = request.GET.get('indice_id',None)
    if indice_id:
       indice = get_object_or_404(Indice,pk=indice_id)
-      cotacao = Cotacao.objects.filter(indice=indice)
+      cotacao = Cotacao.objects.filter(indice=indice).order_by('-data_indice')
       context = {'indice' : indice, 'cotacao' : cotacao}
       return render(request,'_select_cotacao.html',context)
    raise Http404

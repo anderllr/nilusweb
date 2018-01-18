@@ -9,8 +9,8 @@ $(".new_cadgeral").on("click",function(e){
           $('#modal-cadgeral').modal("show");
           $(".btn_busca").hide();
           $("#id_cnpj_cpf").focus();
-          $(".cancel_form").hide();
-          $(".titulo_form").hide();
+          $("#modal-cadgeral .cancel_form").hide();
+          $("#modal-cadgeral .titulo_form").hide();
 
 
           {% include 'js_floating_labels.html' %}
@@ -30,18 +30,20 @@ $("#modal-cadgeral .block-content").on("submit","form",function(e){
 	 	 var dados = $(this).serialize();
 	 	 $.post("{% url 'create_cadgeral' %}",dados,function(result){
 	 	    $("#modal-cadgeral .block-content").html(result);
-	 	    if(close_modal==true){
-	 	       $('##modal-cadgeral').modal("hide");
-               $('#id_cadgeral').append("<option value='" + id_cliente + "'>"+ nome_cliente + "</option>");
-			   $('#id_cadgeral').val(id_cliente);
-			   $('#id_cadgeral').trigger('chosen:updated');
+            var cad_ok = $('#cad_ok').val();
+            var id_cliente = $('#id_cliente').val();
+            var nome_cliente = $('#nome_cliente').val();
+	 	    if(cad_ok=='ok'){
+	 	       $('#modal-cadgeral').modal("hide");
+               $('#cadgeral_id2').append("<option value='" + id_cliente + "'>"+ nome_cliente + "</option>");
+			   $('#cadgeral_id2').val(id_cliente);
+			   $('#cadgeral_id2').trigger('chosen:updated');
 	 	    }
 	 	    else{
-	 	       $('#modal-cadgeral').modal("show");
+	 	        $('#modal-cadgeral').modal("show");
 	 	    }
 	 	 });
 	 });
-
 
 
 
@@ -79,6 +81,9 @@ $(".new_conta").on("click",function(e){
 
 });
 
+
+
+
 $("#modal-conta .block-content").on("submit","form",function(e){
 	 	 e.preventDefault();
 	 	 var dados = $(this).serialize();
@@ -86,9 +91,9 @@ $("#modal-conta .block-content").on("submit","form",function(e){
 	 	    $("#modal-conta .block-content").html(result);
 	 	    if(close_modal==true){
 	 	       $('#modal-conta').modal("hide");
-               $('#id_conta_finan').append("<option value='" + id_conta + "'>"+ conta + "</option>");
-			   $('#id_conta_finan').val(id_conta);
-			   $('#id_conta_finan').trigger('chosen:updated');
+               $('#id_conta_finan2').append("<option value='" + id_conta + "'>"+ conta + "</option>");
+			   $('#id_conta_finan2').val(id_conta);
+			   $('#id_conta_finan2').trigger('chosen:updated');
 	 	    }
 	 	    else{
 	 	       $('#modal-conta').modal("show");
@@ -113,40 +118,36 @@ $(".new_planofinan").on("click",function(e){
 
 
 $("#modal-planofinan .block-content").on("submit","form",function(e){
-	 	 e.preventDefault();
-	 	 var dados = $(this).serialize();
-	 	 $.post("{% url 'create_planofinan' %}",dados,function(result){
-	 	    $("#modal-planofinan .block-content").html(result);
-	 	    if(close_modal==true){
-	 	       $('#modal-planofinan').modal("hide");
-               $('#id_plr_financeiro').append("<option value='" + id_planofinan + "'>"+ descricao + "</option>");
-			   $('#id_plr_financeiro').val(id_planofinan);
-			   $('#id_plr_financeiro').trigger('chosen:updated');
-	 	    }
-	 	    else{
-	 	       $('#modal-planofinan').modal("show");
-	 	    }
-	 	 });
-	 });
+     e.preventDefault();
+     var dados = $(this).serialize();
+     $.post("{% url 'create_planofinan' %}",dados,function(result){
+        $("#modal-planofinan .block-content").html(result);
+        if(close_modal==true){
+           $('#modal-planofinan').modal("hide");
+           $('#id_plr_financeiro').append("<option value='" + id_planofinan + "'>"+ descricao + "</option>");
+           $('#id_plr_financeiro').val(id_planofinan);
+           $('#id_plr_financeiro').trigger('chosen:updated');
+        }
+        else{
+           $('#modal-planofinan').modal("show");
+        }
+     });
+ });
 
 
 
 $(".new_ccusto").on("click",function(e){
-        e.preventDefault();
-        $("#modal-ccusto .block-content").load("{% url 'create_ccusto' %}", function(){
-          $('.titulo_modal').text("Incluir Centro de Custo");
-          $('#modal-ccusto').modal("show");
-          $('.chosen-select').chosen({ width: '100%' });
-          $("#modal-ccusto .cancel_form").hide();
-          $("#modal-ccusto .titulo_form").hide();
+    e.preventDefault();
+    $("#modal-ccusto .block-content").load("{% url 'create_ccusto' %}", function(){
+      $('.titulo_modal').text("Incluir Centro de Custo");
+      $('#modal-ccusto').modal("show");
+      $('.chosen-select').chosen({ width: '100%' });
+      $("#modal-ccusto .cancel_form").hide();
+      $("#modal-ccusto .titulo_form").hide();
 
-          {% include 'js_floating_labels.html' %}
-
-        });
-
+      {% include 'js_floating_labels.html' %}
+    });
 });
-
-
 
 
 $("#modal-ccusto .block-content").on("submit","form",function(e){
@@ -161,6 +162,77 @@ $("#modal-ccusto .block-content").on("submit","form",function(e){
 		   $('#c_custo_id2').trigger('chosen:updated');        }
         else{
            $('#modal-ccusto').modal("show");
+        }
+     });
+ });
+
+
+
+$(".new_indice").on("click",function(e){
+    e.preventDefault();
+    $("#modal-indice .block-content").load("{% url 'create_indice_lancto' %}", function(){
+      $('.titulo_modal').text("Incluir Indice");
+      $('#modal-indice').modal("show");
+      $('.chosen-select').chosen({ width: '100%' });
+      $("#modal-indice .cancel_form").hide();
+      $("#modal-indice .titulo_form").hide();
+
+      {% include 'js_floating_labels.html' %}
+    });
+});
+
+
+$("#modal-indice .block-content").on("submit","form",function(e){
+     e.preventDefault();
+     var dados = $(this).serialize();
+     $.post("{% url 'create_indice_lancto' %}",dados,function(result){
+        $("#modal-indice .block-content").html(result);
+            var cad_ok = $('#cad_ok').val();
+            var id_indice = $('#id_ind').val();
+            var descricao = $('#descricao').val();
+        if(cad_ok=='ok'){
+           $('#modal-indice').modal("hide");
+           $('#id_indice').append("<option value='" + id_indice + "'>"+ descricao + "</option>");
+		   $('#id_indice').val(id_indice);
+		   $('#id_indice').trigger('chosen:updated');        }
+        else{
+           $('#modal-indice').modal("show");
+        }
+     });
+ });
+
+
+
+$(".new_cotacao").on("click",function(e){
+    e.preventDefault();
+    $("#modal-cotacao .block-content").load("{% url 'create_cotacao_grid_indice' %}", function(){
+      $('.titulo_modal').text("Incluir Cotação");
+      $('#modal-cotacao').modal("show");
+      $('.chosen-select').chosen({ width: '100%' });
+      $("#modal-cotacao .cancel_form").hide();
+      $("#modal-cotacao .titulo_form").hide();
+
+      {% include 'js_floating_labels.html' %}
+    });
+});
+
+
+$("#modal-cotacao .block-content").on("submit","form",function(e){
+     e.preventDefault();
+     var dados = $(this).serialize();
+     $.post("{% url 'create_cotacao_grid_indice' %}",dados,function(result){
+        $("#modal-indice .block-content").html(result);
+        if(close_form==true){
+           alert(id_cotacao);
+           alert(valor_cotacao);
+           alert(data_cotacao);
+           $('#modal-cotacao').modal("hide");
+           $('#id_cotacao').append("<option value='" + id_cotacao + "'>"+ valor_cotacao + ' - ' + data_cotacao + "</option>");
+		   $('#id_cotacao').val(id_indice);
+		   $('#id_cotacao').trigger('chosen:updated');
+        }
+        else{
+           $('#modal-indice').modal("show");
         }
      });
  });

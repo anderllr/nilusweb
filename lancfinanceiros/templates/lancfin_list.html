@@ -9,7 +9,11 @@
 {% block page_body %}
 
 <div class="block">
-    <div class="block-content">
+    <div class="block-content block-content-full ribbon ribbon-left ribbon-bookmark ribbon-primary">
+        <div class="ribbon-box form_busca">
+            Filtros de Pesquisa
+        </div>
+        <br>
         <div class="form_busca">
             <form>
                 <div class="row">
@@ -27,7 +31,7 @@
                                 <label for="id_data_lanc_ini">Data Lançamento</label>
                                 <div class="input-daterange input-group js-datepicker-enabled" data-date-format="dd/mm/yyyy" data-week-start="1" data-autoclose="true" data-today-highlight="true">
                                     {% render_field form.data_lanc_ini class="form-control js-datepicker"   placeholder="de" data-week-start="1" data-autoclose="true" data-today-highlight="true"%}
-                                    <span class="input-group-addon font-w600">até</span>
+                                    <span class="input-group-addon font-w600">  &nbsp; até  &nbsp; </span>
                                     {% render_field form.data_lanc_fim class="form-control js-datepicker"   placeholder="até" data-week-start="1" data-autoclose="true" data-today-highlight="true"%}
                                 </div>
                             </div>
@@ -36,7 +40,7 @@
                                 <label for="id_data_venc_ini">Data Vencimento</label>
                                 <div class="input-daterange input-group js-datepicker-enabled" data-date-format="dd/mm/yyyy" data-week-start="1" data-autoclose="true" data-today-highlight="true">
                                     {% render_field form.data_venc_ini class="form-control js-datepicker"   placeholder="de" data-week-start="1" data-autoclose="true" data-today-highlight="true"%}
-                                    <span class="input-group-addon font-w600">até</span>
+                                    <span class="input-group-addon font-w600"> &nbsp; até  &nbsp; </span>
                                     {% render_field form.data_venc_fim class="form-control js-datepicker"   placeholder="até" data-week-start="1" data-autoclose="true" data-today-highlight="true"%}
                                 </div>
                         </div>
@@ -44,7 +48,7 @@
                                 <label for="id_data_baix_ini">Data Baixa</label>
                                 <div class="input-daterange input-group js-datepicker-enabled" data-date-format="dd/mm/yyyy" data-week-start="1" data-autoclose="true" data-today-highlight="true">
                                     {% render_field form.data_baix_ini class="form-control js-datepicker"   placeholder="de" data-week-start="1" data-autoclose="true" data-today-highlight="true"%}
-                                    <span class="input-group-addon font-w600">até</span>
+                                    <span class="input-group-addon font-w600"> &nbsp; até  &nbsp;</span>
                                     {% render_field form.data_baix_fim class="form-control js-datepicker"   placeholder="até" data-week-start="1" data-autoclose="true" data-today-highlight="true"%}
                                 </div>
                         </div>
@@ -79,14 +83,11 @@
                     </div>
                 </div>
                 <br>
-                  <button type="submit"  class="btn  btn-outline-primary form_pesquisa"   data-toggle="tooltip" data-placement="bottom" title="Pesquisar">
-                        <i class="fa fa-search"></i>
+                  <button type="submit"  class="btn  btn-outline-primary form_pesquisa"   data-toggle="tooltip" data-placement="bottom" title="Pesquisar lançamentos de acordo com os filtros">
+                        <i class="fa fa-search"></i> Pesquisar
                   </button>
-                  <button type="button"  class="btn  btn-outline-info mais_filtros"   data-toggle="tooltip" data-placement="bottom" title="Mais Filtros">
-                        <i class="fa fa-filter"></i>
-                  </button>
-                  <button type="button"  class="btn  btn-outline-danger limpa_filtro_pesquisa"   data-toggle="tooltip" data-placement="bottom" title="Remover Filtros">
-                        <i class="fa fa-reply"></i>
+                  <button type="button"  class="btn  btn-outline-danger limpa_filtro_pesquisa"   data-toggle="tooltip" data-placement="bottom" title="Remover filtros e exibir todos os lançamentos">
+                        <i class="fa fa-reply"></i> Limpar filtros
                   </button>
 
             </form>
@@ -256,6 +257,53 @@
 </div>
 
 
+<div class="modal fade" id="modal-indice" tabindex="-1" role="dialog" aria-labelledby="modal-slideright" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-slideright modal-sm" role="document">
+        <div class="modal-content">
+            <div class="block block-themed block-transparent mb-0">
+                <div class="block-header bg-primary-dark">
+                    <h3 class="block-title titulo_modal"></h3><h3 class="block-title info_modal"></h3>
+                    <div class="block-options">
+                        <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+                            <i class="si si-close"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="block-content">
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-alt-secondary" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-cotacao" tabindex="-1" role="dialog" aria-labelledby="modal-slideright" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-slideright modal-sm" role="document">
+        <div class="modal-content">
+            <div class="block block-themed block-transparent mb-0">
+                <div class="block-header bg-primary-dark">
+                    <h3 class="block-title titulo_modal"></h3><h3 class="block-title info_modal"></h3>
+                    <div class="block-options">
+                        <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+                            <i class="si si-close"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="block-content">
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-alt-secondary" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
 
 
@@ -265,18 +313,11 @@
 {% block javascript %}
 
 $('.baixa').hide();
-$('.filtros_extras').hide();
-$('.limpa_filtro_pesquisa').hide();
 $('.form_inc').hide();
 $('.form_edit').hide();
 $('.chosen-select').chosen({ width: '100%' });
 
 
-$(".mais_filtros").on("click",function(e){
-   $('.filtros_extras').show("drop");
-   $('.mais_filtros').hide("puff");
-   $('.limpa_filtro_pesquisa').show("drop");
-});
 
 $(".limpa_filtro_pesquisa").on("click",function(e){
    window.location="{% url 'lancfin_list' %}"
@@ -358,6 +399,7 @@ $(".new_receita").on("click",function(e){
         $('.btn_lancamentos').hide("drop");
         $('.e_titulo').hide();
         $('.parcelamento').hide();
+        $("#id_valor_text").focus();
 
         $('.chosen-select').chosen({ width: '100%' });
 
@@ -494,7 +536,6 @@ $(".form_inc").on("submit","form",function(e){
      });
 });
 
-
 $(".new_despesa").on("click",function(e){
      e.preventDefault();
      $(".form_inc_despesa").load("{% url 'create_despesa' %}", function(){
@@ -504,6 +545,7 @@ $(".new_despesa").on("click",function(e){
         $('.btn_lancamentos').hide("drop");
         $('.e_titulo').hide();
         $('.parcelamento').hide();
+        $("#id_valor_text").focus();
 
         $('.chosen-select').chosen({ width: '100%' });
 
@@ -670,7 +712,6 @@ $(".table_lancfinanceiro").on("click", ".edit_lancto",function(e){
         $("#id_indice").on("change",function(e){
                load_cotacaoform();
         });
-              load_cotacaoform();
 
 
 

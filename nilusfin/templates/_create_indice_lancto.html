@@ -1,0 +1,65 @@
+{% load static widget_tweaks %}
+{% if success %}
+
+    <input type="hidden" id="id_ind" value="{{ form.instance.pk }}">
+    <input type="hidden" id="descricao" value="{{ form.instance.descricao }}">
+    <input type="hidden" id="cad_ok" value="{{ cad_ok }}">
+
+{% else %}
+<div class="block">
+    <div class="block-header ribbon ribbon-success ribbon-left">
+    <h3 class="block-title antes_insert titulo_form">Novo Indice</h3>
+        <div class="block-options antes_insert">
+            <button type="button" class="btn-block-option cancel_form">
+                <i class="fa fa-close"></i>
+            </button>
+        </div>
+    </div>
+    <form method="post" class="form" id="form_create">
+             {% csrf_token %}
+                {% for error in form.non_field_errors %}
+                <div class="alert-danger alert">
+                {{ error }}
+                </div>
+                {% endfor %}
+             <div class="block-content">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <div class="form-material floating input-group">
+                                {% render_field  form.descricao class='form-control' %}
+                                <label for="{{  form.descricao.id }}">Descrição</label>
+                            </div>
+                                {% for error in form.descricao.errors %}
+                                <div class="alert alert-danger alert-dismissable">{{ error }}</div>
+                                {% endfor %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                       <div class="col-md-12">
+                            <div class="form-material floating retorno_busca">
+                                {% render_field  form.simbolo class='form-control' %}
+                                <label for="{{  form.simbolo.id }}">Símbolo</label>
+                                {% for error in form.simbolo.errors %}
+                                <div class="alert alert-danger alert-dismissable">
+                                    <p class="mb-0">{{ error }}</p>
+                                </div>
+                                {% endfor %}
+                            </div>
+                       </div>
+                    </div>
+             </div>
+           <div class="row">
+
+           </div>
+          <br>
+          <br>
+         <div class="form-group row ">
+
+                <button type="submit" class="btn btn-alt-primary">Salvar</button>
+                <button type="button"  class="btn btn-alt-secondary  cancel_form">Cancelar</button>
+         </div>
+    </form>
+
+
+</div>
+{% endif %}

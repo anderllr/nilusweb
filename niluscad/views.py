@@ -378,9 +378,8 @@ class CreateCadGeral(LoginRequiredMixin,CreateView):
         seq_cad.save()
         Cadgeral.save()
 
-
         if self.request.is_ajax():
-            context = self.get_context_data(form=form,success=True,ok='ok')
+            context = self.get_context_data(form=form,success=True,ok='ok',cad_ok='ok')
             return self.render_to_response(context)
         else:
             return redirect(self.get_success_url())

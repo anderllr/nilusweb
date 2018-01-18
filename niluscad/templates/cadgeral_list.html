@@ -46,8 +46,6 @@
 $('.form_inc').hide();
 $('.form_edit').hide();
 
-var close_modal
-
 function loading_viewers(){
       $('.table_cadgeral').load('{{ request.path }}');
 }
@@ -96,9 +94,6 @@ $(".new_cadgeral").on("click",function(e){
         $('.btn_busca').hide();
 
 
-
-
-
           {% include 'js_floating_labels.html' %}
           {% include 'js_tabs.html' %}
           {% include 'js_pesquisas_cnpj_cep.html' %}
@@ -117,11 +112,9 @@ $(".new_cadgeral").on("click",function(e){
 	 	 var dados = $(this).serialize();
 	 	 $.post("{% url 'create_cadgeral' %}",dados,function(result){
 	 	    $(".form_inc").html(result);
-	 	    if(close_modal==true){
-	 	       $('.form_inc').hide("drop");
-               $('.new_cadgeral').show();
-               loading_viewers();
-               $('.table_cadgeral').show();
+	 	    if(close_form_cadgeral==true){
+	 	        window.location.reload();
+
 
      	    }
  	        else{

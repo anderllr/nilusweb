@@ -1,8 +1,14 @@
 {% load static widget_tweaks humanize %}
 {% if success %}
+    <script>
   	  close_form=true;
-   <script>
+
    </script>
+
+    <input type="hidden" id="id_cotacao" value="{{ form.instance.pk }}">
+    <input type="hidden" id="descricao" value=" '{{ form.instance.descricao }}' - {{ form.instance.data_indice|date:'d/m/y' }}">
+    <input type="hidden" id="cad_ok" value="{{ cad_ok }}">
+
 {% else %}
 <form class="form-horizontal" name="form_cotacao" id="form_cotacao_create">
     {% csrf_token %}

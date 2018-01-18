@@ -1,10 +1,16 @@
 {% load static widget_tweaks %}
 {% if success %}
-   <script>
-  	 close_modal=true;
+  <script>
+     var close_form_cadgeral = true;
   	 id_cliente = {{ form.instance.pk }};
   	 nome_cliente = "{{ form.instance.razao }}";
-   </script>
+  	 ok = '{{ ok }}';
+  </script>
+
+    <input type="hidden" id="id_cliente" value="{{ form.instance.pk }}">
+    <input type="hidden" id="nome_cliente" value="{{ form.instance.razao }}">
+    <input type="hidden" id="cad_ok" value="{{ cad_ok }}">
+
 {% else %}
  <div class="block">
     <div class="block-header ribbon ribbon-success ribbon-left">
@@ -14,7 +20,6 @@
                 <i class="fa fa-close"></i>
             </button>
         </div>
-
     </div>
     <ul class="nav nav-tabs nav-tabs-alt" data-toggle="tabs" role="tablist">
         <li class="nav-item">
@@ -28,7 +33,7 @@
         </li>
     </ul>
 
-    <form method="post" class="form_company" id="form_create">
+    <form method="post" class="form_company" id="form_cadgeral">
              {% csrf_token %}
                 {% for error in form.non_field_errors %}
                 <div class="alert-danger alert">

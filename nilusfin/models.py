@@ -78,6 +78,10 @@ class Cotacao(models.Model):
     class Meta:
         verbose_name = 'Cotacao'
         verbose_name_plural = 'Cotações'
+        unique_together = [
+            ('indice', 'data_indice')
+        ]
+
 
 
     def __str__(self):

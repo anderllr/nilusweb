@@ -40,8 +40,8 @@
                             {% endfor %}
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="form-material form-material-success floating">
+                    <div class="col-md-6">
+                        <div class="form-material form-material-danger floating">
                             {% render_field  form.valor_text class='form-control money2' %}
                             <label for="{{  form.valor_text.id }}">Valor Despesa</label>
                             {% for error in form.valor_text.errors %}

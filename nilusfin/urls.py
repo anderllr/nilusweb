@@ -17,6 +17,7 @@ urlpatterns = [
     url(r'^insere_indice/$', views.create_indice, name='create_indice'),
     url(r'^insere_indice/(?P<pk>\d+)/$', views.edit_indice, name='edit_indice'),
     url(r'^indice/(?P<pk>\d+)/apagar/$', views.delete_indice, name='delete_indice'),
+    url(r'^insere_indice_lancto/$', views.create_indice_lancto, name='create_indice_lancto'),
 
     # Cotações
     url(r'^insere_cotacao/$', views.create_cotacao_create_indice, name='create_cotacao_create_indice'),
