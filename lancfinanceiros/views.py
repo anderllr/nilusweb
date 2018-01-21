@@ -1,5 +1,5 @@
 from datetime import date, timedelta, datetime
-import decimal
+from decimal import Decimal
 from django.utils import timezone
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -187,7 +187,8 @@ class CreateReceita(LoginRequiredMixin,CreateView):
         if form.cleaned_data.get('parcela',False):
             qtd = form.cleaned_data['qtd']
             valor_original = lancto.vlr_lancamento
-            valor_parcela = float(lancto.vlr_lancamento) / qtd
+            valor_parcela = Decimal(lancto.vlr_lancamento) / qtd
+            print(valor_parcela)
             lancto.vlr_lancamento = round(valor_parcela,2)
             lancto.valor_text = str(lancto.vlr_lancamento).replace('.',',')
 
@@ -413,7 +414,7 @@ class CreateDespesa(LoginRequiredMixin,CreateView):
         if form.cleaned_data.get('parcela',False):
             qtd = form.cleaned_data['qtd']
             valor_original = lancto.vlr_lancamento
-            valor_parcela = float(lancto.vlr_lancamento) / qtd
+            valor_parcela = Decimal(lancto.vlr_lancamento) / qtd
             lancto.vlr_lancamento = round(valor_parcela,2)
             lancto.valor_text = str(lancto.vlr_lancamento).replace('.',',')
 

@@ -71,7 +71,7 @@ class Cotacao(models.Model):
 
     data_indice = models.DateField('Data',null=True,blank=True)
     valor_cotacao = models.DecimalField('Valor',null=True,blank=True,decimal_places=4,max_digits=13)
-    user_cad = models.ForeignKey('accounts.User', verbose_name='Usuario Criação')
+    user_cad = models.ForeignKey('accounts.User', verbose_name='Usuario Criação',null=True,blank=True)
 
     cotacao_padrao = models.BooleanField('Cotação Padrão',default=False)
 

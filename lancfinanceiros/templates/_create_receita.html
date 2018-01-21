@@ -148,6 +148,9 @@
                                 {% for error in form.indice.errors %}
                                 <small class="form-control-feedback"> {{ error }} </small>
                                 {% endfor %}
+                                <span class="input-group-btn">
+                                    <button type="button" title="Novo Indice" class="btn btn-primary new_indice"><i class="fa fa-plus"></i> </button>
+                                </span>
                             </div>
                        </div>
                        <div class="col-md-6">
@@ -157,6 +160,9 @@
                                 {% for error in form.cotacao.errors %}
                                 <small class="form-control-feedback"> {{ error }} </small>
                                 {% endfor %}
+                                <span class="input-group-btn">
+                                    <button type="button" title="Nova Cotação" class="btn btn-primary new_cotacao"><i class="fa fa-plus"></i> </button>
+                                </span>
                             </div>
                        </div>
                 </div>

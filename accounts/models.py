@@ -10,6 +10,7 @@ from django.conf import settings
 
 from nilusadm.models import Permissions,Sequenciais
 from principal.models import Instancia
+from nilusfin.models import Indice,Cotacao
 # Create your models here.
 
 
@@ -102,12 +103,29 @@ def post_save_user(instance,created,**kwargs):
             sequenciais.empresas = 0
             sequenciais.propriedades = 0
             sequenciais.cadgeral = 0
+            sequenciais.indice = 1
             sequenciais.save()
 
             # Insere Instancia.
             instancia = Instancia()
             instancia.user = instance
             instancia.save()
+
+            # Insere Indice Padrao
+            indice = Indice()
+            indice.num_indice = 1
+            indice.master_user = instance
+            indice.descricao = 'Real'
+            indice.simbolo = 'R$'
+            indice.indice_padrao = True
+            indice.save()
+
+            # Insere Cotação Padrao
+            cotacao = Cotacao()
+            cotacao.indice = Indice.objects.get(master_user=instance)
+            cotacao.valor_cotacao = 1.00
+            cotacao.cotacao_padrao = True
+            cotacao.save()
 
 
 

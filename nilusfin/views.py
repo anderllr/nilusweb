@@ -1,3 +1,4 @@
+
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.views.generic import CreateView,TemplateView,UpdateView,FormView
@@ -407,12 +408,6 @@ class CreateCotacao_grid_indice(LoginRequiredMixin,CreateView):
         kwargs['user'] = self.request.user
         return kwargs
 
-    def get_initial(self):
-        initial = super(CreateCotacao_grid_indice,self).get_initial()
-        initial['indice'] = 'Teste'
-        return initial
-
-
     model = Cotacao
     form_class = FormCreateCotacao
 
@@ -423,10 +418,11 @@ class CreateCotacao_grid_indice(LoginRequiredMixin,CreateView):
     def form_valid(self,form,**kwargs):
         cotacao = form.save(commit=False)
         cotacao.user_cad = self.request.user
+        indice_cot = cotacao.indice
         cotacao.save()
 
         if self.request.is_ajax():
-            context = self.get_context_data(form=form, success=True)
+            context = self.get_context_data(form=form, success=True,indice_cot=indice_cot,cad_ok='ok')
             return self.render_to_response(context)
         else:
             return redirect(self.get_success_url())

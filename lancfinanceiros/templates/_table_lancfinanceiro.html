@@ -1,7 +1,7 @@
         <table id="table_lanfinanceiro" class="table table-bordered table-striped table-vcenter js-dataTable-full" >
             <thead>
                 <tr>
-                    <th><small>Baixar</small></th>
+<!--                    <th class="hidden"><small>Baixar</small></th> -->
                     <th><small>Nº</small></th>
                     <th><small>Par</small></th>
                     <th><small>Cadastro/Descrição</small></th>
@@ -15,10 +15,10 @@
             </thead>
             <tbody>
             {% for lanc in lanctos %}
-                <tr>
+              <!--  <tr class="hidden">
                     <td style="width:2%">
                        <center><input class="baixa_lancamento"  name="lanc_baixa" value="{{ lanc.pk }}" type="checkbox"></center>
-                    </td>
+                    </td> -->
                     <td style="width:2%; heigth:10%;"><small>{{ lanc.num_lan }}</small></td>
                     <td style="width:5%; heigth:10%;"><small>{{ lanc.parcela }}</small></td>
                     <td style="width:25%; heigth:10%; "><small>{% if lanc.cadgeral == None %} Não Informado {% else %} {{lanc.cadgeral}} {% endif %}

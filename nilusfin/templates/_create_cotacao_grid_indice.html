@@ -5,9 +5,12 @@
 
    </script>
 
-    <input type="hidden" id="id_cotacao" value="{{ form.instance.pk }}">
-    <input type="hidden" id="descricao" value=" '{{ form.instance.descricao }}' - {{ form.instance.data_indice|date:'d/m/y' }}">
+    <input type="hidden" id="id_cotacao_form" value="{{ form.instance.pk }}">
+    <input type="hidden" id="descricao" value=" {{ form.instance.valor_cotacao }} - {{ form.instance.data_indice|date:'d/m/y' }}">
     <input type="hidden" id="cad_ok" value="{{ cad_ok }}">
+    <input type="hidden" id="indice_cot" value="{{ indice_cot }}">
+    <input type="hidden" id="indice_cot_pk" value="{{ indice_cot.pk }}">
+
 
 {% else %}
 <form class="form-horizontal" name="form_cotacao" id="form_cotacao_create">

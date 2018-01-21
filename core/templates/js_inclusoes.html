@@ -41,6 +41,10 @@ $("#modal-cadgeral .block-content").on("submit","form",function(e){
 	 	    }
 	 	    else{
 	 	        $('#modal-cadgeral').modal("show");
+                {% include 'js_floating_labels.html' %}
+                {% include 'js_tabs.html' %}
+                {% include 'js_pesquisas_cnpj_cep.html' %}
+                {% include 'js_masks.html' %}
 	 	    }
 	 	 });
 	 });
@@ -97,6 +101,7 @@ $("#modal-conta .block-content").on("submit","form",function(e){
 	 	    }
 	 	    else{
 	 	       $('#modal-conta').modal("show");
+               {% include 'js_floating_labels.html' %}
 	 	    }
 	 	 });
 	 });
@@ -130,6 +135,7 @@ $("#modal-planofinan .block-content").on("submit","form",function(e){
         }
         else{
            $('#modal-planofinan').modal("show");
+           {% include 'js_floating_labels.html' %}
         }
      });
  });
@@ -162,6 +168,7 @@ $("#modal-ccusto .block-content").on("submit","form",function(e){
 		   $('#c_custo_id2').trigger('chosen:updated');        }
         else{
            $('#modal-ccusto').modal("show");
+           {% include 'js_floating_labels.html' %}
         }
      });
  });
@@ -193,8 +200,11 @@ $("#modal-indice .block-content").on("submit","form",function(e){
         if(cad_ok=='ok'){
            $('#modal-indice').modal("hide");
            $('#id_indice').append("<option value='" + id_indice + "'>"+ descricao + "</option>");
+           $('#id_cotacao').append("<option value='0'></option>");
 		   $('#id_indice').val(id_indice);
-		   $('#id_indice').trigger('chosen:updated');        }
+		   $('#id_indice').trigger('chosen:updated');
+           $('#id_cotacao').trigger('chosen:updated');
+        }
         else{
            $('#modal-indice').modal("show");
         }
@@ -211,6 +221,13 @@ $(".new_cotacao").on("click",function(e){
       $('.chosen-select').chosen({ width: '100%' });
       $("#modal-cotacao .cancel_form").hide();
       $("#modal-cotacao .titulo_form").hide();
+      {% include 'js_floating_labels.html' %}
+                    $(".js-datepicker").datepicker({
+                            todayBtn: true,
+                            language: "pt-BR",
+                            autoclose: true,
+                            todayHighlight: true
+                    });
 
       {% include 'js_floating_labels.html' %}
     });
@@ -222,17 +239,22 @@ $("#modal-cotacao .block-content").on("submit","form",function(e){
      var dados = $(this).serialize();
      $.post("{% url 'create_cotacao_grid_indice' %}",dados,function(result){
         $("#modal-indice .block-content").html(result);
-        if(close_form==true){
-           alert(id_cotacao);
-           alert(valor_cotacao);
-           alert(data_cotacao);
+            var cad_ok = $('#cad_ok').val();
+            var id_cotacao = $('#id_cotacao_form').val();
+            var descricao = $('#descricao').val();
+            var indice_cot = $('#indice_cot').val();
+            var indice_cot_pk = $('#indice_cot_pk').val();
+        if(cad_ok=='ok'){
            $('#modal-cotacao').modal("hide");
-           $('#id_cotacao').append("<option value='" + id_cotacao + "'>"+ valor_cotacao + ' - ' + data_cotacao + "</option>");
-		   $('#id_cotacao').val(id_indice);
+           $('#id_cotacao').append("<option value='" + id_cotacao + "'>"+ descricao + "</option>");
+           $('#id_indice').append("<option value='" + indice_cot_pk + "'>"+ indice_cot + "</option>");
+		   $('#id_cotacao').val(id_cotacao);
+           $('#id_indice').val(indice_cot_pk);
 		   $('#id_cotacao').trigger('chosen:updated');
+           $('#id_indice').trigger('chosen:updated');
         }
         else{
-           $('#modal-indice').modal("show");
+           $('#modal-cotacao').modal("show");
         }
      });
  });
