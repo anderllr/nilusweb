@@ -22,9 +22,10 @@ class Lancamentos(models.Model):
     c_custo = models.ForeignKey('niluscad.Ccusto',verbose_name='Centro de Custo')
     vlr_lancamento = models.DecimalField('Valor do Lançamento',max_digits=13,decimal_places=2,blank=True,null=True)
     valor_text = models.CharField(verbose_name='Valor',  max_length=20)
-    valor_original = models.DecimalField('Saldo', max_digits=13,decimal_places=2,blank=True,null=True)
-    descricao = models.CharField(verbose_name='Observação', max_length=70,null=True)
+    saldo = models.DecimalField('Saldo', max_digits=13,decimal_places=2,blank=True,null=True)
+    descricao = models.CharField(verbose_name='Observação', max_length=70,null=True,blank=True)
     titulo = models.BooleanField('É Titulo', default=False)
+
 
     #Dados Cotação/Indice
     indice = models.ForeignKey('nilusfin.Indice',null=True,blank=True)
@@ -38,8 +39,8 @@ class Lancamentos(models.Model):
 
     # Dados Baixa e Situação
     tipoLancto_Choices = (
-        ('R', 'Recebimento'),
-        ('P', 'Pagamento'),
+        ('R', 'Receita'),
+        ('D', 'Despesa'),
     )
 
     tipo_lancamento = models.CharField('Tipo', max_length=1, choices=tipoLancto_Choices)
@@ -59,15 +60,37 @@ class Lancamentos(models.Model):
             parcelas.update(
                 plr_financeiro=self.plr_financeiro,c_custo=self.c_custo,valor_text=self.valor_text,
                 vlr_lancamento = self.vlr_lancamento,indice=self.indice,cotacao=self.cotacao,
-                descricao=self.descricao,valor_original=self.valor_original
+                descricao=self.descricao,saldo=self.saldo
             )
+            for p in parcelas:
+                movto_lanc = Movtos_lancamentos.objects.get(lancamento=p, tipo_movto='C')
+                movto_lanc.vlr_movimento = p.vlr_lancamento
+                movto_lanc.save()
+
         else:
             parcelas = Lancamentos.objects.filter(lancamento_pai = self)
             parcelas.update(
                 plr_financeiro=self.plr_financeiro, c_custo=self.c_custo,valor_text=self.valor_text,
                 vlr_lancamento=self.vlr_lancamento, indice=self.indice, cotacao=self.cotacao,
-                descricao=self.descricao,valor_original=self.valor_original
+                descricao=self.descricao,saldo=self.saldo
             )
+            for p in parcelas:
+                movto_lanc = Movtos_lancamentos.objects.get(lancamento=p, tipo_movto='C')
+                movto_lanc.vlr_movimento = p.vlr_lancamento
+                movto_lanc.save()
+
+    def baixa_lancamento(self):
+
+        movto_lanc = Movtos_lancamentos()
+        movto_lanc.lancamento = self
+        movto_lanc.dt_movimento = self.data_baixa
+        movto_lanc.vlr_movimento = self.vlr_lancamento
+        movto_lanc.desc_movimento = 'Baixa'
+        movto_lanc.tipo_movto = 'B'
+        movto_lanc.save()
+
+
+
 
     class Meta:
         verbose_name = 'Lançamento'
@@ -77,4 +100,32 @@ class Lancamentos(models.Model):
         ]
 
     def __str__(self):
-        return self.valor_text
+         return str(int((self.pk)))
+
+
+
+class Movtos_lancamentos(models.Model):
+
+    lancamento = models.ForeignKey('lancfinanceiros.Lancamentos',models.CASCADE,verbose_name='lancamento')
+    dt_movimento = models.DateTimeField('Data Movimento')
+    vlr_movimento = models.DecimalField('Valor do Lançamento', max_digits=13, decimal_places=2, blank=True, null=True)
+    desc_movimento = models.CharField(verbose_name='Observação', max_length=70,null=True)
+
+    tipoMovto_Choices = (
+        ('C', 'Criação'),
+        ('B', 'Baixa'),
+        ('D', 'Desconto'),
+        ('J', 'Juros'),
+        ('M', 'Multa')
+    )
+    tipo_movto = models.CharField('Tipo', max_length=1, choices=tipoMovto_Choices)
+
+
+    class Meta:
+        verbose_name = 'Movimentos'
+        verbose_name_plural = 'Movimentos'
+
+    # def __str__(self):
+    #     return self.desc_movimento
+
+

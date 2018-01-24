@@ -1,0 +1,271 @@
+{% extends "menu.html" %}
+{% load static widget_tweaks humanize %}
+
+
+
+<!-- Bread crumb and right sidebar toggle -->
+{% block title %} Baixar Lançamentos Financeiros {% endblock %}
+
+{% block page_body %}
+
+<div class="block">
+    <div class="block-content block-content-full ribbon ribbon-left ribbon-bookmark ribbon-info">
+        <a  class="btn  btn-outline-secondary  mr-5 mb-5 pull-right"   data-toggle="tooltip" data-placement="bottom" title="Voltar para incluir/editar lançamentos"
+         href="{% url 'lancfin_list' %}">
+            <i class="fa fa-reply"></i> Lançamentos
+       </a>
+        <button class="btn btn-outline-info mr-5 mb-5 baixa pull-right"
+                data-placement="bottom" title="Pagar / Receber Lancamentos Selecionados"
+                 id="btn_baixa_total"><i class="fa fa-check-circle"></i> Baixar Lanc. Selecionados</button>
+       <button type="button"  class="btn  btn-outline-primary  mr-5 mb-5" id="mostrar_filtros"   data-toggle="tooltip" data-placement="bottom" title="Exibir filtros de pesquisa">
+           <i class="fa fa-filter"></i> Buscar por...
+       </button>
+
+       <div class="ribbon-box form_busca" style="display:none;">
+            Filtros de Pesquisa
+        </div>
+
+        <br>
+        <br>
+        <div class="form_busca" style="display:none;">
+            <form>
+                <div class="filtros_extras">
+                    <div class="row">
+
+                        <div class="col-lg-4">
+                                <label for="id_data_lanc_ini">Data Lançamento</label>
+                                <div class="input-daterange input-group js-datepicker-enabled" data-date-format="dd/mm/yyyy" data-week-start="1" data-autoclose="true" data-today-highlight="true">
+                                    {% render_field form.data_lanc_ini class="form-control js-datepicker"   placeholder="de" data-week-start="1" data-autoclose="true" data-today-highlight="true"%}
+                                    <span class="input-group-addon font-w600">  &nbsp; até  &nbsp; </span>
+                                    {% render_field form.data_lanc_fim class="form-control js-datepicker"   placeholder="até" data-week-start="1" data-autoclose="true" data-today-highlight="true"%}
+                                </div>
+                            </div>
+
+                        <div class="col-lg-4">
+                                <label for="id_data_venc_ini">Data Vencimento</label>
+                                <div class="input-daterange input-group js-datepicker-enabled" data-date-format="dd/mm/yyyy" data-week-start="1" data-autoclose="true" data-today-highlight="true">
+                                    {% render_field form.data_venc_ini class="form-control js-datepicker"   placeholder="de" data-week-start="1" data-autoclose="true" data-today-highlight="true"%}
+                                    <span class="input-group-addon font-w600"> &nbsp; até  &nbsp; </span>
+                                    {% render_field form.data_venc_fim class="form-control js-datepicker"   placeholder="até" data-week-start="1" data-autoclose="true" data-today-highlight="true"%}
+                                </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="form-material input-group">
+                                <label>{{ form.tipo_lancamento.label_tag }}</label>
+                                {% render_field form.tipo_lancamento class="chosen-select" %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-material input-group">
+                                <label>{{ form.cadgeral.label_tag }}</label>
+                                {% render_field form.cadgeral class="chosen-select" %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-material input-group">
+                                <label>{{ form.plano_finan.label_tag }}</label>
+                                {% render_field form.plano_finan class="chosen-select" %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-material input-group">
+                                <label>{{ form.c_custo.label_tag }}</label>
+                                {% render_field form.c_custo class="chosen-select" %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-material input-group">
+                                <label>{{ form.conta_finan.label_tag }}</label>
+                                {% render_field form.conta_finan class="chosen-select" %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                  <button type="submit"  class="btn  btn-outline-primary mr-5 mb-5 form_pesquisa"   data-toggle="tooltip" data-placement="bottom" title="Pesquisar lançamentos de acordo com os filtros">
+                        <i class="fa fa-search"></i> Pesquisar
+                  </button>
+                  <button type="button"  class="btn  btn-outline-danger  mr-5 mb-5 limpa_filtro_pesquisa"   data-toggle="tooltip" data-placement="bottom" title="Remover filtros e exibir todos os lançamentos">
+                        <i class="fa fa-search-minus"></i> Limpar filtros
+                  </button>
+
+            </form>
+        </div>
+
+
+        <div>
+            <div class="row">
+                <div class="form_inc col-md-12">
+                </div>
+                <div class="form_inc_despesa col-md-12">
+                </div>
+            </div>
+            <div class="row">
+                <div class="form_edit col-md-12"></div>
+            </div>
+        </div>
+
+        </div>
+
+
+
+        <div class="row table table_lancfinanceiro">
+         <form method="post" action="" id="form_baixa_lancamento">
+             <div>
+                <input type="hidden"  name="data_baixa" id="data_baixa">
+                <input type="hidden"  name="conta_financeira" id="conta_financeira">
+
+             </div>
+
+             {% csrf_token %}
+             {% include '_table_baixa_lanctos.html' %}
+         </form>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-databaixa" tabindex="-1" role="dialog" aria-labelledby="modal-slideright" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-slideright " role="document">
+        <div class="modal-content">
+            <div class="block block-themed block-transparent mb-0">
+                <div class="block-header bg-primary-dark">
+                    <h3 class="block-title titulo_modal">Baixa total de lançamentos</h3>
+                    <div class="block-options">
+                        <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+                            <i class="si si-close"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="block-content">
+                    <div class="form-material input-group">
+                      <label>Data da Baixa</label>
+                      <input  type="text" name="data_baixa_modal" id="data_baixa_modal" class="js-datepicker form-control" data-week-start="1" data-autoclose="true" data-today-highlight="true" data-date-format="dd/mm/yyyy" placeholder="dd/mm/aaaa">
+                    </div>
+                    <div class="form-material input-group">
+                        <label class="css-control css-control-sm css-control-primary css-switch">
+                                <input type="checkbox" class='css-control-input' id="permite_alterar_conta">
+                                <span class="css-control-indicator"></span> Alterar conta financeira dos lançamentos ?
+                         </label>
+                    </div>
+                    <div class="modal-data-baixa" style="display:none;">
+                        <div class="form-material input-group">
+                        <label>{{ form_baixa.conta_financeira.label_tag }}</label>
+                        {% render_field form_baixa.conta_financeira class="chosen-select" %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-alt-primary" id="confirma_baixa" data-dismiss="modal">OK</button>
+                <button type="button" class="btn btn-alt-secondary" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+
+{% block javascript %}
+
+
+
+
+$('.chosen-select').chosen({ width: '100%' });
+
+
+$("#mostrar_filtros").on("click",function(e){
+  $(this).hide();
+  $('.form_busca').show();
+});
+
+
+var filtrou
+filtrou = '{{ filtrou }}';
+
+if(filtrou == 'ok'){
+  $('#mostrar_filtros').hide();
+  $('.form_busca').show();
+}
+
+
+$(".limpa_filtro_pesquisa").on("click",function(e){
+   window.location="{% url 'baixfin_list' %}"
+});
+
+
+
+
+
+
+table = $('#table_lanfinanceiro').DataTable({
+    "language": {
+     "lengthMenu": "Mostrando _MENU_ registros por página",
+     "search" : "Procurar: ",
+     "info" : "Exibindo de _START_ a _END_ de _TOTAL_ registros",
+     "infoEmpty": "Nenhum registro encontrado",
+     "infoFiltered": "(filtrado entre _MAX_ registros)",
+     "paginate" : {
+       "first":      "Primeiro",
+       "last":       "Último",
+       "next":       "Próximo",
+       "previous":   "Anterior"
+     },
+     responsive: {
+            details: {
+                type: 'column'
+            }
+        },
+        columnDefs: [ {
+            className: 'control',
+            orderable: false,
+            targets:   0
+        } ],
+        order: [ 1, 'asc' ]
+ }
+});
+
+$("#confirma_baixa").on("click",function(e){
+    var data = $('#data_baixa_modal').val();
+    $('#data_baixa').val(data);
+    var conta = $('#id_conta_financeira').val();
+    $('#conta_financeira').val(conta);
+    $('#form_baixa_lancamento').submit();
+
+});
+
+
+
+$("#btn_baixa_total").on("click",function(e){
+    if($('.baixa_lancamento').is(":checked")){
+        $('#modal-databaixa').modal("show");
+
+    }else{
+       swal('Atenção', 'Nenhum lançamento selecionado!', 'warning');
+    }
+
+
+});
+
+
+
+$("#modal-databaixa").on("change", "#permite_alterar_conta", function(e){
+            if ($(this).is(":checked")){
+                $(".modal-data-baixa").show();
+            }
+            else {
+                $(".modal-data-baixa").hide();
+            }
+         });
+
+
+
+{% endblock %}
+
+
+

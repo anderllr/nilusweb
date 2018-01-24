@@ -2,12 +2,12 @@
             <thead>
                 <tr>
 <!--                    <th class="hidden"><small>Baixar</small></th> -->
-                    <th><small>Nº</small></th>
-                    <th><small>Par</small></th>
+                    <th><small>Nº/Parc</small></th>
                     <th><small>Cadastro/Descrição</small></th>
                     <th><small>Lançamento</small></th>
                     <th><small>Vencimento</small></th>
                     <th><small>Valor</small></th>
+                    <th><small>Saldo</small></th>
                     <th><small>Tipo</small></th>
                     <th><small>Situação</small></th>
                     <th></th>
@@ -19,14 +19,17 @@
                     <td style="width:2%">
                        <center><input class="baixa_lancamento"  name="lanc_baixa" value="{{ lanc.pk }}" type="checkbox"></center>
                     </td> -->
-                    <td style="width:2%; heigth:10%;"><small>{{ lanc.num_lan }}</small></td>
-                    <td style="width:5%; heigth:10%;"><small>{{ lanc.parcela }}</small></td>
+                    <td style="width:2%; heigth:10%;"><small>{{ lanc.num_lan }}/{{ lanc.parcela }}</small></td>
                     <td style="width:25%; heigth:10%; "><small>{% if lanc.cadgeral == None %} Não Informado {% else %} {{lanc.cadgeral}} {% endif %}
                         / {{lanc.descricao}}</small></td>
                     <td style="width:3%; heigth:10%;"><small>{{ lanc.dt_lancamento|date:'d/m/Y' }}</small></td>
                     <td style="width:3%; heigth:10%;"><small>{{ lanc.dt_vencimento|date:'d/m/Y'  }}</small></td>
                     <td style="width:2%; heigth:10%;">{% if lanc.tipo_lancamento == 'R' %}<h6 class="text-success">{{ lanc.vlr_lancamento }}</h6>
                                           {% else %}   <h6 class="text-danger">{{ lanc.vlr_lancamento }}</h6>
+                                          {% endif %}
+                    </td>
+                    <td style="width:2%; heigth:10%;">{% if lanc.tipo_lancamento == 'R' %}<h5 class="text-success">{{ lanc.saldo }}</h5>
+                                          {% else %}   <h5 class="text-danger">{{ lanc.saldo }}</h5>
                                           {% endif %}
                     </td>
 

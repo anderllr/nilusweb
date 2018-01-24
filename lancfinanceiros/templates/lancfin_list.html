@@ -79,11 +79,11 @@
                         <i class="fa fa-search"></i> Pesquisar
                   </button>
                   <button type="button"  class="btn  btn-outline-danger  mr-5 mb-5 limpa_filtro_pesquisa"   data-toggle="tooltip" data-placement="bottom" title="Remover filtros e exibir todos os lançamentos">
-                        <i class="fa fa-reply"></i> Limpar filtros
+                        <i class="fa fa-search-minus"></i> Limpar filtros
                   </button>
                   <button class="btn btn-outline-primary mr-5 mb-5 new_receita btn_lancamentos" style="width:18%;"><i class="fa fa-arrow-up"><i class="fa fa-dollar"></i></i> Nova Receita</button>
                   <button class="btn btn-outline-danger mr-5 mb-5  new_despesa btn_lancamentos" style="width:18%;"><i class="fa fa-arrow-down"><i class="fa fa-dollar"></i></i> Nova Despesa</button>
-<!--                    <button type="hidden" class="btn btn-outline-info mr-5 mb-5 baixa btn_lancamentos"  data-placement="bottom" title="Pagar / Receber Lancamentos Selecionados" data-toggle="modal" data-target="#modal-databaixa"><i class="fa fa-check-circle"></i> Baixar Lanc. Selecionados</button> -->
+                  <a class="btn btn-outline-info mr-5 mb-5 btn_lancamentos pull-right" href="{% url 'baixfin_list' %}"  data-placement="bottom" title="Pagar / Receber Lancamentos"><i class="fa fa-check-circle"></i> Baixar Lançamentos</a>
             </form>
 
 
@@ -706,6 +706,22 @@ $(".table_lancfinanceiro").on("click", ".edit_lancto",function(e){
 
 
 
+
+        $('#id_situacao').click(function() {
+            if($(this).is(':checked'))
+                var marcado = true;
+
+            else{
+                   if(confirm("Ao desmarcar este status, todas as baixas deste lançamento serão excluidas, deseja continuar?")){
+                    $(this).prop("checked", false);
+                   }
+                   else{
+                       $(this).prop("checked", true);
+                   }
+            }
+        });
+
+
           $(".form_edit .cancel_form").on("click",function(e){
               $('.form_edit').hide("drop");
               $('.form_busca').show("puff");
@@ -727,6 +743,8 @@ $(".form_edit").on("submit","form",function(e){
 			}
          }
 
+
+
 	 	 var dados = $(this).serialize();
 	 	 $.post($(this).attr('action'),dados,function(result){
 	 	    $(".form_edit").html(result);
@@ -743,11 +761,6 @@ $("#confirma_baixa").on("click",function(e){
     $('#form_baixa_lancamento').submit();
 
 });
-
-
-
-
-
 
 
 $(".delete_lancto").on("click", function(e){

@@ -6,7 +6,7 @@ from nilusfin.models import Contafinanceira
 from principal.models import Instancia
 from nilusfin.models import Indice,Cotacao
 from recebiveis.models import Recebiveis
-from lancfinanceiros.models import Lancamentos
+from lancfinanceiros.models import Lancamentos,Movtos_lancamentos
 
 
 # Register your models here.
@@ -26,3 +26,4 @@ admin.site.register(Recebiveis)
 admin.site.register(Talhao)
 admin.site.register(Lancamentos)
 admin.site.register(Contafinanceira)
+admin.site.register(Movtos_lancamentos)

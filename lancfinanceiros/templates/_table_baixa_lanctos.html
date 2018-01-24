@@ -1,0 +1,56 @@
+        <table id="table_lanfinanceiro" class="table table-bordered table-striped table-vcenter js-dataTable-full" >
+            <thead>
+                <tr>
+                    <th>Baixa total</th>
+                    <th><small>Nº/P</small></th>
+                    <th><small>Cadastro/Descrição</small></th>
+                    <th><small>Lançamento</small></th>
+                    <th><small>Vencimento</small></th>
+                    <th><small>Valor</small></th>
+                    <th><small>Saldo</small></th>
+                    <th><small>Tipo</small></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for lanc in lanctos %}
+                <tr>
+                    <td style="width:11%; heigth:10%;">
+                        <label class="custom-control custom-checkbox baixa_lancamento">
+                                                <input type="checkbox" class="custom-control-input baixa_lancamento" name="lanc_baixa" value="{{ lanc.pk }}">
+                                                <span class="custom-control-indicator"></span>
+                                                <span class="custom-control-description">Baixar</span>
+                        </label>
+                    <!--<center><input class="baixa_lancamento"  name="lanc_baixa" value="{{ lanc.pk }}" type="checkbox"></center>-->
+                    </td>
+                    <td style="width:1%; heigth:10%;"><small>{{ lanc.num_lan }}/{{ lanc.parcela }}</small></td>
+                    <td style="width:15%; heigth:10%; "><small>{% if lanc.cadgeral == None %} Não Informado {% else %} {{lanc.cadgeral}} {% endif %}
+                        / {{lanc.descricao}}</small></td>
+                    <td style="width:3%; heigth:10%;"><small>{{ lanc.dt_lancamento|date:'d/m/Y' }}</small></td>
+                    <td style="width:3%; heigth:10%;"><small>{{ lanc.dt_vencimento|date:'d/m/Y'  }}</small></td>
+                    <td style="width:2%; heigth:10%;">{% if lanc.tipo_lancamento == 'R' %}<h6 class="text-success">{{ lanc.vlr_lancamento }}</h6>
+                                          {% else %}   <h6 class="text-danger">{{ lanc.vlr_lancamento }}</h6>
+                                          {% endif %}
+                    </td>
+                    <td style="width:2%; heigth:10%;">{% if lanc.tipo_lancamento == 'R' %}<h5 class="text-success">{{ lanc.saldo }}</h5>
+                                          {% else %}   <h5 class="text-danger">{{ lanc.saldo }}</h5>
+                                          {% endif %}
+                    </td>
+
+                    <td style="width:2%; heigth:10%;">{% if lanc.tipo_lancamento == 'R' %} <span class="badge badge-success" text="Receita">R</span>
+                                          {% else %} <span class="badge badge-danger" text="Despesa">D</span>
+                                          {% endif %}
+                    </td>
+
+                    <td style="width:5%">
+                        <button type="button" class="btn btn-sm btn-outline-secondary baix_parcial"  href="#" data-toggle="tooltip" data-placement="bottom" title="Realizar baixa parcial do valor">
+                            <i class="si si-calculator"></i> Baixa Parcial
+                        </button>
+
+
+                    </td>
+                </tr>
+
+            {% endfor %}
+            </tbody>
+        </table>

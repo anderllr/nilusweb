@@ -1,4 +1,5 @@
 from datetime import date, timedelta, datetime
+from datetime import date, timedelta, datetime
 from decimal import Decimal
 from django.utils import timezone
 from django.shortcuts import render,redirect,get_object_or_404
@@ -9,12 +10,12 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.urlresolvers import reverse_lazy
 from core.utils import add_one_month
 from django.http import HttpResponse,Http404
-from .forms import FormCreateReceita,FormEditReceita,FiltroLancamentosForm,FormCreateDespesa,FormEditDespesa,FormBaixaLancamento
+from .forms import FormCreateReceita,FormEditReceita,FiltroLancamentosForm,FormCreateDespesa,FormEditDespesa,FormBaixaLancamento,FiltroLancamentosbaixa
 from accounts.models import User
 from nilusadm.models import Sequenciais
 from nilusfin.models import Indice,Cotacao
 from principal.models import Instancia
-from lancfinanceiros.models import Lancamentos
+from lancfinanceiros.models import Lancamentos,Movtos_lancamentos
 from niluscad.models import Company,Propriety,Cadgeral,PlanoFinan,Ccusto
 from nilusfin.models import Contafinanceira
 # Create your views here.
@@ -31,12 +32,6 @@ def lancfin_list(request):
         template_name = 'lancfin_list.html'
 
 
-    form_baixa = FormBaixaLancamento(request.POST or None)
-    if form_baixa.is_valid():
-        lancto = form_baixa.cleaned_data['lanc_baixa']
-        data_baixa = form_baixa.cleaned_data['data_baixa']
-
-        lancto.update(situacao=True,data_baixa=data_baixa)
 
 
     if request.user.is_masteruser is True:
@@ -159,10 +154,6 @@ class CreateReceita(LoginRequiredMixin,CreateView):
         if lancto.dt_vencimento is None:
             lancto.dt_vencimento = datetime.now()
 
-        if lancto.situacao is True:
-            lancto.data_baixa = datetime.now()
-        else:
-            lancto.data_baixa is None
 
         lancto.vlr_lancamento = lancto.valor_text.replace('R$','').replace('.','').replace(',','.')
         lancto.num_lan = seq_lanc.lanc_financeiros + 1
@@ -171,28 +162,55 @@ class CreateReceita(LoginRequiredMixin,CreateView):
         seq_lanc.lanc_financeiros = lancto.num_lan
         seq_lanc.save()
 
-        if lancto.indice is None :
-            indice_padrao = Indice.objects.get(master_user=self.request.user.user_master,indice_padrao=True)
-            cotacao_padrao = Cotacao.objects.get(indice=indice_padrao,cotacao_padrao=True)
+        if lancto.indice is None:
+            indice_padrao = Indice.objects.get(master_user=self.request.user.user_master, indice_padrao=True)
+            cotacao_padrao = Cotacao.objects.get(indice=indice_padrao, cotacao_padrao=True)
             lancto.indice = indice_padrao
             lancto.cotacao = cotacao_padrao
-            lancto.valor_original = lancto.vlr_lancamento
+            lancto.saldo = lancto.vlr_lancamento
         else:
-            lancto.valor_original = lancto.vlr_lancamento
             cotacao = lancto.cotacao
-            valor_lancamento = lancto.valor_original
-            conta = float(valor_lancamento) * float(cotacao.valor_cotacao)
+            valor_lancamento = lancto.vlr_lancamento
+            conta = Decimal(valor_lancamento) * Decimal(cotacao.valor_cotacao)
             lancto.vlr_lancamento = conta
+            lancto.valor_text = str(round(lancto.vlr_lancamento,2)).replace('.',',')
+            lancto.saldo = lancto.vlr_lancamento
+
 
         if form.cleaned_data.get('parcela',False):
             qtd = form.cleaned_data['qtd']
-            valor_original = lancto.vlr_lancamento
             valor_parcela = Decimal(lancto.vlr_lancamento) / qtd
-            print(valor_parcela)
             lancto.vlr_lancamento = round(valor_parcela,2)
             lancto.valor_text = str(lancto.vlr_lancamento).replace('.',',')
+            lancto.saldo =  lancto.vlr_lancamento
+
+        if lancto.situacao is True:
+            lancto.data_baixa = datetime.now()
+            lancto.saldo = 0
+        else:
+            lancto.data_baixa is None
+
 
         lancto.save()
+
+        if lancto.situacao is True:
+            movto_lanc = Movtos_lancamentos()
+            movto_lanc.lancamento = lancto
+            movto_lanc.dt_movimento = lancto.dt_lancamento
+            movto_lanc.vlr_movimento = lancto.vlr_lancamento
+            movto_lanc.desc_movimento = 'Recebido'
+            movto_lanc.tipo_movto = 'B'
+            movto_lanc.save()
+
+
+        # Processo de criação da movimentação do lancamento
+        movto_lanc = Movtos_lancamentos()
+        movto_lanc.lancamento = lancto
+        movto_lanc.dt_movimento = lancto.dt_lancamento
+        movto_lanc.vlr_movimento = lancto.vlr_lancamento
+        movto_lanc.desc_movimento = 'Inclusão de receita'
+        movto_lanc.tipo_movto = 'C'
+        movto_lanc.save()
 
         id_lancto = lancto.pk
 
@@ -208,8 +226,26 @@ class CreateReceita(LoginRequiredMixin,CreateView):
                     lancto.dt_vencimento = add_one_month(lancto.dt_vencimento)
                 else:
                     lancto.dt_vencimento = lancto.dt_vencimento + timedelta(days=dias_vencto)
+
                 lancto.save()
 
+                if lancto.situacao is True:
+                    movto_lanc = Movtos_lancamentos()
+                    movto_lanc.lancamento = lancto
+                    movto_lanc.dt_movimento = lancto.dt_lancamento
+                    movto_lanc.vlr_movimento = lancto.vlr_lancamento
+                    movto_lanc.desc_movimento = 'Recebido'
+                    movto_lanc.tipo_movto = 'B'
+                    movto_lanc.save()
+
+
+                movto_lanc = Movtos_lancamentos()
+                movto_lanc.lancamento = lancto
+                movto_lanc.dt_movimento = lancto.dt_lancamento
+                movto_lanc.vlr_movimento = lancto.vlr_lancamento
+                movto_lanc.desc_movimento = 'Inclusão de receita'
+                movto_lanc.tipo_movto = 'C'
+                movto_lanc.save()
 
         if form.cleaned_data.get('repetir',False):
             qtd = form.cleaned_data['qtd_repetir']
@@ -222,7 +258,26 @@ class CreateReceita(LoginRequiredMixin,CreateView):
                     lancto.dt_vencimento = add_one_month(lancto.dt_vencimento)
                     lancto.lancamento_pai_id = id_lancto
                     seq_lanc.save()
+
                     lancto.save()
+
+                    if lancto.situacao is True:
+                        movto_lanc = Movtos_lancamentos()
+                        movto_lanc.lancamento = lancto
+                        movto_lanc.dt_movimento = lancto.dt_lancamento
+                        movto_lanc.vlr_movimento = lancto.vlr_lancamento
+                        movto_lanc.desc_movimento = 'Recebido'
+                        movto_lanc.tipo_movto = 'B'
+                        movto_lanc.save()
+
+                    movto_lanc = Movtos_lancamentos()
+                    movto_lanc.lancamento = lancto
+                    movto_lanc.dt_movimento = lancto.dt_lancamento
+                    movto_lanc.vlr_movimento = lancto.vlr_lancamento
+                    movto_lanc.desc_movimento = 'Inclusão de receita'
+                    movto_lanc.tipo_movto = 'C'
+                    movto_lanc.save()
+
             if tipo_rept == 'S':
                 for i in range(qtd-1):
                     lancto.pk = None
@@ -230,8 +285,27 @@ class CreateReceita(LoginRequiredMixin,CreateView):
                     seq_lanc.lanc_financeiros = lancto.num_lan
                     lancto.dt_vencimento = lancto.dt_vencimento + timedelta(days=7)
                     lancto.lancamento_pai_id = id_lancto
-                    lancto.save()
                     seq_lanc.save()
+
+                    lancto.save()
+
+                    if lancto.situacao is True:
+                        movto_lanc = Movtos_lancamentos()
+                        movto_lanc.lancamento = lancto
+                        movto_lanc.dt_movimento = lancto.dt_lancamento
+                        movto_lanc.vlr_movimento = lancto.vlr_lancamento
+                        movto_lanc.desc_movimento = 'Recebido'
+                        movto_lanc.tipo_movto = 'B'
+                        movto_lanc.save()
+
+                    movto_lanc = Movtos_lancamentos()
+                    movto_lanc.lancamento = lancto
+                    movto_lanc.dt_movimento = lancto.dt_lancamento
+                    movto_lanc.vlr_movimento = lancto.vlr_lancamento
+                    movto_lanc.desc_movimento = 'Inclusão de receita'
+                    movto_lanc.tipo_movto = 'C'
+                    movto_lanc.save()
+
             if tipo_rept == 'D':
                 for i in range(qtd-1):
                     lancto.pk = None
@@ -239,24 +313,61 @@ class CreateReceita(LoginRequiredMixin,CreateView):
                     seq_lanc.lanc_financeiros = lancto.num_lan
                     lancto.dt_vencimento = lancto.dt_vencimento + timedelta(days=1)
                     lancto.lancamento_pai_id = id_lancto
-                    lancto.save()
                     seq_lanc.save()
+
+                    lancto.save()
+
+                    if lancto.situacao is True:
+                        movto_lanc = Movtos_lancamentos()
+                        movto_lanc.lancamento = lancto
+                        movto_lanc.dt_movimento = lancto.dt_lancamento
+                        movto_lanc.vlr_movimento = lancto.vlr_lancamento
+                        movto_lanc.desc_movimento = 'Recebido'
+                        movto_lanc.tipo_movto = 'B'
+                        movto_lanc.save()
+
+
+                    movto_lanc = Movtos_lancamentos()
+                    movto_lanc.lancamento = lancto
+                    movto_lanc.dt_movimento = lancto.dt_lancamento
+                    movto_lanc.vlr_movimento = lancto.vlr_lancamento
+                    movto_lanc.desc_movimento = 'Inclusão de receita'
+                    movto_lanc.tipo_movto = 'C'
+                    movto_lanc.save()
+
             if tipo_rept == 'Q':
                 for i in range(qtd-1):
                     lancto.pk = None
                     lancto.num_lan = seq_lanc.lanc_financeiros + 1
                     lancto.dt_vencimento = lancto.dt_vencimento + timedelta(days=15)
                     lancto.lancamento_pai_id = id_lancto
-                    lancto.save()
                     seq_lanc.save()
+
+                    lancto.save()
+
+                    if lancto.situacao is True:
+                        movto_lanc = Movtos_lancamentos()
+                        movto_lanc.lancamento = lancto
+                        movto_lanc.dt_movimento = lancto.dt_lancamento
+                        movto_lanc.vlr_movimento = lancto.vlr_lancamento
+                        movto_lanc.desc_movimento = 'Recebido'
+                        movto_lanc.tipo_movto = 'B'
+                        movto_lanc.save()
+
+
+                    movto_lanc = Movtos_lancamentos()
+                    movto_lanc.lancamento = lancto
+                    movto_lanc.dt_movimento = lancto.dt_lancamento
+                    movto_lanc.vlr_movimento = lancto.vlr_lancamento
+                    movto_lanc.desc_movimento = 'Inclusão de receita'
+                    movto_lanc.tipo_movto = 'C'
+                    movto_lanc.save()
 
         if self.request.is_ajax():
             context = self.get_context_data(form=form, success=True)
             return self.render_to_response(context)
         else:
             return redirect(self.get_success_url())
-
-
 
 class EditReceita(LoginRequiredMixin,UpdateView):
 
@@ -272,13 +383,14 @@ class EditReceita(LoginRequiredMixin,UpdateView):
         context['dados_titulo'] = Lancamentos.objects.get(pk=self.kwargs['pk'])
         return context
 
+
+
     def get_form_kwargs(self):
         kwargs = super(EditReceita, self).get_form_kwargs()
         kwargs['user'] = self.request.user
         return kwargs
 
     def get_success_url(self):
-
         return reverse_lazy('titrec_list')
 
 
@@ -291,26 +403,48 @@ class EditReceita(LoginRequiredMixin,UpdateView):
         lancto = form.save(commit=False)
         lancto.vlr_lancamento = lancto.valor_text.replace('R$','').replace('.','').replace(',','.')
 
-        if lancto.indice is None:
+        if lancto.indice is None and not lancto.situacao:
             indice_padrao = Indice.objects.get(master_user=self.request.user.user_master, indice_padrao=True)
             cotacao_padrao = Cotacao.objects.get(indice=indice_padrao, cotacao_padrao=True)
             lancto.indice = indice_padrao
             lancto.cotacao = cotacao_padrao
-            lancto.valor_original = lancto.vlr_lancamento
+            if not lancto.situacao:
+                lancto.saldo = lancto.vlr_lancamento
         else:
-            lancto.valor_original = lancto.vlr_lancamento
             cotacao = lancto.cotacao
-            valor_lancamento = lancto.valor_original
-            conta = float(valor_lancamento) * float(cotacao.valor_cotacao)
+            valor_lancamento = lancto.vlr_lancamento
+            conta = Decimal(valor_lancamento) * Decimal(cotacao.valor_cotacao)
             lancto.vlr_lancamento = conta
+            lancto.valor_text =str(round(lancto.vlr_lancamento,2)).replace('.',',')
+            if not lancto.situacao:
+                lancto.saldo = lancto.vlr_lancamento
 
         if lancto.situacao is True:
             lancto.data_baixa = datetime.now()
+            lancto.saldo = 0
+
+            movto_lanc = Movtos_lancamentos()
+            movto_lanc.lancamento = lancto
+            movto_lanc.dt_movimento = lancto.dt_lancamento
+            movto_lanc.vlr_movimento = lancto.vlr_lancamento
+            movto_lanc.desc_movimento = 'Recebido'
+            movto_lanc.tipo_movto = 'B'
+            movto_lanc.save()
+
         else:
             lancto.data_baixa is None
+            movto_lanc = Movtos_lancamentos.objects.filter(lancamento = lancto,tipo_movto='B')
+            movto_lanc.delete()
+
+
 
 
         lancto.save()
+
+        movto_lanc = Movtos_lancamentos.objects.get(lancamento=lancto, tipo_movto='C')
+        movto_lanc.vlr_movimento = lancto.vlr_lancamento
+        movto_lanc.save()
+
         confirma_parcela = self.request.POST.get('confirma_parcela','N')
         if confirma_parcela == 'S':
             lancto = form.instance
@@ -379,14 +513,8 @@ class CreateDespesa(LoginRequiredMixin,CreateView):
             lancto.master_user = self.request.user.user_master
             seq_lanc = Sequenciais.objects.get(user=self.request.user.user_master)
 
-
         if lancto.dt_vencimento is None:
             lancto.dt_vencimento = datetime.now()
-
-        if lancto.situacao is True:
-            lancto.data_baixa = datetime.now()
-        else:
-            lancto.data_baixa is None
 
         lancto.vlr_lancamento = lancto.valor_text.replace('R$','').replace('.','').replace(',','.')
         lancto.num_lan = seq_lanc.lanc_financeiros + 1
@@ -395,30 +523,59 @@ class CreateDespesa(LoginRequiredMixin,CreateView):
         seq_lanc.lanc_financeiros = lancto.num_lan
         seq_lanc.save()
 
-        if lancto.indice is None :
-            indice_padrao = Indice.objects.get(master_user=self.request.user.user_master,indice_padrao=True)
-            cotacao_padrao = Cotacao.objects.get(indice=indice_padrao,cotacao_padrao=True)
+
+        if lancto.indice is None:
+            indice_padrao = Indice.objects.get(master_user=self.request.user.user_master, indice_padrao=True)
+            cotacao_padrao = Cotacao.objects.get(indice=indice_padrao, cotacao_padrao=True)
             lancto.indice = indice_padrao
             lancto.cotacao = cotacao_padrao
-            lancto.valor_original = lancto.vlr_lancamento
+            lancto.saldo = lancto.vlr_lancamento
         else:
-            lancto.valor_original = lancto.vlr_lancamento
             cotacao = lancto.cotacao
-            valor_lancamento = lancto.valor_original
-            conta = float(valor_lancamento) * float(cotacao.valor_cotacao)
+            valor_lancamento = lancto.vlr_lancamento
+            conta = Decimal(valor_lancamento) * Decimal(cotacao.valor_cotacao)
             lancto.vlr_lancamento = conta
-
+            lancto.valor_text =str(round(lancto.vlr_lancamento,2)).replace('.',',')
+            lancto.saldo = lancto.vlr_lancamento
 
 
 
         if form.cleaned_data.get('parcela',False):
             qtd = form.cleaned_data['qtd']
-            valor_original = lancto.vlr_lancamento
+            saldo = lancto.vlr_lancamento
             valor_parcela = Decimal(lancto.vlr_lancamento) / qtd
             lancto.vlr_lancamento = round(valor_parcela,2)
             lancto.valor_text = str(lancto.vlr_lancamento).replace('.',',')
+            lancto.saldo = lancto.vlr_lancamento
+
+        if lancto.situacao is True:
+            lancto.data_baixa = datetime.now()
+            lancto.saldo = 0
+
+
+        else:
+            lancto.data_baixa is None
+
 
         lancto.save()
+
+        if lancto.situacao is True:
+            movto_lanc = Movtos_lancamentos()
+            movto_lanc.lancamento = lancto
+            movto_lanc.dt_movimento = lancto.dt_lancamento
+            movto_lanc.vlr_movimento = lancto.vlr_lancamento
+            movto_lanc.desc_movimento = 'Pago'
+            movto_lanc.tipo_movto = 'B'
+            movto_lanc.save()
+
+
+        movto_lanc = Movtos_lancamentos()
+        movto_lanc.lancamento = lancto
+        movto_lanc.dt_movimento = lancto.dt_lancamento
+        movto_lanc.vlr_movimento = lancto.vlr_lancamento
+        movto_lanc.desc_movimento = 'Inclusão de despesa'
+        movto_lanc.tipo_movto = 'C'
+        movto_lanc.save()
 
         id_lancto = lancto.pk
 
@@ -436,6 +593,23 @@ class CreateDespesa(LoginRequiredMixin,CreateView):
                     lancto.dt_vencimento = lancto.dt_vencimento + timedelta(days=dias_vencto)
                 lancto.save()
 
+                if lancto.situacao is True:
+                    movto_lanc = Movtos_lancamentos()
+                    movto_lanc.lancamento = lancto
+                    movto_lanc.dt_movimento = lancto.dt_lancamento
+                    movto_lanc.vlr_movimento = lancto.vlr_lancamento
+                    movto_lanc.desc_movimento = 'Pago'
+                    movto_lanc.tipo_movto = 'B'
+                    movto_lanc.save()
+
+                movto_lanc = Movtos_lancamentos()
+                movto_lanc.lancamento = lancto
+                movto_lanc.dt_movimento = lancto.dt_lancamento
+                movto_lanc.vlr_movimento = lancto.vlr_lancamento
+                movto_lanc.desc_movimento = 'Inclusão de despesa'
+                movto_lanc.tipo_movto = 'C'
+                movto_lanc.save()
+
 
         if form.cleaned_data.get('repetir',False):
             qtd = form.cleaned_data['qtd_repetir']
@@ -449,6 +623,24 @@ class CreateDespesa(LoginRequiredMixin,CreateView):
                     lancto.lancamento_pai_id = id_lancto
                     seq_lanc.save()
                     lancto.save()
+
+                    if lancto.situacao is True:
+                        movto_lanc = Movtos_lancamentos()
+                        movto_lanc.lancamento = lancto
+                        movto_lanc.dt_movimento = lancto.dt_lancamento
+                        movto_lanc.vlr_movimento = lancto.vlr_lancamento
+                        movto_lanc.desc_movimento = 'Pago'
+                        movto_lanc.tipo_movto = 'B'
+                        movto_lanc.save()
+
+                    movto_lanc = Movtos_lancamentos()
+                    movto_lanc.lancamento = lancto
+                    movto_lanc.dt_movimento = lancto.dt_lancamento
+                    movto_lanc.vlr_movimento = lancto.vlr_lancamento
+                    movto_lanc.desc_movimento = 'Inclusão de despesa'
+                    movto_lanc.tipo_movto = 'C'
+                    movto_lanc.save()
+
             if tipo_rept == 'S':
                 for i in range(qtd-1):
                     lancto.pk = None
@@ -458,6 +650,24 @@ class CreateDespesa(LoginRequiredMixin,CreateView):
                     lancto.lancamento_pai_id = id_lancto
                     lancto.save()
                     seq_lanc.save()
+
+                    if lancto.situacao is True:
+                        movto_lanc = Movtos_lancamentos()
+                        movto_lanc.lancamento = lancto
+                        movto_lanc.dt_movimento = lancto.dt_lancamento
+                        movto_lanc.vlr_movimento = lancto.vlr_lancamento
+                        movto_lanc.desc_movimento = 'Pago'
+                        movto_lanc.tipo_movto = 'B'
+                        movto_lanc.save()
+
+                    movto_lanc = Movtos_lancamentos()
+                    movto_lanc.lancamento = lancto
+                    movto_lanc.dt_movimento = lancto.dt_lancamento
+                    movto_lanc.vlr_movimento = lancto.vlr_lancamento
+                    movto_lanc.desc_movimento = 'Inclusão de despesa'
+                    movto_lanc.tipo_movto = 'C'
+                    movto_lanc.save()
+
             if tipo_rept == 'D':
                 for i in range(qtd-1):
                     lancto.pk = None
@@ -467,6 +677,24 @@ class CreateDespesa(LoginRequiredMixin,CreateView):
                     lancto.lancamento_pai_id = id_lancto
                     lancto.save()
                     seq_lanc.save()
+
+                    if lancto.situacao is True:
+                        movto_lanc = Movtos_lancamentos()
+                        movto_lanc.lancamento = lancto
+                        movto_lanc.dt_movimento = lancto.dt_lancamento
+                        movto_lanc.vlr_movimento = lancto.vlr_lancamento
+                        movto_lanc.desc_movimento = 'Pago'
+                        movto_lanc.tipo_movto = 'B'
+                        movto_lanc.save()
+
+                    movto_lanc = Movtos_lancamentos()
+                    movto_lanc.lancamento = lancto
+                    movto_lanc.dt_movimento = lancto.dt_lancamento
+                    movto_lanc.vlr_movimento = lancto.vlr_lancamento
+                    movto_lanc.desc_movimento = 'Inclusão de despesa'
+                    movto_lanc.tipo_movto = 'C'
+                    movto_lanc.save()
+
             if tipo_rept == 'Q':
                 for i in range(qtd-1):
                     lancto.pk = None
@@ -475,6 +703,23 @@ class CreateDespesa(LoginRequiredMixin,CreateView):
                     lancto.lancamento_pai_id = id_lancto
                     lancto.save()
                     seq_lanc.save()
+
+                    if lancto.situacao is True:
+                        movto_lanc = Movtos_lancamentos()
+                        movto_lanc.lancamento = lancto
+                        movto_lanc.dt_movimento = lancto.dt_lancamento
+                        movto_lanc.vlr_movimento = lancto.vlr_lancamento
+                        movto_lanc.desc_movimento = 'Pago'
+                        movto_lanc.tipo_movto = 'B'
+                        movto_lanc.save()
+
+                    movto_lanc = Movtos_lancamentos()
+                    movto_lanc.lancamento = lancto
+                    movto_lanc.dt_movimento = lancto.dt_lancamento
+                    movto_lanc.vlr_movimento = lancto.vlr_lancamento
+                    movto_lanc.desc_movimento = 'Inclusão de despesa'
+                    movto_lanc.tipo_movto = 'C'
+                    movto_lanc.save()
 
         if self.request.is_ajax():
             context = self.get_context_data(form=form, success=True)
@@ -517,26 +762,55 @@ class EditDespesa(LoginRequiredMixin,UpdateView):
         lancto = form.save(commit=False)
         lancto.vlr_lancamento = lancto.valor_text.replace('R$','').replace('.','').replace(',','.')
 
-        if lancto.indice is None:
+        if lancto.indice is None and not lancto.situacao:
             indice_padrao = Indice.objects.get(master_user=self.request.user.user_master, indice_padrao=True)
             cotacao_padrao = Cotacao.objects.get(indice=indice_padrao, cotacao_padrao=True)
             lancto.indice = indice_padrao
             lancto.cotacao = cotacao_padrao
-            lancto.valor_original = lancto.vlr_lancamento
+            if not lancto.situacao:
+                lancto.saldo = lancto.vlr_lancamento
         else:
-            lancto.valor_original = lancto.vlr_lancamento
             cotacao = lancto.cotacao
-            valor_lancamento = lancto.valor_original
-            conta = float(valor_lancamento) * float(cotacao.valor_cotacao)
+            valor_lancamento = lancto.vlr_lancamento
+            conta = Decimal(valor_lancamento) * Decimal(cotacao.valor_cotacao)
             lancto.vlr_lancamento = conta
+            lancto.valor_text =str(round(lancto.vlr_lancamento,2)).replace('.',',')
+            if not lancto.situacao:
+                lancto.saldo = lancto.vlr_lancamento
 
         if lancto.situacao is True:
             lancto.data_baixa = datetime.now()
+            lancto.saldo = 0
+
+            movto_lanc = Movtos_lancamentos()
+            movto_lanc.lancamento = lancto
+            movto_lanc.dt_movimento = lancto.dt_lancamento
+            movto_lanc.vlr_movimento = lancto.vlr_lancamento
+            movto_lanc.desc_movimento = 'Pago'
+            movto_lanc.tipo_movto = 'B'
+            movto_lanc.save()
         else:
             lancto.data_baixa is None
+            movto_lanc = Movtos_lancamentos.objects.filter(lancamento=lancto, tipo_movto='B')
+            movto_lanc.delete()
 
 
         lancto.save()
+
+        movto_lanc = Movtos_lancamentos.objects.get(lancamento=lancto,tipo_movto='C')
+        movto_lanc.vlr_movimento = lancto.vlr_lancamento
+        movto_lanc.save()
+
+        if lancto.situacao is True:
+            movto_lanc = Movtos_lancamentos()
+            movto_lanc.lancamento = lancto
+            movto_lanc.dt_movimento = lancto.dt_lancamento
+            movto_lanc.vlr_movimento = lancto.vlr_lancamento
+            movto_lanc.desc_movimento = 'Pago'
+            movto_lanc.tipo_movto = 'B'
+            movto_lanc.save()
+
+
 
         confirma_parcela = self.request.POST.get('confirma_parcela','N')
         if confirma_parcela == 'S':
@@ -550,6 +824,147 @@ class EditDespesa(LoginRequiredMixin,UpdateView):
             return redirect(self.get_success_url())
 
 
+
+
+
+
+########################################################################################################################
+#                                BAIXAS DE LANCAMENTOS                                                                 #
+########################################################################################################################
+
+@login_required
+def baixfin_list(request):
+
+    if request.is_ajax():
+        template_name = '_table_lancfin.html'
+    else:
+        template_name = 'baixfin_list.html'
+
+
+
+    filtrou = 'nao'
+
+    if request.user.is_masteruser is True:
+        lanctos = Lancamentos.objects.filter(master_user=request.user.pk,situacao=False)
+        empresa = Company.objects.filter(master_user=request.user.pk)
+        cadgeral = Cadgeral.objects.filter(master_user=request.user.pk)
+        plano_finan = PlanoFinan.objects.filter(master_user=request.user.pk)
+        c_custo = Ccusto.objects.filter(master_user=request.user.pk)
+        empresa_init = Company.objects.filter(master_user=request.user.pk)
+        conta_finan = Contafinanceira.objects.filter(master_user=request.user.pk)
+
+    else:
+        lanctos = Lancamentos.objects.filter(master_user=request.user.user_master,situacao=False)
+        empresa = Company.objects.filter(master_user=request.user.user_master)
+        cadgeral = Cadgeral.objects.filter(master_user=request.user.user_master)
+        plano_finan = PlanoFinan.objects.filter(master_user=request.user.user_master)
+        c_custo = Ccusto.objects.filter(master_user=request.user.user_master)
+        empresa_init = Company.objects.filter(master_user=request.user.user_master)
+        conta_finan = Contafinanceira.objects.filter(master_user=request.user.user_master)
+
+    form = FiltroLancamentosbaixa(empresa,cadgeral,plano_finan,c_custo,conta_finan, request.GET or None)
+
+    if form.is_valid():
+        data_venc_ini = form.cleaned_data.get('data_venc_ini', '')
+        data_venc_fim = form.cleaned_data.get('data_venc_fim', '')
+        data_lanc_ini = form.cleaned_data.get('data_lanc_ini', '')
+        data_lanc_fim = form.cleaned_data.get('data_venc_fim', '')
+        data_baix_ini = form.cleaned_data.get('data_baix_ini', '')
+        data_baix_fim = form.cleaned_data.get('data_baix_fim', '')
+        tipo_lancamento = form.cleaned_data.get('tipo_lancamento','')
+        empresa = form.cleaned_data.get('empresa', '')
+        cadgeral = form.cleaned_data.get('cadgeral', '')
+        plano_finan = form.cleaned_data.get('plano_finan', '')
+        c_custo = form.cleaned_data.get('c_custo', '')
+        conta_finan = form.cleaned_data.get('conta_finan','')
+
+        if data_venc_ini:
+            lanctos = lanctos.filter(dt_vencimento__gte=data_venc_ini)
+            filtrou = 'ok'
+
+        if data_venc_fim:
+            lanctos = lanctos.filter(dt_vencimento__lt=data_venc_fim+timedelta(days=1))
+            filtrou = 'ok'
+
+        if data_lanc_ini:
+            lanctos = lanctos.filter(dt_lancamento__gte=data_lanc_ini)
+            filtrou = 'ok'
+
+        if data_lanc_fim:
+            lanctos = lanctos.filter(dt_lancamento__lt=data_lanc_fim + timedelta(days=1))
+            filtrou = 'ok'
+
+        if data_baix_ini:
+            lanctos = lanctos.filter(data_baixa__gte=data_baix_ini)
+            filtrou = 'ok'
+
+        if data_baix_fim:
+            lanctos = lanctos.filter(data_baixa__lt=data_baix_fim + timedelta(days=1))
+            filtrou = 'ok'
+
+        if tipo_lancamento != 'T':
+            lanctos = lanctos.filter(tipo_lancamento=tipo_lancamento)
+            filtrou = 'ok'
+
+
+        if empresa:
+            lanctos = lanctos.filter(company=empresa)
+            filtrou = 'ok'
+
+        if cadgeral:
+            lanctos = lanctos.filter(cadgeral=cadgeral)
+            filtrou = 'ok'
+
+        if plano_finan:
+            lanctos = lanctos.filter(plr_financeiro=plano_finan)
+            filtrou = 'ok'
+
+        if c_custo:
+            lanctos = lanctos.filter(c_custo=c_custo)
+            filtrou = 'ok'
+
+        if conta_finan:
+            lanctos = lanctos.filter(conta_finan=conta_finan)
+            filtrou = 'ok'
+
+    form_baixa = FormBaixaLancamento(lanctos,conta_finan,request.POST or None)
+    if form_baixa.is_valid():
+        lancto = form_baixa.cleaned_data['lanc_baixa']
+        data_baixa = form_baixa.cleaned_data['data_baixa']
+        if data_baixa is None:
+            data_baixa = datetime.now()
+        conta_financeira = form_baixa.cleaned_data['conta_financeira']
+
+        for l in lancto:
+
+            movto_lanc = Movtos_lancamentos()
+            movto_lanc.lancamento = l
+            movto_lanc.dt_movimento = data_baixa
+            movto_lanc.vlr_movimento = l.saldo
+            if l.tipo_lancamento == 'R':
+                movto_lanc.desc_movimento = 'Recebido'
+            else:
+                movto_lanc.desc_movimento = 'Pago'
+            movto_lanc.tipo_movto = 'B'
+            movto_lanc.save()
+
+
+            l.situacao = True
+            l.data_baixa = data_baixa
+            l.saldo = 0
+            if conta_financeira:
+                l.conta_finan = conta_financeira
+            l.save()
+
+    context = {
+        'lanctos': lanctos,
+        'form': form,
+        'form_baixa': form_baixa,
+        'filtrou': filtrou,
+        'empresa_init' : empresa_init,
+    }
+
+    return render(request, template_name, context)
 
 
 
