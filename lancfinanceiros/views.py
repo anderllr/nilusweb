@@ -10,7 +10,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.urlresolvers import reverse_lazy
 from core.utils import add_one_month
 from django.http import HttpResponse,Http404
-from .forms import FormCreateReceita,FormEditReceita,FiltroLancamentosForm,FormCreateDespesa,FormEditDespesa,FormBaixaLancamento,FiltroLancamentosbaixa
+from .forms import FormCreateReceita,FormEditReceita,FiltroLancamentosForm,FormCreateDespesa,FormEditDespesa,\
+                   FormBaixaLancamento,FiltroLancamentosbaixa,FormBaixaParcial
 from accounts.models import User
 from nilusadm.models import Sequenciais
 from nilusfin.models import Indice,Cotacao
@@ -18,6 +19,7 @@ from principal.models import Instancia
 from lancfinanceiros.models import Lancamentos,Movtos_lancamentos
 from niluscad.models import Company,Propriety,Cadgeral,PlanoFinan,Ccusto
 from nilusfin.models import Contafinanceira
+from lancfinanceiros.movto_finan import grava_movimento_financeiro_b
 # Create your views here.
 
 
@@ -31,8 +33,7 @@ def lancfin_list(request):
     else:
         template_name = 'lancfin_list.html'
 
-
-
+    filtrou = 'nao'
 
     if request.user.is_masteruser is True:
         lanctos = Lancamentos.objects.filter(master_user=request.user.pk)
@@ -69,41 +70,53 @@ def lancfin_list(request):
 
         if data_venc_ini:
             lanctos = lanctos.filter(dt_vencimento__gte=data_venc_ini)
+            filtrou = 'ok'
 
         if data_venc_fim:
             lanctos = lanctos.filter(dt_vencimento__lt=data_venc_fim+timedelta(days=1))
+            filtrou = 'ok'
 
         if data_lanc_ini:
             lanctos = lanctos.filter(dt_lancamento__gte=data_lanc_ini)
+            filtrou = 'ok'
 
         if data_lanc_fim:
             lanctos = lanctos.filter(dt_lancamento__lt=data_lanc_fim + timedelta(days=1))
+            filtrou = 'ok'
 
         if data_baix_ini:
             lanctos = lanctos.filter(data_baixa__gte=data_baix_ini)
+            filtrou = 'ok'
 
         if data_baix_fim:
             lanctos = lanctos.filter(data_baixa__lt=data_baix_fim + timedelta(days=1))
+            filtrou = 'ok'
 
         if empresa:
             lanctos = lanctos.filter(company=empresa)
+            filtrou = 'ok'
 
         if cadgeral:
             lanctos = lanctos.filter(cadgeral=cadgeral)
+            filtrou = 'ok'
 
         if plano_finan:
             lanctos = lanctos.filter(plr_financeiro=plano_finan)
+            filtrou = 'ok'
 
         if c_custo:
             lanctos = lanctos.filter(c_custo=c_custo)
+            filtrou = 'ok'
 
         if conta_finan:
             lanctos = lanctos.filter(conta_finan=conta_finan)
+            filtrou = 'ok'
 
     context = {
         'lanctos': lanctos,
         'form': form,
         'empresa_init' : empresa_init,
+        'filtrou': filtrou,
     }
 
     return render(request, template_name, context)
@@ -193,11 +206,13 @@ class CreateReceita(LoginRequiredMixin,CreateView):
 
         lancto.save()
 
+
         if lancto.situacao is True:
             movto_lanc = Movtos_lancamentos()
             movto_lanc.lancamento = lancto
             movto_lanc.dt_movimento = lancto.dt_lancamento
             movto_lanc.vlr_movimento = lancto.vlr_lancamento
+            movto_lanc.conta_financeira = lancto.conta_finan
             movto_lanc.desc_movimento = 'Recebido'
             movto_lanc.tipo_movto = 'B'
             movto_lanc.save()
@@ -234,6 +249,7 @@ class CreateReceita(LoginRequiredMixin,CreateView):
                     movto_lanc.lancamento = lancto
                     movto_lanc.dt_movimento = lancto.dt_lancamento
                     movto_lanc.vlr_movimento = lancto.vlr_lancamento
+                    movto_lanc.conta_financeira = lancto.conta_finan
                     movto_lanc.desc_movimento = 'Recebido'
                     movto_lanc.tipo_movto = 'B'
                     movto_lanc.save()
@@ -786,6 +802,7 @@ class EditDespesa(LoginRequiredMixin,UpdateView):
             movto_lanc.lancamento = lancto
             movto_lanc.dt_movimento = lancto.dt_lancamento
             movto_lanc.vlr_movimento = lancto.vlr_lancamento
+
             movto_lanc.desc_movimento = 'Pago'
             movto_lanc.tipo_movto = 'B'
             movto_lanc.save()
@@ -806,6 +823,7 @@ class EditDespesa(LoginRequiredMixin,UpdateView):
             movto_lanc.lancamento = lancto
             movto_lanc.dt_movimento = lancto.dt_lancamento
             movto_lanc.vlr_movimento = lancto.vlr_lancamento
+            movto_lanc.conta_financeira = lancto.conta_finan
             movto_lanc.desc_movimento = 'Pago'
             movto_lanc.tipo_movto = 'B'
             movto_lanc.save()
@@ -937,24 +955,18 @@ def baixfin_list(request):
 
         for l in lancto:
 
-            movto_lanc = Movtos_lancamentos()
-            movto_lanc.lancamento = l
-            movto_lanc.dt_movimento = data_baixa
-            movto_lanc.vlr_movimento = l.saldo
-            if l.tipo_lancamento == 'R':
-                movto_lanc.desc_movimento = 'Recebido'
-            else:
-                movto_lanc.desc_movimento = 'Pago'
-            movto_lanc.tipo_movto = 'B'
-            movto_lanc.save()
-
+            if conta_financeira:
+                l.conta_finan = conta_financeira
 
             l.situacao = True
             l.data_baixa = data_baixa
+
+            grava_movimento_financeiro_b(l, l.situacao, l.saldo)
+
             l.saldo = 0
-            if conta_financeira:
-                l.conta_finan = conta_financeira
             l.save()
+
+
 
     context = {
         'lanctos': lanctos,
@@ -968,9 +980,87 @@ def baixfin_list(request):
 
 
 
+class BaixaParcial(LoginRequiredMixin,UpdateView):
+
+    def get_template_names(self):
+        if self.request.is_ajax():
+            return ["_baixa_parcial.html"]
+        else:
+            raise Http404
+
+    def get_context_data(self, **kwargs):
+        context = super(BaixaParcial, self).get_context_data(**kwargs)
+        # context['tem_parcela'] = self.object.verifica_parcela()
+        context['dados_titulo'] = Lancamentos.objects.get(pk=self.kwargs['pk'])
+        return context
+
+    def get_form_kwargs(self):
+        kwargs = super(BaixaParcial, self).get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def get_success_url(self):
+
+        return reverse_lazy('titrec_list')
+
+
+    model = Lancamentos
+    form_class = FormBaixaParcial
+
+    def form_valid(self, form):
+        lancto = form.save(commit=False)
+        valor_baixa = self.request.POST.get('valor_baixar').replace('.', '').replace(',', '.')
+        diferenca = Decimal(lancto.saldo) - Decimal(valor_baixa)
+        lancto.saldo = diferenca
+
+        if diferenca == 0:
+            lancto.situacao = True
+
+        grava_movimento_financeiro_b(lancto,lancto.situacao,valor_baixa)
+
+        if diferenca != 0:
+            lancto.data_baixa = None
+
+        #     movto_lanc = Movtos_lancamentos()
+        #     movto_lanc.lancamento = lancto
+        #     movto_lanc.dt_movimento = lancto.data_baixa
+        #     movto_lanc.vlr_movimento = valor_baixa
+        #     movto_lanc.conta_financeira = lancto.conta_finan
+        #     if lancto.tipo_lancamento == 'R':
+        #         movto_lanc.desc_movimento = 'Recebido'
+        #     else:
+        #         movto_lanc.desc_movimento = 'Pago'
+        #     movto_lanc.tipo_movto = 'B'
+        #     movto_lanc.save()
+        # else:
+        #
+        #     movto_lanc = Movtos_lancamentos()
+        #     movto_lanc.lancamento = lancto
+        #     movto_lanc.dt_movimento = lancto.data_baixa
+        #     movto_lanc.vlr_movimento = valor_baixa
+        #     movto_lanc.conta_financeira = lancto.conta_finan
+        #     if lancto.tipo_lancamento == 'R':
+        #         movto_lanc.desc_movimento = 'Recebimento Parcial'
+        #     else:
+        #         movto_lanc.desc_movimento = 'Pagamento Parcial'
+        #     movto_lanc.tipo_movto = 'B'
+        #     movto_lanc.save()
+
+        lancto.save()
+
+
+        if self.request.is_ajax():
+            context = self.get_context_data(form=form, success=True, ok='ok')
+            return self.render_to_response(context)
+        else:
+            return redirect(self.get_success_url())
+
+
+
 
 
 edit_despesa = EditDespesa.as_view()
 edit_receita = EditReceita.as_view()
 create_receita = CreateReceita.as_view()
 create_despesa = CreateDespesa.as_view()
+baixa_parcial = BaixaParcial.as_view()

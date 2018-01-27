@@ -109,7 +109,9 @@ class Movtos_lancamentos(models.Model):
     lancamento = models.ForeignKey('lancfinanceiros.Lancamentos',models.CASCADE,verbose_name='lancamento')
     dt_movimento = models.DateTimeField('Data Movimento')
     vlr_movimento = models.DecimalField('Valor do Lançamento', max_digits=13, decimal_places=2, blank=True, null=True)
+    conta_financeira = models.ForeignKey('nilusfin.Contafinanceira',verbose_name='Conta Financeira',blank=True,null=True)
     desc_movimento = models.CharField(verbose_name='Observação', max_length=70,null=True)
+
 
     tipoMovto_Choices = (
         ('C', 'Criação'),

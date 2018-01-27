@@ -273,3 +273,39 @@ class FormBaixaLancamento(forms.Form):
         super(FormBaixaLancamento, self).__init__(*args, **kwargs)
         self.fields['lanc_baixa'].queryset = lanctos
         self.fields['conta_financeira'].queryset = conta_finan
+
+
+
+
+
+
+
+class FormBaixaParcial(forms.ModelForm):
+    valor_baixar = forms.CharField(max_length=20)
+
+
+    def __init__(self, user, *args, **kwargs):
+        super(FormBaixaParcial, self).__init__(*args, **kwargs)
+        if user.is_masteruser is True:
+            # self.fields['plr_financeiro'].queryset = PlanoFinan.objects.filter(master_user=user, sinal='D')
+            # self.fields['cadgeral'].queryset = Cadgeral.objects.filter(master_user=user, fornecedor=True)
+            # self.fields['c_custo'].queryset = Ccusto.objects.filter(master_user=user)
+            # self.fields['indice'].queryset = Indice.objects.filter(master_user=user)
+            self.fields['conta_finan'].queryset = Contafinanceira.objects.filter(master_user=user,
+                                                                                 conta_pagamento=True)
+        else:
+            # self.fields['plr_financeiro'].queryset = PlanoFinan.objects.filter(master_user=user.user_master, sinal='D')
+            # self.fields['cadgeral'].queryset = Cadgeral.objects.filter(master_user=user.user_master, fornecedor=True)
+            # self.fields['c_custo'].queryset = Ccusto.objects.filter(master_user=user.user_master)
+            # self.fields['indice'].queryset = Indice.objects.filter(master_user=user.user_master)
+            self.fields['conta_finan'].queryset = Contafinanceira.objects.filter(master_user=user.user_master,
+                                                                                                   conta_pagamento=True)
+        # self.fields['cadgeral'].empty_label = 'Selecione um cadastro'
+        # self.fields['plr_financeiro'].empty_label = 'Selecione um plano'
+        # self.fields['c_custo'].empty_label = 'Selecione um centro de custo'
+        self.fields['conta_finan'].empty_label = 'Selecione uma conta'
+
+    class Meta:
+        model = Lancamentos
+        fields = ['conta_finan','data_baixa']
+

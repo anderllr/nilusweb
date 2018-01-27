@@ -10,11 +10,22 @@
 
 <div class="block">
     <div class="block-content block-content-full ribbon ribbon-left ribbon-bookmark ribbon-primary">
-        <div class="ribbon-box form_busca">
+        <a class="btn btn-outline-info mr-5 mb-5 btn_lancamentos pull-right" href="{% url 'baixfin_list' %}"  data-placement="bottom" title="Pagar / Receber Lancamentos"><i class="fa fa-check-circle"></i> Baixar Lançamentos</a>
+
+        <button class="btn btn-outline-danger mr-5 mb-5  new_despesa btn_lancamentos pull-right" style="width:18%;"><i class="fa fa-arrow-down"><i class="fa fa-dollar"></i></i> Nova Despesa</button>
+        <button class="btn btn-outline-primary mr-5 mb-5 new_receita btn_lancamentos pull-right" style="width:18%;"><i class="fa fa-arrow-up"><i class="fa fa-dollar"></i></i> Nova Receita</button>
+        <button type="button"  class="btn  btn-outline-primary  mr-5 mb-5" id="mostrar_filtros"   data-toggle="tooltip" data-placement="bottom" title="Exibir filtros de pesquisa">
+           <i class="fa fa-filter"></i> Buscar por...
+       </button>
+
+        <div class="ribbon-box form_busca" style="display:none;">
             Filtros de Pesquisa
         </div>
+
         <br>
-        <div class="form_busca">
+
+        <br>
+        <div class="form_busca" style="display:none;">
             <form>
                 <div class="filtros_extras">
                     <div class="row">
@@ -75,15 +86,15 @@
                     </div>
                 </div>
                 <br>
-                  <button type="submit"  class="btn  btn-outline-primary mr-5 mb-5 form_pesquisa"   data-toggle="tooltip" data-placement="bottom" title="Pesquisar lançamentos de acordo com os filtros">
+                  <button type="submit"  class="btn  btn-outline-primary mr-5 mb-5 form_pesquisa form_bus"   data-toggle="tooltip" data-placement="bottom" title="Pesquisar lançamentos de acordo com os filtros">
                         <i class="fa fa-search"></i> Pesquisar
                   </button>
                   <button type="button"  class="btn  btn-outline-danger  mr-5 mb-5 limpa_filtro_pesquisa"   data-toggle="tooltip" data-placement="bottom" title="Remover filtros e exibir todos os lançamentos">
                         <i class="fa fa-search-minus"></i> Limpar filtros
                   </button>
-                  <button class="btn btn-outline-primary mr-5 mb-5 new_receita btn_lancamentos" style="width:18%;"><i class="fa fa-arrow-up"><i class="fa fa-dollar"></i></i> Nova Receita</button>
-                  <button class="btn btn-outline-danger mr-5 mb-5  new_despesa btn_lancamentos" style="width:18%;"><i class="fa fa-arrow-down"><i class="fa fa-dollar"></i></i> Nova Despesa</button>
-                  <a class="btn btn-outline-info mr-5 mb-5 btn_lancamentos pull-right" href="{% url 'baixfin_list' %}"  data-placement="bottom" title="Pagar / Receber Lancamentos"><i class="fa fa-check-circle"></i> Baixar Lançamentos</a>
+
+
+
             </form>
 
 
@@ -231,7 +242,8 @@
                 <div class="block-content">
                     <div class="form-material input-group">
                       <label>Data da Baixa</label>
-                      <input  type="text" name="data_baixa_modal" id="data_baixa_modal" class="js-datepicker form-control" data-week-start="1" data-autoclose="true" data-today-highlight="true" data-date-format="dd/mm/yyyy" placeholder="dd/mm/aaaa">
+                      <input  type="text" name="data_baixa_modal" id="data_baixa_modal" class="js-datepicker form-control"
+                              data-week-start="1" data-autoclose="true" data-today-highlight="true" data-date-format="dd/mm/yyyy" placeholder="dd/mm/aaaa" required="">
                     </div>
 
 
@@ -307,6 +319,19 @@ $('.form_inc').hide();
 $('.form_edit').hide();
 $('.chosen-select').chosen({ width: '100%' });
 
+
+$("#mostrar_filtros").on("click",function(e){
+  $(this).hide();
+  $('.form_busca').show();
+});
+
+var filtrou
+filtrou = '{{ filtrou }}';
+
+if(filtrou == 'ok'){
+  $('#mostrar_filtros').hide();
+  $('.form_busca').show();
+}
 
 
 $(".limpa_filtro_pesquisa").on("click",function(e){

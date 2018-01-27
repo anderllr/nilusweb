@@ -9,7 +9,7 @@
                     <th><small>Valor</small></th>
                     <th><small>Saldo</small></th>
                     <th><small>Tipo</small></th>
-                    <th><small>Situação</small></th>
+                    <th><small>Sit.</small></th>
                     <th></th>
                 </tr>
             </thead>
@@ -21,14 +21,14 @@
                     </td> -->
                     <td style="width:2%; heigth:10%;"><small>{{ lanc.num_lan }}/{{ lanc.parcela }}</small></td>
                     <td style="width:25%; heigth:10%; "><small>{% if lanc.cadgeral == None %} Não Informado {% else %} {{lanc.cadgeral}} {% endif %}
-                        / {{lanc.descricao}}</small></td>
+                    </small></td>
                     <td style="width:3%; heigth:10%;"><small>{{ lanc.dt_lancamento|date:'d/m/Y' }}</small></td>
                     <td style="width:3%; heigth:10%;"><small>{{ lanc.dt_vencimento|date:'d/m/Y'  }}</small></td>
-                    <td style="width:2%; heigth:10%;">{% if lanc.tipo_lancamento == 'R' %}<h6 class="text-success">{{ lanc.vlr_lancamento }}</h6>
+                    <td style="width:2%; heigth:10%;">{% if lanc.tipo_lancamento == 'R' %}<strong class="text-success">{{ lanc.vlr_lancamento }}</strong>
                                           {% else %}   <h6 class="text-danger">{{ lanc.vlr_lancamento }}</h6>
                                           {% endif %}
                     </td>
-                    <td style="width:2%; heigth:10%;">{% if lanc.tipo_lancamento == 'R' %}<h5 class="text-success">{{ lanc.saldo }}</h5>
+                    <td style="width:2%; heigth:10%;">{% if lanc.tipo_lancamento == 'R' %}<strong class="text-success">{{ lanc.saldo }}</strong>
                                           {% else %}   <h5 class="text-danger">{{ lanc.saldo }}</h5>
                                           {% endif %}
                     </td>
@@ -40,11 +40,11 @@
 
                     <td style="width:2%; heigth:10%;">{% if lanc.situacao %}
                            {% if lanc.tipo_lancamento == 'R' %}
-                           <span class="badge badge-info"> Recebido</span>
+                           <center><button type="button" class="btn btn-sm btn-noborder btn-outline-info"  data-toggle="tooltip" data-placement="bottom" title="Recebido" ><i class="fa fa-check-circle"></i></button></center>
                                {% else %}
-                           <span class="badge badge-info"> Pago</span>{% endif %}
+                           <center><button type="button" class="btn btn-sm btn-noborder btn-outline-info"  data-toggle="tooltip" data-placement="bottom" title="Pago" ><i class="fa fa-check-circle"></i></button></center>{% endif %}
                         {% else %}
-                           <span class="badge badge-secondary">Aberto</span>
+                           <center><button type="button" class="btn btn-sm btn-noborder btn-outline-danger"  data-toggle="tooltip" data-placement="bottom" title="Aberto" ><i class="fa fa-exclamation"></i></button></center>
                         {% endif %}
                     </td>
 

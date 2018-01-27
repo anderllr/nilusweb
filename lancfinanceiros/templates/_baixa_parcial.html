@@ -1,0 +1,54 @@
+{% load static widget_tweaks %}
+{% if success %}
+   <input type="hidden" id="close_form" value="ok">
+{% else %}
+<div class="block">
+    <form method="post" class="form_edit" id="form_edit" action="{% url 'baixa_parcial' object.pk %}">
+             {% csrf_token %}
+                {% for error in form.non_field_errors %}
+                <div class="alert-danger alert">
+                {{ error }}
+                </div>
+                {% endfor %}
+             <div class="block-content">
+                <div class="form-group row">
+
+                        <div class="form-material input-group">
+                            <label>Data Baixa</label>
+                            {% render_field form.data_baixa class="js-datepicker form-control" data-week-start="1" data-autoclose="true" data-today-highlight="true" data-date-format="dd/mm/yyyy" placeholder="dd/mm/aaaa" required="" %}
+                            {% for error in form.data_baixa.errors %}
+                            <small class="form-control-feedback"> {{ error }} </small>
+                            {% endfor %}
+                        </div>
+                        <div class="form-material form-material-info floating">
+                            <input type="text" name="valor_baixar" class="form-control money2" value="{{ dados_titulo.saldo }}" required="" id="id_valor_baixar">
+                            <label for="{{  form.valor_baixar.id }}">Valor</label>
+                            {% for error in form.valor_baixar.errors %}
+                            <div class="alert alert-danger alert-dismissable">
+                                <p class="mb-0">{{ error }}</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                </div>
+                <div class="form-group row">
+                        <div class="form-material input-group">
+                            <label>Conta</label>
+                            {% render_field form.conta_finan class="chosen-select" %}
+                            {% for error in form.conta_finan.errors %}
+                            <small class="form-control-feedback"> {{ error }} </small>
+                            {% endfor %}
+                        </div>
+                </div>
+                <hr>
+             </div>
+          <br>
+          <br>
+         <div class="form-group row ">
+                <button type="submit" class="btn btn-alt-primary">Salvar</button>
+                <button type="button"  class="btn btn-alt-secondary  cancel_form">Cancelar</button>
+         </div>
+    </form>
+
+
+</div>
+{% endif %}
