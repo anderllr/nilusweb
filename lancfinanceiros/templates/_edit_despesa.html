@@ -18,10 +18,18 @@
             </button>
         </div>
     </div>
+    <ul class="nav nav-tabs nav-tabs-alt" data-toggle="tabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" href="#aba_lancamento">Lançamento</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#aba_movimentacoes">Movimentações</a>
+        </li>
+    </ul>
 
     <form method="post" class="form_edit" id="form_edit" action="{% url 'edit_despesa' object.pk %}">
-    <input type="hidden" name="tem_parcela" id="tem_parcela" value="{{ tem_parcela|yesno:'S,N' }}">
-    <input type="hidden" name="confirma_parcela" id="confirma_parcela" value="">
+        <input type="hidden" name="tem_parcela" id="tem_parcela" value="{{ tem_parcela|yesno:'S,N' }}">
+        <input type="hidden" name="confirma_parcela" id="confirma_parcela" value="">
 
              {% csrf_token %}
                 {% for error in form.non_field_errors %}
@@ -29,103 +37,104 @@
                 {{ error }}
                 </div>
                 {% endfor %}
-             <div class="block-content">
-                <div class="form-group row">
-                    <div class="col-md-4">
-                        <div class="form-material input-group">
-                            <label>Vencimento</label>
-                            {% render_field form.dt_vencimento class="js-datepicker form-control" data-week-start="1" data-autoclose="true" data-today-highlight="true" data-date-format="dd/mm/yyyy" placeholder="dd/mm/aaaa" %}
-                            {% for error in form.dt_vencimento.errors %}
-                            <small class="form-control-feedback"> {{ error }} </small>
-                            {% endfor %}
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-material form-material-danger floating">
-                            {% render_field  form.valor_text class='form-control money2' %}
-                            <label for="{{  form.valor_text.id }}">Valor Despesa</label>
-                            {% for error in form.valor_text.errors %}
-                            <div class="alert alert-danger alert-dismissable">
-                                <p class="mb-0">{{ error }}</p>
+             <div class="block-content tab-content">
+                <div class="tab-pane active" id="aba_lancamento" role="tabpanel">
+                    <div class="form-group row">
+                        <div class="col-md-4">
+                            <div class="form-material input-group">
+                                <label>Vencimento</label>
+                                {% render_field form.dt_vencimento class="js-datepicker form-control" data-week-start="1" data-autoclose="true" data-today-highlight="true" data-date-format="dd/mm/yyyy" placeholder="dd/mm/aaaa" %}
+                                {% for error in form.dt_vencimento.errors %}
+                                <small class="form-control-feedback"> {{ error }} </small>
+                                {% endfor %}
                             </div>
-                            {% endfor %}
                         </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="ja_recebido">
-                            <label class="css-control css-control-sm css-control-primary css-switch">
-                                {% render_field form.situacao type="checkbox" class='css-control-input' %}
-                                <span class="css-control-indicator"></span> Já Pago
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group row">
-                   <div class="col-md-4">
-                        <div class="form-material input-group">
-                            <label>Plano Financeiro</label>
-                            {% render_field form.plr_financeiro class="chosen-select" %}
-                            {% for error in form.plr_financeiro.errors %}
-                            <small class="form-control-feedback"> {{ error }} </small>
-                            {% endfor %}
-                             <span class="input-group-btn">
-                                <button type="button" class="btn btn-primary new_planofinan" title="Novo Plano Financeiro" data-container="body" data-toggle="popover" data-placement="bottom"><i class="fa fa-plus"></i> </button>
-                             </span>
-                        </div>
-                   </div>
-                   <div class="col-md-4">
-                       <div class="form-material input-group">
-                            <label>Centro Custo</label>
-                            {% render_field form.c_custo class="chosen-select" id="c_custo_id2" %}
-                            {% for error in form.c_custo.errors %}
-                            <small class="form-control-feedback"> {{ error }} </small>
-                            {% endfor %}
-                            <span class="input-group-btn">
-                               <button type="button" class="btn btn-primary new_ccusto" title="Novo Centro de Custo" data-container="body" data-toggle="popover2" data-placement="bottom"><i class="fa fa-plus"></i> </button>
-                            </span>
-                        </div>
-                   </div>
-                   <div class="col-md-4">
-                        <div class="form-material input-group">
-                            <label>Conta</label>
-                            {% render_field form.conta_finan class="chosen-select" %}
-                            {% for error in form.conta_finan.errors %}
-                            <small class="form-control-feedback"> {{ error }} </small>
-                            {% endfor %}
-                            <span class="input-group-btn">
-                                <button type="button" class="btn btn-primary new_conta" title="Nova Conta de Recebimento" data-container="body" data-toggle="popover3" data-placement="bottom"><i class="fa fa-plus"></i> </button>
-                             </span>
-                        </div>
-                   </div>
-                </div>
-                <div class="form-group row">
-                    <div class="col-md-6">
-                        <div class="form-material input-group">
-                            <label>Fornecedor</label>
-                            {% render_field form.cadgeral class="chosen-select" %}
-                            {% for error in form.cadgeral.errors %}
-                            <small class="form-control-feedback"> {{ error }} </small>
-                            {% endfor %}
-                            <span class="input-group-btn">
-                                <button type="button" title="Novo Cliente" class="btn btn-primary new_cadgeral"><i class="fa fa-plus"></i> </button>
-                            </span>
-                        </div>
-                   </div>
-                    <div class="col-md-6">
-                        <div class="form-material  floating">
-                            {% render_field  form.descricao class='form-control' %}
-                            <label for="{{  form.descricao.id }}">Descrição</label>
-                            {% for error in form.descricao.errors %}
-                            <div class="alert alert-danger alert-dismissable">
-                                <p class="mb-0">{{ error }}</p>
+                        <div class="col-md-4">
+                            <div class="form-material form-material-danger floating">
+                                {% render_field  form.valor_text class='form-control money2' %}
+                                <label for="{{  form.valor_text.id }}">Valor Despesa</label>
+                                {% for error in form.valor_text.errors %}
+                                <div class="alert alert-danger alert-dismissable">
+                                    <p class="mb-0">{{ error }}</p>
+                                </div>
+                                {% endfor %}
                             </div>
-                            {% endfor %}
+                        </div>
+                        <div class="col-md-4">
+                            <div class="ja_recebido">
+                                <label class="css-control css-control-sm css-control-primary css-switch">
+                                    {% render_field form.situacao type="checkbox" class='css-control-input' %}
+                                    <span class="css-control-indicator"></span> Já Pago
+                                </label>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <hr>
-                <div class="form-group row">
-                    <div class="col-md-6" hidden>
+                    <div class="form-group row">
+                        <div class="col-md-4">
+                            <div class="form-material input-group">
+                                <label>Plano Financeiro</label>
+                                {% render_field form.plr_financeiro class="chosen-select" %}
+                                {% for error in form.plr_financeiro.errors %}
+                                <small class="form-control-feedback"> {{ error }} </small>
+                                {% endfor %}
+                                 <span class="input-group-btn">
+                                    <button type="button" class="btn btn-primary new_planofinan" title="Novo Plano Financeiro" data-container="body" data-toggle="popover" data-placement="bottom"><i class="fa fa-plus"></i> </button>
+                                 </span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                           <div class="form-material input-group">
+                                <label>Centro Custo</label>
+                                {% render_field form.c_custo class="chosen-select" id="c_custo_id2" %}
+                                {% for error in form.c_custo.errors %}
+                                <small class="form-control-feedback"> {{ error }} </small>
+                                {% endfor %}
+                                <span class="input-group-btn">
+                                   <button type="button" class="btn btn-primary new_ccusto" title="Novo Centro de Custo" data-container="body" data-toggle="popover2" data-placement="bottom"><i class="fa fa-plus"></i> </button>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-material input-group">
+                                <label>Conta</label>
+                                {% render_field form.conta_finan class="chosen-select" %}
+                                {% for error in form.conta_finan.errors %}
+                                <small class="form-control-feedback"> {{ error }} </small>
+                                {% endfor %}
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-primary new_conta" title="Nova Conta de Recebimento" data-container="body" data-toggle="popover3" data-placement="bottom"><i class="fa fa-plus"></i> </button>
+                                 </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-6">
+                            <div class="form-material input-group">
+                                <label>Fornecedor</label>
+                                {% render_field form.cadgeral class="chosen-select" %}
+                                {% for error in form.cadgeral.errors %}
+                                <small class="form-control-feedback"> {{ error }} </small>
+                                {% endfor %}
+                                <span class="input-group-btn">
+                                    <button type="button" title="Novo Cliente" class="btn btn-primary new_cadgeral"><i class="fa fa-plus"></i> </button>
+                                </span>
+                            </div>
+                       </div>
+                        <div class="col-md-6">
+                            <div class="form-material  floating">
+                                {% render_field  form.descricao class='form-control' %}
+                                <label for="{{  form.descricao.id }}">Descrição</label>
+                                {% for error in form.descricao.errors %}
+                                <div class="alert alert-danger alert-dismissable">
+                                    <p class="mb-0">{{ error }}</p>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="form-group row">
+                        <div class="col-md-6" hidden>
                             <div class="form-material input-group">
                                 <label>Indice</label>
                                 {% render_field form.indice class="chosen-select" %}
@@ -133,8 +142,8 @@
                                 <small class="form-control-feedback"> {{ error }} </small>
                                 {% endfor %}
                             </div>
-                       </div>
-                       <div class="col-md-6" hidden>
+                        </div>
+                        <div class="col-md-6" hidden>
                             <div class="form-material input-group">
                                 <label>Cotação</label>
                                 {% render_field form.cotacao class="chosen-select" %}
@@ -143,14 +152,48 @@
                                 {% endfor %}
                             </div>
                        </div>
+                    </div>
                 </div>
-             </div>
-          <br>
-          <br>
-         <div class="form-group row ">
-                <button type="submit" class="btn btn-alt-primary">Salvar</button>
-                <button type="button"  class="btn btn-alt-secondary  cancel_form">Cancelar</button>
-         </div>
+                <div class="tab-pane" id="aba_movimentacoes" role="tabpanel">
+                    <div class="block block-bordered col-md-8">
+                        <div class="block-header block-header-default">
+                            <h3 class="block-title">Movimentações do Lançamento</h3>
+                        </div>
+                        <div class="block-content">
+                            <table id="tabela_movimentacoes" class="table table-bordered table-striped js-dataTable-simple">
+                                <thead>
+                                    <tr>
+                                        <th><small>Data</small></th>
+                                        <th><small>Descrição</small></th>
+                                        <th><small>Valor</small></th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for movto in movimentacoes %}
+                                    <tr>
+                                        <td style="width:10%;"><small>{{ movto.dt_movimento|date:'d/m/Y'  }}</small></td>
+                                        <td style="width:20%;"><small>{{ movto.desc_movimento }}</small></td>
+                                        <td style="width:10%;"><small>{{ movto.vlr_movimento }}</small></td>
+                                        <td style="width:10%;">
+                                            {% if movto.tipo_movto != 'C' %}
+                                            <button  class="btn btn-sm btn-outline-danger delete_movto"  href="{% url 'exclui_movimentacao' movto.pk %}" data-toggle="tooltip" data-placement="bottom" title="Excluir Movimento">
+                                                <i class="fa fa-trash-o"></i>
+                                            </button>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                  <button type="submit" class="btn btn-alt-primary">Salvar</button>
+                  <button type="button"  class="btn btn-alt-secondary  cancel_form">Cancelar</button>
+           </div>
+
+
     </form>
 
 

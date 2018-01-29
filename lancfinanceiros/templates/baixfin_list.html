@@ -140,7 +140,9 @@
                 <div class="block-content">
                     <div class="form-material input-group">
                       <label>Data da Baixa</label>
-                      <input  type="text" name="data_baixa_modal" id="data_baixa_modal" class="js-datepicker form-control" data-week-start="1" data-autoclose="true" data-today-highlight="true" data-date-format="dd/mm/yyyy" placeholder="dd/mm/aaaa">
+                      <input  type="text"  name="data_baixa_modal" id="data_baixa_modal" class="js-datepicker form-control"
+                              data-week-start="1" data-autoclose="true" data-today-highlight="true"
+                              data-date-format="dd/mm/yyyy" placeholder="dd/mm/aaaa">
                     </div>
                     <div class="form-material input-group">
                         <label class="css-control css-control-sm css-control-primary css-switch">
@@ -185,6 +187,32 @@
     </div>
 </div>
 
+
+
+<div class="modal fade" id="modal-infolancto" tabindex="-1" role="dialog" aria-labelledby="modal-slideleft" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-slideright " role="document">
+        <div class="modal-content">
+            <div class="block block-themed block-transparent mb-0">
+                <div class="block-header bg-primary-dark">
+                    <h3 class="block-title titulo_modal"></h3>
+                    <div class="block-options">
+                        <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+                            <i class="si si-close"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="block-content">
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-alt-secondary" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 {% endblock %}
 
 
@@ -216,6 +244,15 @@ $(".limpa_filtro_pesquisa").on("click",function(e){
 });
 
 
+$(".table_lancfinanceiro").on("click",".info_lancto",function(e){
+   e.preventDefault();
+   $("#modal-infolancto .block-content").load($(this).attr('href'), function(){
+       $('#modal-infolancto').modal("show");
+       $('.titulo_modal').text("Informações Lançamento");
+       {% include 'js_tabs.html' %}
+   });
+
+});
 
 
 

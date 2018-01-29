@@ -15,7 +15,7 @@ class Lancamentos(models.Model):
 
     #dados do titulo
     cadgeral = models.ForeignKey('niluscad.CadGeral',verbose_name='Cliente',blank=True,null=True)
-    dt_lancamento = models.DateTimeField('Data Lançamento',auto_now_add=True)
+    dt_lancamento = models.DateField('Data Lançamento',auto_now_add=True)
     dt_vencimento = models.DateField('Data Vencimento',null=True,blank=True)
     plr_financeiro = models.ForeignKey('niluscad.Planofinan',verbose_name='Plano Financeiro')
     conta_finan = models.ForeignKey('nilusfin.Contafinanceira',verbose_name='Conta Recebimento')
@@ -34,7 +34,8 @@ class Lancamentos(models.Model):
 
 
     situacao = models.BooleanField('Baixado',default=False)
-    data_baixa = models.DateTimeField('Data de Recebimento',null=True,blank=True)
+    reaberto = models.BooleanField('Reaberto',default=False)
+    data_baixa = models.DateField('Data de Recebimento',null=True,blank=True)
     lancamento_pai = models.ForeignKey('self',models.SET_NULL,blank=True,null=True,verbose_name='Lançamento Pai')
 
     # Dados Baixa e Situação
@@ -107,7 +108,7 @@ class Lancamentos(models.Model):
 class Movtos_lancamentos(models.Model):
 
     lancamento = models.ForeignKey('lancfinanceiros.Lancamentos',models.CASCADE,verbose_name='lancamento')
-    dt_movimento = models.DateTimeField('Data Movimento')
+    dt_movimento = models.DateField('Data Movimento')
     vlr_movimento = models.DecimalField('Valor do Lançamento', max_digits=13, decimal_places=2, blank=True, null=True)
     conta_financeira = models.ForeignKey('nilusfin.Contafinanceira',verbose_name='Conta Financeira',blank=True,null=True)
     desc_movimento = models.CharField(verbose_name='Observação', max_length=70,null=True)

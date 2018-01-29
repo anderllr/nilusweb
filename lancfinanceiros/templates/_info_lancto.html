@@ -1,0 +1,64 @@
+<div class="block">
+    <ul class="nav nav-tabs nav-tabs-alt" data-toggle="tabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" href="#aba_informações">Informações Extras</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#aba_movimentacoes">Movimentações</a>
+        </li>
+    </ul>
+             <div class="block-content tab-content">
+                <div class="tab-pane active" id="aba_informações" role="tabpanel">
+                    <div class="block block-rounded block-bordered">
+                        <div class="block-header block-header-default">
+                            <h3 class="block-title">Nº Lancamento: {{ lancto.num_lan }}/{{ lancto.parcela }} &nbsp;
+                                                    Tipo: {% if lancto.tipo_lancamento == 'R' %} <span class="badge badge-success" text="Receita">Receita</span>
+                                                                    {% else %} <span class="badge badge-danger" text="Despesa">Despesa</span>
+                                                                    {% endif %}
+
+
+                                <span class="pull-right">Valor: <strong>{{ lancto.vlr_lancamento }}</strong></h3></span>
+                        </div>
+                        <div class="block-content">
+                         <strong>Descrição: <small>{% if lancto.descricao == None %}  {% else %} {{ lancto.descricao }} {% endif %}</small></strong><br>
+                         <strong>Plano Financeiro: <small>{{ lancto.plr_financeiro }}</small></strong><br>
+                         <strong>Centro de Custo: <small>{{ lancto.c_custo }}</small></strong><br>
+                         <strong>Conta Financeira: <small>{{ lancto.conta_finan }}</small></strong><br>
+                         <strong>Cadastro: <small>{% if lancto.cageral == None %} Não Informado {% else %}{{ lancto.conta_finan }} {% endif %}</small></strong>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+                <div class="tab-pane" id="aba_movimentacoes" role="tabpanel">
+                    <div class="block block-bordered">
+                        <div class="block-content">
+                            <table id="tabela_movimentacoes" class="table table-bordered table-striped js-dataTable-simple">
+                                <thead>
+                                    <tr>
+                                        <th><small>Data</small></th>
+                                        <th><small>Descrição</small></th>
+                                        <th><small>Valor</small></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for movto in movimentacoes %}
+                                    <tr>
+                                        <td style="width:10%;"><small>{{ movto.dt_movimento|date:'d/m/Y'  }}</small></td>
+                                        <td style="width:20%;"><small>{{ movto.desc_movimento }}</small></td>
+                                        <td style="width:10%;"><small>{{ movto.vlr_movimento }}</small></td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <br>
+                            <strong class="pull-right">Saldo: <small>{{ lancto.saldo }}</small></strong>
+                        </div>
+                    </div>
+                </div>
+           </div>
+
+
+    </form>
+
+
+</div>

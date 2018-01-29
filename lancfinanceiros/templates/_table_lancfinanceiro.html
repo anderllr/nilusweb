@@ -3,7 +3,7 @@
                 <tr>
 <!--                    <th class="hidden"><small>Baixar</small></th> -->
                     <th><small>Nº/Parc</small></th>
-                    <th><small>Cadastro/Descrição</small></th>
+                    <th><small>Cadastro</small></th>
                     <th><small>Lançamento</small></th>
                     <th><small>Vencimento</small></th>
                     <th><small>Valor</small></th>
@@ -24,12 +24,12 @@
                     </small></td>
                     <td style="width:3%; heigth:10%;"><small>{{ lanc.dt_lancamento|date:'d/m/Y' }}</small></td>
                     <td style="width:3%; heigth:10%;"><small>{{ lanc.dt_vencimento|date:'d/m/Y'  }}</small></td>
-                    <td style="width:2%; heigth:10%;">{% if lanc.tipo_lancamento == 'R' %}<strong class="text-success">{{ lanc.vlr_lancamento }}</strong>
-                                          {% else %}   <h6 class="text-danger">{{ lanc.vlr_lancamento }}</h6>
+                    <td style="width:2%; heigth:10%;">{% if lanc.tipo_lancamento == 'R' %}<span class="text-success">{{ lanc.vlr_lancamento }}</span>
+                                          {% else %}   <span class="text-danger">{{ lanc.vlr_lancamento }}</span>
                                           {% endif %}
                     </td>
                     <td style="width:2%; heigth:10%;">{% if lanc.tipo_lancamento == 'R' %}<strong class="text-success">{{ lanc.saldo }}</strong>
-                                          {% else %}   <h5 class="text-danger">{{ lanc.saldo }}</h5>
+                                          {% else %}   <strong class="text-danger">{{ lanc.saldo }}</strong>
                                           {% endif %}
                     </td>
 
@@ -48,7 +48,7 @@
                         {% endif %}
                     </td>
 
-                    <td style="width:10%">
+                    <td style="width:12%">
                         <button type="button" class="btn btn-sm btn-outline-secondary edit_lancto" {% if lanc.tipo_lancamento == 'R' %}  href="{% url 'edit_receita' lanc.pk %}"
                                                                                                    {% else %}    href="{% url 'edit_despesa' lanc.pk %}" {% endif %}
                                                                                                     data-toggle="tooltip" data-placement="bottom" title="Editar">
@@ -56,6 +56,10 @@
                         </button>
                         <button type="button" class="btn btn-sm btn-outline-danger delete_lancto"  href="{% url 'delete_receita' lanc.pk %}" data-toggle="tooltip" data-placement="bottom" title="Excluir">
                             <i class="fa fa-trash-o"></i>
+                        </button>
+
+                        <button type="button" class="btn btn-sm btn-outline-info info_lancto"  href="{% url 'infoLanctos' lanc.pk %}" data-toggle="tooltip" data-placement="bottom" title="Mais informações">
+                            <i class="fa fa-info-circle"></i>
                         </button>
 
 

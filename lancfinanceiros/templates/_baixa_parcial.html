@@ -22,7 +22,7 @@
                         </div>
                         <div class="form-material form-material-info floating">
                             <input type="text" name="valor_baixar" class="form-control money2" value="{{ dados_titulo.saldo }}" required="" id="id_valor_baixar">
-                            <label for="{{  form.valor_baixar.id }}">Valor</label>
+                            <label for="{{  form.valor_baixar.id }}">Valor à baixar</label>
                             {% for error in form.valor_baixar.errors %}
                             <div class="alert alert-danger alert-dismissable">
                                 <p class="mb-0">{{ error }}</p>

@@ -50,3 +50,13 @@ $('.tb_body_cotacao_edit_form').on('click','.delete_cotacao',function(e){
 
 
 
+$('#tabela_movimentacoes').on('click','.delete_movto',function(e){
+  e.preventDefault();
+  var $this = $(this);
+  if(confirm('Ao excluir movimentos o saldo do lançamento será recomposto, deseja continuar?')){
+
+      $.get($(this).attr('href'),function(data){
+         $this.closest('tr').hide();
+        });
+    }
+});

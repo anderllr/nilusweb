@@ -1,6 +1,7 @@
 from datetime import date, timedelta, datetime
 from datetime import date, timedelta, datetime
 from decimal import Decimal
+from django.db.models import Sum
 from django.utils import timezone
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -385,6 +386,9 @@ class CreateReceita(LoginRequiredMixin,CreateView):
         else:
             return redirect(self.get_success_url())
 
+
+
+
 class EditReceita(LoginRequiredMixin,UpdateView):
 
     def get_template_names(self):
@@ -397,6 +401,8 @@ class EditReceita(LoginRequiredMixin,UpdateView):
         context = super(EditReceita, self).get_context_data(**kwargs)
         context['tem_parcela'] = self.object.verifica_parcela()
         context['dados_titulo'] = Lancamentos.objects.get(pk=self.kwargs['pk'])
+        context['movimentacoes'] = Movtos_lancamentos.objects.filter(
+            lancamento=Lancamentos.objects.get(pk=self.kwargs['pk']))
         return context
 
 
@@ -417,49 +423,56 @@ class EditReceita(LoginRequiredMixin,UpdateView):
 
     def form_valid(self, form):
         lancto = form.save(commit=False)
-        lancto.vlr_lancamento = lancto.valor_text.replace('R$','').replace('.','').replace(',','.')
 
-        if lancto.indice is None and not lancto.situacao:
-            indice_padrao = Indice.objects.get(master_user=self.request.user.user_master, indice_padrao=True)
-            cotacao_padrao = Cotacao.objects.get(indice=indice_padrao, cotacao_padrao=True)
-            lancto.indice = indice_padrao
-            lancto.cotacao = cotacao_padrao
-            if not lancto.situacao:
+        campos = form.changed_data
+        print(campos)
+
+
+        if 'situacao' in form.changed_data:
+
+            if lancto.situacao is True and not lancto.reaberto:
+                lancto.data_baixa = datetime.now()
+
+                movto_lanc = Movtos_lancamentos()
+                movto_lanc.lancamento = lancto
+                movto_lanc.dt_movimento = lancto.dt_lancamento
+                movto_lanc.vlr_movimento = lancto.saldo
+                movto_lanc.desc_movimento = 'Recebido'
+                movto_lanc.tipo_movto = 'B'
+                movto_lanc.save()
+
+                lancto.saldo = 0
+                lancto.reaberto = False
+
+            elif lancto.reaberto:
+                lancto.situacao = False
+                lancto.reaberto = False
+                lancto.data_baixa is None
+            else:
+
+                lancto.data_baixa is None
                 lancto.saldo = lancto.vlr_lancamento
-        else:
-            cotacao = lancto.cotacao
-            valor_lancamento = lancto.vlr_lancamento
-            conta = Decimal(valor_lancamento) * Decimal(cotacao.valor_cotacao)
-            lancto.vlr_lancamento = conta
-            lancto.valor_text =str(round(lancto.vlr_lancamento,2)).replace('.',',')
-            if not lancto.situacao:
+                lancto.data_baixa = None
+                movto_lanc = Movtos_lancamentos.objects.filter(lancamento=lancto, tipo_movto='B')
+                movto_lanc.delete()
+                lancto.reaberto = False
+
+        if 'valor_text' in form.changed_data:
+            lancto.vlr_lancamento = lancto.valor_text.replace('R$', '').replace('.', '').replace(',', '.')
+            vlr_movtos_baixas = Movtos_lancamentos.objects.filter(lancamento=lancto,tipo_movto='B').aggregate(vlr_movimento=Sum('vlr_movimento'))
+
+            if vlr_movtos_baixas != 0:
+                lancto.saldo = Decimal(lancto.vlr_lancamento) - vlr_movtos_baixas['vlr_movimento']
+            else:
                 lancto.saldo = lancto.vlr_lancamento
 
-        if lancto.situacao is True:
-            lancto.data_baixa = datetime.now()
-            lancto.saldo = 0
-
-            movto_lanc = Movtos_lancamentos()
-            movto_lanc.lancamento = lancto
-            movto_lanc.dt_movimento = lancto.dt_lancamento
+            movto_lanc = Movtos_lancamentos.objects.get(lancamento=lancto, tipo_movto='C')
             movto_lanc.vlr_movimento = lancto.vlr_lancamento
-            movto_lanc.desc_movimento = 'Recebido'
-            movto_lanc.tipo_movto = 'B'
             movto_lanc.save()
-
-        else:
-            lancto.data_baixa is None
-            movto_lanc = Movtos_lancamentos.objects.filter(lancamento = lancto,tipo_movto='B')
-            movto_lanc.delete()
-
-
 
 
         lancto.save()
 
-        movto_lanc = Movtos_lancamentos.objects.get(lancamento=lancto, tipo_movto='C')
-        movto_lanc.vlr_movimento = lancto.vlr_lancamento
-        movto_lanc.save()
 
         confirma_parcela = self.request.POST.get('confirma_parcela','N')
         if confirma_parcela == 'S':
@@ -757,6 +770,7 @@ class EditDespesa(LoginRequiredMixin,UpdateView):
         context = super(EditDespesa, self).get_context_data(**kwargs)
         context['tem_parcela'] = self.object.verifica_parcela()
         context['dados_titulo'] = Lancamentos.objects.get(pk=self.kwargs['pk'])
+        context['movimentacoes'] = Movtos_lancamentos.objects.filter(lancamento=Lancamentos.objects.get(pk=self.kwargs['pk']))
         return context
 
     def get_form_kwargs(self):
@@ -778,55 +792,72 @@ class EditDespesa(LoginRequiredMixin,UpdateView):
         lancto = form.save(commit=False)
         lancto.vlr_lancamento = lancto.valor_text.replace('R$','').replace('.','').replace(',','.')
 
-        if lancto.indice is None and not lancto.situacao:
-            indice_padrao = Indice.objects.get(master_user=self.request.user.user_master, indice_padrao=True)
-            cotacao_padrao = Cotacao.objects.get(indice=indice_padrao, cotacao_padrao=True)
-            lancto.indice = indice_padrao
-            lancto.cotacao = cotacao_padrao
-            if not lancto.situacao:
+        # if lancto.indice is None and not lancto.situacao:
+        #     indice_padrao = Indice.objects.get(master_user=self.request.user.user_master, indice_padrao=True)
+        #     cotacao_padrao = Cotacao.objects.get(indice=indice_padrao, cotacao_padrao=True)
+        #     lancto.indice = indice_padrao
+        #     lancto.cotacao = cotacao_padrao
+        #     if not lancto.situacao:
+        #         lancto.saldo = lancto.vlr_lancamento
+        # else:
+        #     cotacao = lancto.cotacao
+        #     valor_lancamento = lancto.vlr_lancamento
+        #     conta = Decimal(valor_lancamento) * Decimal(cotacao.valor_cotacao)
+        #     lancto.vlr_lancamento = conta
+        #     lancto.valor_text =str(round(lancto.vlr_lancamento,2)).replace('.',',')
+        #     if not lancto.situacao:
+        #         lancto.saldo = lancto.vlr_lancamento
+
+
+
+
+
+        if 'situacao' in form.changed_data:
+
+            if lancto.situacao is True and not lancto.reaberto:
+                lancto.data_baixa = datetime.now()
+
+                movto_lanc = Movtos_lancamentos()
+                movto_lanc.lancamento = lancto
+                movto_lanc.dt_movimento = lancto.dt_lancamento
+                movto_lanc.vlr_movimento = lancto.saldo
+                movto_lanc.desc_movimento = 'Pago'
+                movto_lanc.tipo_movto = 'B'
+                movto_lanc.save()
+
+                lancto.saldo = 0
+                lancto.reaberto = False
+
+            elif lancto.reaberto:
+                lancto.situacao = False
+                lancto.reaberto = False
+                lancto.data_baixa is None
+            else:
+
+                lancto.data_baixa is None
                 lancto.saldo = lancto.vlr_lancamento
-        else:
-            cotacao = lancto.cotacao
-            valor_lancamento = lancto.vlr_lancamento
-            conta = Decimal(valor_lancamento) * Decimal(cotacao.valor_cotacao)
-            lancto.vlr_lancamento = conta
-            lancto.valor_text =str(round(lancto.vlr_lancamento,2)).replace('.',',')
-            if not lancto.situacao:
+                lancto.data_baixa = None
+                movto_lanc = Movtos_lancamentos.objects.filter(lancamento=lancto, tipo_movto='B')
+                movto_lanc.delete()
+                lancto.reaberto = False
+
+
+
+        if 'valor_text' in form.changed_data:
+
+            vlr_movtos_baixas = Movtos_lancamentos.objects.filter(lancamento=lancto,tipo_movto='B').aggregate(vlr_movimento=Sum('vlr_movimento'))
+            print(vlr_movtos_baixas['vlr_movimento'])
+
+            if vlr_movtos_baixas != 0:
+                lancto.saldo = Decimal(lancto.vlr_lancamento) - vlr_movtos_baixas['vlr_movimento']
+            else:
                 lancto.saldo = lancto.vlr_lancamento
 
-        if lancto.situacao is True:
-            lancto.data_baixa = datetime.now()
-            lancto.saldo = 0
-
-            movto_lanc = Movtos_lancamentos()
-            movto_lanc.lancamento = lancto
-            movto_lanc.dt_movimento = lancto.dt_lancamento
+            movto_lanc = Movtos_lancamentos.objects.get(lancamento=lancto, tipo_movto='C')
             movto_lanc.vlr_movimento = lancto.vlr_lancamento
-
-            movto_lanc.desc_movimento = 'Pago'
-            movto_lanc.tipo_movto = 'B'
             movto_lanc.save()
-        else:
-            lancto.data_baixa is None
-            movto_lanc = Movtos_lancamentos.objects.filter(lancamento=lancto, tipo_movto='B')
-            movto_lanc.delete()
-
 
         lancto.save()
-
-        movto_lanc = Movtos_lancamentos.objects.get(lancamento=lancto,tipo_movto='C')
-        movto_lanc.vlr_movimento = lancto.vlr_lancamento
-        movto_lanc.save()
-
-        if lancto.situacao is True:
-            movto_lanc = Movtos_lancamentos()
-            movto_lanc.lancamento = lancto
-            movto_lanc.dt_movimento = lancto.dt_lancamento
-            movto_lanc.vlr_movimento = lancto.vlr_lancamento
-            movto_lanc.conta_financeira = lancto.conta_finan
-            movto_lanc.desc_movimento = 'Pago'
-            movto_lanc.tipo_movto = 'B'
-            movto_lanc.save()
 
 
 
@@ -1021,30 +1052,6 @@ class BaixaParcial(LoginRequiredMixin,UpdateView):
         if diferenca != 0:
             lancto.data_baixa = None
 
-        #     movto_lanc = Movtos_lancamentos()
-        #     movto_lanc.lancamento = lancto
-        #     movto_lanc.dt_movimento = lancto.data_baixa
-        #     movto_lanc.vlr_movimento = valor_baixa
-        #     movto_lanc.conta_financeira = lancto.conta_finan
-        #     if lancto.tipo_lancamento == 'R':
-        #         movto_lanc.desc_movimento = 'Recebido'
-        #     else:
-        #         movto_lanc.desc_movimento = 'Pago'
-        #     movto_lanc.tipo_movto = 'B'
-        #     movto_lanc.save()
-        # else:
-        #
-        #     movto_lanc = Movtos_lancamentos()
-        #     movto_lanc.lancamento = lancto
-        #     movto_lanc.dt_movimento = lancto.data_baixa
-        #     movto_lanc.vlr_movimento = valor_baixa
-        #     movto_lanc.conta_financeira = lancto.conta_finan
-        #     if lancto.tipo_lancamento == 'R':
-        #         movto_lanc.desc_movimento = 'Recebimento Parcial'
-        #     else:
-        #         movto_lanc.desc_movimento = 'Pagamento Parcial'
-        #     movto_lanc.tipo_movto = 'B'
-        #     movto_lanc.save()
 
         lancto.save()
 
@@ -1057,6 +1064,47 @@ class BaixaParcial(LoginRequiredMixin,UpdateView):
 
 
 
+@login_required
+def infoLanctos(request,pk):
+
+    if request.is_ajax():
+        template_name = '_info_lancto.html'
+    else:
+        raise Http404
+
+    lancto = Lancamentos.objects.get(pk=pk)
+    movimentacoes = Movtos_lancamentos.objects.filter(lancamento=lancto)
+
+    context = {
+        'lancto': lancto,
+        'movimentacoes' : movimentacoes,
+    }
+
+    return render(request, template_name, context)
+
+
+
+
+
+@login_required
+def exclui_movimentacao(request,pk):
+
+    movtodel = Movtos_lancamentos.objects.get(pk=pk)
+    lancto = Lancamentos.objects.get(pk=movtodel.lancamento.pk)
+
+    saldo = lancto.saldo
+    novo_saldo = saldo + movtodel.vlr_movimento
+
+    movtodel.delete()
+    lancto.saldo = novo_saldo
+    if lancto.situacao is True:
+        lancto.situacao = False
+        lancto.reaberto = True
+    lancto.save()
+
+
+
+    return HttpResponse('ok')
 
 
 edit_despesa = EditDespesa.as_view()

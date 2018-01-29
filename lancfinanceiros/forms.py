@@ -265,7 +265,7 @@ class FiltroLancamentosbaixa(forms.Form):
 class FormBaixaLancamento(forms.Form):
 
     lanc_baixa = forms.ModelMultipleChoiceField(queryset=Lancamentos.objects.all())
-    data_baixa = forms.DateField()
+    data_baixa = forms.DateField(required=True)
     conta_financeira = forms.ModelChoiceField(label="Conta Financeira",empty_label='Escolha a Conta',required=False,queryset=Contafinanceira.objects.none())
 
 

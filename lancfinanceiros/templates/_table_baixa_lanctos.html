@@ -28,23 +28,25 @@
                        </small></td>
                     <td style="width:3%; heigth:10%;"><small>{{ lanc.dt_lancamento|date:'d/m/Y' }}</small></td>
                     <td style="width:3%; heigth:10%;"><small>{{ lanc.dt_vencimento|date:'d/m/Y'  }}</small></td>
-                    <td style="width:2%; heigth:10%;">{% if lanc.tipo_lancamento == 'R' %}<strong class="text-success">{{ lanc.vlr_lancamento }}</strong>
-                                          {% else %}   <h6 class="text-danger">{{ lanc.vlr_lancamento }}</h6>
+                    <td style="width:2%; heigth:10%;">{% if lanc.tipo_lancamento == 'R' %}<span class="text-success">{{ lanc.vlr_lancamento }}</span>
+                                          {% else %}   <span class="text-danger">{{ lanc.vlr_lancamento }}</span>
                                           {% endif %}
                     </td>
                     <td style="width:2%; heigth:10%;">{% if lanc.tipo_lancamento == 'R' %}<strong class="text-success">{{ lanc.saldo }}</strong>
-                                          {% else %}   <h5 class="text-danger">{{ lanc.saldo }}</h5>
+                                          {% else %}   <strong class="text-danger">{{ lanc.saldo }}<strong>
                                           {% endif %}
                     </td>
-                    <td style="width:2%; heigth:10%;">{% if lanc.tipo_lancamento == 'R' %} <span class="badge badge-success" text="Receita">R</span>
+                    <td style="width:1%; heigth:10%;">{% if lanc.tipo_lancamento == 'R' %} <span class="badge badge-success" text="Receita">R</span>
                                           {% else %} <span class="badge badge-danger" text="Despesa">D</span>
                                           {% endif %}
                     </td>
-                    <td style="width:5%">
+                    <td style="width:6%">
                         <button type="button" class="btn btn-sm  btn-outline-primary baixa_parcial"  href="{% url 'baixa_parcial' lanc.pk %}" data-toggle="tooltip" data-placement="bottom" title="Baixar Lançamento indiviual">
                             <i class="fa fa-check"></i>
                         </button>
-
+                        <button type="button" class="btn btn-sm btn-outline-info info_lancto"  href="{% url 'infoLanctos' lanc.pk %}" data-toggle="tooltip" data-placement="bottom" title="Mais informações">
+                            <i class="fa fa-info-circle"></i>
+                        </button>
 
                     </td>
                 </tr>

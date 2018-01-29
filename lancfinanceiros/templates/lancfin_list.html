@@ -57,32 +57,33 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-3">
                             <div class="form-material input-group">
                                 <label>{{ form.cadgeral.label_tag }}</label>
                                 {% render_field form.cadgeral class="chosen-select" %}
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-3">
                             <div class="form-material input-group">
                                 <label>{{ form.plano_finan.label_tag }}</label>
                                 {% render_field form.plano_finan class="chosen-select" %}
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-3">
                             <div class="form-material input-group">
                                 <label>{{ form.c_custo.label_tag }}</label>
                                 {% render_field form.c_custo class="chosen-select" %}
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-3">
                             <div class="form-material input-group">
                                 <label>{{ form.conta_finan.label_tag }}</label>
                                 {% render_field form.conta_finan class="chosen-select" %}
                             </div>
                         </div>
+                    </div>
+                    <div class="row">
+
                     </div>
                 </div>
                 <br>
@@ -306,6 +307,33 @@
 </div>
 
 
+<div class="modal fade" id="modal-infolancto" tabindex="-1" role="dialog" aria-labelledby="modal-slideleft" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-slideright " role="document">
+        <div class="modal-content">
+            <div class="block block-themed block-transparent mb-0">
+                <div class="block-header bg-primary-dark">
+                    <h3 class="block-title titulo_modal"></h3>
+                    <div class="block-options">
+                        <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+                            <i class="si si-close"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="block-content">
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-alt-secondary" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
 
 
 
@@ -516,9 +544,9 @@ $(".new_receita").on("click",function(e){
 
           $(".form_inc .cancel_form").on("click",function(e){
             $('.form_inc').hide("drop");
-            $('.form_busca').show("puff");
             $('.table_lancfinanceiro').show("puff");
             $('.btn_lancamentos').show("puff");
+
           });
     });
 });
@@ -658,7 +686,6 @@ $(".new_despesa").on("click",function(e){
 
           $(".form_inc_despesa .cancel_form").on("click",function(e){
             $('.form_inc_despesa').hide("drop");
-            $('.form_busca').show("puff");
             $('.table_lancfinanceiro').show("puff");
             $('.btn_lancamentos').show("puff");
           });
@@ -703,9 +730,55 @@ $(".table_lancfinanceiro").on("click", ".edit_lancto",function(e){
           $('.table_lancfinanceiro').hide("drop");
           $('.btn_lancamentos').hide("drop");
 
+
           {% include 'js_floating_labels.html' %}
           {% include 'js_masks.html' %}
+          {% include 'js_tabs.html' %}
+          {% include 'js_tabelas_formularios.html' %}
+
+
           $('.chosen-select').chosen({ width: '100%' });
+
+          if ( $.fn.dataTable.isDataTable( '#tabela_movimentacoes' ) ) {
+               table = $('#tabela_movimentacoes').DataTable();
+          }
+          else {
+                table = $('#tabela_movimentacoes').DataTable( {
+                pageLength: 4,
+                autoWidth: false,
+                searching: false,
+                "language": {
+                    "lengthMenu": "Mostrando _MENU_ registros por página",
+                    "search" : "Procurar: ",
+                    "info" : "Exibindo de _START_ a _END_ de _TOTAL_ registros",
+                    "infoEmpty": "Nenhum registro encontrado",
+                    "infoFiltered": "(filtrado entre _MAX_ registros)",
+                    "paginate" : {
+                        "first":      "Primeiro",
+                        "last":       "Último",
+                        "next":       "Próximo",
+                        "previous":   "Anterior"
+                },
+                responsive: {
+                    details: {
+                        type: 'column'
+                    }
+                },
+                columnDefs: [ {
+                    className: 'control',
+                    orderable: false,
+                    targets:   0
+                } ],
+                order: [ 1, 'asc' ]},
+
+                dom: "<'row'<'col-sm-12'tr>>" +
+                    "<'row'<'col-sm-6'i><'col-sm-6'p>>"
+
+          });
+}
+
+
+
           $('.form_edit #id_vlr_text').focus();
 
 
@@ -749,9 +822,10 @@ $(".table_lancfinanceiro").on("click", ".edit_lancto",function(e){
 
           $(".form_edit .cancel_form").on("click",function(e){
               $('.form_edit').hide("drop");
-              $('.form_busca').show("puff");
               $('.table_lancfinanceiro').show("puff");
               $('.btn_lancamentos').show("puff");
+              $('#tabela_movimentacoes').remove();
+
           });
     });
 });
@@ -760,15 +834,12 @@ $(".table_lancfinanceiro").on("click", ".edit_lancto",function(e){
 $(".form_edit").on("submit","form",function(e){
 	 	 e.preventDefault();
 
-
         var tem_parcela = $('#tem_parcela').val();
          if(tem_parcela == 'S'){
 			if(confirm("Lançamento tem outras parcelas, deseja alterar todas?")){
 				$('#confirma_parcela').val('S');
 			}
          }
-
-
 
 	 	 var dados = $(this).serialize();
 	 	 $.post($(this).attr('action'),dados,function(result){
@@ -778,14 +849,28 @@ $(".form_edit").on("submit","form",function(e){
 	 });
 
 
-
-
 $("#confirma_baixa").on("click",function(e){
     var data = $('#data_baixa_modal').val();
     $('#data_baixa').val(data);
     $('#form_baixa_lancamento').submit();
 
 });
+
+
+$(".table_lancfinanceiro").on("click",".info_lancto",function(e){
+   e.preventDefault();
+   $("#modal-infolancto .block-content").load($(this).attr('href'), function(){
+       $('#modal-infolancto').modal("show");
+       $('.titulo_modal').text("Informações Lançamento");
+       {% include 'js_tabs.html' %}
+   });
+
+});
+
+
+
+
+
 
 
 $(".delete_lancto").on("click", function(e){
