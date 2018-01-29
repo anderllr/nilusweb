@@ -1002,7 +1002,7 @@ def baixfin_list(request):
     context = {
         'lanctos': lanctos,
         'form': form,
-        'form_baixa': form_baixa,
+        # 'form_baixa': form_baixa,
         'filtrou': filtrou,
         'empresa_init' : empresa_init,
     }

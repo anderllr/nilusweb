@@ -248,7 +248,6 @@ class FiltroLancamentosbaixa(forms.Form):
     conta_finan = forms.ModelChoiceField(label='Conta Financeira',empty_label='Todas',required=False,queryset=Contafinanceira.objects.none())
 
 
-
     def __init__(self, empresa, cliente, plano_finan, c_custo, conta_finan, *args, **kwargs):
         super(FiltroLancamentosbaixa, self).__init__(*args, **kwargs)
         self.fields['empresa'].queryset = empresa
@@ -264,7 +263,7 @@ class FiltroLancamentosbaixa(forms.Form):
 
 class FormBaixaLancamento(forms.Form):
 
-    lanc_baixa = forms.ModelMultipleChoiceField(queryset=Lancamentos.objects.all())
+    lanc_baixa = forms.ModelMultipleChoiceField(queryset=Lancamentos.objects.none())
     data_baixa = forms.DateField(required=True)
     conta_financeira = forms.ModelChoiceField(label="Conta Financeira",empty_label='Escolha a Conta',required=False,queryset=Contafinanceira.objects.none())
 

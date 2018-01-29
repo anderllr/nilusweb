@@ -33,26 +33,26 @@
                         <div class="col-lg-4">
                                 <label for="id_data_lanc_ini">Data Lançamento</label>
                                 <div class="input-daterange input-group js-datepicker-enabled" data-date-format="dd/mm/yyyy" data-week-start="1" data-autoclose="true" data-today-highlight="true">
-                                    {% render_field form.data_lanc_ini class="form-control js-datepicker"   placeholder="de" data-week-start="1" data-autoclose="true" data-today-highlight="true"%}
+                                    {% render_field form.data_lanc_ini class="form-control js-datepicker"   placeholder="dd/mm/aaaa" data-week-start="1" data-autoclose="true" data-today-highlight="true"%}
                                     <span class="input-group-addon font-w600">  &nbsp; até  &nbsp; </span>
-                                    {% render_field form.data_lanc_fim class="form-control js-datepicker"   placeholder="até" data-week-start="1" data-autoclose="true" data-today-highlight="true"%}
+                                    {% render_field form.data_lanc_fim class="form-control js-datepicker"   placeholder="dd/mm/aaaa" data-week-start="1" data-autoclose="true" data-today-highlight="true"%}
                                 </div>
                             </div>
 
                         <div class="col-lg-4">
                                 <label for="id_data_venc_ini">Data Vencimento</label>
                                 <div class="input-daterange input-group js-datepicker-enabled" data-date-format="dd/mm/yyyy" data-week-start="1" data-autoclose="true" data-today-highlight="true">
-                                    {% render_field form.data_venc_ini class="form-control js-datepicker"   placeholder="de" data-week-start="1" data-autoclose="true" data-today-highlight="true"%}
+                                    {% render_field form.data_venc_ini class="form-control js-datepicker"   placeholder="dd/mm/aaaa" data-week-start="1" data-autoclose="true" data-today-highlight="true"%}
                                     <span class="input-group-addon font-w600"> &nbsp; até  &nbsp; </span>
-                                    {% render_field form.data_venc_fim class="form-control js-datepicker"   placeholder="até" data-week-start="1" data-autoclose="true" data-today-highlight="true"%}
+                                    {% render_field form.data_venc_fim class="form-control js-datepicker"   placeholder="dd/mm/aaaa" data-week-start="1" data-autoclose="true" data-today-highlight="true"%}
                                 </div>
                         </div>
                         <div class="col-lg-4">
                                 <label for="id_data_baix_ini">Data Baixa</label>
                                 <div class="input-daterange input-group js-datepicker-enabled" data-date-format="dd/mm/yyyy" data-week-start="1" data-autoclose="true" data-today-highlight="true">
-                                    {% render_field form.data_baix_ini class="form-control js-datepicker"   placeholder="de" data-week-start="1" data-autoclose="true" data-today-highlight="true"%}
+                                    {% render_field form.data_baix_ini class="form-control js-datepicker"   placeholder="dd/mm/aaaa" data-week-start="1" data-autoclose="true" data-today-highlight="true"%}
                                     <span class="input-group-addon font-w600"> &nbsp; até  &nbsp;</span>
-                                    {% render_field form.data_baix_fim class="form-control js-datepicker"   placeholder="até" data-week-start="1" data-autoclose="true" data-today-highlight="true"%}
+                                    {% render_field form.data_baix_fim class="form-control js-datepicker"   placeholder="dd/mm/aaaa" data-week-start="1" data-autoclose="true" data-today-highlight="true"%}
                                 </div>
                         </div>
                     </div>
@@ -873,7 +873,7 @@ $(".table_lancfinanceiro").on("click",".info_lancto",function(e){
 
 
 
-$(".delete_lancto").on("click", function(e){
+$(".table_lancfinanceiro").on("click", ".delete_lancto",function(e){
     e.preventDefault();
     var linkURL = $(this).attr("href");
     swal({
