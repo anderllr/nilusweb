@@ -53,42 +53,166 @@ class Lancamentos(models.Model):
         return Lancamentos.objects.filter(lancamento_pai=self).exists()
 
 
-    def altera_parcelas(self):
-        if self.lancamento_pai:
-            parcelas = Lancamentos.objects.filter(
-                models.Q(lancamento_pai=self.lancamento_pai) | models.Q(pk=self.lancamento_pai.pk)
-            )
-            parcelas.update(
-                plr_financeiro=self.plr_financeiro,c_custo=self.c_custo,valor_text=self.valor_text,
-                vlr_lancamento = self.vlr_lancamento,indice=self.indice,cotacao=self.cotacao,
-                descricao=self.descricao,saldo=self.saldo
-            )
-            for p in parcelas:
-                movto_lanc = Movtos_lancamentos.objects.get(lancamento=p, tipo_movto='C')
-                movto_lanc.vlr_movimento = p.vlr_lancamento
-                movto_lanc.save()
+    def altera_parcelas(self,confirma_parcela,alterado):
+        if confirma_parcela == 'T':
+            if self.lancamento_pai:
+                parcelas = Lancamentos.objects.filter(
+                    models.Q(lancamento_pai=self.lancamento_pai) | models.Q(pk=self.lancamento_pai.pk)
+                )
+                for a in alterado:
+                    if a == 'situacao':
+                        situacao_new = a
+                        parcelas.update(situacao=self.situacao)
+                        if self.situacao == True:
+                            parcelas.update(data_baixa=self.data_baixa)
+                    else:
+                        situacao_new = 'N'
 
-        else:
-            parcelas = Lancamentos.objects.filter(lancamento_pai = self)
-            parcelas.update(
-                plr_financeiro=self.plr_financeiro, c_custo=self.c_custo,valor_text=self.valor_text,
-                vlr_lancamento=self.vlr_lancamento, indice=self.indice, cotacao=self.cotacao,
-                descricao=self.descricao,saldo=self.saldo
-            )
-            for p in parcelas:
-                movto_lanc = Movtos_lancamentos.objects.get(lancamento=p, tipo_movto='C')
-                movto_lanc.vlr_movimento = p.vlr_lancamento
-                movto_lanc.save()
+                parcelas.update(
+                    plr_financeiro=self.plr_financeiro,c_custo=self.c_custo,valor_text=self.valor_text,
+                    vlr_lancamento = self.vlr_lancamento,indice=self.indice,cotacao=self.cotacao,
+                    descricao=self.descricao,saldo=self.saldo
 
-    def baixa_lancamento(self):
+                )
+                for p in parcelas:
+                    movto_lanc = Movtos_lancamentos.objects.get(lancamento=p, tipo_movto='C')
+                    movto_lanc.vlr_movimento = p.vlr_lancamento
+                    movto_lanc.save()
+                    if situacao_new == 'situacao':
+                        if p.situacao == True:
+                            movto_lanc_del = Movtos_lancamentos.objects.get(lancamento=p,tipo_movto='B')
+                            movto_lanc_del.delete()
 
-        movto_lanc = Movtos_lancamentos()
-        movto_lanc.lancamento = self
-        movto_lanc.dt_movimento = self.data_baixa
-        movto_lanc.vlr_movimento = self.vlr_lancamento
-        movto_lanc.desc_movimento = 'Baixa'
-        movto_lanc.tipo_movto = 'B'
-        movto_lanc.save()
+                            movto_lanc = Movtos_lancamentos()
+                            movto_lanc.lancamento = p
+                            movto_lanc.dt_movimento = p.dt_baixa
+                            movto_lanc.vlr_movimento = p.saldo
+                            if p.tipo_lancamento == 'R':
+                                movto_lanc.desc_movimento = 'Recebido'
+                            else:
+                                movto_lanc.desc_movimento = 'Pago'
+                            movto_lanc.tipo_movto = 'B'
+                            movto_lanc.save()
+            else:
+                parcelas = Lancamentos.objects.filter(lancamento_pai = self)
+
+                for a in alterado:
+                    if a == 'situacao':
+                        situacao_new = a
+                        parcelas.update(situacao=self.situacao)
+                        if self.situacao == True:
+                            parcelas.update(data_baixa=self.data_baixa)
+                    else:
+                        situacao_new = 'N'
+
+
+                parcelas.update(
+                    plr_financeiro=self.plr_financeiro, c_custo=self.c_custo,valor_text=self.valor_text,
+                    vlr_lancamento=self.vlr_lancamento, indice=self.indice, cotacao=self.cotacao,
+                    descricao=self.descricao,saldo=self.saldo
+                )
+                for p in parcelas:
+                    movto_lanc = Movtos_lancamentos.objects.get(lancamento=p, tipo_movto='C')
+                    movto_lanc.vlr_movimento = p.vlr_lancamento
+                    movto_lanc.save()
+                    if situacao_new == 'situacao':
+                        if p.situacao == True:
+                            movto_lanc_del = Movtos_lancamentos.objects.filter(lancamento=p, tipo_movto='B')
+                            movto_lanc_del.delete()
+
+                            movto_lanc = Movtos_lancamentos()
+                            movto_lanc.lancamento = p
+                            movto_lanc.dt_movimento = p.data_baixa
+                            movto_lanc.vlr_movimento = p.saldo
+                            if p.tipo_lancamento == 'R':
+                                movto_lanc.desc_movimento = 'Recebido'
+                            else:
+                                movto_lanc.desc_movimento = 'Pago'
+                            movto_lanc.tipo_movto = 'B'
+                            movto_lanc.save()
+                        else:
+                            movto_lanc_del = Movtos_lancamentos.objects.filter(lancamento=p, tipo_movto='B')
+                            movto_lanc_del.delete()
+
+        elif confirma_parcela == 'P':
+            if self.lancamento_pai:
+                parcelas = Lancamentos.objects.filter(
+                    models.Q(lancamento_pai=self.lancamento_pai) | models.Q(pk=self.lancamento_pai.pk,situacao=False)
+                )
+
+                for a in alterado:
+                    if a == 'situacao':
+                        situacao_new = a
+                        parcelas.update(situacao=self.situacao)
+                        if self.situacao == True:
+                            parcelas.update(data_baixa=self.data_baixa)
+                    else:
+                        situacao_new = 'N'
+
+                parcelas.update(
+                    plr_financeiro=self.plr_financeiro,c_custo=self.c_custo,valor_text=self.valor_text,
+                    vlr_lancamento = self.vlr_lancamento,indice=self.indice,cotacao=self.cotacao,
+                    descricao=self.descricao,saldo=self.saldo
+                )
+                for p in parcelas:
+                    movto_lanc = Movtos_lancamentos.objects.get(lancamento=p, tipo_movto='C')
+                    movto_lanc.vlr_movimento = p.vlr_lancamento
+                    movto_lanc.save()
+                    if situacao_new == 'situacao':
+                        if p.situacao == True:
+                            movto_lanc_del = Movtos_lancamentos.objects.get(lancamento=p,tipo_movto='B')
+                            movto_lanc_del.delete()
+
+                            movto_lanc = Movtos_lancamentos()
+                            movto_lanc.lancamento = p
+                            movto_lanc.dt_movimento = p.dt_baixa
+                            movto_lanc.vlr_movimento = p.saldo
+                            if p.tipo_lancamento == 'R':
+                                movto_lanc.desc_movimento = 'Recebido'
+                            else:
+                                movto_lanc.desc_movimento = 'Pago'
+                            movto_lanc.tipo_movto = 'B'
+                            movto_lanc.save()
+            else:
+                parcelas = Lancamentos.objects.filter(situacao=False,lancamento_pai=self)
+
+                for a in alterado:
+                    if a == 'situacao':
+                        situacao_new = a
+                        parcelas.update(situacao=self.situacao)
+                        if self.situacao == True:
+                            parcelas.update(data_baixa=self.data_baixa)
+                    else:
+                        situacao_new = 'N'
+
+
+                parcelas.update(
+                    plr_financeiro=self.plr_financeiro, c_custo=self.c_custo,valor_text=self.valor_text,
+                    vlr_lancamento=self.vlr_lancamento, indice=self.indice, cotacao=self.cotacao,
+                    descricao=self.descricao,saldo=self.saldo
+                )
+                for p in parcelas:
+                    movto_lanc = Movtos_lancamentos.objects.get(lancamento=p, tipo_movto='C')
+                    movto_lanc.vlr_movimento = p.vlr_lancamento
+                    movto_lanc.save()
+                    if situacao_new == 'situacao':
+                        if p.situacao == True:
+                            movto_lanc_del = Movtos_lancamentos.objects.filter(lancamento=p, tipo_movto='B')
+                            movto_lanc_del.delete()
+
+                            movto_lanc = Movtos_lancamentos()
+                            movto_lanc.lancamento = p
+                            movto_lanc.dt_movimento = p.data_baixa
+                            movto_lanc.vlr_movimento = p.saldo
+                            if p.tipo_lancamento == 'R':
+                                movto_lanc.desc_movimento = 'Recebido'
+                            else:
+                                movto_lanc.desc_movimento = 'Pago'
+                            movto_lanc.tipo_movto = 'B'
+                            movto_lanc.save()
+                        else:
+                            movto_lanc_del = Movtos_lancamentos.objects.filter(lancamento=p, tipo_movto='B')
+                            movto_lanc_del.delete()
 
 
 

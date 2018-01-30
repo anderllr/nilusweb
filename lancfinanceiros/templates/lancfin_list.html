@@ -834,13 +834,6 @@ $(".table_lancfinanceiro").on("click", ".edit_lancto",function(e){
 $(".form_edit").on("submit","form",function(e){
 	 	 e.preventDefault();
 
-        var tem_parcela = $('#tem_parcela').val();
-         if(tem_parcela == 'S'){
-			if(confirm("Lançamento tem outras parcelas, deseja alterar todas?")){
-				$('#confirma_parcela').val('S');
-			}
-         }
-
 	 	 var dados = $(this).serialize();
 	 	 $.post($(this).attr('action'),dados,function(result){
 	 	    $(".form_edit").html(result);

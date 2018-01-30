@@ -38,6 +38,7 @@
                 {{ error }}
                 </div>
                 {% endfor %}
+
              <div class="block-content tab-content">
                 <div class="tab-pane active" id="aba_lancamento" role="tabpanel">
                     <div class="form-group row">
@@ -61,7 +62,7 @@
                                 {% endfor %}
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="ja_recebido">
                                 <label class="css-control css-control-sm css-control-primary css-switch">
                                     {% render_field form.situacao type="checkbox" class='css-control-input' %}
@@ -153,6 +154,32 @@
                                 {% endfor %}
                             </div>
                        </div>
+                      <div>
+                        {% if tem_parcela|yesno:'S,N' == 'S' %}
+                        <a class="block block-link-pop block-bordered block-themed" href="javascript:void(0)">
+                                <div class="block-header bg-warning">
+                                    <h3 class="block-title text-black"><strong>ATENÇÃO!</strong> &nbsp;&nbsp;   Este Lançamento possui outros vinculados</h3>
+                                </div>
+                                <div class="block-content">
+                                    Selecione uma das opções abaixo:
+
+                                    <ul id="id_altera_parcelas">
+
+                                    <li><label for="id_altera_parcelas_0"><input type="radio" name="altera_parcelas" value="N" required="" id="id_altera_parcelas_0" checked="">
+                                        <span class="text-primary">Alterar <strong>"SOMENTE ESTA"</strong></span></label>
+                                    </li>
+                                    <li><label for="id_altera_parcelas_1"><input type="radio" name="altera_parcelas" value="P" required="" id="id_altera_parcelas_1">
+                                        Alterar parcelas <strong>"PENDENTES"</strong></label>
+                                    </li>
+                                    <li><label for="id_altera_parcelas_2"><input type="radio" name="altera_parcelas" value="T" required="" id="id_altera_parcelas_2">
+                                        Alterar <strong>"TODAS VINCULADAS"</strong><small>***(Lembre-se que esta opção pode afetar seus saldos de Banco/Caixa)</small></label>
+                                    </li>
+                                </ul>
+
+                                </div>
+                            </a>
+                          {% endif %}
+                      </div>
                     </div>
                 </div>
                 <div class="tab-pane" id="aba_movimentacoes" role="tabpanel">

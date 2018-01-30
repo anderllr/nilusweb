@@ -424,8 +424,8 @@ class EditReceita(LoginRequiredMixin,UpdateView):
     def form_valid(self, form):
         lancto = form.save(commit=False)
 
-        campos = form.changed_data
-        print(campos)
+
+
 
 
         if 'situacao' in form.changed_data:
@@ -461,7 +461,8 @@ class EditReceita(LoginRequiredMixin,UpdateView):
             lancto.vlr_lancamento = lancto.valor_text.replace('R$', '').replace('.', '').replace(',', '.')
             vlr_movtos_baixas = Movtos_lancamentos.objects.filter(lancamento=lancto,tipo_movto='B').aggregate(vlr_movimento=Sum('vlr_movimento'))
 
-            if vlr_movtos_baixas != 0:
+
+            if vlr_movtos_baixas['vlr_movimento'] != None:
                 lancto.saldo = Decimal(lancto.vlr_lancamento) - vlr_movtos_baixas['vlr_movimento']
             else:
                 lancto.saldo = lancto.vlr_lancamento
@@ -474,10 +475,13 @@ class EditReceita(LoginRequiredMixin,UpdateView):
         lancto.save()
 
 
-        confirma_parcela = self.request.POST.get('confirma_parcela','N')
-        if confirma_parcela == 'S':
+        confirma_parcela = form.cleaned_data.get('altera_parcelas','N')
+
+
+        if confirma_parcela != 'N':
             lancto = form.instance
-            lancto.altera_parcelas()
+            alterado = form.changed_data
+            lancto.altera_parcelas(confirma_parcela,alterado)
 
         if self.request.is_ajax():
             context = self.get_context_data(form=form, success=True, ok='ok')
@@ -859,12 +863,12 @@ class EditDespesa(LoginRequiredMixin,UpdateView):
 
         lancto.save()
 
-
-
-        confirma_parcela = self.request.POST.get('confirma_parcela','N')
-        if confirma_parcela == 'S':
+        confirma_parcela = form.cleaned_data.get('altera_parcelas', 'N')
+        if confirma_parcela != 'N':
             lancto = form.instance
-            lancto.altera_parcelas()
+            alterado = form.changed_data
+            lancto.altera_parcelas(confirma_parcela, alterado)
+
 
         if self.request.is_ajax():
             context = self.get_context_data(form=form, success=True, ok='ok')

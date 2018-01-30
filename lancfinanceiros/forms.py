@@ -68,6 +68,10 @@ class FormCreateReceita(forms.ModelForm):
 
 
 class FormEditReceita(forms.ModelForm):
+    altera_parcelas = forms.ChoiceField(label='Altera', choices=(
+        ('N', 'Somente Este'), ('A', 'Ativos'), ('T', 'Todos')),widget=forms.RadioSelect,initial='N')
+
+
     def __init__(self, user, *args, **kwargs):
         super(FormEditReceita, self).__init__(*args, **kwargs)
         if user.is_masteruser is True:
@@ -77,6 +81,7 @@ class FormEditReceita(forms.ModelForm):
             self.fields['indice'].queryset = Indice.objects.filter(master_user=user)
             self.fields['conta_finan'].queryset = Contafinanceira.objects.filter(master_user=user,
                                                                                  conta_recebimento=True)
+
         else:
             self.fields['plr_financeiro'].queryset = PlanoFinan.objects.filter(master_user=user.user_master, sinal='R')
             self.fields['cadgeral'].queryset = Cadgeral.objects.filter(master_user=user.user_master, cliente=True)
@@ -165,6 +170,11 @@ class FormCreateDespesa(forms.ModelForm):
 
 
 class FormEditDespesa(forms.ModelForm):
+    altera_parcelas = forms.ChoiceField(label='Altera', choices=(
+        ('N', 'Somente Este'), ('A', 'Ativos'), ('T', 'Todos')),widget=forms.RadioSelect,initial='N')
+
+
+
     def __init__(self, user, *args, **kwargs):
         super(FormEditDespesa, self).__init__(*args, **kwargs)
         if user.is_masteruser is True:
