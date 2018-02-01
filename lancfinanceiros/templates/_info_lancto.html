@@ -20,11 +20,11 @@
                                 <span class="pull-right">Valor: <strong>{{ lancto.vlr_lancamento }}</strong></h3></span>
                         </div>
                         <div class="block-content">
-                         <strong>Descrição: <small>{% if lancto.descricao == None %}  {% else %} {{ lancto.descricao }} {% endif %}</small></strong><br>
+                         <strong>Descrição: <small>{% if lancto.descricao == None %} {% else %}{{ lancto.descricao }} {% endif %}</small></strong><br>
                          <strong>Plano Financeiro: <small>{{ lancto.plr_financeiro }}</small></strong><br>
                          <strong>Centro de Custo: <small>{{ lancto.c_custo }}</small></strong><br>
                          <strong>Conta Financeira: <small>{{ lancto.conta_finan }}</small></strong><br>
-                         <strong>Cadastro: <small>{% if lancto.cageral == None %} Não Informado {% else %}{{ lancto.conta_finan }} {% endif %}</small></strong>
+                         <strong>Cadastro: <small>{% if lancto.cadgeral == None %}  {% else %} {{ lancto.cadgeral }} {% endif %}</small></strong>
                         </div>
                         <br>
                     </div>

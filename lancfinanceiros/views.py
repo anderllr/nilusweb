@@ -231,6 +231,11 @@ class CreateReceita(LoginRequiredMixin,CreateView):
         id_lancto = lancto.pk
 
         if form.cleaned_data.get('parcela',False):
+            lancamento_pai = Lancamentos.objects.get(pk=id_lancto)
+            lancamento_pai.lancamento_pai_id = id_lancto
+            lancamento_pai.save()
+
+
             qtd = form.cleaned_data['qtd']
             dias_vencto = form.cleaned_data['dias_entre_vencto']
             dia_fixo = form.cleaned_data['dia_fixo']
@@ -421,11 +426,11 @@ class EditReceita(LoginRequiredMixin,UpdateView):
 
 
 
+
+
     def form_valid(self, form):
         lancto = form.save(commit=False)
-
-
-
+        lancto.vlr_lancamento = lancto.valor_text.replace('R$', '').replace('.', '').replace(',', '.')
 
 
         if 'situacao' in form.changed_data:
@@ -458,11 +463,12 @@ class EditReceita(LoginRequiredMixin,UpdateView):
                 lancto.reaberto = False
 
         if 'valor_text' in form.changed_data:
-            lancto.vlr_lancamento = lancto.valor_text.replace('R$', '').replace('.', '').replace(',', '.')
-            vlr_movtos_baixas = Movtos_lancamentos.objects.filter(lancamento=lancto,tipo_movto='B').aggregate(vlr_movimento=Sum('vlr_movimento'))
 
+            vlr_movtos_baixas = Movtos_lancamentos.objects.filter(lancamento=lancto, tipo_movto='B').aggregate(
+                vlr_movimento=Sum('vlr_movimento'))
+            print(vlr_movtos_baixas['vlr_movimento'])
 
-            if vlr_movtos_baixas['vlr_movimento'] != None:
+            if vlr_movtos_baixas != 0:
                 lancto.saldo = Decimal(lancto.vlr_lancamento) - vlr_movtos_baixas['vlr_movimento']
             else:
                 lancto.saldo = lancto.vlr_lancamento
@@ -471,17 +477,13 @@ class EditReceita(LoginRequiredMixin,UpdateView):
             movto_lanc.vlr_movimento = lancto.vlr_lancamento
             movto_lanc.save()
 
-
         lancto.save()
 
-
-        confirma_parcela = form.cleaned_data.get('altera_parcelas','N')
-
-
+        confirma_parcela = form.cleaned_data.get('altera_parcelas', 'N')
         if confirma_parcela != 'N':
             lancto = form.instance
             alterado = form.changed_data
-            lancto.altera_parcelas(confirma_parcela,alterado)
+            lancto.altera_parcelas(confirma_parcela, alterado)
 
         if self.request.is_ajax():
             context = self.get_context_data(form=form, success=True, ok='ok')
@@ -613,6 +615,10 @@ class CreateDespesa(LoginRequiredMixin,CreateView):
         id_lancto = lancto.pk
 
         if form.cleaned_data.get('parcela',False):
+            lancamento_pai = Lancamentos.objects.get(pk=id_lancto)
+            lancamento_pai.lancamento_pai_id = id_lancto
+            lancamento_pai.save()
+
             qtd = form.cleaned_data['qtd']
             dias_vencto = form.cleaned_data['dias_entre_vencto']
             dia_fixo = form.cleaned_data['dia_fixo']

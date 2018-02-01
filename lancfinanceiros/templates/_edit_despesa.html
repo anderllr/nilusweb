@@ -97,7 +97,7 @@
                         <div class="col-md-4">
                             <div class="form-material input-group">
                                 <label>Conta</label>
-                                {% render_field form.conta_finan class="chosen-select" %}
+                                {% render_field form.conta_finan class="chosen-select" id="id_conta_finan2" %}
                                 {% for error in form.conta_finan.errors %}
                                 <small class="form-control-feedback"> {{ error }} </small>
                                 {% endfor %}
@@ -111,7 +111,7 @@
                         <div class="col-md-6">
                             <div class="form-material input-group">
                                 <label>Fornecedor</label>
-                                {% render_field form.cadgeral class="chosen-select" %}
+                                {% render_field form.cadgeral class="chosen-select" id="cadgeral_id2" %}
                                 {% for error in form.cadgeral.errors %}
                                 <small class="form-control-feedback"> {{ error }} </small>
                                 {% endfor %}

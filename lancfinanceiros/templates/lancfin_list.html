@@ -735,7 +735,7 @@ $(".table_lancfinanceiro").on("click", ".edit_lancto",function(e){
           {% include 'js_masks.html' %}
           {% include 'js_tabs.html' %}
           {% include 'js_tabelas_formularios.html' %}
-
+          {% include 'js_inclusoes.html' %}
 
           $('.chosen-select').chosen({ width: '100%' });
 
@@ -840,6 +840,7 @@ $(".form_edit").on("submit","form",function(e){
                 window.location.reload();
 	 	 });
 	 });
+
 
 
 $("#confirma_baixa").on("click",function(e){

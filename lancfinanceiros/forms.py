@@ -2,6 +2,8 @@ from accounts.models import User
 from niluscad.models import Company, Propriety, Cadgeral, Ccusto, PlanoFinan, Cadgeral
 from django import forms
 from nilusfin.models import Contafinanceira, Cotacao, Indice
+from pip._vendor.packaging import requirements
+
 from .models import Lancamentos
 
 
@@ -68,8 +70,8 @@ class FormCreateReceita(forms.ModelForm):
 
 
 class FormEditReceita(forms.ModelForm):
-    altera_parcelas = forms.ChoiceField(label='Altera', choices=(
-        ('N', 'Somente Este'), ('A', 'Ativos'), ('T', 'Todos')),widget=forms.RadioSelect,initial='N')
+    altera_parcelas = forms.ChoiceField(label='Altera',required=False, choices=(
+        ('N', 'Somente Este'), ('P', 'Pendentes'), ('T', 'Todos')),widget=forms.RadioSelect,initial='N')
 
 
     def __init__(self, user, *args, **kwargs):
@@ -170,7 +172,7 @@ class FormCreateDespesa(forms.ModelForm):
 
 
 class FormEditDespesa(forms.ModelForm):
-    altera_parcelas = forms.ChoiceField(label='Altera', choices=(
+    altera_parcelas = forms.ChoiceField(label='Altera',required=False, choices=(
         ('N', 'Somente Este'), ('A', 'Ativos'), ('T', 'Todos')),widget=forms.RadioSelect,initial='N')
 
 

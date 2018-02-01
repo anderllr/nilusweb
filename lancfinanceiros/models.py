@@ -71,7 +71,7 @@ class Lancamentos(models.Model):
                 parcelas.update(
                     plr_financeiro=self.plr_financeiro,c_custo=self.c_custo,valor_text=self.valor_text,
                     vlr_lancamento = self.vlr_lancamento,indice=self.indice,cotacao=self.cotacao,
-                    descricao=self.descricao,saldo=self.saldo
+                    descricao=self.descricao,saldo=self.saldo,cadgeral=self.cadgeral
 
                 )
                 for p in parcelas:
@@ -109,7 +109,7 @@ class Lancamentos(models.Model):
                 parcelas.update(
                     plr_financeiro=self.plr_financeiro, c_custo=self.c_custo,valor_text=self.valor_text,
                     vlr_lancamento=self.vlr_lancamento, indice=self.indice, cotacao=self.cotacao,
-                    descricao=self.descricao,saldo=self.saldo
+                    descricao=self.descricao,saldo=self.saldo,cadgeral=self.cadgeral
                 )
                 for p in parcelas:
                     movto_lanc = Movtos_lancamentos.objects.get(lancamento=p, tipo_movto='C')
@@ -152,7 +152,7 @@ class Lancamentos(models.Model):
                 parcelas.update(
                     plr_financeiro=self.plr_financeiro,c_custo=self.c_custo,valor_text=self.valor_text,
                     vlr_lancamento = self.vlr_lancamento,indice=self.indice,cotacao=self.cotacao,
-                    descricao=self.descricao,saldo=self.saldo
+                    descricao=self.descricao,saldo=self.saldo,cadgeral=self.cadgeral
                 )
                 for p in parcelas:
                     movto_lanc = Movtos_lancamentos.objects.get(lancamento=p, tipo_movto='C')
@@ -189,7 +189,7 @@ class Lancamentos(models.Model):
                 parcelas.update(
                     plr_financeiro=self.plr_financeiro, c_custo=self.c_custo,valor_text=self.valor_text,
                     vlr_lancamento=self.vlr_lancamento, indice=self.indice, cotacao=self.cotacao,
-                    descricao=self.descricao,saldo=self.saldo
+                    descricao=self.descricao,saldo=self.saldo,cadgeral=self.cadgeral
                 )
                 for p in parcelas:
                     movto_lanc = Movtos_lancamentos.objects.get(lancamento=p, tipo_movto='C')
