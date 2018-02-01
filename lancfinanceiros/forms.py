@@ -320,3 +320,8 @@ class FormBaixaParcial(forms.ModelForm):
         model = Lancamentos
         fields = ['conta_finan','data_baixa']
 
+
+
+class FormDeletaLancto(forms.ModelForm):
+    delete_parcelas = forms.ChoiceField(label='Altera',required=False, choices=(
+        ('N', 'Somente Este'), ('A', 'Ativos'), ('T', 'Todos')),widget=forms.RadioSelect,initial='N')

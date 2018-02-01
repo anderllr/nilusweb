@@ -12,7 +12,7 @@ from django.core.urlresolvers import reverse_lazy
 from core.utils import add_one_month
 from django.http import HttpResponse,Http404
 from .forms import FormCreateReceita,FormEditReceita,FiltroLancamentosForm,FormCreateDespesa,FormEditDespesa,\
-                   FormBaixaLancamento,FiltroLancamentosbaixa,FormBaixaParcial
+                   FormBaixaLancamento,FiltroLancamentosbaixa,FormBaixaParcial,FormDeletaLancto
 from accounts.models import User
 from nilusadm.models import Sequenciais
 from nilusfin.models import Indice,Cotacao
@@ -270,6 +270,10 @@ class CreateReceita(LoginRequiredMixin,CreateView):
                 movto_lanc.save()
 
         if form.cleaned_data.get('repetir',False):
+            lancamento_pai = Lancamentos.objects.get(pk=id_lancto)
+            lancamento_pai.lancamento_pai_id = id_lancto
+            lancamento_pai.save()
+
             qtd = form.cleaned_data['qtd_repetir']
             tipo_rept = form.cleaned_data['tipo_rept']
             if tipo_rept == 'M':
@@ -493,7 +497,7 @@ class EditReceita(LoginRequiredMixin,UpdateView):
 
 
 
-
+@login_required
 def delete_receita(request, pk):
     if request.user.is_masteruser is True:
         lanctodel = get_object_or_404(Lancamentos, master_user=request.user, pk=pk)
@@ -502,11 +506,92 @@ def delete_receita(request, pk):
         lanctodel = get_object_or_404(Lancamentos, master_user=request.user.user_master, pk=pk)
         lanctodel.delete()
 
-
-
-
-    # messages.success(request, 'Grupo removido com sucesso !!')
     return redirect('lancfin_list')
+
+
+@login_required
+def delete_lancto_vinculado(request, pk):
+
+    # if request.is_ajax():
+    #     template_name = '_opcoes_delete_lancto.html'
+    # else:
+    #     raise Http404
+
+
+    if request.user.is_masteruser is True:
+        lanctodel = get_object_or_404(Lancamentos, master_user=request.user, pk=pk)
+    else:
+        lanctodel = get_object_or_404(Lancamentos, master_user=request.user.user_master, pk=pk)
+
+
+    tipo_baixa = request.GET.get('tipo_delete',None)
+
+    if tipo_baixa == 'N':
+
+        # check_pai = lanctodel
+        # print(lanctodel)
+        lanctodel.delete()
+
+
+        # if check_pai == check_pai.lancamento_pai_id:
+        #     # print('é lancto_pai')
+        #     next_pai = Lancamentos.objects.filter(lancamento_pai=check_pai.lancamento_pai).first()
+        #     print('proximo pai')
+        #     lanctos = Lancamentos.objects.filter(lancamento_pai=check_pai.lancamento_pai)
+        #     print('lancamentos ainda exitentes')
+        #     lanctos.update(lancamento_pai=next_pai)
+
+
+
+    elif tipo_baixa == 'P':
+        deletar = Lancamentos.objects.filter(lancamento_pai=lanctodel.lancamento_pai,situacao=False)
+        deletar.delete()
+    elif tipo_baixa == 'T':
+        deletar = Lancamentos.objects.filter(lancamento_pai=lanctodel.lancamento_pai)
+        deletar.delete()
+
+    return redirect('lancfin_list')
+
+
+
+class DeleteLanctoVinculo(LoginRequiredMixin,UpdateView):
+
+    def get_template_names(self):
+        if self.request.is_ajax():
+            return ["_opcoes_delete_lancto.html"]
+        else:
+            raise Http404
+
+        def get_success_url(self):
+          return reverse_lazy('titrec_list')
+
+    model = Lancamentos
+    form_class = FormDeletaLancto
+
+
+
+
+
+    def form_valid(self, form):
+        tipo_baixa = form.cleand_data.get['delete_parcelas']
+        print(tipo_baixa)
+        # if tipo_baixa == 'N':
+        #     lanctodel.delete()
+        # if tipo_baixa == 'P':
+        #     deletar = Lancamentos.objects.filter(lancamento_pai=lanctodel, situacao=False)
+        #     deletar.delete()
+        # if tipo_baixa == 'T':
+        #     deletar = Lancamentos.objects.filter(lancamento_pai=lanctodel)
+        #     deletar.delete()
+
+
+        if self.request.is_ajax():
+            context = self.get_context_data(form=form, success=True, ok='ok')
+            return self.render_to_response(context)
+        else:
+            return redirect(self.get_success_url())
+
+
 
 
 
@@ -586,8 +671,6 @@ class CreateDespesa(LoginRequiredMixin,CreateView):
         if lancto.situacao is True:
             lancto.data_baixa = datetime.now()
             lancto.saldo = 0
-
-
         else:
             lancto.data_baixa is None
 
@@ -651,6 +734,10 @@ class CreateDespesa(LoginRequiredMixin,CreateView):
 
 
         if form.cleaned_data.get('repetir',False):
+            lancamento_pai = Lancamentos.objects.get(pk=id_lancto)
+            lancamento_pai.lancamento_pai_id = id_lancto
+            lancamento_pai.save()
+
             qtd = form.cleaned_data['qtd_repetir']
             tipo_rept = form.cleaned_data['tipo_rept']
             if tipo_rept == 'M':
@@ -1122,3 +1209,4 @@ edit_receita = EditReceita.as_view()
 create_receita = CreateReceita.as_view()
 create_despesa = CreateDespesa.as_view()
 baixa_parcial = BaixaParcial.as_view()
+# delete_lancto_vinculado = DeleteLanctoVinculo.as_view()

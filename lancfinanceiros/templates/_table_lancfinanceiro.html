@@ -54,7 +54,11 @@
                                                                                                     data-toggle="tooltip" data-placement="bottom" title="Editar">
                            <i class="fa fa-pencil"></i>
                         </button>
-                        <button type="button" class="btn btn-sm btn-outline-danger delete_lancto"  href="{% url 'delete_receita' lanc.pk %}" data-toggle="tooltip" data-placement="bottom" title="Excluir">
+                        <button type="button" class="btn btn-sm btn-outline-danger {% if lanc.lancamento_pai == None %} delete_lancto {% else %}
+                                                                                    delete_vinculado {% endif %}"
+                                                                                   {% if lanc.lancamento_pai == None %}  href="{% url 'delete_receita' lanc.pk %}"
+                                                                                   {% else %} href="{% url 'delete_lancto_vinculado' lanc.pk %}" {% endif %}
+                                                                                    data-toggle="tooltip" data-placement="bottom" title="Excluir">
                             <i class="fa fa-trash-o"></i>
                         </button>
 
