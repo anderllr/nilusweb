@@ -1,44 +1,50 @@
         <table id="table_lanfinanceiro" class="table table-bordered table-striped table-vcenter js-dataTable-full" >
             <thead>
                 <tr>
-<!--                    <th class="hidden"><small>Baixar</small></th> -->
-                    <th><small>Nº/Parc</small></th>
+                    <th><small>Sel.</small></th>
+                    <th><small>Nº/P</small></th>
                     <th><small>Cadastro</small></th>
                     <th><small>Lançamento</small></th>
                     <th><small>Vencimento</small></th>
                     <th><small>Valor</small></th>
                     <th><small>Saldo</small></th>
-                    <th><small>Tipo</small></th>
+                    <th><small>TP</small></th>
                     <th><small>Sit.</small></th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
             {% for lanc in lanctos %}
-              <!--  <tr class="hidden">
-                    <td style="width:2%">
-                       <center><input class="baixa_lancamento"  name="lanc_baixa" value="{{ lanc.pk }}" type="checkbox"></center>
-                    </td> -->
-                    <td style="width:2%; heigth:10%;"><small>{{ lanc.num_lan }}/{{ lanc.parcela }}</small></td>
-                    <td style="width:25%; heigth:10%; "><small>{% if lanc.cadgeral == None %} Não Informado {% else %} {{lanc.cadgeral}} {% endif %}
+                    <td style="width:1%; heigth:10%;">
+                        {% if lanc.situacao == False %}
+                        <center><label class="custom-control custom-checkbox baixa_lancamento">
+                                                <input type="checkbox" class="custom-control-input baixa_lancamento" name="lanc_baixa" value="{{ lanc.pk }}">
+                                                <span class="custom-control-indicator"></span>
+                                                <span class="custom-control-description"></span>
+                        </label></center>
+                        {% endif %}
+                    <!--<center><input class="baixa_lancamento"  name="lanc_baixa" value="{{ lanc.pk }}" type="checkbox"></center>-->
+                    </td>
+                    <td style="width:1%; heigth:10%;"><small>{{ lanc.num_lan }}/{{ lanc.parcela }}</small></td>
+                    <td style="width:19; heigth:10%; "><small>{% if lanc.cadgeral == None %} Não Informado {% else %}<strong>{{lanc.cadgeral}}</strong>  {% endif %}
                     </small></td>
-                    <td style="width:3%; heigth:10%;"><small>{{ lanc.dt_lancamento|date:'d/m/Y' }}</small></td>
-                    <td style="width:3%; heigth:10%;"><small>{{ lanc.dt_vencimento|date:'d/m/Y'  }}</small></td>
-                    <td style="width:2%; heigth:10%;">{% if lanc.tipo_lancamento == 'R' %}<span class="text-success">{{ lanc.vlr_lancamento }}</span>
+                    <td style="width:1%; heigth:10%;"><small>{{ lanc.dt_lancamento|date:'d/m/Y' }}</small></td>
+                    <td style="width:1%; heigth:10%;"><small>{{ lanc.dt_vencimento|date:'d/m/Y'  }}</small></td>
+                    <td style="width:1%; heigth:10%;">{% if lanc.tipo_lancamento == 'R' %}<span class="text-success">{{ lanc.vlr_lancamento }}</span>
                                           {% else %}   <span class="text-danger">{{ lanc.vlr_lancamento }}</span>
                                           {% endif %}
                     </td>
-                    <td style="width:2%; heigth:10%;">{% if lanc.tipo_lancamento == 'R' %}<strong class="text-success">{{ lanc.saldo }}</strong>
+                    <td style="width:1%; heigth:10%;">{% if lanc.tipo_lancamento == 'R' %}<strong class="text-success">{{ lanc.saldo }}</strong>
                                           {% else %}   <strong class="text-danger">{{ lanc.saldo }}</strong>
                                           {% endif %}
                     </td>
 
-                    <td style="width:2%; heigth:10%;">{% if lanc.tipo_lancamento == 'R' %} <span class="badge badge-success" text="Receita">R</span>
+                    <td style="width:1%; heigth:10%;">{% if lanc.tipo_lancamento == 'R' %} <span class="badge badge-success" text="Receita">R</span>
                                           {% else %} <span class="badge badge-danger" text="Despesa">D</span>
                                           {% endif %}
                     </td>
 
-                    <td style="width:2%; heigth:10%;">{% if lanc.situacao %}
+                    <td style="width:1%; heigth:10%;">{% if lanc.situacao %}
                            {% if lanc.tipo_lancamento == 'R' %}
                            <center><button type="button" class="btn btn-sm btn-noborder btn-outline-info"  data-toggle="tooltip" data-placement="bottom" title="Recebido" ><i class="fa fa-check-circle"></i></button></center>
                                {% else %}
@@ -48,12 +54,24 @@
                         {% endif %}
                     </td>
 
-                    <td style="width:12%">
+                    <td style="width:16%">
                         <button type="button" class="btn btn-sm btn-outline-secondary edit_lancto" {% if lanc.tipo_lancamento == 'R' %}  href="{% url 'edit_receita' lanc.pk %}"
                                                                                                    {% else %}    href="{% url 'edit_despesa' lanc.pk %}" {% endif %}
                                                                                                     data-toggle="tooltip" data-placement="bottom" title="Editar">
                            <i class="fa fa-pencil"></i>
                         </button>
+
+
+                        <button type="button" class="btn btn-sm btn-outline-info info_lancto"  href="{% url 'infoLanctos' lanc.pk %}" data-toggle="tooltip" data-placement="bottom" title="Mais informações">
+                            <i class="fa fa-info-circle"></i>
+                        </button>
+
+
+                        <button type="button" class="btn btn-sm  btn-outline-primary baixa_parcial"  href="{% url 'baixa_parcial' lanc.pk %}" data-toggle="tooltip" data-placement="bottom" title="Baixar Lançamento indiviual"
+                                {% if lanc.situacao == True %} disabled {% endif %}>
+                            <i class="fa fa-check"></i>
+                        </button>
+
                         <button type="button" class="btn btn-sm btn-outline-danger {% if lanc.lancamento_pai == None %} delete_lancto {% else %}
                                                                                     delete_vinculado {% endif %}"
                                                                                    {% if lanc.lancamento_pai == None %}  href="{% url 'delete_receita' lanc.pk %}"
@@ -61,11 +79,6 @@
                                                                                     data-toggle="tooltip" data-placement="bottom" title="Excluir">
                             <i class="fa fa-trash-o"></i>
                         </button>
-
-                        <button type="button" class="btn btn-sm btn-outline-info info_lancto"  href="{% url 'infoLanctos' lanc.pk %}" data-toggle="tooltip" data-placement="bottom" title="Mais informações">
-                            <i class="fa fa-info-circle"></i>
-                        </button>
-
 
                     </td>
                 </tr>

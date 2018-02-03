@@ -6,16 +6,16 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
 
-        <title>Nilus - Soluções para Gestão &amp; Versão WEB</title>
+        <title>Nilus - Soluções em Informática &amp; Versão WEB</title>
 
-        <meta name="description" content="Nilus - Soluções para Gestão &amp; Versão WEB">
+        <meta name="description" content="Nilus - Soluções em Informática &amp; Versão WEB">
         <meta name="author" content="pixelcave">
         <meta name="robots" content="noindex, nofollow">
 
         <!-- Open Graph Meta -->
-        <meta property="og:title" content="Nilus - Soluções para Gestão &amp; Versão WEB">
+        <meta property="og:title" content="Nilus - Soluções em Informática &amp; Versão WEB">
         <meta property="og:site_name" content="Nilus">
-        <meta property="og:description" content="Nilus - Soluções para Gestão &amp; Versão WEB">
+        <meta property="og:description" content="Nilus - Soluções em Informática &amp; Versão WEB">
         <meta property="og:type" content="website">
         <meta property="og:url" content="">
         <meta property="og:image" content="">
@@ -127,8 +127,7 @@
                                 <!-- Logo -->
                                 <div class="content-header-item">
                                     <a href="{% url 'principal' %}">
-
-                                        <img src="{% static 'assets/img/favicons/favicon.png' %}"  height="50" width="50" class="dark-logo" />
+                                        <img src="{% static 'assets/img/photos/logo_nilus_text.png' %}"  height="70" width="120" class="dark-logo" />
                                     </a>
                                 </div>
                                 <!-- END Logo -->
@@ -138,7 +137,37 @@
                         <!-- END Side Header -->
 
                         <!-- Side User -->
+                        <br>
 
+                        <div class="content-side content-side-full content-side-user px-10 align-parent">
+                            <!-- Visible only in mini mode -->
+                            <div class="sidebar-mini-visible-b align-v animated fadeIn">
+                                <img class="img-avatar img-avatar32" src="{% static 'assets/img/avatars/avatar15.jpg' %}" alt="">
+                            </div>
+                            <!-- END Visible only in mini mode -->
+
+                            <!-- Visible only in normal mode -->
+                            <div class="sidebar-mini-hidden-b text-center">
+                                <a class="img-link" href="#">
+                                    <img class="img-avatar" src="{% static 'assets/img/avatars/avatar15.jpg' %}" alt="">
+                                </a>
+                                <ul class="list-inline mt-10">
+                                    <li class="list-inline-item">
+                                        <a class="link-effect text-dual-primary-dark font-size-xs font-w600 text-uppercase" href="#"> Olá {{ user.name }}</a>
+                                    </li>
+                                    <li class="list-inline-item">
+                                        <!-- Layout API, functionality initialized in Codebase() -> uiApiLayout() -->
+
+                                    </li>
+                                    <li class="list-inline-item">
+                                        <a class="link-effect text-dual-primary-dark" href="{% url 'logout' %}">
+                                            <i class="si si-logout"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!-- END Visible only in normal mode -->
+                        </div>
                         <!-- END Side User -->
 
                         <!-- Side Navigation MJC>>MENU LATERAL -->
@@ -177,17 +206,7 @@
                                     <ul>
                                         <li>
                                             <a  href="{% url 'indice_list' %}">Indices e Cotações</a>
-                                            <li claptyss="">
-                                                    <a class="nav-submenu" data-toggle="nav-submenu" href="#">Lançamentos</a>
-                                                    <ul>
-                                                        <li>
-                                                            <a href="{% url 'lancfin_list' %}">Cadastro</a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="{% url 'baixfin_list' %}">Baixar</a>
-                                                        </li>
-                                                    </ul>
-                                                </li>
+                                            <a  href="{% url 'lancfin_list' %}">Lançamentos</a>
                                         </li>
                                     </ul>
                                 </li>

@@ -1,0 +1,118 @@
+$(".table_lancfinanceiro").on("click", ".edit_lancto",function(e){
+    e.preventDefault();
+    $(".form_edit ").load($(this).attr('href'), function(){
+          $('.form_edit').show("slide");
+          $('.form_busca').hide("drop");
+          $('.table_lancfinanceiro').hide("drop");
+          $('.btn_lancamentos').hide("drop");
+
+
+          {% include 'js_floating_labels.html' %}
+          {% include 'js_masks.html' %}
+          {% include 'js_tabs.html' %}
+          {% include 'js_tabelas_formularios.html' %}
+          {% include 'js_inclusoes.html' %}
+
+          $('.chosen-select').chosen({ width: '100%' });
+
+          if ( $.fn.dataTable.isDataTable( '#tabela_movimentacoes' ) ) {
+               table = $('#tabela_movimentacoes').DataTable();
+          }
+          else {
+                table = $('#tabela_movimentacoes').DataTable( {
+                pageLength: 4,
+                autoWidth: false,
+                searching: false,
+                "language": {
+                    "lengthMenu": "Mostrando _MENU_ registros por página",
+                    "search" : "Procurar: ",
+                    "info" : "Exibindo de _START_ a _END_ de _TOTAL_ registros",
+                    "infoEmpty": "Nenhum registro encontrado",
+                    "infoFiltered": "(filtrado entre _MAX_ registros)",
+                    "paginate" : {
+                        "first":      "Primeiro",
+                        "last":       "Último",
+                        "next":       "Próximo",
+                        "previous":   "Anterior"
+                },
+                responsive: {
+                    details: {
+                        type: 'column'
+                    }
+                },
+                columnDefs: [ {
+                    className: 'control',
+                    orderable: false,
+                    targets:   0
+                } ],
+                order: [ 1, 'asc' ]},
+
+                dom: "<'row'<'col-sm-12'tr>>" +
+                    "<'row'<'col-sm-6'i><'col-sm-6'p>>"
+
+          });
+}
+
+
+
+          $('.form_edit #id_vlr_text').focus();
+
+
+          function load_cotacaoform(){
+            var indice_id = $('#id_indice').val();
+            if(indice_id != ''){
+                var url = '{% url 'indice_cotacao' %}';
+                url = url+'?indice_id='+indice_id;
+                 $("#id_cotacao").load(url,function(){
+                $("#id_cotacao").trigger("chosen:updated");
+                });
+            }
+            else{
+                $("#id_cotacao").html('');
+            }
+        }
+
+
+        $("#id_indice").on("change",function(e){
+               load_cotacaoform();
+        });
+
+
+
+
+
+        $('#id_situacao').click(function() {
+            if($(this).is(':checked'))
+                var marcado = true;
+
+            else{
+                   if(confirm("Ao desmarcar este status, todas as baixas deste lançamento serão excluidas, deseja continuar?")){
+                    $(this).prop("checked", false);
+                   }
+                   else{
+                       $(this).prop("checked", true);
+                   }
+            }
+        });
+
+
+          $(".form_edit .cancel_form").on("click",function(e){
+              $('.form_edit').hide("drop");
+              $('.table_lancfinanceiro').show("puff");
+              $('.btn_lancamentos').show("puff");
+              $('#tabela_movimentacoes').remove();
+
+          });
+    });
+});
+
+
+$(".form_edit").on("submit","form",function(e){
+	 	 e.preventDefault();
+
+	 	 var dados = $(this).serialize();
+	 	 $.post($(this).attr('action'),dados,function(result){
+	 	    $(".form_edit").html(result);
+                window.location.reload();
+	 	 });
+	 });

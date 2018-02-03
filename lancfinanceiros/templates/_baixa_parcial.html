@@ -15,7 +15,9 @@
 
                         <div class="form-material input-group">
                             <label>Data Baixa</label>
-                            {% render_field form.data_baixa class="js-datepicker form-control" data-week-start="1" data-autoclose="true" data-today-highlight="true" data-date-format="dd/mm/yyyy" placeholder="dd/mm/aaaa" required="" %}
+                            <input  type="text"  name="data_baixa" id="id_data_baixa" class="js-datepicker form-control"
+                              data-week-start="1" data-autoclose="true" data-today-highlight="true"
+                              data-date-format="dd/mm/yyyy" placeholder="dd/mm/aaaa" value="{{ data_hoje|date:'d/m/Y'  }}">
                             {% for error in form.data_baixa.errors %}
                             <small class="form-control-feedback"> {{ error }} </small>
                             {% endfor %}

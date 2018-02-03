@@ -1,0 +1,18 @@
+
+$("#mostrar_filtros").on("click",function(e){
+  $(this).hide();
+  $('.form_busca').show();
+});
+
+var filtrou
+filtrou = '{{ filtrou }}';
+
+if(filtrou == 'ok'){
+  $('#mostrar_filtros').hide();
+  $('.form_busca').show();
+}
+
+
+$(".limpa_filtro_pesquisa").on("click",function(e){
+   window.location="{% url 'lancfin_list' %}"
+});

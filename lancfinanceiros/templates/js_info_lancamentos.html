@@ -1,0 +1,9 @@
+$(".table_lancfinanceiro").on("click",".info_lancto",function(e){
+   e.preventDefault();
+   $("#modal-infolancto .block-content").load($(this).attr('href'), function(){
+       $('#modal-infolancto').modal("show");
+       $('.titulo_modal').text("Informações Lançamento");
+       {% include 'js_tabs.html' %}
+   });
+
+});

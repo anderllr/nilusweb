@@ -10,7 +10,9 @@
 
 <div class="block">
     <div class="block-content block-content-full ribbon ribbon-left ribbon-bookmark ribbon-primary">
-        <a class="btn btn-outline-info mr-5 mb-5 btn_lancamentos pull-right" href="{% url 'baixfin_list' %}"  data-placement="bottom" title="Pagar / Receber Lancamentos"><i class="fa fa-check-circle"></i> Baixar Lançamentos</a>
+        <button class="btn btn-outline-info mr-5 mb-5 baixa pull-right"
+                data-placement="bottom" title="Pagar / Receber Lancamentos Selecionados"
+                 id="btn_baixa_total"><i class="fa fa-check-circle"></i> Baixar Selecionados</button>
 
         <button class="btn btn-outline-danger mr-5 mb-5  new_despesa btn_lancamentos pull-right" style="width:18%;"><i class="fa fa-arrow-down"><i class="fa fa-dollar"></i></i> Nova Despesa</button>
         <button class="btn btn-outline-primary mr-5 mb-5 new_receita btn_lancamentos pull-right" style="width:18%;"><i class="fa fa-arrow-up"><i class="fa fa-dollar"></i></i> Nova Receita</button>
@@ -30,8 +32,7 @@
             <form>
                 <div class="filtros_extras">
                     <div class="row">
-
-                        <div class="col-lg-4">
+                        <div class="col-4">
                                 <label for="id_data_lanc_ini">Data Lançamento</label>
                                 <div class="input-daterange input-group js-datepicker-enabled" data-date-format="dd/mm/yyyy" data-week-start="1" data-autoclose="true" data-today-highlight="true">
                                     {% render_field form.data_lanc_ini class="form-control js-datepicker"   placeholder="dd/mm/aaaa" data-week-start="1" data-autoclose="true" data-today-highlight="true"%}
@@ -40,7 +41,7 @@
                                 </div>
                             </div>
 
-                        <div class="col-lg-4">
+                        <div class="col-4">
                                 <label for="id_data_venc_ini">Data Vencimento</label>
                                 <div class="input-daterange input-group js-datepicker-enabled" data-date-format="dd/mm/yyyy" data-week-start="1" data-autoclose="true" data-today-highlight="true">
                                     {% render_field form.data_venc_ini class="form-control js-datepicker"   placeholder="dd/mm/aaaa" data-week-start="1" data-autoclose="true" data-today-highlight="true"%}
@@ -48,7 +49,7 @@
                                     {% render_field form.data_venc_fim class="form-control js-datepicker"   placeholder="dd/mm/aaaa" data-week-start="1" data-autoclose="true" data-today-highlight="true"%}
                                 </div>
                         </div>
-                        <div class="col-lg-4">
+                        <div class="col-4">
                                 <label for="id_data_baix_ini">Data Baixa</label>
                                 <div class="input-daterange input-group js-datepicker-enabled" data-date-format="dd/mm/yyyy" data-week-start="1" data-autoclose="true" data-today-highlight="true">
                                     {% render_field form.data_baix_ini class="form-control js-datepicker"   placeholder="dd/mm/aaaa" data-week-start="1" data-autoclose="true" data-today-highlight="true"%}
@@ -56,6 +57,7 @@
                                     {% render_field form.data_baix_fim class="form-control js-datepicker"   placeholder="dd/mm/aaaa" data-week-start="1" data-autoclose="true" data-today-highlight="true"%}
                                 </div>
                         </div>
+
                     </div>
                     <div class="row">
                         <div class="col-md-3">
@@ -84,25 +86,32 @@
                         </div>
                     </div>
                     <div class="row">
-
+                        <div class="col-md-6">
+                            <div class="form-material input-group">
+                                <button type="submit"  class="btn  btn-outline-primary mr-5 mb-5 form_pesquisa form_bus"   data-toggle="tooltip" data-placement="bottom" title="Pesquisar lançamentos de acordo com os filtros">
+                                    <i class="fa fa-search"></i> Pesquisar
+                                </button>
+                                <button type="button"  class="btn  btn-outline-danger  mr-5 mb-5 limpa_filtro_pesquisa"   data-toggle="tooltip" data-placement="bottom" title="Remover filtros e exibir todos os lançamentos">
+                                     <i class="fa fa-search-minus"></i> Limpar filtros
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="form-material input-group">
+                                <label>{{ form.tipo_lancamento.label_tag }}</label>
+                                {% render_field form.tipo_lancamento class="chosen-select" %}
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-material input-group">
+                                <label>{{ form.sit_lancamento.label_tag }}</label>
+                                {% render_field form.sit_lancamento class="chosen-select" %}
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <br>
-                  <button type="submit"  class="btn  btn-outline-primary mr-5 mb-5 form_pesquisa form_bus"   data-toggle="tooltip" data-placement="bottom" title="Pesquisar lançamentos de acordo com os filtros">
-                        <i class="fa fa-search"></i> Pesquisar
-                  </button>
-                  <button type="button"  class="btn  btn-outline-danger  mr-5 mb-5 limpa_filtro_pesquisa"   data-toggle="tooltip" data-placement="bottom" title="Remover filtros e exibir todos os lançamentos">
-                        <i class="fa fa-search-minus"></i> Limpar filtros
-                  </button>
-
-
-
             </form>
-
-
         </div>
-
-
         <div>
             <div class="row">
                 <div class="form_inc col-md-12">
@@ -114,127 +123,31 @@
                 <div class="form_edit col-md-12"></div>
             </div>
         </div>
-
-        </div>
-
-
-
+    </div>
         <div class="row table table_lancfinanceiro">
          <form method="post" action="" id="form_baixa_lancamento">
-             <input type="hidden" name="data_baixa" id="data_baixa">
+             <div>
+                <input type="hidden"  name="data_baixa" id="data_baixa">
+                <input type="hidden"  name="conta_financeira" id="conta_financeira">
+             </div>
+
              {% csrf_token %}
              {% include '_table_lancfinanceiro.html' %}
          </form>
-
         </div>
     </div>
 </div>
 
 
-<div class="modal fade" id="modal-cadgeral" tabindex="-1" role="dialog" aria-labelledby="modal-slideright" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-slideright modal-lg" role="document">
-        <div class="modal-content">
-            <div class="block block-themed block-transparent mb-0">
-                <div class="block-header bg-primary-dark">
-                    <h3 class="block-title titulo_modal"></h3><h3 class="block-title info_modal"></h3>
-                    <div class="block-options">
-                        <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
-                            <i class="si si-close"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="block-content">
-
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-alt-secondary" data-dismiss="modal">Fechar</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-
-<div class="modal fade" id="modal-conta" tabindex="-1" role="dialog" aria-labelledby="modal-slideright" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-slideright" role="document">
-        <div class="modal-content">
-            <div class="block block-themed block-transparent mb-0">
-                <div class="block-header bg-primary-dark">
-                    <h3 class="block-title titulo_modal"></h3><h3 class="block-title info_modal"></h3>
-                    <div class="block-options">
-                        <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
-                            <i class="si si-close"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="block-content">
-
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-alt-secondary" data-dismiss="modal">Fechar</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<div class="modal fade" id="modal-planofinan" tabindex="-1" role="dialog" aria-labelledby="modal-slideright" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-slideright modal-lg" role="document">
-        <div class="modal-content">
-            <div class="block block-themed block-transparent mb-0">
-                <div class="block-header bg-primary-dark">
-                    <h3 class="block-title titulo_modal"></h3><h3 class="block-title info_modal"></h3>
-                    <div class="block-options">
-                        <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
-                            <i class="si si-close"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="block-content">
-
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-alt-secondary" data-dismiss="modal">Fechar</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<div class="modal fade" id="modal-ccusto" tabindex="-1" role="dialog" aria-labelledby="modal-slideright" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-slideright" role="document">
-        <div class="modal-content">
-            <div class="block block-themed block-transparent mb-0">
-                <div class="block-header bg-primary-dark">
-                    <h3 class="block-title titulo_modal"></h3><h3 class="block-title info_modal"></h3>
-                    <div class="block-options">
-                        <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
-                            <i class="si si-close"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="block-content">
-
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-alt-secondary" data-dismiss="modal">Fechar</button>
-            </div>
-        </div>
-    </div>
-</div>
-
+{% include 'modais_lancfin.html' %}
 
 
 <div class="modal fade" id="modal-databaixa" tabindex="-1" role="dialog" aria-labelledby="modal-slideright" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-slideright modal-sm" role="document">
+    <div class="modal-dialog modal-dialog-slideright modal-sm " role="document">
         <div class="modal-content">
             <div class="block block-themed block-transparent mb-0">
                 <div class="block-header bg-primary-dark">
-                    <h3 class="block-title titulo_modal"></h3><h3 class="block-title info_modal"></h3>
+                    <h3 class="block-title titulo_modal">Baixar selecionados.</h3>
                     <div class="block-options">
                         <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
                             <i class="si si-close"></i>
@@ -244,12 +157,23 @@
                 <div class="block-content">
                     <div class="form-material input-group">
                       <label>Data da Baixa</label>
-                      <input  type="text" name="data_baixa_modal" id="data_baixa_modal" class="js-datepicker form-control"
-                              data-week-start="1" data-autoclose="true" data-today-highlight="true" data-date-format="dd/mm/yyyy" placeholder="dd/mm/aaaa" required="">
+                      <input  type="text"  name="data_baixa_modal" id="data_baixa_modal" class="js-datepicker form-control"
+                              data-week-start="1" data-autoclose="true" data-today-highlight="true"
+                              data-date-format="dd/mm/yyyy" placeholder="dd/mm/aaaa" value="{{ data_hoje|date:'d/m/Y'  }}">
                     </div>
-
-
-
+                    <div class="form-material input-group">
+                        <label class="css-control css-control-sm css-control-primary css-switch">
+                                <input type="checkbox" class='css-control-input' id="permite_alterar_conta">
+                                <span class="css-control-indicator"></span>Alterar conta financeira ?
+                         </label>
+                    </div>
+                    <br>
+                    <div class="row modal-data-baixa" style="display:none;">
+                        <div class="form-material input-group">
+                        <label>{{ form_baixa.conta_financeira.label_tag }}</label>
+                        {% render_field form_baixa.conta_financeira class="chosen-select"   %}
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -261,115 +185,6 @@
 </div>
 
 
-<div class="modal fade" id="modal-indice" tabindex="-1" role="dialog" aria-labelledby="modal-slideright" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-slideright modal-sm" role="document">
-        <div class="modal-content">
-            <div class="block block-themed block-transparent mb-0">
-                <div class="block-header bg-primary-dark">
-                    <h3 class="block-title titulo_modal"></h3><h3 class="block-title info_modal"></h3>
-                    <div class="block-options">
-                        <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
-                            <i class="si si-close"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="block-content">
-
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-alt-secondary" data-dismiss="modal">Fechar</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="modal fade" id="modal-cotacao" tabindex="-1" role="dialog" aria-labelledby="modal-slideright" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-slideright modal-sm" role="document">
-        <div class="modal-content">
-            <div class="block block-themed block-transparent mb-0">
-                <div class="block-header bg-primary-dark">
-                    <h3 class="block-title titulo_modal"></h3><h3 class="block-title info_modal"></h3>
-                    <div class="block-options">
-                        <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
-                            <i class="si si-close"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="block-content">
-
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-alt-secondary" data-dismiss="modal">Fechar</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<div class="modal fade" id="modal-infolancto" tabindex="-1" role="dialog" aria-labelledby="modal-slideleft" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-slideright " role="document">
-        <div class="modal-content">
-            <div class="block block-themed block-transparent mb-0">
-                <div class="block-header bg-primary-dark">
-                    <h3 class="block-title titulo_modal"></h3>
-                    <div class="block-options">
-                        <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
-                            <i class="si si-close"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="block-content">
-
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-alt-secondary" data-dismiss="modal">Fechar</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<div class="modal fade" id="modal-deletelancto" tabindex="-1" role="dialog" aria-labelledby="modal-slideleft" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-slideright modal-lg" role="document">
-        <div class="modal-content">
-                 <div class="block block-bordered block-themed">
-                                <div class="block-header bg-danger">
-                                    <h3 class="block-title text-white"><strong>ATENÇÃO!</strong> &nbsp;&nbsp;   Este Lançamento possui outros vinculados</h3>
-                                </div>
-                                <div class="block-content">
-                                    Selecione uma das opções abaixo:
-                                    <form id="opcoes_delete">
-                                        <ul id="id_deleta_parcelas">
-                                            <li><label for="id_delete_parcelas_0"><input type="radio" name="delete_parcelas" value="N" required="" id="id_delete_parcelas_0" checked="">
-                                                <span class="text-info">Deletar <strong>"SOMENTE ESTA"</strong></span></label>
-                                            </li>
-                                            <li><label for="id_delete_parcelas_1"><input type="radio" name="delete_parcelas" value="P" required="" id="id_delete_parcelas_1">
-                                                Deletar parcelas <strong>"PENDENTES"</strong></label>
-                                            </li>
-                                            <li><label for="id_delete_parcelas_2"><input type="radio" name="delete_parcelas" value="T" required="" id="id_delete_parcelas_2">
-                                                Deletar <strong>"TODAS VINCULADAS"</strong><small>***(Lembre-se que esta opção pode afetar seus saldos de Banco/Caixa)</small></label>
-                                            </li>
-                                        </ul>
-                                    </form>
-
-
-                                </div>
-                            </div>
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger confirma_exclusão" data-dismiss="modal">Excluir</button>
-                <button type="button" class="btn btn-alt-secondary" data-dismiss="modal">Cancelar</button>
-
-            </div>
-        </div>
-    </div>
-</div>
-
-
-
 
 
 
@@ -378,51 +193,11 @@
 
 {% block javascript %}
 
-$('.baixa').hide();
 $('.form_inc').hide();
 $('.form_edit').hide();
 $('.chosen-select').chosen({ width: '100%' });
 
-
-$("#mostrar_filtros").on("click",function(e){
-  $(this).hide();
-  $('.form_busca').show();
-});
-
-var filtrou
-filtrou = '{{ filtrou }}';
-
-if(filtrou == 'ok'){
-  $('#mostrar_filtros').hide();
-  $('.form_busca').show();
-}
-
-
-$(".limpa_filtro_pesquisa").on("click",function(e){
-   window.location="{% url 'lancfin_list' %}"
-});
-
-function load_propriety2(){
-    var company_id = $('#id_empresa').val();
-    if(company_id != ''){
-        var url = '{% url 'company_propriety' %}';
-        url = url+'?company_id='+company_id;
-        $("#id_propriedade").load(url,function(){
-            $("#id_propriedade").trigger("chosen:updated");
-         });
-    }
-    else{
-      $("#id_propriedade").html('');
-    }
-}
-
-$("#id_empresa").on("change",function(e){
-
-  load_propriety2();
-});
-
-load_propriety2();
-
+{% include 'js_filtros_pesquisas.html' %}
 
 
 
@@ -458,494 +233,13 @@ table = $('#table_lanfinanceiro').DataTable({
  }
 });
 
-
-$("#form_baixa_lancamento").on("change", ".baixa_lancamento", function(e){
-			if ($(this).is(":checked")){
-				$('.baixa').show("drop");
-			}
-		 });
-
-
-
-
-<!-- Criações -->
-$(".new_receita").on("click",function(e){
-     e.preventDefault();
-     $(".form_inc").load("{% url 'create_receita' %}", function(){
-        $('.form_inc').show("puff");
-        $('.form_busca').hide("drop");
-        $('.table_lancfinanceiro').hide("drop");
-        $('.btn_lancamentos').hide("drop");
-        $('.e_titulo').hide();
-        $('.parcelamento').hide();
-        $("#id_valor_text").focus();
-
-        $('.chosen-select').chosen({ width: '100%' });
-
-        {% include 'js_floating_labels.html' %}
-        {% include 'js_tabs.html' %}
-        {% include 'js_masks.html' %}
-        {% include 'js_inclusoes.html' %}
-
-
-        $(".form_inc").on("change", "#id_titulo", function(e){
-			if ($(this).is(":checked")){
-				$(".e_titulo").show();
-                $("#id_repetir").prop("checked",false)
-                $(".repetir").hide();
-			}
-			else {
-				$(".e_titulo").hide();
-			}
-		 });
-
-        $(".form_inc").on("change", "#id_parcela", function(e){
-			if ($(this).is(":checked")){
-				$(".parcelamento").show();
-                $("#id_repetir").prop("checked",false)
-                $("#id_dt_vencimento").prop('required',true);
-                $(".repetir").hide();
-
-                $("#id_dias_entre_vencto").keyup(function() {
-                    if($(this).val().length > 0){
-                         $("#id_dia_fixo").prop('disabled',true);
-                    }
-                    else{
-                         $("#id_dia_fixo").prop('disabled',false);
-                    }
-                });
-
-                $(".form_inc").on("change", "#id_dia_fixo", function(e){
-                    if ($(this).is(":checked")){
-                        $("#id_dias_entre_vencto").prop('disabled',true);
-                    }
-                    else {
-                        $("#id_dias_entre_vencto").prop('disabled',false);
-                    }
-                });
-
-			}
-			else {
-				$(".parcelamento").hide();
-			}
-		});
-
-        $(".form_inc").on("change", "#id_repetir", function(e){
-			if ($(this).is(":checked")){
-				$(".repetir").show();
-                $("#id_parcela").prop("checked",false)
-                $(".parcelamento").hide();
-                $("#id_dt_vencimento").prop('required',true);
-                $("#id_qtd_repetir").prop('required',true);
-
-
-
-			}
-			else {
-				$(".repetir").hide();
-                $("#id_dt_vencimento").prop('required',false);
-                $("#id_qtd_repetir").prop('required',false);
-			}
-		 });
-
-
-        $(".js-datepicker").datepicker({
-            todayBtn: true,
-            language: "pt-BR",
-            autoclose: true,
-            todayHighlight: true
-        });
-
-
-        function load_cotacaoform(){
-            var indice_id = $('#id_indice').val();
-            if(indice_id != ''){
-                var url = '{% url 'indice_cotacao' %}';
-                url = url+'?indice_id='+indice_id;
-                 $("#id_cotacao").load(url,function(){
-                $("#id_cotacao").trigger("chosen:updated");
-                });
-            }
-            else{
-                $("#id_cotacao").html('');
-            }
-        }
-
-
-        $("#id_indice").on("change",function(e){
-               load_cotacaoform();
-        });
-              load_cotacaoform();
-
-
-          $(".form_inc .cancel_form").on("click",function(e){
-            $('.form_inc').hide("drop");
-            $('.table_lancfinanceiro').show("puff");
-            $('.btn_lancamentos').show("puff");
-
-          });
-    });
-});
-
-$(".form_inc").on("submit","form",function(e){
-     e.preventDefault();
-     var dados = $(this).serialize();
-     $.post("{% url 'create_receita' %}",dados,function(result){
-        $(".form_inc").html(result);
-        if(close_modal==true){
-           $('.form_inc').hide("drop");
-           $('.table_lancfinanceiro').show("puff");
-           $('.btn_lancamentos').show();
-           window.location.reload();
-        }
-        else{
-            $(".form_inc").show();
-            {% include 'js_floating_labels.html' %}
-            {% include 'js_tabs.html' %}
-            $('.chosen-select').chosen({ width: '100%' });
-
-               $(".form_inc .cancel_form").on("click",function(e){
-                    $('.form_inc').hide("drop");
-                    $('.table_lancfinanceiro').hide("drop");
-                    $('.btn_lancamentos').show();
-               });
-
-
-        }
-     });
-});
-
-$(".new_despesa").on("click",function(e){
-     e.preventDefault();
-     $(".form_inc_despesa").load("{% url 'create_despesa' %}", function(){
-        $('.form_inc_despesa').show("puff");
-        $('.form_busca').hide("drop");
-        $('.table_lancfinanceiro').hide("drop");
-        $('.btn_lancamentos').hide("drop");
-        $('.e_titulo').hide();
-        $('.parcelamento').hide();
-        $("#id_valor_text").focus();
-
-        $('.chosen-select').chosen({ width: '100%' });
-
-        {% include 'js_floating_labels.html' %}
-        {% include 'js_tabs.html' %}
-        {% include 'js_masks.html' %}
-        {% include 'js_inclusoes.html' %}
-
-
-        $(".form_inc_despesa").on("change", "#id_titulo", function(e){
-			if ($(this).is(":checked")){
-				$(".e_titulo").show();
-                $("#id_repetir").prop("checked",false)
-                $(".repetir").hide();
-			}
-			else {
-				$(".e_titulo").hide();
-			}
-		 });
-
-        $(".form_inc_despesa").on("change", "#id_parcela", function(e){
-			if ($(this).is(":checked")){
-				$(".parcelamento").show();
-                $("#id_repetir").prop("checked",false)
-                $("#id_dt_vencimento").prop('required',true);
-                $(".repetir").hide();
-
-                $("#id_dias_entre_vencto").keyup(function() {
-                    if($(this).val().length > 0){
-                         $("#id_dia_fixo").prop('disabled',true);
-                    }
-                    else{
-                         $("#id_dia_fixo").prop('disabled',false);
-                    }
-                });
-
-                $(".form_inc_despesa").on("change", "#id_dia_fixo", function(e){
-                    if ($(this).is(":checked")){
-                        $("#id_dias_entre_vencto").prop('disabled',true);
-                    }
-                    else {
-                        $("#id_dias_entre_vencto").prop('disabled',false);
-                    }
-                });
-
-			}
-			else {
-				$(".parcelamento").hide();
-			}
-		});
-
-        $(".form_inc_despesa").on("change", "#id_repetir", function(e){
-			if ($(this).is(":checked")){
-				$(".repetir").show();
-                $("#id_parcela").prop("checked",false)
-                $(".parcelamento").hide();
-                $("#id_dt_vencimento").prop('required',true);
-                $("#id_qtd_repetir").prop('required',true);
-			}
-			else {
-				$(".repetir").hide();
-                $("#id_dt_vencimento").prop('required',false);
-                $("#id_qtd_repetir").prop('required',false);
-			}
-		 });
-
-
-        $(".js-datepicker").datepicker({
-            todayBtn: true,
-            language: "pt-BR",
-            autoclose: true,
-            todayHighlight: true
-        });
-
-
-        function load_cotacaoform(){
-            var indice_id = $('#id_indice').val();
-            if(indice_id != ''){
-                var url = '{% url 'indice_cotacao' %}';
-                url = url+'?indice_id='+indice_id;
-                 $("#id_cotacao").load(url,function(){
-                $("#id_cotacao").trigger("chosen:updated");
-                });
-            }
-            else{
-                $("#id_cotacao").html('');
-            }
-        }
-
-        $("#id_indice").on("change",function(e){
-               load_cotacaoform();
-        });
-              load_cotacaoform();
-
-
-          $(".form_inc_despesa .cancel_form").on("click",function(e){
-            $('.form_inc_despesa').hide("drop");
-            $('.table_lancfinanceiro').show("puff");
-            $('.btn_lancamentos').show("puff");
-          });
-    });
-});
-
-
-$(".form_inc_despesa").on("submit","form",function(e){
-     e.preventDefault();
-     var dados = $(this).serialize();
-     $.post("{% url 'create_despesa' %}",dados,function(result){
-        $(".form_inc").html(result);
-        if(close_modal==true){
-           $('.form_inc').hide("drop");
-           $('.table_lancfinanceiro').show("puff");
-           $('.btn_lancamentos').show();
-           window.location.reload();
-        }
-        else{
-            $(".form_inc_despesa").show();
-            {% include 'js_floating_labels.html' %}
-            {% include 'js_tabs.html' %}
-            $('.chosen-select').chosen({ width: '100%' });
-
-            $(".form_inc .cancel_form").on("click",function(e){
-                 $('.form_inc').hide("drop");
-                 $('.table_lancfinanceiro').hide("drop");
-                 $('.btn_lancamentos').show();
-            });
-        }
-     });
-});
-
-
-
-<!-- Edições -->
-$(".table_lancfinanceiro").on("click", ".edit_lancto",function(e){
-    e.preventDefault();
-    $(".form_edit ").load($(this).attr('href'), function(){
-          $('.form_edit').show("slide");
-          $('.form_busca').hide("drop");
-          $('.table_lancfinanceiro').hide("drop");
-          $('.btn_lancamentos').hide("drop");
-
-
-          {% include 'js_floating_labels.html' %}
-          {% include 'js_masks.html' %}
-          {% include 'js_tabs.html' %}
-          {% include 'js_tabelas_formularios.html' %}
-          {% include 'js_inclusoes.html' %}
-
-          $('.chosen-select').chosen({ width: '100%' });
-
-          if ( $.fn.dataTable.isDataTable( '#tabela_movimentacoes' ) ) {
-               table = $('#tabela_movimentacoes').DataTable();
-          }
-          else {
-                table = $('#tabela_movimentacoes').DataTable( {
-                pageLength: 4,
-                autoWidth: false,
-                searching: false,
-                "language": {
-                    "lengthMenu": "Mostrando _MENU_ registros por página",
-                    "search" : "Procurar: ",
-                    "info" : "Exibindo de _START_ a _END_ de _TOTAL_ registros",
-                    "infoEmpty": "Nenhum registro encontrado",
-                    "infoFiltered": "(filtrado entre _MAX_ registros)",
-                    "paginate" : {
-                        "first":      "Primeiro",
-                        "last":       "Último",
-                        "next":       "Próximo",
-                        "previous":   "Anterior"
-                },
-                responsive: {
-                    details: {
-                        type: 'column'
-                    }
-                },
-                columnDefs: [ {
-                    className: 'control',
-                    orderable: false,
-                    targets:   0
-                } ],
-                order: [ 1, 'asc' ]},
-
-                dom: "<'row'<'col-sm-12'tr>>" +
-                    "<'row'<'col-sm-6'i><'col-sm-6'p>>"
-
-          });
-}
-
-
-
-          $('.form_edit #id_vlr_text').focus();
-
-
-          function load_cotacaoform(){
-            var indice_id = $('#id_indice').val();
-            if(indice_id != ''){
-                var url = '{% url 'indice_cotacao' %}';
-                url = url+'?indice_id='+indice_id;
-                 $("#id_cotacao").load(url,function(){
-                $("#id_cotacao").trigger("chosen:updated");
-                });
-            }
-            else{
-                $("#id_cotacao").html('');
-            }
-        }
-
-
-        $("#id_indice").on("change",function(e){
-               load_cotacaoform();
-        });
-
-
-
-
-
-        $('#id_situacao').click(function() {
-            if($(this).is(':checked'))
-                var marcado = true;
-
-            else{
-                   if(confirm("Ao desmarcar este status, todas as baixas deste lançamento serão excluidas, deseja continuar?")){
-                    $(this).prop("checked", false);
-                   }
-                   else{
-                       $(this).prop("checked", true);
-                   }
-            }
-        });
-
-
-          $(".form_edit .cancel_form").on("click",function(e){
-              $('.form_edit').hide("drop");
-              $('.table_lancfinanceiro').show("puff");
-              $('.btn_lancamentos').show("puff");
-              $('#tabela_movimentacoes').remove();
-
-          });
-    });
-});
-
-
-$(".form_edit").on("submit","form",function(e){
-	 	 e.preventDefault();
-
-	 	 var dados = $(this).serialize();
-	 	 $.post($(this).attr('action'),dados,function(result){
-	 	    $(".form_edit").html(result);
-                window.location.reload();
-	 	 });
-	 });
-
-
-
-$("#confirma_baixa").on("click",function(e){
-    var data = $('#data_baixa_modal').val();
-    $('#data_baixa').val(data);
-    $('#form_baixa_lancamento').submit();
-
-});
-
-
-$(".table_lancfinanceiro").on("click",".info_lancto",function(e){
-   e.preventDefault();
-   $("#modal-infolancto .block-content").load($(this).attr('href'), function(){
-       $('#modal-infolancto').modal("show");
-       $('.titulo_modal').text("Informações Lançamento");
-       {% include 'js_tabs.html' %}
-   });
-
-});
-
-
-
-$(".table_lancfinanceiro").on("click",".delete_vinculado",function(e){
-   e.preventDefault();
-   var linkURL = $(this).attr("href");
-   $('#modal-deletelancto').modal("show");
-   $('#modal-deletelancto .confirma_exclusão').on("click",function(e){
-        valor = $('input[name=delete_parcelas]:checked', '#opcoes_delete').val();
-        $('info_delete_vinculado').val(valor);
-        linkURL = linkURL+'?tipo_delete='+valor;
-        window.location.href = linkURL;
-    });
-
-
-});
-
-
-
-
-
-
-
-$(".table_lancfinanceiro").on("click", ".delete_lancto",function(e){
-    e.preventDefault();
-    var linkURL = $(this).attr("href");
-    swal({
-        title: "Tem certeza?",
-        text: "Ao aceitar este registro será excluido!",
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#DD6B55",
-        confirmButtonText: "Sim, Excluir!",
-        cancelButtonText: "Não, Cancelar!",
-        closeOnConfirm: false,
-        closeOnCancel: false
-    },
-    function(isConfirm){
-        if (isConfirm) {
-
-            swal("Excluido!", "Registro excluido com sucesso!", "success");
-            window.location.href = linkURL;
-        }
-        else {
-
-            swal("Cancelado", "Exclusão cancelada", "error");
-        }
-	});
-
-});
+{% include 'js_inclui_receita.html' %}
+{% include 'js_inclui_despesa.html' %}
+{% include 'js_edicao_lancamentos.html' %}
+{% include 'js_info_lancamentos.html' %}
+{% include 'js_delete_lancamentos.html' %}
+
+{% include 'js_baixa_lancamentos.html' %}
 
 
 {% endblock %}

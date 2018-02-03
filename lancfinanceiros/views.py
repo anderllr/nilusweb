@@ -1,4 +1,4 @@
-from datetime import date, timedelta, datetime
+
 from datetime import date, timedelta, datetime
 from decimal import Decimal
 from django.db.models import Sum
@@ -35,6 +35,7 @@ def lancfin_list(request):
         template_name = 'lancfin_list.html'
 
     filtrou = 'nao'
+    data_hoje = datetime.today
 
     if request.user.is_masteruser is True:
         lanctos = Lancamentos.objects.filter(master_user=request.user.pk)
@@ -63,11 +64,14 @@ def lancfin_list(request):
         data_lanc_fim = form.cleaned_data.get('data_venc_fim', '')
         data_baix_ini = form.cleaned_data.get('data_baix_ini', '')
         data_baix_fim = form.cleaned_data.get('data_baix_fim', '')
+        tipo_lancamento = form.cleaned_data.get('tipo_lancamento', '')
+        sit_lancamento = form.cleaned_data.get('sit_lancamento','')
         empresa = form.cleaned_data.get('empresa', '')
         cadgeral = form.cleaned_data.get('cadgeral', '')
         plano_finan = form.cleaned_data.get('plano_finan', '')
         c_custo = form.cleaned_data.get('c_custo', '')
         conta_finan = form.cleaned_data.get('conta_finan','')
+
 
         if data_venc_ini:
             lanctos = lanctos.filter(dt_vencimento__gte=data_venc_ini)
@@ -113,11 +117,45 @@ def lancfin_list(request):
             lanctos = lanctos.filter(conta_finan=conta_finan)
             filtrou = 'ok'
 
+        if tipo_lancamento != 'T':
+            lanctos = lanctos.filter(tipo_lancamento=tipo_lancamento)
+            filtrou = 'ok'
+
+        if sit_lancamento != 'T':
+            if sit_lancamento == 'A':
+                lanctos = lanctos.filter(situacao=False)
+            elif sit_lancamento == 'B':
+                lanctos = lanctos.filter(situacao=True)
+            filtrou = 'ok'
+
+    form_baixa = FormBaixaLancamento(lanctos, conta_finan, request.POST or None)
+    if form_baixa.is_valid():
+        lancto = form_baixa.cleaned_data['lanc_baixa']
+        data_baixa = form_baixa.cleaned_data['data_baixa']
+        if data_baixa is None:
+            data_baixa = datetime.now()
+        conta_financeira = form_baixa.cleaned_data['conta_financeira']
+
+        for l in lancto:
+
+            if conta_financeira:
+                l.conta_finan = conta_financeira
+
+            l.situacao = True
+            l.data_baixa = data_baixa
+
+            grava_movimento_financeiro_b(l, l.situacao, l.saldo)
+
+            l.saldo = 0
+            l.save()
+
     context = {
         'lanctos': lanctos,
         'form': form,
+        'form_baixa': form_baixa,
         'empresa_init' : empresa_init,
         'filtrou': filtrou,
+        'data_hoje' : data_hoje,
     }
 
     return render(request, template_name, context)
@@ -1074,7 +1112,7 @@ def baixfin_list(request):
             lanctos = lanctos.filter(conta_finan=conta_finan)
             filtrou = 'ok'
 
-    form_baixa = FormBaixaLancamento(lanctos,conta_finan,request.POST or None)
+    form_baixa = FormBaixaLancamento(lanctos,request.POST or None)
     if form_baixa.is_valid():
         lancto = form_baixa.cleaned_data['lanc_baixa']
         data_baixa = form_baixa.cleaned_data['data_baixa']
@@ -1121,6 +1159,7 @@ class BaixaParcial(LoginRequiredMixin,UpdateView):
         context = super(BaixaParcial, self).get_context_data(**kwargs)
         # context['tem_parcela'] = self.object.verifica_parcela()
         context['dados_titulo'] = Lancamentos.objects.get(pk=self.kwargs['pk'])
+        context['data_hoje'] = datetime.today
         return context
 
     def get_form_kwargs(self):

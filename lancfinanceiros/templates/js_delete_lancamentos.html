@@ -1,0 +1,47 @@
+$(".table_lancfinanceiro").on("click",".delete_vinculado",function(e){
+   e.preventDefault();
+   var linkURL = $(this).attr("href");
+   $('#modal-deletelancto').modal("show");
+   $('#modal-deletelancto .confirma_exclusão').on("click",function(e){
+        valor = $('input[name=delete_parcelas]:checked', '#opcoes_delete').val();
+        $('info_delete_vinculado').val(valor);
+        linkURL = linkURL+'?tipo_delete='+valor;
+        window.location.href = linkURL;
+    });
+
+
+});
+
+
+
+
+
+
+
+$(".table_lancfinanceiro").on("click", ".delete_lancto",function(e){
+    e.preventDefault();
+    var linkURL = $(this).attr("href");
+    swal({
+        title: "Tem certeza?",
+        text: "Ao aceitar este registro será excluido!",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Sim, Excluir!",
+        cancelButtonText: "Não, Cancelar!",
+        closeOnConfirm: false,
+        closeOnCancel: false
+    },
+    function(isConfirm){
+        if (isConfirm) {
+
+            swal("Excluido!", "Registro excluido com sucesso!", "success");
+            window.location.href = linkURL;
+        }
+        else {
+
+            swal("Cancelado", "Exclusão cancelada", "error");
+        }
+	});
+
+});

@@ -1,0 +1,139 @@
+$(".new_despesa").on("click",function(e){
+     e.preventDefault();
+     $(".form_inc_despesa").load("{% url 'create_despesa' %}", function(){
+        $('.form_inc_despesa').show("puff");
+        $('.form_busca').hide("drop");
+        $('.table_lancfinanceiro').hide("drop");
+        $('.btn_lancamentos').hide("drop");
+        $('.e_titulo').hide();
+        $('.parcelamento').hide();
+        $("#id_valor_text").focus();
+
+        $('.chosen-select').chosen({ width: '100%' });
+
+        {% include 'js_floating_labels.html' %}
+        {% include 'js_tabs.html' %}
+        {% include 'js_masks.html' %}
+        {% include 'js_inclusoes.html' %}
+
+
+        $(".form_inc_despesa").on("change", "#id_titulo", function(e){
+			if ($(this).is(":checked")){
+				$(".e_titulo").show();
+                $("#id_repetir").prop("checked",false)
+                $(".repetir").hide();
+			}
+			else {
+				$(".e_titulo").hide();
+			}
+		 });
+
+        $(".form_inc_despesa").on("change", "#id_parcela", function(e){
+			if ($(this).is(":checked")){
+				$(".parcelamento").show();
+                $("#id_repetir").prop("checked",false)
+                $("#id_dt_vencimento").prop('required',true);
+                $(".repetir").hide();
+
+                $("#id_dias_entre_vencto").keyup(function() {
+                    if($(this).val().length > 0){
+                         $("#id_dia_fixo").prop('disabled',true);
+                    }
+                    else{
+                         $("#id_dia_fixo").prop('disabled',false);
+                    }
+                });
+
+                $(".form_inc_despesa").on("change", "#id_dia_fixo", function(e){
+                    if ($(this).is(":checked")){
+                        $("#id_dias_entre_vencto").prop('disabled',true);
+                    }
+                    else {
+                        $("#id_dias_entre_vencto").prop('disabled',false);
+                    }
+                });
+
+			}
+			else {
+				$(".parcelamento").hide();
+			}
+		});
+
+        $(".form_inc_despesa").on("change", "#id_repetir", function(e){
+			if ($(this).is(":checked")){
+				$(".repetir").show();
+                $("#id_parcela").prop("checked",false)
+                $(".parcelamento").hide();
+                $("#id_dt_vencimento").prop('required',true);
+                $("#id_qtd_repetir").prop('required',true);
+			}
+			else {
+				$(".repetir").hide();
+                $("#id_dt_vencimento").prop('required',false);
+                $("#id_qtd_repetir").prop('required',false);
+			}
+		 });
+
+
+        $(".js-datepicker").datepicker({
+            todayBtn: true,
+            language: "pt-BR",
+            autoclose: true,
+            todayHighlight: true
+        });
+
+
+        function load_cotacaoform(){
+            var indice_id = $('#id_indice').val();
+            if(indice_id != ''){
+                var url = '{% url 'indice_cotacao' %}';
+                url = url+'?indice_id='+indice_id;
+                 $("#id_cotacao").load(url,function(){
+                $("#id_cotacao").trigger("chosen:updated");
+                });
+            }
+            else{
+                $("#id_cotacao").html('');
+            }
+        }
+
+        $("#id_indice").on("change",function(e){
+               load_cotacaoform();
+        });
+              load_cotacaoform();
+
+
+          $(".form_inc_despesa .cancel_form").on("click",function(e){
+            $('.form_inc_despesa').hide("drop");
+            $('.table_lancfinanceiro').show("puff");
+            $('.btn_lancamentos').show("puff");
+          });
+    });
+});
+
+
+$(".form_inc_despesa").on("submit","form",function(e){
+     e.preventDefault();
+     var dados = $(this).serialize();
+     $.post("{% url 'create_despesa' %}",dados,function(result){
+        $(".form_inc").html(result);
+        if(close_modal==true){
+           $('.form_inc').hide("drop");
+           $('.table_lancfinanceiro').show("puff");
+           $('.btn_lancamentos').show();
+           window.location.reload();
+        }
+        else{
+            $(".form_inc_despesa").show();
+            {% include 'js_floating_labels.html' %}
+            {% include 'js_tabs.html' %}
+            $('.chosen-select').chosen({ width: '100%' });
+
+            $(".form_inc .cancel_form").on("click",function(e){
+                 $('.form_inc').hide("drop");
+                 $('.table_lancfinanceiro').hide("drop");
+                 $('.btn_lancamentos').show();
+            });
+        }
+     });
+});

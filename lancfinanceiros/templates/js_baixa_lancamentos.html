@@ -1,0 +1,62 @@
+$("#confirma_baixa").on("click",function(e){
+    var data = $('#data_baixa_modal').val();
+    $('#data_baixa').val(data);
+    var conta = $('#id_conta_financeira').val();
+    $('#conta_financeira').val(conta);
+    $('#form_baixa_lancamento').submit();
+
+});
+
+
+
+$("#btn_baixa_total").on("click",function(e){
+    if($('.baixa_lancamento').is(":checked")){
+        $('#modal-databaixa').modal("show");
+
+    }else{
+       swal('Atenção', 'Nenhum lançamento selecionado!', 'warning');
+    }
+
+
+});
+
+
+
+$("#modal-databaixa").on("change", "#permite_alterar_conta", function(e){
+            if ($(this).is(":checked")){
+                $(".modal-data-baixa").show();
+            }
+            else {
+                $(".modal-data-baixa").hide();
+            }
+         });
+
+
+
+$("#table_lanfinanceiro").on("click", ".baixa_parcial",function(e){
+    e.preventDefault();
+    $("#modal-baixaparcial .block-content").load($(this).attr('href'), function(){
+          $('#modal-baixaparcial').modal("show");
+          {% include 'js_floating_labels.html' %}
+          {% include 'js_datepickers.html' %}
+          {% include 'js_masks.html' %}
+          $('.chosen-select').chosen({ width: '100%' });
+    });
+});
+
+
+$("#modal-baixaparcial .block-content").on("submit","form",function(e){
+	 	 e.preventDefault();
+	 	 var dados = $(this).serialize();
+	 	 $.post($(this).attr('action'),dados,function(result){
+	 	    $("#modal-baixaparcial .block-content").html(result);
+            var close_modal = $('#close_form').val();
+            if(close_modal=='ok'){
+               $('#modal-baixaparcial').modal("hide");
+               window.location.reload();
+            }
+            else{
+                $('#modal-baixaparcial').modal("show");
+            }
+	 	 });
+	 });
