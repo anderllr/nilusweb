@@ -224,7 +224,7 @@ class FiltroLancamentosForm(forms.Form):
     cadgeral = forms.ModelChoiceField(label='Cliente / Fornecedor',empty_label='Todos', required=False, queryset=Cadgeral.objects.none())
     plano_finan = forms.ModelChoiceField(label='Plano Financeiro',empty_label='Todos' , required=False, queryset=PlanoFinan.objects.none())
     c_custo = forms.ModelChoiceField(label='Centro de Custo', empty_label='Todos', required=False, queryset=Ccusto.objects.none())
-    conta_finan = forms.ModelChoiceField(label='Conta Financeira',empty_label='Todas',required=False,queryset=Contafinanceira.objects.none())
+    conta_finan = forms.ModelChoiceField(label='Conta Financeira',empty_label='Todas',required=False,queryset=Ccusto.objects.none())
 
     tipoLancto_Choices = (
         ('T', 'Todos'),
@@ -233,16 +233,16 @@ class FiltroLancamentosForm(forms.Form):
     )
     tipo_lancamento = forms.ChoiceField(label='Tipo lançamento', choices=tipoLancto_Choices, initial='T')
 
-    tipoLancto_Choices = (
+    situalancamento = (
         ('T', 'Todos'),
         ('A', 'Abertos'),
         ('B', 'Baixados'),
     )
-    sit_lancamento = forms.ChoiceField(label='Situação', choices=tipoLancto_Choices, initial='T')
+    sit_lancamento = forms.ChoiceField(label='Situação', choices=situalancamento, initial='T')
 
 
 
-    def __init__(self, empresa, cliente, plano_finan, c_custo, conta_finan, *args, **kwargs):
+    def __init__(self, empresa,cliente,plano_finan,c_custo,conta_finan, *args, **kwargs):
         super(FiltroLancamentosForm, self).__init__(*args, **kwargs)
         self.fields['empresa'].queryset = empresa
         self.fields['cadgeral'].queryset = cliente

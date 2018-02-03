@@ -55,7 +55,9 @@ def lancfin_list(request):
         empresa_init = Company.objects.filter(master_user=request.user.user_master)
         conta_finan = Contafinanceira.objects.filter(master_user=request.user.user_master)
 
-    form = FiltroLancamentosForm(empresa,cadgeral,plano_finan,c_custo,conta_finan, request.GET or None)
+    form = FiltroLancamentosForm(empresa,cadgeral,plano_finan,c_custo,conta_finan,  request.GET or None)
+
+
 
     if form.is_valid():
         data_venc_ini = form.cleaned_data.get('data_venc_ini', '')
@@ -70,7 +72,7 @@ def lancfin_list(request):
         cadgeral = form.cleaned_data.get('cadgeral', '')
         plano_finan = form.cleaned_data.get('plano_finan', '')
         c_custo = form.cleaned_data.get('c_custo', '')
-        conta_finan = form.cleaned_data.get('conta_finan','')
+        conta_finan2 = form.cleaned_data.get('conta_finan','')
 
 
         if data_venc_ini:
@@ -113,8 +115,8 @@ def lancfin_list(request):
             lanctos = lanctos.filter(c_custo=c_custo)
             filtrou = 'ok'
 
-        if conta_finan:
-            lanctos = lanctos.filter(conta_finan=conta_finan)
+        if conta_finan2:
+            lanctos = lanctos.filter(conta_finan=conta_finan2)
             filtrou = 'ok'
 
         if tipo_lancamento != 'T':
