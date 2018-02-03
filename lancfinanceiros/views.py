@@ -530,22 +530,23 @@ def delete_lancto_vinculado(request, pk):
 
         # check_pai = lanctodel
         # print(lanctodel)
+
+        lancamento_pai_id = lanctodel.lancamento_pai_id
+
+
+        if int(lancamento_pai_id) == int(pk):
+            next_pai = Lancamentos.objects.filter(lancamento_pai=lanctodel.lancamento_pai).exclude(pk = lanctodel.pk).first()
+            if next_pai:
+                lanctos = Lancamentos.objects.filter(lancamento_pai=lanctodel.lancamento_pai)
+                lanctos.update(lancamento_pai_id=int(next_pai.pk))
+
         lanctodel.delete()
-
-
-        # if check_pai == check_pai.lancamento_pai_id:
-        #     # print('é lancto_pai')
-        #     next_pai = Lancamentos.objects.filter(lancamento_pai=check_pai.lancamento_pai).first()
-        #     print('proximo pai')
-        #     lanctos = Lancamentos.objects.filter(lancamento_pai=check_pai.lancamento_pai)
-        #     print('lancamentos ainda exitentes')
-        #     lanctos.update(lancamento_pai=next_pai)
-
-
 
     elif tipo_baixa == 'P':
         deletar = Lancamentos.objects.filter(lancamento_pai=lanctodel.lancamento_pai,situacao=False)
         deletar.delete()
+
+
     elif tipo_baixa == 'T':
         deletar = Lancamentos.objects.filter(lancamento_pai=lanctodel.lancamento_pai)
         deletar.delete()
