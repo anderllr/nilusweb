@@ -1,0 +1,198 @@
+{% load static widget_tweaks humanize %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+
+        <title>Nilus - Relatórios</title>
+
+        <meta name="description" content="Nilus - Soluções em Informática &amp; Versão WEB">
+        <meta name="author" content="pixelcave">
+        <meta name="robots" content="noindex, nofollow">
+
+        <!-- Open Graph Meta -->
+        <meta property="og:title" content="Nilus - Soluções em Informática &amp; Versão WEB">
+        <meta property="og:site_name" content="Nilus">
+        <meta property="og:description" content="Nilus - Soluções em Informática &amp; Versão WEB">
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="">
+        <meta property="og:image" content="">
+
+        <!-- Icons -->
+        <!-- The following icons can be replaced with your own, they are used by desktop and mobile browsers -->
+        <link rel="shortcut icon" href="{% static 'assets/img/favicons/favicon.png' %}">
+        <link rel="icon" type="image/png" sizes="192x192" href="{% static 'assets/img/favicons/favicon.png' %}">
+        <link rel="apple-touch-icon" sizes="180x180" href="{% static 'assets/img/favicons/favicon.png' %}">
+
+        <!-- END Icons -->
+
+        <!-- Stylesheets -->
+        <!-- Codebase framework -->
+        <link rel="stylesheet" id="css-main" href="{% static 'assets/css/codebase.min.css' %}">
+        <link rel="stylesheet" id="css-theme" href="{% static 'assets/css/themes/flat.min.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/js/plugins/datatables/dataTables.bootstrap4.min.css' %}">
+        <link href="{% static 'assets/plugins/sweetalert/sweetalert.css' %}" rel="stylesheet">
+        <link href="{% static 'assets/plugins/table_header_fixed/tb_header_fixed.css' %}" rel="stylesheet">
+        <link rel="stylesheet" href="{% static 'assets/js/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css' %}">
+
+
+
+
+        <link href="{% static 'assets/css/css_chosen.css' %}" rel="stylesheet">
+
+
+
+
+
+        <!-- You can include a specific file from css/themes/ folder to alter the default color theme of the template. eg: -->
+        <!-- <link rel="stylesheet" id="css-theme" href="assets/css/themes/flat.min.css"> -->
+        <!-- END Stylesheets -->
+    </head>
+<body>
+    <div class="block block-transparent">
+        <div class="block-header">
+            <h3>Lançamentos Financeiros</h3>
+        </div>
+        <div class="block-content">
+            <div class="block block-bordered">
+                                <div class="block-header block-header-default">
+                                    <h2 class="block-title">Filtros utilizados:</h2>
+                                </div>
+                                <div class="block-content">
+                                    <div class="row">
+                                        <div class="col-lg-3">
+                                            <span><strong>Lançamento: </strong> &nbsp;&nbsp;{% if data_lanc_ini and data_lanc_fim  %}{{ data_lanc_ini }}<strong> até : </strong>{{ data_lanc_fim }} {% endif %}</span>
+                                            <br>
+                                            <span><strong>Vencimento: </strong> &nbsp;&nbsp;{% if data_venc_ini and data_venc_fim  %}{{ data_venc_ini }}<strong> até : </strong>{{ data_venc_fim }} {% endif %}</span>
+                                            <br>
+                                            <span><strong>Baixa:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp; </strong>{% if data_baix_ini and data_baix_fim  %}{{ data_baix_ini }}<strong> até : </strong>{{ data_baix_fim }} {% endif %}</span>
+                                        </div>
+                                        <div class="col-3">
+                                            <span><strong>Cadastro: </strong> &nbsp;&nbsp;{% if cadgeral  %}{{ cadgeral }} {% endif %}</span>
+                                            <br>
+                                            <span><strong>Pl Financeiro: </strong> &nbsp;&nbsp;{% if plano_finan  %}{{ plano_finan }} {% endif %}</span>
+                                            <br>
+                                            <span><strong>C. Custo: </strong> &nbsp;&nbsp;{% if c_custo  %}{{ c_custo }} {% endif %}</span>
+                                        </div>
+                                        <div class="col-3">
+                                            <span><strong>Conta Fin.: </strong> &nbsp;&nbsp;{% if conta_finan  %}{{ conta_finan }} {% endif %}</span>
+                                            <br>
+                                            <span><strong>Sitação: </strong> &nbsp;&nbsp;{% if situacao != 'T'  %}
+                                                                                            {% if  situacao == 'A' %}
+                                                                                            Somente abertos
+                                                                                            {% elif situacao == 'B' %}
+                                                                                            Somente baixados
+                                                                                            {% endif %}
+                                                                                         {% endif %}</span>
+                                            <br>
+                                            <span><strong>Lanctos Tipo: </strong> &nbsp;&nbsp;&nbsp;&nbsp;{% if tipo_lancamento != 'T'  %}
+                                                                                            {% if  tipo_lancamento == 'R' %}
+                                                                                            Somente receitas
+                                                                                            {% elif situacao == 'D' %}
+                                                                                            Somente despesas
+                                                                                            {% endif %}
+                                                                                         {% endif %}</span>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+            <table id="rel_lanfinanceiros" class="table table-bordered table-striped table-vcenter js-dataTable-full" >
+                <thead>
+                    <tr>
+                        <th><small>Sel.</small></th>
+                        <th><small>Nº/P</small></th>
+                        <th><small>Cadastro</small></th>
+                        <th><small>Lançamento</small></th>
+                        <th><small>Vencimento</small></th>
+                        <th><small>Valor</small></th>
+                        <th><small>Saldo</small></th>
+                        <th><small>TP</small></th>
+                        <th><small>Sit.</small></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for lanc in lanctos %}
+                        <td style="width:1%; heigth:10%;">
+                            {% if lanc.situacao == False %}
+                            <center><label class="custom-control custom-checkbox baixa_lancamento">
+                                                    <input type="checkbox" class="custom-control-input baixa_lancamento" name="lanc_baixa" value="{{ lanc.pk }}">
+                                                    <span class="custom-control-indicator"></span>
+                                                    <span class="custom-control-description"></span>
+                            </label></center>
+                            {% endif %}
+                        <!--<center><input class="baixa_lancamento"  name="lanc_baixa" value="{{ lanc.pk }}" type="checkbox"></center>-->
+                        </td>
+                        <td style="width:1%; heigth:10%;"><small>{{ lanc.num_lan }}/{{ lanc.parcela }}</small></td>
+                        <td style="width:19; heigth:10%; "><small>{% if lanc.cadgeral == None %} Não Informado {% else %}<strong>{{lanc.cadgeral}}</strong>  {% endif %}
+                        </small></td>
+                        <td style="width:1%; heigth:10%;"><small>{{ lanc.dt_lancamento|date:'d/m/Y' }}</small></td>
+                        <td style="width:1%; heigth:10%;"><small>{{ lanc.dt_vencimento|date:'d/m/Y'  }}</small></td>
+                        <td style="width:1%; heigth:10%;">{% if lanc.tipo_lancamento == 'R' %}<span class="text-success">{{ lanc.vlr_lancamento }}</span>
+                                              {% else %}   <span class="text-danger">{{ lanc.vlr_lancamento }}</span>
+                                              {% endif %}
+                        </td>
+                        <td style="width:1%; heigth:10%;">{% if lanc.tipo_lancamento == 'R' %}<strong class="text-success">{{ lanc.saldo }}</strong>
+                                              {% else %}   <strong class="text-danger">{{ lanc.saldo }}</strong>
+                                              {% endif %}
+                        </td>
+
+                        <td style="width:1%; heigth:10%;">{% if lanc.tipo_lancamento == 'R' %} <span class="badge badge-success" text="Receita">R</span>
+                                              {% else %} <span class="badge badge-danger" text="Despesa">D</span>
+                                              {% endif %}
+                        </td>
+
+                        <td style="width:1%; heigth:10%;">{% if lanc.situacao %}
+                               {% if lanc.tipo_lancamento == 'R' %}
+                               <center><button type="button" class="btn btn-sm btn-noborder btn-outline-info"  data-toggle="tooltip" data-placement="bottom" title="Recebido" ><i class="fa fa-check-circle"></i></button></center>
+                                   {% else %}
+                               <center><button type="button" class="btn btn-sm btn-noborder btn-outline-info"  data-toggle="tooltip" data-placement="bottom" title="Pago" ><i class="fa fa-check-circle"></i></button></center>{% endif %}
+                            {% else %}
+                               <center><button type="button" class="btn btn-sm btn-noborder btn-outline-danger"  data-toggle="tooltip" data-placement="bottom" title="Aberto" ><i class="fa fa-exclamation"></i></button></center>
+                            {% endif %}
+                        </td>
+
+                        <td style="width:16%">
+                            <button type="button" class="btn btn-sm btn-outline-secondary edit_lancto" {% if lanc.tipo_lancamento == 'R' %}  href="{% url 'edit_receita' lanc.pk %}"
+                                                                                                       {% else %}    href="{% url 'edit_despesa' lanc.pk %}" {% endif %}
+                                                                                                        data-toggle="tooltip" data-placement="bottom" title="Editar">
+                               <i class="fa fa-pencil"></i>
+                            </button>
+
+
+                            <button type="button" class="btn btn-sm btn-outline-info info_lancto"  href="{% url 'infoLanctos' lanc.pk %}" data-toggle="tooltip" data-placement="bottom" title="Mais informações">
+                                <i class="fa fa-info-circle"></i>
+                            </button>
+
+
+                            <button type="button" class="btn btn-sm  btn-outline-primary baixa_parcial"  href="{% url 'baixa_parcial' lanc.pk %}" data-toggle="tooltip" data-placement="bottom" title="Baixar Lançamento indiviual"
+                                    {% if lanc.situacao == True %} disabled {% endif %}>
+                                <i class="fa fa-check"></i>
+                            </button>
+
+                            <button type="button" class="btn btn-sm btn-outline-danger {% if lanc.lancamento_pai == None %} delete_lancto {% else %}
+                                                                                        delete_vinculado {% endif %}"
+                                                                                       {% if lanc.lancamento_pai == None %}  href="{% url 'delete_receita' lanc.pk %}"
+                                                                                       {% else %} href="{% url 'delete_lancto_vinculado' lanc.pk %}" {% endif %}
+                                                                                        data-toggle="tooltip" data-placement="bottom" title="Excluir">
+                                <i class="fa fa-trash-o"></i>
+                            </button>
+
+                        </td>
+                    </tr>
+
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+
+
+
+</body>
+</html>

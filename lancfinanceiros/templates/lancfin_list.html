@@ -10,13 +10,18 @@
 
 <div class="block">
     <div class="block-content block-content-full ribbon ribbon-left ribbon-bookmark ribbon-primary">
-        <button class="btn btn-outline-info mr-5 mb-5 baixa pull-right"
-                data-placement="bottom" title="Pagar / Receber Lancamentos Selecionados"
-                 id="btn_baixa_total"><i class="fa fa-check-circle"></i> Baixar Selecionados</button>
+        <button class="btn btn-outline-secondary mr-5 mb-5 baixa btn_lancamentos pull-right"
+                data-toggle="tooltip" data-placement="bottom" title="Imprimir lançamentos listados"  title="Pagar / Receber Lancamentos Selecionados"
+                 id="btn_impressao"><i class="fa fa-print"></i></button>
 
-        <button class="btn btn-outline-danger mr-5 mb-5  new_despesa btn_lancamentos pull-right" style="width:18%;"><i class="fa fa-arrow-down"><i class="fa fa-dollar"></i></i> Nova Despesa</button>
-        <button class="btn btn-outline-primary mr-5 mb-5 new_receita btn_lancamentos pull-right" style="width:18%;"><i class="fa fa-arrow-up"><i class="fa fa-dollar"></i></i> Nova Receita</button>
-        <button type="button"  class="btn  btn-outline-primary  mr-5 mb-5" id="mostrar_filtros"   data-toggle="tooltip" data-placement="bottom" title="Exibir filtros de pesquisa">
+        <button class="btn btn-outline-info mr-5 mb-5 baixa btn_lancamentos pull-right"
+                data-toggle="tooltip" data-placement="bottom" title="Baixar Selecionados"  title="Pagar / Receber Lancamentos Selecionados"
+                 id="btn_baixa_total"><i class="fa fa-check-circle"></i></button>
+
+
+        <button class="btn btn-outline-danger mr-5 mb-5  new_despesa btn_lancamentos pull-right"  data-toggle="tooltip" data-placement="bottom" title="Nova Despesa"><i class="fa fa-arrow-down"><i class="fa fa-dollar"></i></i></button>
+        <button class="btn btn-outline-primary mr-5 mb-5 new_receita btn_lancamentos pull-right" data-toggle="tooltip" data-placement="bottom" title="Nova Receita"><i class="fa fa-arrow-up"><i class="fa fa-dollar"></i></i></button>
+        <button type="button"  class="btn  btn-outline-primary btn_lancamentos  mr-5 mb-5" id="mostrar_filtros"   data-toggle="tooltip" data-placement="bottom" title="Exibir filtros de pesquisa">
            <i class="fa fa-filter"></i> Buscar por...
        </button>
 
@@ -240,6 +245,15 @@ table = $('#table_lanfinanceiro').DataTable({
 {% include 'js_delete_lancamentos.html' %}
 
 {% include 'js_baixa_lancamentos.html' %}
+
+
+$("#btn_impressao").on("click",function(e){
+    var url = window.location.href;
+    var nova_url = url.replace('/fin/lanc/','/rel/lanfinanceiros/');
+    window.open(nova_url);
+
+
+});
 
 
 {% endblock %}

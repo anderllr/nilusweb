@@ -11,7 +11,7 @@ urlpatterns = [
     url(r'^adm/', include('nilusadm.urls')),
     url(r'^cad/', include('niluscad.urls')),
     url(r'^fin/', include('nilusfin.urls')),
-    # url('r^rel/', include('relatorios.urls')),
+    url(r'^rel/', include('relatorios.urls')),
     url(r'^fin/lanc/', include('lancfinanceiros.urls')),
 
 
