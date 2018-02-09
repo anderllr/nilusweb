@@ -510,7 +510,10 @@ class EditReceita(LoginRequiredMixin,UpdateView):
 
             vlr_movtos_baixas = Movtos_lancamentos.objects.filter(lancamento=lancto, tipo_movto='B').aggregate(
                 vlr_movimento=Sum('vlr_movimento'))
-            print(vlr_movtos_baixas['vlr_movimento'])
+            # print(vlr_movtos_baixas['vlr_movimento'])
+
+            if vlr_movtos_baixas['vlr_movimento'] is None:
+                vlr_movtos_baixas['vlr_movimento'] = 0
 
             if vlr_movtos_baixas != 0:
                 lancto.saldo = Decimal(lancto.vlr_lancamento) - vlr_movtos_baixas['vlr_movimento']
@@ -1180,11 +1183,30 @@ class BaixaParcial(LoginRequiredMixin,UpdateView):
     def form_valid(self, form):
         lancto = form.save(commit=False)
         valor_baixa = self.request.POST.get('valor_baixar').replace('.', '').replace(',', '.')
+        baixar_totalmente = form.cleaned_data.get('baixa_total', '')
         diferenca = Decimal(lancto.saldo) - Decimal(valor_baixa)
         lancto.saldo = diferenca
 
         if diferenca == 0:
             lancto.situacao = True
+
+        if baixar_totalmente is True:
+            lancto.situacao = True
+            lancto.saldo = 0
+            lancto.vlr_lancamento = valor_baixa
+            lancto.valor_text = valor_baixa
+            vlr_movtos_baixas = Movtos_lancamentos.objects.filter(lancamento=lancto, tipo_movto='B').aggregate(
+                                                                             vlr_movimento=Sum('vlr_movimento'))
+            if vlr_movtos_baixas['vlr_movimento'] is None:
+                vlr_movtos_baixas['vlr_movimento'] = 0
+
+            valor_baixa = Decimal(valor_baixa) - vlr_movtos_baixas['vlr_movimento']
+
+            movto_lanc = Movtos_lancamentos.objects.get(lancamento=lancto, tipo_movto='C')
+            movto_lanc.vlr_movimento = lancto.vlr_lancamento
+            movto_lanc.save()
+
+
 
         grava_movimento_financeiro_b(lancto,lancto.situacao,valor_baixa)
 

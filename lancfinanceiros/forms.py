@@ -310,6 +310,7 @@ class FormBaixaLancamento(forms.Form):
 
 class FormBaixaParcial(forms.ModelForm):
     valor_baixar = forms.CharField(max_length=20)
+    baixa_total = forms.BooleanField(label='Baixar Total',required=False)
 
 
     def __init__(self, user, *args, **kwargs):
