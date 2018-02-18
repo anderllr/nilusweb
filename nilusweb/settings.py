@@ -59,6 +59,8 @@ INSTALLED_APPS = [
     'lancfinanceiros',
     'relatorios',
 
+    'easy_pdf',
+
 ]
 
 MIDDLEWARE = [

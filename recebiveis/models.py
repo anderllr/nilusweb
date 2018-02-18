@@ -13,21 +13,21 @@ class Recebiveis(models.Model):
     # dados principais (empresa e numero do lançamento)
     num_rec = models.IntegerField('Nº Registro')
     company = models.ForeignKey('niluscad.Company',models.CASCADE,verbose_name='Empresa')
-    propriety = models.ForeignKey('niluscad.Propriety', verbose_name='Propriedade')
+    propriety = models.ForeignKey('niluscad.Propriety',models.CASCADE, verbose_name='Propriedade')
 
     #dados do titulo
-    client = models.ForeignKey('niluscad.CadGeral',verbose_name='Cliente')
+    client = models.ForeignKey('niluscad.CadGeral',models.CASCADE,verbose_name='Cliente')
     dt_lancamento = models.DateTimeField('Data Lançamento',auto_now_add=True)
     dt_vencimento = models.DateField('Data Vencimento')
-    plr_financeiro = models.ForeignKey('niluscad.Planofinan',verbose_name='Plano Financeiro')
-    conta_receb = models.ForeignKey('nilusfin.Contafinanceira',verbose_name='Conta Recebimento')
-    c_custo = models.ForeignKey('niluscad.Ccusto',verbose_name='Centro de Custo')
+    plr_financeiro = models.ForeignKey('niluscad.Planofinan',models.PROTECT,verbose_name='Plano Financeiro')
+    conta_receb = models.ForeignKey('nilusfin.Contafinanceira',models.PROTECT,verbose_name='Conta Recebimento')
+    c_custo = models.ForeignKey('niluscad.Ccusto',models.PROTECT,verbose_name='Centro de Custo')
     vlr_lancamento = models.DecimalField('Valor do Lançamento',max_digits=13,decimal_places=2,blank=True,null=True)
     valor_text = models.CharField(verbose_name='Valor',  max_length=20)
 
     #Dados Cotação/Indice
-    indice = models.ForeignKey('nilusfin.Indice',null=True,blank=True)
-    cotacao = models.ForeignKey('nilusfin.Cotacao',null=True,blank=True)
+    indice = models.ForeignKey('nilusfin.Indice',models.PROTECT,null=True,blank=True)
+    cotacao = models.ForeignKey('nilusfin.Cotacao',models.PROTECT,null=True,blank=True)
 
 
 

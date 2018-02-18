@@ -10,7 +10,7 @@ from django.db import models
 class Company(models.Model):
 
     # informação do dono da conta (usuario Master)
-    master_user = models.ForeignKey('accounts.User',verbose_name='Usario Master')
+    master_user = models.ForeignKey('accounts.User',models.CASCADE,verbose_name='Usario Master')
     # dados principais
     num_company = models.IntegerField('Cod. Empresa')
     cnpj_cpf = models.CharField('CNPJ/CPF', max_length=20,unique=True)
@@ -50,8 +50,8 @@ class Company(models.Model):
 class Propriety(models.Model):
 
     # informação do dono da conta (usuario Master)
-    master_user = models.ForeignKey('accounts.User', verbose_name='Uusario Master')
-    company = models.ForeignKey('niluscad.Company',verbose_name='Empresa Vinculada')
+    master_user = models.ForeignKey('accounts.User',models.CASCADE, verbose_name='Uusario Master')
+    company = models.ForeignKey('niluscad.Company',models.PROTECT,verbose_name='Empresa Vinculada')
     # dados principais
     num_propriety = models.IntegerField('Cod. Propriedade')
     ie = models.CharField('I.E*', max_length=20,unique=True)
@@ -96,7 +96,7 @@ class Propriety(models.Model):
 class Cadgeral(models.Model):
 
     # informação do dono da conta (usuario Master)
-    master_user = models.ForeignKey('accounts.User',verbose_name='Uusario Master')
+    master_user = models.ForeignKey('accounts.User',models.CASCADE,verbose_name='Uusario Master')
     # dados principais
     num_cad = models.IntegerField('Cod. Cadastro')
     cnpj_cpf = models.CharField('CNPJ/CPF', max_length=20,unique=True)
@@ -143,7 +143,7 @@ class Cadgeral(models.Model):
 class Ccusto(models.Model):
 
     # informação do dono da conta (usuario Master)
-    master_user = models.ForeignKey('accounts.User',verbose_name='Uusario Master')
+    master_user = models.ForeignKey('accounts.User',models.CASCADE,verbose_name='Uusario Master')
     # dados principais
     num_ccusto = models.IntegerField('Código')
     descricao = models.CharField('Descricao',max_length=60)
@@ -172,7 +172,7 @@ class PlanoFinan(models.Model):
 
 
     # informação do dono da conta (usuario Master)
-    master_user = models.ForeignKey('accounts.User',verbose_name='Uusario Master')
+    master_user = models.ForeignKey('accounts.User',models.CASCADE,verbose_name='Uusario Master')
     # dados principais
     num_plfin = models.IntegerField('Código')
     descricao = models.CharField('Descricão',max_length=60)
@@ -195,10 +195,10 @@ class PlanoFinan(models.Model):
 
 class Talhao(models.Model):
 
-    propriety = models.ForeignKey('niluscad.Propriety',verbose_name='Propriedade',null=True,blank=True)
+    propriety = models.ForeignKey('niluscad.Propriety',models.CASCADE,verbose_name='Propriedade',null=True,blank=True)
     area = models.DecimalField('Área',max_digits=13,decimal_places=2,blank=True,null=True)
     talhao = models.CharField('Nome Talhão',max_length=50)
-    user_cad = models.ForeignKey('accounts.User',verbose_name='Usuario Criação')
+    user_cad = models.ForeignKey('accounts.User',models.CASCADE,verbose_name='Usuario Criação')
 
 
     class Meta:

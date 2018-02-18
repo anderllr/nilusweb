@@ -93,7 +93,7 @@
             'main-content-boxed'                        Full width Main Content with a specific maximum width (screen width > 1200px)
             'main-content-narrow'                       Full width Main Content with a percentage width (screen width > 1200px)
         -->
-        <div id="page-container" class="sidebar-o side-scroll page-header-fixed page-header-glass main-content-boxed">
+        <div id="page-container" class="sidebar-o side-scroll page-header-fixed page-header-glass">
             <!-- Side Overlay-->
 
             <!-- END Side Overlay -->
@@ -189,7 +189,7 @@
                                     <ul>
                                         <li>
                                             <a href="{% url 'company_list' %}">Empresas</a>
-                                            <a href="{% url 'propriety_list' %}">Propriedades</a>
+                                            <!--<a href="{% url 'propriety_list' %}">Propriedades</a>-->
                                             <a href="{% url 'cadgeral_list' %}">Fornecedores/Clientes</a>
                                             {% if permissions.nilusFinanceiro == True %}
                                             <a href="{% url 'conta_list' %}">Contas Financeiras</a>
@@ -296,8 +296,8 @@
 
                     <!-- Layout API, functionality initialized in Codebase() -> uiApiLayout() -->
 
-                    <div class="block">
-                        <div class="block-content block-content-full">
+                    <div >
+                        <div>
                             {% block page_body %} {% endblock %}
                         </div>
                     </div>

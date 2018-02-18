@@ -47,7 +47,7 @@ def lancfin_list(request):
         conta_finan = Contafinanceira.objects.filter(master_user=request.user.pk)
 
     else:
-        lanctos = Lancamentos.objects.filet(master_user=request.user.user_master)
+        lanctos = Lancamentos.objects.filter(master_user=request.user.user_master)
         empresa = Company.objects.filter(master_user=request.user.user_master)
         cadgeral = Cadgeral.objects.filter(master_user=request.user.user_master)
         plano_finan = PlanoFinan.objects.filter(master_user=request.user.user_master)
@@ -618,7 +618,6 @@ class DeleteLanctoVinculo(LoginRequiredMixin,UpdateView):
 
     def form_valid(self, form):
         tipo_baixa = form.cleand_data.get['delete_parcelas']
-        print(tipo_baixa)
         # if tipo_baixa == 'N':
         #     lanctodel.delete()
         # if tipo_baixa == 'P':
@@ -987,7 +986,7 @@ class EditDespesa(LoginRequiredMixin,UpdateView):
         if 'valor_text' in form.changed_data:
 
             vlr_movtos_baixas = Movtos_lancamentos.objects.filter(lancamento=lancto,tipo_movto='B').aggregate(vlr_movimento=Sum('vlr_movimento'))
-            print(vlr_movtos_baixas['vlr_movimento'])
+
 
             if vlr_movtos_baixas != 0:
                 lancto.saldo = Decimal(lancto.vlr_lancamento) - vlr_movtos_baixas['vlr_movimento']

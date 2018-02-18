@@ -1,0 +1,91 @@
+{% load static widget_tweaks humanize utils %}
+<h5><small>Posição financeira atual</small></h5>
+<div class="row gutters-tiny invisible" data-toggle="appear">
+        <!-- Row #4 -->
+        <div class="col-md-6">
+            <a class="block block-link-shadow overflow-hidden" href="javascript:void(0)">
+                <div class="block-content block-content-full">
+                    <!--<i class="si si-briefcase fa-2x text-body-bg-dark"></i>-->
+                    <div class="row">
+                    <i class="fa fa-arrow-up  text-success"><i class="fa fa-dollar fa-2x text-body-bg-danger"></i></i>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 text-right border-r">
+                            <div class="invisible" data-toggle="appear" data-class="animated fadeInLeft">
+                                <div class="font-size-h3 font-w600 text-success">{% if receita_qtd != None %} {{ receita_qtd }}
+                                                                                 {% else %} 0 {% endif %}</div>
+                                <div class="font-size-sm font-w600 text-uppercase text-muted">Qtd receitas em aberto</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="invisible" data-toggle="appear" data-class="animated fadeInRight">
+                                <div class="font-size-h3 font-w600 text-success">{% if receita_val.vlr_saldo != None %} ${{ receita_val.vlr_saldo|intcomma }}
+                                                                                 {% else  %} 0 {% endif %}</div>
+                                <div class="font-size-sm font-w600 text-uppercase text-muted">Saldo a receber</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-6">
+            <a class="block block-link-shadow overflow-hidden" href="javascript:void(0)">
+                <div class="block-content block-content-full">
+                    <div class="text-right">
+                        <!--<i class="si si-users fa-2x text-body-bg-dark"></i>-->
+                        <i class="fa fa-arrow-down  text-danger"><i class="fa fa-dollar fa-2x text-body-bg-danger"></i></i>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 text-right border-r">
+                            <div class="invisible" data-toggle="appear" data-class="animated fadeInLeft">
+                                <div class="font-size-h3 font-w600 text-danger">{% if despesa_qtd != None %} {{ despesa_qtd }}
+                                                                                 {% else %} 0 {% endif %}</div>
+                                <div class="font-size-sm font-w600 text-uppercase text-muted">Qtd despesas em aberto</div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="invisible" data-toggle="appear" data-class="animated fadeInRight">
+                                <div class="font-size-h3 font-w600 text-danger">{% if despesa_val.vlr_saldo != None %} ${{ despesa_val.vlr_saldo|intcomma }}
+                                                                                 {% else  %} 0 {% endif %}</div>
+                                <div class="font-size-sm font-w600 text-uppercase text-muted">Saldo a pagar</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <!-- END Row #4 -->
+</div>
+
+<div class="block">
+    <div class="block-content">
+        <div class="row">
+            <h3 class="block-title">Posição refente: <stronog>{{ dt_filtro|date:'F Y' }}</stronog>
+                <a class="btn btn-outline-primary mr-5 mb-5  btn_lancamentos"  data-toggle="tooltip"
+               data-placement="bottom" title="Próximo Mês"
+               href="{% url 'principal_data' dt_lancamentos_proximo.year  dt_lancamentos_proximo.month	%}"  ><i class="fa fa-arrow-up"></i></a>
+            <a class="btn btn-outline-primary mr-5 mb-5  btn_lancamentos"  data-toggle="tooltip"
+               data-placement="bottom" title="Mês anterior"
+               href="{% url 'principal_data' dt_lancamentos_anterior.year  dt_lancamentos_anterior.month	%}" ><i class="fa fa-arrow-down"></i></a>
+            </h3>
+
+
+            <div class=" pull-right form-inline mr-5 mb-5" >
+                <select class="form-control pull-right margin-right-10" id="listaanos">
+                    {% for ano in listaanos %}
+                    <option{% if ano == dt_filtro.year%} selected {% endif %}>{{ ano }}</option>
+                    {% endfor %}
+                </select>
+                <select class="form-control  pull-right margin-right-10  " id="listames">
+                    {% for mes in listames %}
+                    <option{% if mes == dt_filtro.month %} selected {% endif %}>{{ mes|format_int }}</option>
+                    {% endfor %}
+                </select>
+                <button type="button" class="btn btn-outline-primary  btn_lancamentos"  data-toggle="tooltip"
+                       data-placement="bottom" title="ir para o período escolhido." id="botao-ir">IR</button>
+            </div>
+        </div>
+
+
+    </div>
+</div>

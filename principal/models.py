@@ -5,8 +5,8 @@ from django.db import models
 
 class Instancia(models.Model):
     user = models.ForeignKey('accounts.User',models.CASCADE,verbose_name='Usuário')
-    company = models.ForeignKey('niluscad.Company',verbose_name='Empresa padrão',null=True,blank=True)
-    propriety = models.ForeignKey('niluscad.Propriety',verbose_name='Propriedade Padrão',null=True,blank=True)
+    company = models.ForeignKey('niluscad.Company',models.SET_NULL,verbose_name='Empresa padrão',null=True,blank=True)
+    propriety = models.ForeignKey('niluscad.Propriety',models.SET_NULL,verbose_name='Propriedade Padrão',null=True,blank=True)
 
 
     class Meta:

@@ -8,7 +8,7 @@ from django.db import models
 
 class Permissions(models.Model):
 
-    user = models.ForeignKey('accounts.User',verbose_name='Usuário')
+    user = models.ForeignKey('accounts.User',models.CASCADE,verbose_name='Usuário')
     nilusCadastro = models.BooleanField('Cadastros', default=False)
     nilusFinanceiro = models.BooleanField('Financeiro',default=False)
     nilusCompras = models.BooleanField('Compras',default=False)
@@ -30,7 +30,7 @@ class Meta:
 
 class Sequenciais(models.Model):
 
-    user = models.ForeignKey('accounts.User',verbose_name='Usuário')
+    user = models.ForeignKey('accounts.User',models.CASCADE,verbose_name='Usuário')
     empresas = models.IntegerField('Seq Cad. Empresas', default=0)
     propriedades = models.IntegerField('Seq Cad. Propriedades',default=0)
     cadgeral = models.IntegerField('Seq Cad. CadGeral',default=0)

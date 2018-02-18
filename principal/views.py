@@ -1,3 +1,7 @@
+from datetime import date, timedelta, datetime
+from django.utils import timezone
+from decimal import Decimal
+from django.db.models import Sum
 from django.shortcuts import render,get_object_or_404
 from django.views.generic import UpdateView,FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -12,27 +16,95 @@ from accounts.models import User
 from .models import Instancia
 from niluscad.models import Company,Propriety
 from nilusfin.models import Indice,Cotacao
-
+from lancfinanceiros.models import Lancamentos
 # Create your views here.
 
 @login_required
-def principal(request):
+def principal(request,ano=None, mes=None):
 
 
-   # dados_usuario = User.objects.get(user=request.user)
-
-   dados_instancia = Instancia.objects.filter(user=request.user)
-
-   if dados_instancia:
-      dados_instancia = Instancia.objects.get(user=request.user)
-      dados_instancia.company = request.user.company_p
-      dados_instancia.propriety = request.user.propriety_p
-      dados_instancia.save()
+   # 1º Posição de todos os lançamentos em aberto e seus valores de saldos até o momento.
+   lancfin_rec = Lancamentos.objects.filter(master_user=request.user.user_master, situacao=False, tipo_lancamento='R')
+   lancfin_des = Lancamentos.objects.filter(master_user=request.user.user_master, situacao=False, tipo_lancamento='D')
+   lancfin_rec_val = lancfin_rec.aggregate(vlr_saldo=Sum('saldo'))
+   lancfin_des_val = lancfin_des.aggregate(vlr_saldo=Sum('saldo'))
+   lancfin_rec_qtd = lancfin_rec.count()
+   lancfin_des_qtd = lancfin_des.count()
 
 
+   # 2º Inicia-se o processo de verificar mês a mês
+
+   data_hoje = datetime.today()
+   listaanos = [i for i in range(data_hoje.year - 10, data_hoje.year + 11)]
+   listames = [i for i in range(1, 13)]
+
+   if ano is None:
+      dt_filtro = timezone.now()
+      ano = dt_filtro.year
+      mes = dt_filtro.month
+
+   try:
+      dt_filtro = date(int(ano), int(mes), 1)
+   except:
+      raise Http404
 
 
-   return render(request,'principal.html')
+   lancto_despesas = Lancamentos.objects.filter(master_user=request.user.user_master, tipo_lancamento='D', situacao=False)
+   lancto_despesas = lancto_despesas.filter(
+      dt_vencimento__year=dt_filtro.year, dt_vencimento__month=dt_filtro.month)
+   #
+   lancto_despesas_atraso = Lancamentos.objects.filter(master_user=request.user.user_master, tipo_lancamento='D', situacao=False)
+   lancto_despesas_atraso = lancto_despesas_atraso.filter(dt_vencimento__lt=dt_filtro)
+
+   lancto_receitas = Lancamentos.objects.filter(master_user=request.user.user_master, tipo_lancamento='R', situacao=False)
+   lancto_receitas = lancto_receitas.filter(dt_vencimento__year=dt_filtro.year, dt_vencimento__month=dt_filtro.month)
+
+   lancto_receitas_atraso = Lancamentos.objects.filter(master_user=request.user.user_master, tipo_lancamento='R', situacao=False)
+   lancto_receitas_atraso = lancto_receitas_atraso.filter(dt_vencimento__lt=dt_filtro)
+   #
+   # Valores das somas de lançamentos.
+   # valor_receitas = Lancamentos.objects.filter(master_user=request.user, tipo_lancamento='R', pag_rec=True)
+   # valor_receitas = valor_receitas.filter(dt_pagrec__year=dt_filtro.year,
+   #                                        dt_pagrec__month=dt_filtro.month).aggregate(valor=Sum('valor'))
+   # #
+   # valor_receitas_previstas = Lancamentos.objects.filter(user=request.user, tipo_lancamento='R', pag_rec=False)
+   # valor_receitas_previstas = valor_receitas_previstas.filter(dt_pagrec__year=dt_lancamentos.year,
+   #                                                            dt_pagrec__month=dt_lancamentos.month).aggregate(
+   #    valor=Sum('valor'))
+   #
+   # valor_despesas = Lancamentos.objects.filter(user=request.user, tipo_lancamento='D', pag_rec=True)
+   # valor_despesas = valor_despesas.filter(dt_pagrec__year=dt_lancamentos.year,
+   #                                        dt_pagrec__month=dt_lancamentos.month).aggregate(valor=Sum('valor'))
+   #
+   # valor_despesas_previstas = Lancamentos.objects.filter(user=request.user, tipo_lancamento='D', pag_rec=False)
+   # valor_despesas_previstas = valor_despesas_previstas.filter(dt_pagrec__year=dt_lancamentos.year,
+   #                                                            dt_pagrec__month=dt_lancamentos.month).aggregate(
+   #    valor=Sum('valor'))
+   #
+   # valor_receitas_final = valor_receitas['valor'] or 0
+   # valor_despesas_final = valor_despesas['valor'] or 0
+   #
+   # receitas_previstas_final = valor_receitas_previstas['valor'] or 0
+   # despesas_previstas_final = valor_despesas_previstas['valor'] or 0
+   #
+   dt_lancamentos_proximo = dt_filtro + timedelta(days=31)
+   dt_lancamentos_anterior = dt_filtro - timedelta(days=1)
+   #
+
+   context = {
+      'dt_lancamentos_proximo': dt_lancamentos_proximo,
+      'dt_lancamentos_anterior': dt_lancamentos_anterior,
+      'dt_filtro' : dt_filtro,
+      'receita_val' : lancfin_rec_val,
+      'despesa_val' : lancfin_des_val,
+      'receita_qtd' : lancfin_rec_qtd,
+      'despesa_qtd' : lancfin_des_qtd,
+      'listaanos': listaanos,
+      'listames': listames,
+   }
+
+
+   return render(request,'principal.html',context)
 
 
 class UpdateUserView(LoginRequiredMixin, UpdateView):
@@ -46,11 +118,6 @@ class UpdateUserView(LoginRequiredMixin, UpdateView):
 
    def get_object(self):
       return self.request.user
-
-
-
-
-
 
 
 class UpdatePasswordView(LoginRequiredMixin, FormView):
@@ -106,6 +173,16 @@ def indice_cotacao(request):
       context = {'indice' : indice, 'cotacao' : cotacao}
       return render(request,'_select_cotacao.html',context)
    raise Http404
+
+
+
+# def dashboard_financeiro(request):
+#    if request.is_ajax():
+#       template_name = '_dashboard_financeiro.html'
+#    else:
+#       template_name = 'dashboard_financeiro.html'
+#
+#    filtrou = 'nao'
 
 
 

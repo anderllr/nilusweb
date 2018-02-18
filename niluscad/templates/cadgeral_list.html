@@ -10,30 +10,34 @@
 
 <div class="block">
     <div class="block-content">
-        <div class="row btn-insert">
-        <button type="button" class="btn btn-outline-primary mr-5 mb-5  new_cadgeral">
-                 <i class="fa fa-plus mr-5"></i> Novo Cadastro
-        </button>
-        </div>
-        <div>
-            <div class="row">
-                <div class="form_inc col-md-12">
+        <div class="block">
+            <div class="block-content">
+                <div class="row btn-insert">
+                <button type="button" class="btn btn-outline-primary mr-5 mb-5  new_cadgeral">
+                         <i class="fa fa-plus mr-5"></i> Novo Cadastro
+                </button>
+                </div>
+                <div>
+                    <div class="row">
+                        <div class="form_inc col-md-12">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form_edit col-md-12"></div>
+                    </div>
+                </div>
+
+
+
+                </div>
+                <div class="row table table_cadgeral">
+                 {% include '_table_cadgeral.html' %}
                 </div>
             </div>
-            <div class="row">
-                <div class="form_edit col-md-12"></div>
-            </div>
         </div>
 
-
-
-        </div>
-        <div class="row table table_cadgeral">
-         {% include '_table_cadgeral.html' %}
-        </div>
     </div>
 </div>
-
 
 {% endblock %}
 

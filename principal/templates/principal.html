@@ -4,12 +4,22 @@
 
 
 <!-- Bread crumb and right sidebar toggle -->
-{% block title %} Principal {% endblock %}
+{% block title %} Dashboard Financeiro {% endblock %}
 
-{% block page_body %} teste blocos e paginas {% endblock %}
+{% block page_body %}
+
+{% include 'dashboard_financeiro.html' %}
+
+
+<script src="{% static 'assets/js/pages/be_pages_dashboard.js' %}"></script>
+{% endblock %}
 
 
 
+{% block javascript %}
+
+
+{% endblock %}
 
 
 
