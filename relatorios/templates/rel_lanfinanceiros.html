@@ -107,9 +107,9 @@
                                     </thead>
                                     <tbody>
                                     <tr>
-                                        <td><span><small><strong>Lançamento: </strong></small><small>&nbsp;&nbsp;{% if data_lanc_ini and data_lanc_fim  %}{{ data_lanc_ini }}</small> <small><strong>até :</strong></small> <small>{{ data_lanc_fim }} {% endif %}</small></small></span></td>
-                                        <td><span><small><strong>Vencimento: </strong></small><small>&nbsp;&nbsp;{% if data_venc_ini and data_venc_fim  %}{{ data_venc_ini }}</small> <small><strong>até :</strong></small> <small>{{ data_venc_fim }} {% endif %}</small></small></span></td>
-                                        <td><span><small><strong>Baixa: </strong></small><small>&nbsp;&nbsp;{% if data_baix_ini and data_baix_fim  %}{{ data_baix_ini }}</small> <small><strong>até :</strong></small> <small>{{ data_baix_fim }} {% endif %}</small></small></span></td>
+                                        <td><span><small><strong>Lançamento: </strong></small><small>&nbsp;&nbsp;{% if data_lanc_ini  %}{{ data_lanc_ini }} {% endif %}</small> <small><strong>até :</strong></small> <small>{% if data_lanc_fim %}{{ data_lanc_fim }} {% endif %}</small></small></span></td>
+                                        <td><span><small><strong>Vencimento: </strong></small><small>&nbsp;&nbsp;{% if data_venc_ini  %}{{ data_venc_ini }} {% endif %}</small> <small><strong>até :</strong></small> <small>{% if data_venc_fim %}{{ data_venc_fim }} {% endif %}</small></small></span></td>
+                                        <td><span><small><strong>Baixa: </strong></small><small>&nbsp;&nbsp;{% if data_baix_ini %}{{ data_baix_ini }} {% endif %}</small> <small><strong>até :</strong></small> <small>{% if data_baix_fim %}{{ data_baix_fim }} {% endif %}</small></small></span></td>
                                     </tr>
                                     <tr>
                                         <td><span><small><strong>Cadastro: </strong></small><small>&nbsp;&nbsp;&nbsp;&nbsp;{% if cadgeral  %}{{ cadgeral }} {% endif %}</small></span></td>

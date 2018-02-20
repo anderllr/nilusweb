@@ -1,0 +1,118 @@
+{% load static widget_tweaks humanize utils l10n %}
+
+var NilusCharts = function() {
+
+
+    var initChartsChartJS = function () {
+        // Set Global Chart.js configuration
+        Chart.defaults.global.defaultFontColor              = '#555555';
+        Chart.defaults.scale.gridLines.color                = "rgba(0,0,0,.04)";
+        Chart.defaults.scale.gridLines.zeroLineColor        = "rgba(0,0,0,.1)";
+        Chart.defaults.scale.ticks.beginAtZero              = false;
+        Chart.defaults.global.elements.line.borderWidth     = 1;
+        Chart.defaults.global.elements.point.radius         = 5;
+        Chart.defaults.global.elements.point.hoverRadius    = 7;
+        Chart.defaults.global.tooltips.cornerRadius         = 3;
+        Chart.defaults.global.legend.labels.boxWidth        = 12;
+        Chart.defaults.global.scaleLabel = function(label){
+                        return label.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");};
+        Chart.defaults.global.multiTooltipTemplate = function(label){
+                        return label.datasetLabel + ': ' + label.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");};
+
+
+
+        // Get Chart Containers
+        var chartLinesCon  = jQuery('.js-chartjs-lines');
+        var chartPieCon    = jQuery('.js-chartjs-pie');
+        var chartPieConDesp    = jQuery('.js-chartjs-pie2');
+
+
+        // Set Chart and Chart Data variables
+        var chartLinesBarsRadarData, chartPolarPieDonutData;
+        var chartPolarPieDonutData2;
+
+        // Lines/Bar/Radar Chart Data
+
+		var dynamicColors = function() {
+			var r = Math.floor(Math.random() * 255);
+			var g = Math.floor(Math.random() * 255);
+			var b = Math.floor(Math.random() * 255);
+			return "rgb(" + r + "," + g + "," + b + ")";
+		};
+        // Polar/Pie/Donut Data
+        var chartPolarPieDonutData = {
+            labels: [
+                {% for despl_rec in planofinan_rec %}
+                    '{{ despl_rec.plr_financeiro__descricao }}'
+                {% endfor %}
+            ],
+            datasets: [{
+                data: [
+                    {% for despl_rec in planofinan_rec %}
+                        {{ despl_rec.valor_plano|unlocalize }}
+                    {% endfor %}
+                ],
+
+                backgroundColor: [
+                    {% for despl_rec in planofinan_rec  %}
+                    dynamicColors(),
+                    {% endfor %}
+                ],
+                hoverBackgroundColor: [
+                    'rgba(156,204,101,.5)',
+                    'rgba(255,202,40,.5)',
+                    'rgba(239,83,80,.5)'
+                ]
+            }]
+        };
+
+
+        var chartPolarPieDonutData2 = {
+            labels: [
+                {% for despl_desp in planofinan_desp %}
+                    '{{ despl_desp.plr_financeiro__descricao }}',
+                {% endfor %}
+            ],
+            datasets: [{
+                data: [
+                    {% for despl_desp in planofinan_desp %}
+                        {{ despl_desp.valor_plano|unlocalize }},
+                    {% endfor %}
+                ],
+
+                backgroundColor: [
+                    {% for despl_desp in planofinan_desp  %}
+                    dynamicColors(),
+                    {% endfor %}
+                ],
+                hoverBackgroundColor: [
+                    'rgba(156,204,101,.5)',
+                    'rgba(255,202,40,.5)',
+                    'rgba(239,83,80,.5)'
+                ]
+            }]
+        };
+
+        // Init Charts
+
+        if ( chartPieCon.length ) {
+            chartPie   = new Chart(chartPieCon, { type: 'pie', data: chartPolarPieDonutData });
+        }
+
+        if ( chartPieConDesp.length ) {
+            chartPie   = new Chart(chartPieConDesp, { type: 'pie', data: chartPolarPieDonutData2 });
+        }
+    };
+
+
+
+    return {
+        init: function () {
+            // Init Chart.js Charts
+            initChartsChartJS();
+        }
+    };
+}();
+
+// Initialize when page loads
+jQuery(function(){ NilusCharts.init(); });

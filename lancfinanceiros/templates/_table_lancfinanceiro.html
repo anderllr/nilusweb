@@ -26,7 +26,7 @@
                     <!--<center><input class="baixa_lancamento"  name="lanc_baixa" value="{{ lanc.pk }}" type="checkbox"></center>-->
                     </td>
                     <td style="width:1%; heigth:10%;"><small>{{ lanc.num_lan }}/{{ lanc.parcela }}</small></td>
-                    <td style="width:19; heigth:10%; "><small>{% if lanc.cadgeral == None %} Não Informado {% else %}<strong>{{lanc.cadgeral}}</strong>  {% endif %}
+                    <td style="width:19%; "><small>{% if lanc.cadgeral == None %} Não Informado {% else %}<strong>{{lanc.cadgeral}}</strong>  {% endif %}
                     </small></td>
                     <td style="width:1%; heigth:10%;"><small>{{ lanc.dt_lancamento|date:'d/m/Y' }}</small></td>
                     <td style="width:1%; heigth:10%;"><small>{{ lanc.dt_vencimento|date:'d/m/Y'  }}</small></td>

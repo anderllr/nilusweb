@@ -1,5 +1,29 @@
 {% load static widget_tweaks humanize utils %}
-<h5><small>Posição financeira atual</small></h5>
+<div class="row">
+<h3 class="block-title">Posição refente: <stronog>{{ dt_filtro|date:'F Y' }}</stronog>
+                <a class="btn btn-outline-primary mr-5 mb-5  btn_lancamentos"  data-toggle="tooltip"
+               data-placement="bottom" title="Próximo Mês"
+               href="{% url 'principal_data' dt_lancamentos_proximo.year  dt_lancamentos_proximo.month	%}"  ><i class="fa fa-arrow-up"></i></a>
+            <a class="btn btn-outline-primary mr-5 mb-5  btn_lancamentos"  data-toggle="tooltip"
+               data-placement="bottom" title="Mês anterior"
+               href="{% url 'principal_data' dt_lancamentos_anterior.year  dt_lancamentos_anterior.month	%}" ><i class="fa fa-arrow-down"></i></a>
+            </h3>
+            <div class=" pull-right form-inline mr-5 mb-5" >
+                <select class="form-control pull-right margin-right-10" id="listaanos">
+                    {% for ano in listaanos %}
+                    <option{% if ano == dt_filtro.year%} selected {% endif %}>{{ ano }}</option>
+                    {% endfor %}
+                </select>
+                <select class="form-control  pull-right margin-right-10  " id="listames">
+                    {% for mes in listames %}
+                    <option{% if mes == dt_filtro.month %} selected {% endif %}>{{ mes|format_int }}</option>
+                    {% endfor %}
+                </select>
+                <button type="button" class="btn btn-outline-primary  btn_lancamentos"  data-toggle="tooltip"
+                       data-placement="bottom" title="Ir para o período escolhido." id="botao-ir">IR</button>
+            </div>
+
+</div>
 <div class="row gutters-tiny invisible" data-toggle="appear">
         <!-- Row #4 -->
         <div class="col-md-6">
@@ -12,16 +36,16 @@
                     <div class="row">
                         <div class="col-6 text-right border-r">
                             <div class="invisible" data-toggle="appear" data-class="animated fadeInLeft">
-                                <div class="font-size-h3 font-w600 text-success">{% if receita_qtd != None %} {{ receita_qtd }}
+                                <div class="font-size-h3 font-w600 text-success">{% if receita_val.vlr_saldo != None %} ${{ receita_val.vlr_saldo|intcomma }}
                                                                                  {% else %} 0 {% endif %}</div>
-                                <div class="font-size-sm font-w600 text-uppercase text-muted">Qtd receitas em aberto</div>
+                                <div class="font-size-sm font-w600 text-uppercase text-muted">Receitas á vencer no mês</div>
                             </div>
                         </div>
                         <div class="col-6">
                             <div class="invisible" data-toggle="appear" data-class="animated fadeInRight">
-                                <div class="font-size-h3 font-w600 text-success">{% if receita_val.vlr_saldo != None %} ${{ receita_val.vlr_saldo|intcomma }}
+                                <div class="font-size-h3 font-w600 text-success">{% if valor_receitas_atraso.vlr_saldo != None %} ${{ valor_receitas_atraso.vlr_saldo|intcomma }}
                                                                                  {% else  %} 0 {% endif %}</div>
-                                <div class="font-size-sm font-w600 text-uppercase text-muted">Saldo a receber</div>
+                                <div class="font-size-sm font-w600 text-uppercase text-muted">Receitas em atraso</div>
                             </div>
                         </div>
                     </div>
@@ -38,54 +62,96 @@
                     <div class="row">
                         <div class="col-6 text-right border-r">
                             <div class="invisible" data-toggle="appear" data-class="animated fadeInLeft">
-                                <div class="font-size-h3 font-w600 text-danger">{% if despesa_qtd != None %} {{ despesa_qtd }}
+                                <div class="font-size-h3 font-w600 text-danger">{% if despesa_val.vlr_saldo != None %} ${{ despesa_val.vlr_saldo|intcomma }}
                                                                                  {% else %} 0 {% endif %}</div>
-                                <div class="font-size-sm font-w600 text-uppercase text-muted">Qtd despesas em aberto</div>
+                                <div class="font-size-sm font-w600 text-uppercase text-muted">Despesas á vencer no mês</div>
                             </div>
                         </div>
                         <div class="col-6">
                             <div class="invisible" data-toggle="appear" data-class="animated fadeInRight">
-                                <div class="font-size-h3 font-w600 text-danger">{% if despesa_val.vlr_saldo != None %} ${{ despesa_val.vlr_saldo|intcomma }}
+                                <div class="font-size-h3 font-w600 text-danger">{% if valor_despesas_atraso.vlr_saldo != None %} ${{ valor_despesas_atraso.vlr_saldo|intcomma }}
                                                                                  {% else  %} 0 {% endif %}</div>
-                                <div class="font-size-sm font-w600 text-uppercase text-muted">Saldo a pagar</div>
+                                <div class="font-size-sm font-w600 text-uppercase text-muted">Despesas em atraso</div>
                             </div>
                         </div>
                     </div>
                 </div>
             </a>
         </div>
+
         <!-- END Row #4 -->
 </div>
-
-<div class="block">
-    <div class="block-content">
         <div class="row">
-            <h3 class="block-title">Posição refente: <stronog>{{ dt_filtro|date:'F Y' }}</stronog>
-                <a class="btn btn-outline-primary mr-5 mb-5  btn_lancamentos"  data-toggle="tooltip"
-               data-placement="bottom" title="Próximo Mês"
-               href="{% url 'principal_data' dt_lancamentos_proximo.year  dt_lancamentos_proximo.month	%}"  ><i class="fa fa-arrow-up"></i></a>
-            <a class="btn btn-outline-primary mr-5 mb-5  btn_lancamentos"  data-toggle="tooltip"
-               data-placement="bottom" title="Mês anterior"
-               href="{% url 'principal_data' dt_lancamentos_anterior.year  dt_lancamentos_anterior.month	%}" ><i class="fa fa-arrow-down"></i></a>
-            </h3>
+            <div class="col-xl-6">
+                <div class="block block-themed">
+                    <div class="block-header bg-earth-light">
+                        <h3 class="block-title">Receitas x Plano Financeiro</h3>
+
+                    </div>
+                    <div class="block-content block-content-full text-center">
+                        <p>Valores de receitas com vencimento no mês selecionado</p>
+                        <canvas class="js-chartjs-pie"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6">
+                <div class="block block-themed">
+                    <div class="block-header bg-pulse-light">
+                        <h3 class="block-title">Despesas x Plano Financeiro</h3>
+                    </div>
+                    <div class="block-content block-content-full text-center">
+                        <p>Valores de despesas com vencimento no mês selecionado</p>
+                        <canvas class="js-chartjs-pie2"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="block">
+                <div class="block-header block-header-default">
+                    <h3 class="block-title">Lançamentos em atraso</h3>
+                    <div class="block-options antes_insert">
+                        <button type="button" class="btn btn-outline-info  btn_lancamentos"  data-toggle="tooltip"
+                       data-placement="bottom" title="Baixar lançamentos" id="botao-baixar-atrasados"><i class="fa fa-check-circle"></i></button>
+                    </div>
+
+                </div>
+                <div class="block-content">
+                    <div class="tabela_formulario">
+                        <table id="table_lancatrasos" class="table table-bordered table-striped" >
+                        <thead>
+                            <tr>
+
+                                <th><small>Nº/P</small></th>
+                                <th><small>Cadastro</small></th>
+                                <th><small>Vencimento</small></th>
+                                <th><small>Saldo</small></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for lanc_atraso in lancto_atraso_grid %}
+                                    <td><small>{{ lanc_atraso.num_lan }}/{{ lanc_atraso.parcela }}</small></td>
+                                    <td><small>{% if lanc_atraso.cadgeral == None %} Não Informado {% else %}<strong>{{lanc_atraso.cadgeral}}</strong>  {% endif %}
+                                    </small></td>
+
+                                    <td><small>{{ lanc_atraso.dt_vencimento|date:'d/m/Y'  }}</small></td>
+                                    <td>{% if lanc_atraso.tipo_lancamento == 'R' %}<strong class="text-success">{{ lanc_atraso.saldo }}</strong>
+                                                          {% else %}   <strong class="text-danger">{{ lanc_atraso.saldo }}</strong>
+                                                          {% endif %}
+                                    </td>
+                                </tr>
+
+                            {% endfor %}
+                    </tbody>
+                    </table>
+                    </div>
 
 
-            <div class=" pull-right form-inline mr-5 mb-5" >
-                <select class="form-control pull-right margin-right-10" id="listaanos">
-                    {% for ano in listaanos %}
-                    <option{% if ano == dt_filtro.year%} selected {% endif %}>{{ ano }}</option>
-                    {% endfor %}
-                </select>
-                <select class="form-control  pull-right margin-right-10  " id="listames">
-                    {% for mes in listames %}
-                    <option{% if mes == dt_filtro.month %} selected {% endif %}>{{ mes|format_int }}</option>
-                    {% endfor %}
-                </select>
-                <button type="button" class="btn btn-outline-primary  btn_lancamentos"  data-toggle="tooltip"
-                       data-placement="bottom" title="ir para o período escolhido." id="botao-ir">IR</button>
+                </div>
             </div>
         </div>
 
 
-    </div>
-</div>
+
+
+

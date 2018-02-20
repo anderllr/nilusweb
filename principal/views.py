@@ -24,12 +24,12 @@ def principal(request,ano=None, mes=None):
 
 
    # 1º Posição de todos os lançamentos em aberto e seus valores de saldos até o momento.
-   lancfin_rec = Lancamentos.objects.filter(master_user=request.user.user_master, situacao=False, tipo_lancamento='R')
-   lancfin_des = Lancamentos.objects.filter(master_user=request.user.user_master, situacao=False, tipo_lancamento='D')
-   lancfin_rec_val = lancfin_rec.aggregate(vlr_saldo=Sum('saldo'))
-   lancfin_des_val = lancfin_des.aggregate(vlr_saldo=Sum('saldo'))
-   lancfin_rec_qtd = lancfin_rec.count()
-   lancfin_des_qtd = lancfin_des.count()
+   # lancfin_rec = Lancamentos.objects.filter(master_user=request.user.user_master, situacao=False, tipo_lancamento='R')
+   # lancfin_des = Lancamentos.objects.filter(master_user=request.user.user_master, situacao=False, tipo_lancamento='D')
+   # lancfin_rec_val = lancfin_rec.aggregate(vlr_saldo=Sum('saldo'))
+   # lancfin_des_val = lancfin_des.aggregate(vlr_saldo=Sum('saldo'))
+   # lancfin_rec_qtd = lancfin_rec.count()
+   # lancfin_des_qtd = lancfin_des.count()
 
 
    # 2º Inicia-se o processo de verificar mês a mês
@@ -48,21 +48,55 @@ def principal(request,ano=None, mes=None):
    except:
       raise Http404
 
+   # receitas
+   lancto_receitas = Lancamentos.objects.filter(master_user=request.user.user_master, tipo_lancamento='R',situacao=False)
+   lancto_receitas = lancto_receitas.filter(dt_vencimento__year=dt_filtro.year, dt_vencimento__month=dt_filtro.month)
 
+   lancto_receitas_atraso = Lancamentos.objects.filter(master_user=request.user.user_master, tipo_lancamento='R',situacao=False)
+   lancto_receitas_atraso = lancto_receitas_atraso.filter(dt_vencimento__lt=dt_filtro)
+
+   # somas e quantidades no período.
+   lancfin_rec_val = lancto_receitas.aggregate(vlr_saldo=Sum('saldo'))
+   lancfin_rec_qtd = lancto_receitas.count()
+   lancfin_rec_atr = lancto_receitas_atraso.aggregate(vlr_saldo=Sum('saldo'))
+
+   # despesas
    lancto_despesas = Lancamentos.objects.filter(master_user=request.user.user_master, tipo_lancamento='D', situacao=False)
-   lancto_despesas = lancto_despesas.filter(
-      dt_vencimento__year=dt_filtro.year, dt_vencimento__month=dt_filtro.month)
-   #
+   lancto_despesas = lancto_despesas.filter(dt_vencimento__year=dt_filtro.year, dt_vencimento__month=dt_filtro.month)
+
    lancto_despesas_atraso = Lancamentos.objects.filter(master_user=request.user.user_master, tipo_lancamento='D', situacao=False)
    lancto_despesas_atraso = lancto_despesas_atraso.filter(dt_vencimento__lt=dt_filtro)
 
-   lancto_receitas = Lancamentos.objects.filter(master_user=request.user.user_master, tipo_lancamento='R', situacao=False)
-   lancto_receitas = lancto_receitas.filter(dt_vencimento__year=dt_filtro.year, dt_vencimento__month=dt_filtro.month)
+   # somas e quantidades no período.
+   lancfin_des_val = lancto_despesas.aggregate(vlr_saldo=Sum('saldo'))
+   lancfin_des_qtd = lancto_despesas.count()
+   lancfin_des_atr = lancto_despesas_atraso.aggregate(vlr_saldo=Sum('saldo'))
 
-   lancto_receitas_atraso = Lancamentos.objects.filter(master_user=request.user.user_master, tipo_lancamento='R', situacao=False)
-   lancto_receitas_atraso = lancto_receitas_atraso.filter(dt_vencimento__lt=dt_filtro)
-   #
-   # Valores das somas de lançamentos.
+
+
+   # Valores dentro do mês por plano financeiro
+
+   planofinan_desp = Lancamentos.objects.filter(master_user=request.user.user_master, dt_vencimento__year=dt_filtro.year,
+                                                        dt_vencimento__month=dt_filtro.month,
+                                                        tipo_lancamento='D').values('plr_financeiro__descricao')
+   planofinan_desp = planofinan_desp.annotate(valor_plano=Sum('vlr_lancamento'))
+   planofinan_desp = planofinan_desp.order_by('-valor_plano')
+
+
+   planofinan_rec = Lancamentos.objects.filter(master_user=request.user.user_master, dt_vencimento__year=dt_filtro.year,
+                                                dt_vencimento__month=dt_filtro.month,
+                                                        tipo_lancamento='R').values('plr_financeiro__descricao')
+   planofinan_rec = planofinan_rec.annotate(valor_plano=Sum('vlr_lancamento'))
+   planofinan_rec = planofinan_rec.order_by('-valor_plano')
+
+
+
+
+   # Grid com os lançamentos em atraso
+   lancto_atraso_grid = Lancamentos.objects.filter(master_user=request.user.user_master,
+                                                       situacao=False)
+   lancto_atraso_grid = lancto_atraso_grid.filter(dt_vencimento__lt=dt_filtro).order_by('dt_vencimento').order_by('-saldo')
+
    # valor_receitas = Lancamentos.objects.filter(master_user=request.user, tipo_lancamento='R', pag_rec=True)
    # valor_receitas = valor_receitas.filter(dt_pagrec__year=dt_filtro.year,
    #                                        dt_pagrec__month=dt_filtro.month).aggregate(valor=Sum('valor'))
@@ -72,6 +106,8 @@ def principal(request,ano=None, mes=None):
    #                                                            dt_pagrec__month=dt_lancamentos.month).aggregate(
    #    valor=Sum('valor'))
    #
+
+
    # valor_despesas = Lancamentos.objects.filter(user=request.user, tipo_lancamento='D', pag_rec=True)
    # valor_despesas = valor_despesas.filter(dt_pagrec__year=dt_lancamentos.year,
    #                                        dt_pagrec__month=dt_lancamentos.month).aggregate(valor=Sum('valor'))
@@ -99,8 +135,15 @@ def principal(request,ano=None, mes=None):
       'despesa_val' : lancfin_des_val,
       'receita_qtd' : lancfin_rec_qtd,
       'despesa_qtd' : lancfin_des_qtd,
+      'lancto_receitas_atraso' : lancto_receitas_atraso,
+      'lancto_despesas_atraso' : lancto_despesas_atraso,
+      'valor_receitas_atraso' : lancfin_rec_atr,
+      'valor_despesas_atraso' : lancfin_des_atr,
       'listaanos': listaanos,
       'listames': listames,
+      'planofinan_rec' : planofinan_rec,
+      'planofinan_desp': planofinan_desp,
+      'lancto_atraso_grid' : lancto_atraso_grid
    }
 
 

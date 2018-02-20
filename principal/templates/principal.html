@@ -11,12 +11,40 @@
 {% include 'dashboard_financeiro.html' %}
 
 
-<script src="{% static 'assets/js/pages/be_pages_dashboard.js' %}"></script>
+<!--<script src="{% static 'assets/js/pages/be_pages_dashboard.js' %}"></script>-->
+
+
 {% endblock %}
 
 
 
 {% block javascript %}
+
+$('#botao-ir').on('click',function(e){
+        var anosel = $('#listaanos').val();
+        var messel = $('#listames').val();
+        window.location.href = '/principal/'+anosel+'/'+messel;
+    });
+
+
+{% include 'js_grafico_pie.html' %}
+
+
+
+$('#botao-baixar-atrasados').on('click',function(e){
+    var mes_filtro = $('#listames').val();
+    var ano_filtro = $('#listaanos').val();
+    var dia_filtro = '30';
+    if(mes_filtro == '02'){
+      dia_filtro = '28'
+    }
+
+
+        var url_busca = '?data_lanc_ini=&data_lanc_fim=&data_venc_ini=&data_venc_fim='+dia_filtro+'%2F'+mes_filtro+'%2F'+ano_filtro+'&data_baix_ini=&data_baix_fim=&cadgeral=&plano_finan=&c_custo=&conta_finan=&tipo_lancamento=T&sit_lancamento=A'
+        var url = '{% url 'lancfin_list' %}';
+        var nova_url = url + url_busca
+        window.location.href  = nova_url;
+});
 
 
 {% endblock %}
