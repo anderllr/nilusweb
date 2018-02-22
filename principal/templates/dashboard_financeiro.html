@@ -106,50 +106,290 @@
                 </div>
             </div>
         </div>
-        <div class="col-6">
-            <div class="block">
-                <div class="block-header block-header-default">
-                    <h3 class="block-title">Lançamentos em atraso</h3>
-                    <div class="block-options antes_insert">
-                        <button type="button" class="btn btn-outline-info  btn_lancamentos"  data-toggle="tooltip"
-                       data-placement="bottom" title="Baixar lançamentos" id="botao-baixar-atrasados"><i class="fa fa-check-circle"></i></button>
+        <div class="row">
+             <div class="col-xl-6">
+                <div class="block">
+                    <div class="block-header block-header-default">
+                        <h3 class="block-title">Lançamentos em atraso</h3>
+                        <div class="block-options antes_insert">
+                            <button type="button" class="btn btn-outline-info  btn_lancamentos"  data-toggle="tooltip"
+                           data-placement="bottom" title="Baixar lançamentos" id="botao-baixar-atrasados"><i class="fa fa-check-circle"></i></button>
+                        </div>
+
                     </div>
+                    <div class="block-content">
+                        <div class="tabela_formulario">
+                            <table id="table_lancatrasos" class="table table-bordered table-striped" >
+                            <thead>
+                                <tr>
 
-                </div>
-                <div class="block-content">
-                    <div class="tabela_formulario">
-                        <table id="table_lancatrasos" class="table table-bordered table-striped" >
-                        <thead>
-                            <tr>
-
-                                <th><small>Nº/P</small></th>
-                                <th><small>Cadastro</small></th>
-                                <th><small>Vencimento</small></th>
-                                <th><small>Saldo</small></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for lanc_atraso in lancto_atraso_grid %}
-                                    <td><small>{{ lanc_atraso.num_lan }}/{{ lanc_atraso.parcela }}</small></td>
-                                    <td><small>{% if lanc_atraso.cadgeral == None %} Não Informado {% else %}<strong>{{lanc_atraso.cadgeral}}</strong>  {% endif %}
-                                    </small></td>
-
-                                    <td><small>{{ lanc_atraso.dt_vencimento|date:'d/m/Y'  }}</small></td>
-                                    <td>{% if lanc_atraso.tipo_lancamento == 'R' %}<strong class="text-success">{{ lanc_atraso.saldo }}</strong>
-                                                          {% else %}   <strong class="text-danger">{{ lanc_atraso.saldo }}</strong>
-                                                          {% endif %}
-                                    </td>
+                                    <th><small>Nº/P</small></th>
+                                    <th><small>Cadastro</small></th>
+                                    <th><small>Vencimento</small></th>
+                                    <th><small>Saldo</small></th>
                                 </tr>
+                            </thead>
+                            <tbody>
+                                {% for lanc_atraso in lancto_atraso_grid %}
+                                        <td><small>{{ lanc_atraso.num_lan }}/{{ lanc_atraso.parcela }}</small></td>
+                                        <td><small>{% if lanc_atraso.cadgeral == None %} Não Informado {% else %}<strong>{{lanc_atraso.cadgeral}}</strong>  {% endif %}
+                                        </small></td>
 
-                            {% endfor %}
-                    </tbody>
-                    </table>
+                                        <td><small>{{ lanc_atraso.dt_vencimento|date:'d/m/Y'  }}</small></td>
+                                        <td>{% if lanc_atraso.tipo_lancamento == 'R' %}<strong class="text-success">{{ lanc_atraso.saldo }}</strong>
+                                                              {% else %}   <strong class="text-danger">{{ lanc_atraso.saldo }}</strong>
+                                                              {% endif %}
+                                        </td>
+                                    </tr>
+
+                                {% endfor %}
+                        </tbody>
+                        </table>
+                        </div>
                     </div>
+                </div>
+            </div>
+            <div class="col-xl-6">
+                <div class="block">
+                    <div class="block-header block-header-default">
+                        <h3 class="block-title">Receitas x Despesas</h3>
 
-
+                    </div>
+                    <div class="block-content block-content-full text-center">
+                        <p>Com vencimentos nos ultimos 6 meses</p>
+                        <canvas class="js-chartjs-bars"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="block col-xl-12">
+                        <div class="block-header block-header-default">
+                            <h3 class="block-title">
+                                Demonstrativo de Resultados do Exercício
+                            </h3>
+                        </div>
+                        <div class="block-content">
+                            <table class="js-table-sections table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 30px;"></th>
+                                        <th>Descrição</th>
+                                        <th style="width: 15%;">% Sobre Receita</th>
+                                        <th class="d-none d-sm-table-cell" style="width: 20%;">Valor</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="js-table-sections-header">
+                                    <tr>
+                                        <td class="text-center">
+                                            <i class="fa fa-angle-right"></i>
+                                        </td>
+                                        <td class="font-w600">Receita Bruta</td>
+                                        <td>
+                                            <span class="badge badge-secondary ">100%</span class="badge badge-secondary">
+                                        </td>
+                                        <td class="d-none d-sm-table-cell">
+                                            <strong><em class="text-success">R$ 143.233,28</em></strong>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tbody>
+                                    <tr>
+                                        <td class="text-center"></td>
+                                        <td class="font-w600"><small>Receita de Contratos</small></td>
+                                        <td class="font-size-sm">83%</td>
+                                        <td class="d-none d-sm-table-cell">
+                                            <strong><span class="font-size-sm text-success">R$ 118.883,63</span></strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center"></td>
+                                        <td class="font-w600"><small>Receita de Serviços</small></td>
+                                        <td class="font-size-sm">17%</td>
+                                        <td class="d-none d-sm-table-cell">
+                                            <strong><span class="font-size-sm text-success">R$ 23.349,65</span></strong>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tbody class="js-table-sections-header">
+                                    <tr>
+                                        <td class="text-center">
+                                            <i class="fa fa-angle-right"></i>
+                                        </td>
+                                        <td class="font-w600">Impostos sobre receita <span class="text-danger">(-)</span></td>
+                                        <td>
+                                            <span class="badge badge-secondary ">12%</span>
+                                        </td>
+                                        <td class="d-none d-sm-table-cell">
+                                            <strong><span class="text-danger">R$ 17.187,99</span></strong>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tbody>
+                                    <tr>
+                                        <td class="text-center"></td>
+                                        <td class="font-w600"><small>ISS</small></td>
+                                        <td class="font-size-sm">2%</td>
+                                        <td class="d-none d-sm-table-cell">
+                                            <strong><span class="font-size-sm text-danger">R$ 2.864,66</span></strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center"></td>
+                                        <td class="font-w600"><small>PIS/COFINS/CSLL</small></td>
+                                        <td class="font-size-sm">7%</td>
+                                        <td class="d-none d-sm-table-cell">
+                                            <strong><span class="font-size-sm text-danger">R$ 10.026,33</span></strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center"></td>
+                                        <td class="font-w600"><small>ICMS</small></td>
+                                        <td class="font-size-sm">3%</td>
+                                        <td class="d-none d-sm-table-cell">
+                                            <strong><span class="font-size-sm text-danger">R$ 4.297,00</span></strong>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                    <tr>
+                                        <td class="text-center">
+                                            =
+                                        </td>
+                                        <td class="font-w600"><span class="text-black">Receita Liquida</span></td>
+                                        <td>
+
+                                        </td>
+                                        <td class="d-none d-sm-table-cell">
+                                            <strong><span class="text-black">R$ 126.045,29</span></strong>
+                                        </td>
+                                    </tr>
+
+                                <tbody class="js-table-sections-header">
+                                    <tr>
+                                        <td class="text-center">
+                                            <i class="fa fa-angle-right"></i>
+                                        </td>
+                                        <td class="font-w600">Despesas Fixas<span class="text-danger">(-)</span></td>
+                                        <td>
+                                            <span class="badge badge-secondary ">65%</span class="badge badge-secondary">
+                                        </td>
+                                        <td class="d-none d-sm-table-cell">
+                                            <strong><em class="text-danger">R$ 93.101,63</em></strong>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tbody>
+                                    <tr>
+                                        <td class="text-center"></td>
+                                        <td class="font-w600"><small>Despesas com Recursos Humanos</small></td>
+                                        <td class="font-size-sm">54,50%</td>
+                                        <td class="d-none d-sm-table-cell">
+                                            <strong><span class="font-size-sm text-danger">R$ 78.071,65</span></strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center"></td>
+                                        <td class="font-w600"><small>Despesas Fixas Administrativas</small></td>
+                                        <td class="font-size-sm">7,98%</td>
+                                        <td class="d-none d-sm-table-cell">
+                                            <strong><span class="font-size-sm text-danger">R$ 11.432,88</span></strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center"></td>
+                                        <td class="font-w600"><small>Despesas Fixas Financeiras</small></td>
+                                        <td class="font-size-sm">2,51%</td>
+                                        <td class="d-none d-sm-table-cell">
+                                            <strong><span class="font-size-sm text-danger">R$ 3.597,10</span></strong>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tbody class="js-table-sections-header">
+                                    <tr>
+                                        <td class="text-center">
+                                            <i class="fa fa-angle-right"></i>
+                                        </td>
+                                        <td class="font-w600">Despesas Variáveis<span class="text-danger">(-)</span></td>
+                                        <td>
+                                            <span class="badge badge-secondary ">6,51%</span class="badge badge-secondary">
+                                        </td>
+                                        <td class="d-none d-sm-table-cell">
+                                            <strong><em class="text-danger">R$ 9.328,80</em></strong>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tbody>
+                                    <tr>
+                                        <td class="text-center"></td>
+                                        <td class="font-w600"><small>Despesas Financeiras Variáveis</small></td>
+                                        <td class="font-size-sm">1,17%</td>
+                                        <td class="d-none d-sm-table-cell">
+                                            <strong><span class="font-size-sm text-success">R$ 1.687,20</span></strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center"></td>
+                                        <td class="font-w600"><small>Material de Consumo</small></td>
+                                        <td class="font-size-sm">5,33%</td>
+                                        <td class="d-none d-sm-table-cell">
+                                            <strong><span class="font-size-sm text-success">R$ 7.641,8</span></strong>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tbody class="js-table-sections-header">
+                                    <tr>
+                                        <td class="text-center">
+                                            <i class="fa fa-angle-right"></i>
+                                        </td>
+                                        <td class="font-w600">Receitas Financeiras<span class="text-success">(+)</span></td>
+                                        <td>
+                                            <span class="badge badge-secondary ">4,21%</span class="badge badge-secondary">
+                                        </td>
+                                        <td class="d-none d-sm-table-cell">
+                                            <strong><em class="text-success">R$ 6.040,28</em></strong>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tbody>
+                                    <tr>
+                                        <td class="text-center"></td>
+                                        <td class="font-w600"><small>Receitas com Juros e Aplicações</small></td>
+                                        <td class="font-size-sm">4,18%</td>
+                                        <td class="d-none d-sm-table-cell">
+                                            <strong><span class="font-size-sm text-success">R$ 5.987,27</span></strong>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center"></td>
+                                        <td class="font-w600"><small>Outras Receitas financeiras</small></td>
+                                        <td class="font-size-sm">0,03%</td>
+                                        <td class="d-none d-sm-table-cell">
+                                            <strong><span class="font-size-sm text-success">R$ 53,01</span></strong>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tr>
+                                        <td class="text-center">
+                                            =
+                                        </td>
+                                        <td class="font-w600"><span class="text-black">Resultado Liquido</span></td>
+                                        <td>
+
+                                        </td>
+                                        <td class="d-none d-sm-table-cell">
+                                            <h5><span class="text-success">R$ 29.655,14</span></h5>
+                                        </td>
+                                    </tr>
+
+
+                            </table>
+                        </div>
+                    </div>
+
+        </div>
+
+
+
 
 
 

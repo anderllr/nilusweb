@@ -13,3 +13,4 @@ beautifulsoup4 == 4.6.0
 pyrebase == 3.0.27
 django-easy-pdf
 WeasyPrint>=0.34
+python-dateutil

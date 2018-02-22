@@ -1,5 +1,38 @@
 {% load static widget_tweaks humanize utils l10n %}
 
+
+
+var bar_receita1 = 0;
+var bar_receita2 = 0;
+var bar_receita3 = 0;
+var bar_receita4 = 0;
+var bar_receita5 = 0;
+var bar_receita6 = 0;
+
+var bar_despesa1 = 0;
+var bar_despesa2 = 0;
+var bar_despesa3 = 0;
+var bar_despesa4 = 0;
+var bar_despesa5 = 0;
+var bar_despesa6 = 0;
+
+
+{% if bars_receitas1.vlr_mes != None %} bar_receita1 = {{ bars_receitas1.vlr_mes|unlocalize }}; {% endif %}
+{% if bars_receitas2.vlr_mes != None %} bar_receita2 = {{ bars_receitas2.vlr_mes|unlocalize }}; {% endif %}
+{% if bars_receitas3.vlr_mes != None %} bar_receita3 = {{ bars_receitas3.vlr_mes|unlocalize }}; {% endif %}
+{% if bars_receitas4.vlr_mes != None %} bar_receita4 = {{ bars_receitas4.vlr_mes|unlocalize }}; {% endif %}
+{% if bars_receitas5.vlr_mes != None %} bar_receita5 = {{ bars_receitas5.vlr_mes|unlocalize }}; {% endif %}
+{% if bars_receitas6.vlr_mes != None %} bar_receita6 = {{ bars_receitas6.vlr_mes|unlocalize }}; {% endif %}
+
+
+{% if bars_despesas1.vlr_mes != None %} bar_despesa1 = {{ bars_despesas1.vlr_mes|unlocalize }}; {% endif %}
+{% if bars_despesas2.vlr_mes != None %} bar_despesa2 = {{ bars_despesas2.vlr_mes|unlocalize }}; {% endif %}
+{% if bars_despesas3.vlr_mes != None %} bar_despesa3 = {{ bars_despesas3.vlr_mes|unlocalize }}; {% endif %}
+{% if bars_despesas4.vlr_mes != None %} bar_despesa4 = {{ bars_despesas4.vlr_mes|unlocalize }}; {% endif %}
+{% if bars_despesas5.vlr_mes != None %} bar_despesa5 = {{ bars_despesas5.vlr_mes|unlocalize }}; {% endif %}
+{% if bars_despesas6.vlr_mes != None %} bar_despesa6 = {{ bars_despesas6.vlr_mes|unlocalize }}; {% endif %}
+
+
 var NilusCharts = function() {
 
 
@@ -23,13 +56,16 @@ var NilusCharts = function() {
 
         // Get Chart Containers
         var chartLinesCon  = jQuery('.js-chartjs-lines');
+
         var chartPieCon    = jQuery('.js-chartjs-pie');
         var chartPieConDesp    = jQuery('.js-chartjs-pie2');
+
+        var chartBarsCon   = jQuery('.js-chartjs-bars');
 
 
         // Set Chart and Chart Data variables
         var chartLinesBarsRadarData, chartPolarPieDonutData;
-        var chartPolarPieDonutData2;
+        var chartPolarPieDonutData2, chartLinesBarsRadarData;
 
         // Lines/Bar/Radar Chart Data
 
@@ -93,6 +129,38 @@ var NilusCharts = function() {
             }]
         };
 
+
+        var chartLinesBarsRadarData = {
+            labels: ['{{ mes1_range|date:"M/y" }}', '{{ mes2_range|date:"M/y" }}', '{{ mes3_range|date:"M/y" }}',
+                     '{{ mes4_range|date:"M/y" }}', '{{ mes5_range|date:"M/y" }}', '{{ mes6_range|date:"M/y" }}'],
+            datasets: [
+                {
+                    label: 'Receitas',
+                    fill: true,
+                    backgroundColor: 'rgba(39, 92, 68, 0.9)',
+                    borderColor: 'rgba(39, 92, 68, 2.1)',
+                    pointBackgroundColor: 'rgba(66,165,245,1)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgba(66,165,245,1)',
+                    data: [ bar_receita1, bar_receita2, bar_receita3, bar_receita4, bar_receita5, bar_receita6]
+                },
+                {
+                    label: 'Despesas',
+                    fill: true,
+                    backgroundColor: 'rgba(202, 69, 62, 0.9)',
+                    borderColor: 'rgba(202, 69, 62, 2.1)',
+                    pointBackgroundColor: 'rgba(66,165,245,1)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgba(66,165,245,1)',
+                    data: [ bar_despesa1, bar_despesa2, bar_despesa3, bar_despesa4, bar_despesa5, bar_despesa6]
+                }
+            ]
+        };
+
+
+
         // Init Charts
 
         if ( chartPieCon.length ) {
@@ -101,6 +169,10 @@ var NilusCharts = function() {
 
         if ( chartPieConDesp.length ) {
             chartPie   = new Chart(chartPieConDesp, { type: 'pie', data: chartPolarPieDonutData2 });
+        }
+
+        if ( chartBarsCon.length ) {
+            chartBars  = new Chart(chartBarsCon, { type: 'bar', data: chartLinesBarsRadarData });
         }
     };
 
