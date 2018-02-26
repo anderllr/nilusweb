@@ -173,6 +173,13 @@ class AjusteSaldo(LoginRequiredMixin,CreateView):
                                                            sinal='D',dt_movimento__lte=mvt_ajcsaldo.dt_movimento)
         movtos_debitos = movtos_debitos.aggregate(vlr_debitos=Sum('vlr_movimento'))
 
+
+        if movtos_debitos['vlr_debitos'] is None:
+            movtos_debitos['vlr_debitos'] = 0
+
+        if movtos_creditos['vlr_creditos'] is None:
+            movtos_creditos['vlr_creditos'] = 0
+
         saldo_sistema = movtos_creditos['vlr_creditos'] - movtos_debitos['vlr_debitos']
         vlr_novo_saldo = self.request.POST.get('vlr_novosaldo').replace('.', '').replace(',', '.')
 
