@@ -231,11 +231,14 @@ class Lancamentos(models.Model):
 
 class Movtos_lancamentos(models.Model):
 
-    lancamento = models.ForeignKey('lancfinanceiros.Lancamentos',models.CASCADE,verbose_name='lancamento')
+    master_user = models.ForeignKey('accounts.User', models.CASCADE, verbose_name='Usuario Master')
+    lancamento = models.ForeignKey('lancfinanceiros.Lancamentos',models.CASCADE,verbose_name='lancamento',null=True)
     dt_movimento = models.DateField('Data Movimento')
     vlr_movimento = models.DecimalField('Valor do Lançamento', max_digits=13, decimal_places=2, blank=True, null=True)
     conta_financeira = models.ForeignKey('nilusfin.Contafinanceira',models.PROTECT,verbose_name='Conta Financeira',blank=True,null=True)
     desc_movimento = models.CharField(verbose_name='Observação', max_length=70,null=True)
+    sinal = models.CharField(verbose_name='Sinal da Conta',max_length=3)
+
 
 
     tipoMovto_Choices = (
@@ -243,7 +246,8 @@ class Movtos_lancamentos(models.Model):
         ('B', 'Baixa'),
         ('D', 'Desconto'),
         ('J', 'Juros'),
-        ('M', 'Multa')
+        ('M', 'Multa'),
+        ('A',  'Ajuste Saldo' ),
     )
     tipo_movto = models.CharField('Tipo', max_length=1, choices=tipoMovto_Choices)
 

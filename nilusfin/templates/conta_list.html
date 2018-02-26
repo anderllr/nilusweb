@@ -13,9 +13,13 @@
         <div class="block">
             <div class="block-content">
                 <div class="row  btn-insert">
-                <button type="button" class="btn btn-outline-primary mr-5 mb-5  new_conta">
-                         <i class="fa fa-plus mr-5"></i> Nova Conta
+                <button type="button" class="btn btn-outline-primary mr-5 mb-5 btn_opcoes   new_conta pull-right" data-toggle="tooltip" data-placement="bottom" title="Nova Conta">
+                         <i class="fa fa-plus"></i>
                 </button>
+            <button type="button" class="btn btn-outline-secondary mr-5 mb-5   btn_opcoes ajc_conta pull-right" data-toggle="tooltip" data-placement="bottom" title="Ajustar Saldo Conta">
+                     <i class="fa fa-money"></i>
+            </button>
+
                 </div>
                 <div>
                     <div class="row">
@@ -27,6 +31,7 @@
                     </div>
                 </div>
                 </div>
+                <br>
                 <div class="row table table_contas">
                  {% include '_table_conta.html' %}
                 </div>
@@ -36,6 +41,32 @@
 
     </div>
 </div>
+
+
+<div class="modal fade" id="modal-ajsaldo" tabindex="-1" role="dialog" aria-labelledby="modal-slideright" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-slideright" role="document">
+        <div class="modal-content">
+            <div class="block block-themed block-transparent mb-0">
+                <div class="block-header bg-primary-dark">
+                    <h3 class="block-title titulo_modal"></h3><h3 class="block-title info_modal"></h3>
+                    <div class="block-options">
+                        <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+                            <i class="si si-close"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="block-content">
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-alt-secondary" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 {% endblock %}
 
 
@@ -91,7 +122,7 @@ $(".new_conta").on("click",function(e){
      e.preventDefault();
      $(".form_inc").load("{% url 'create_conta' %}", function(){
         $('.form_inc').show("puff");
-        $('.new_conta').hide("drop");
+        $('.btn_opcoes').hide("drop");
         $('.table_contas').hide("drop");
         $('.vlr_limite').hide();
         $('.conta_bancaria').hide();
@@ -124,7 +155,7 @@ $(".new_conta").on("click",function(e){
 
           $(".form_inc .cancel_form").on("click",function(e){
              $('.form_inc').hide("drop");
-             $('.new_conta').show();
+             $('.btn_opcoes').show();
              $('.table_contas').show();
           });
 
@@ -140,7 +171,7 @@ $(".new_conta").on("click",function(e){
 	 	    $(".form_inc").html(result);
 	 	    if(close_modal==true){
 	 	       $('.form_inc').hide("drop");
-               $('.new_conta').show();
+               $('.btn_opcoes').show();
                $('.table_contas').show();
                window.location.reload();
 
@@ -152,7 +183,7 @@ $(".new_conta").on("click",function(e){
 
                    $(".form_inc .cancel_form").on("click",function(e){
                         $('.form_inc').hide("drop");
-                        $('.new_conta').show();
+                        $('.btn_opcoes').show();
                         $('.table_contas').show();
                    });
 
@@ -161,12 +192,12 @@ $(".new_conta").on("click",function(e){
 	 	 });
 	});
 
-<!-- Edit Company -->
+
 $('.table_contas').on('click', '.edit_conta',function(e){
     e.preventDefault();
     $(".form_edit ").load($(this).attr('href'), function(){
               $('.form_edit').show("slide");
-               $('.new_conta').hide("drop");
+               $('.btn_opcoes').hide("drop");
                $('.table_contas').hide("puff");
               {% include 'js_floating_labels.html' %}
               {% include 'js_masks.html' %}
@@ -206,7 +237,7 @@ $('.table_contas').on('click', '.edit_conta',function(e){
 
               $(".form_edit .cancel_form").on("click",function(e){
                   $('.form_edit').hide("drop");
-                  $('.new_conta').show();
+                  $('.btn_opcoes').show();
                   $('.table_contas').show();
               });
     });
@@ -234,7 +265,7 @@ $(".form_edit").on("submit","form",function(e){
 
                 $(".form_inc .cancel_form").on("click",function(e){
                     $('.form_edit').hide("drop");
-                    $('.new_conta').show();
+                    $('.btn_opcoes').show();
                     $('.table_contas').show();
 	 	        });
             }
@@ -272,7 +303,7 @@ $(".form_edit").on("submit","form",function(e){
 
 });
 
-
+{% include 'js_ajuste_saldo.html' %}
 
 
 {% endblock %}

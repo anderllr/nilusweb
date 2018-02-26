@@ -1,0 +1,60 @@
+{% load static widget_tweaks %}
+{% if success %}
+   <input type="hidden" id="close_form" value="ok">
+{% else %}
+<div class="block">
+    <form method="post" class="form_ajc" id="form_ajc" action="{% url 'ajc_saldoconta'  %}">
+             {% csrf_token %}
+                {% for error in form.non_field_errors %}
+                <div class="alert-danger alert">
+                {{ error }}
+                </div>
+                {% endfor %}
+             <div class="block-content">
+
+                <div class="form-group row">
+                    <div class="col-md-4">
+                        <div class="form-material input-group">
+                            <label>Data Ajuste</label>
+                            <input  type="text"  name="dt_movimento" id="id_dt_movimento" class="js-datepicker form-control"
+                              data-week-start="1" data-autoclose="true" data-today-highlight="true"
+                              data-date-format="dd/mm/yyyy" placeholder="dd/mm/aaaa" value="{{ data_hoje|date:'d/m/Y'  }}">
+                            {% for error in form.dt_movimento.errors %}
+                            <small class="form-control-feedback"> {{ error }} </small>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="form-material form-material-info floating">
+                            <input type="text" name="vlr_novosaldo" class="form-control money2" value="" required="" id="id_vlr_novosaldo">
+                            <label for="{{  form.vlr_novosaldo.id }}">Novo Saldo</label>
+                            {% for error in form.vlr_novosaldo.errors %}
+                            <div class="alert alert-danger alert-dismissable">
+                                <p class="mb-0">{{ error }}</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                </div>
+                <div class="form-group row">
+                        <div class="form-material input-group">
+                            <label>Conta</label>
+                            {% render_field form.conta_financeira class="chosen-select"%}
+                            {% for error in form.conta_financeira.errors %}
+                            <small class="form-control-feedback"> {{ error }} </small>
+                            {% endfor %}
+                        </div>
+                </div>
+                <hr>
+             </div>
+          <br>
+          <br>
+         <div class="form-group row ">
+                <button type="submit" class="btn btn-alt-primary">Salvar</button>
+         </div>
+    </form>
+
+
+</div>
+{% endif %}

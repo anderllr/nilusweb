@@ -20,7 +20,7 @@ from principal.models import Instancia
 from lancfinanceiros.models import Lancamentos,Movtos_lancamentos
 from niluscad.models import Company,Propriety,Cadgeral,PlanoFinan,Ccusto
 from nilusfin.models import Contafinanceira
-from lancfinanceiros.movto_finan import grava_movimento_financeiro_b,grava_movimento_financeiro_c
+from lancfinanceiros.movto_finan import grava_movimento_financeiro_b
 # Create your views here.
 
 
@@ -147,6 +147,7 @@ def lancfin_list(request):
             l.data_baixa = data_baixa
 
             grava_movimento_financeiro_b(l, l.situacao, l.saldo,request.user.user_master)
+
             l.saldo = 0
             l.save()
 
@@ -246,12 +247,31 @@ class CreateReceita(LoginRequiredMixin,CreateView):
 
         lancto.save()
 
-        grava_movimento_financeiro_c(lancto, self.request.user.user_master)
+
+        if lancto.situacao is True:
+            movto_lanc = Movtos_lancamentos()
+            movto_lanc.master_user = self.request.user.user_master
+            movto_lanc.lancamento = lancto
+            movto_lanc.dt_movimento = lancto.dt_lancamento
+            movto_lanc.vlr_movimento = lancto.vlr_lancamento
+            movto_lanc.conta_financeira = lancto.conta_finan
+            movto_lanc.desc_movimento = 'Recebido'
+            movto_lanc.tipo_movto = 'B'
+            movto_lanc.save()
+
+
+        # Processo de criação da movimentação do lancamento
+        movto_lanc = Movtos_lancamentos()
+        movto_lanc.master_user = self.request.user.user_master
+        movto_lanc.lancamento = lancto
+        movto_lanc.dt_movimento = lancto.dt_lancamento
+        movto_lanc.vlr_movimento = lancto.vlr_lancamento
+        movto_lanc.desc_movimento = 'Inclusão de receita'
+        movto_lanc.tipo_movto = 'C'
+        movto_lanc.save()
 
         id_lancto = lancto.pk
 
-
-        # SE ESTIVER MARCADO PARCELAR
         if form.cleaned_data.get('parcela',False):
             lancamento_pai = Lancamentos.objects.get(pk=id_lancto)
             lancamento_pai.lancamento_pai_id = id_lancto
@@ -271,9 +291,28 @@ class CreateReceita(LoginRequiredMixin,CreateView):
                     lancto.dt_vencimento = lancto.dt_vencimento + timedelta(days=dias_vencto)
 
                 lancto.save()
-                grava_movimento_financeiro_c(lancto, self.request.user.user_master)
 
-        # SE ESTIVER SELECIONADA A OPÇÃO REPETIR
+                if lancto.situacao is True:
+                    movto_lanc = Movtos_lancamentos()
+                    movto_lanc.master_user = self.request.user.user_master
+                    movto_lanc.lancamento = lancto
+                    movto_lanc.dt_movimento = lancto.dt_lancamento
+                    movto_lanc.vlr_movimento = lancto.vlr_lancamento
+                    movto_lanc.conta_financeira = lancto.conta_finan
+                    movto_lanc.desc_movimento = 'Recebido'
+                    movto_lanc.tipo_movto = 'B'
+                    movto_lanc.save()
+
+
+                movto_lanc = Movtos_lancamentos()
+                movto_lanc.master_user = self.request.user.user_master
+                movto_lanc.lancamento = lancto
+                movto_lanc.dt_movimento = lancto.dt_lancamento
+                movto_lanc.vlr_movimento = lancto.vlr_lancamento
+                movto_lanc.desc_movimento = 'Inclusão de receita'
+                movto_lanc.tipo_movto = 'C'
+                movto_lanc.save()
+
         if form.cleaned_data.get('repetir',False):
             lancamento_pai = Lancamentos.objects.get(pk=id_lancto)
             lancamento_pai.lancamento_pai_id = id_lancto
@@ -292,7 +331,24 @@ class CreateReceita(LoginRequiredMixin,CreateView):
 
                     lancto.save()
 
-                    grava_movimento_financeiro_c(lancto, self.request.user.user_master)
+                    if lancto.situacao is True:
+                        movto_lanc.master_user = self.request.user.user_master
+                        movto_lanc = Movtos_lancamentos()
+                        movto_lanc.lancamento = lancto
+                        movto_lanc.dt_movimento = lancto.dt_lancamento
+                        movto_lanc.vlr_movimento = lancto.vlr_lancamento
+                        movto_lanc.desc_movimento = 'Recebido'
+                        movto_lanc.tipo_movto = 'B'
+                        movto_lanc.save()
+
+                    movto_lanc = Movtos_lancamentos()
+                    movto_lanc.master_user = self.request.user.user_master
+                    movto_lanc.lancamento = lancto
+                    movto_lanc.dt_movimento = lancto.dt_lancamento
+                    movto_lanc.vlr_movimento = lancto.vlr_lancamento
+                    movto_lanc.desc_movimento = 'Inclusão de receita'
+                    movto_lanc.tipo_movto = 'C'
+                    movto_lanc.save()
 
             if tipo_rept == 'S':
                 for i in range(qtd-1):
@@ -304,7 +360,25 @@ class CreateReceita(LoginRequiredMixin,CreateView):
                     seq_lanc.save()
 
                     lancto.save()
-                    grava_movimento_financeiro_c(lancto, self.request.user.user_master)
+
+                    if lancto.situacao is True:
+                        movto_lanc = Movtos_lancamentos()
+                        movto_lanc.master_user = self.request.user.user_master
+                        movto_lanc.lancamento = lancto
+                        movto_lanc.dt_movimento = lancto.dt_lancamento
+                        movto_lanc.vlr_movimento = lancto.vlr_lancamento
+                        movto_lanc.desc_movimento = 'Recebido'
+                        movto_lanc.tipo_movto = 'B'
+                        movto_lanc.save()
+
+                    movto_lanc = Movtos_lancamentos()
+                    movto_lanc.master_user = self.request.user.user_master
+                    movto_lanc.lancamento = lancto
+                    movto_lanc.dt_movimento = lancto.dt_lancamento
+                    movto_lanc.vlr_movimento = lancto.vlr_lancamento
+                    movto_lanc.desc_movimento = 'Inclusão de receita'
+                    movto_lanc.tipo_movto = 'C'
+                    movto_lanc.save()
 
             if tipo_rept == 'D':
                 for i in range(qtd-1):
@@ -316,7 +390,25 @@ class CreateReceita(LoginRequiredMixin,CreateView):
                     seq_lanc.save()
 
                     lancto.save()
-                    grava_movimento_financeiro_c(lancto, self.request.user.user_master)
+
+                    if lancto.situacao is True:
+                        movto_lanc = Movtos_lancamentos()
+                        movto_lanc.master_user = self.request.user.user_master
+                        movto_lanc.lancamento = lancto
+                        movto_lanc.dt_movimento = lancto.dt_lancamento
+                        movto_lanc.vlr_movimento = lancto.vlr_lancamento
+                        movto_lanc.desc_movimento = 'Recebido'
+                        movto_lanc.tipo_movto = 'B'
+                        movto_lanc.save()
+
+
+                    movto_lanc = Movtos_lancamentos()
+                    movto_lanc.lancamento = lancto
+                    movto_lanc.dt_movimento = lancto.dt_lancamento
+                    movto_lanc.vlr_movimento = lancto.vlr_lancamento
+                    movto_lanc.desc_movimento = 'Inclusão de receita'
+                    movto_lanc.tipo_movto = 'C'
+                    movto_lanc.save()
 
             if tipo_rept == 'Q':
                 for i in range(qtd-1):
@@ -327,7 +419,26 @@ class CreateReceita(LoginRequiredMixin,CreateView):
                     seq_lanc.save()
 
                     lancto.save()
-                    grava_movimento_financeiro_c(lancto, self.request.user.user_master)
+
+                    if lancto.situacao is True:
+                        movto_lanc = Movtos_lancamentos()
+                        movto_lanc.master_user = self.request.user.user_master
+                        movto_lanc.lancamento = lancto
+                        movto_lanc.dt_movimento = lancto.dt_lancamento
+                        movto_lanc.vlr_movimento = lancto.vlr_lancamento
+                        movto_lanc.desc_movimento = 'Recebido'
+                        movto_lanc.tipo_movto = 'B'
+                        movto_lanc.save()
+
+
+                    movto_lanc = Movtos_lancamentos()
+                    movto_lanc.master_user = self.request.user.user_master
+                    movto_lanc.lancamento = lancto
+                    movto_lanc.dt_movimento = lancto.dt_lancamento
+                    movto_lanc.vlr_movimento = lancto.vlr_lancamento
+                    movto_lanc.desc_movimento = 'Inclusão de receita'
+                    movto_lanc.tipo_movto = 'C'
+                    movto_lanc.save()
 
         if self.request.is_ajax():
             context = self.get_context_data(form=form, success=True)
@@ -368,6 +479,10 @@ class EditReceita(LoginRequiredMixin,UpdateView):
     model = Lancamentos
     form_class = FormEditReceita
 
+
+
+
+
     def form_valid(self, form):
         lancto = form.save(commit=False)
         lancto.vlr_lancamento = lancto.valor_text.replace('R$', '').replace('.', '').replace(',', '.')
@@ -384,7 +499,6 @@ class EditReceita(LoginRequiredMixin,UpdateView):
                 movto_lanc.dt_movimento = lancto.dt_lancamento
                 movto_lanc.vlr_movimento = lancto.saldo
                 movto_lanc.desc_movimento = 'Recebido'
-                movto_lanc.sinal = 'R'
                 movto_lanc.tipo_movto = 'B'
                 movto_lanc.save()
 
@@ -618,11 +732,28 @@ class CreateDespesa(LoginRequiredMixin,CreateView):
 
         lancto.save()
 
-        grava_movimento_financeiro_c(lancto, self.request.user.user_master)
+        if lancto.situacao is True:
+            movto_lanc = Movtos_lancamentos()
+            movto_lanc.master_user = self.request.user.user_master
+            movto_lanc.lancamento = lancto
+            movto_lanc.dt_movimento = lancto.dt_lancamento
+            movto_lanc.vlr_movimento = lancto.vlr_lancamento
+            movto_lanc.desc_movimento = 'Pago'
+            movto_lanc.tipo_movto = 'B'
+            movto_lanc.save()
+
+
+        movto_lanc = Movtos_lancamentos()
+        movto_lanc.master_user = self.request.user.user_master
+        movto_lanc.lancamento = lancto
+        movto_lanc.dt_movimento = lancto.dt_lancamento
+        movto_lanc.vlr_movimento = lancto.vlr_lancamento
+        movto_lanc.desc_movimento = 'Inclusão de despesa'
+        movto_lanc.tipo_movto = 'C'
+        movto_lanc.save()
 
         id_lancto = lancto.pk
 
-        # SELECIONADO PARCELA
         if form.cleaned_data.get('parcela',False):
             lancamento_pai = Lancamentos.objects.get(pk=id_lancto)
             lancamento_pai.lancamento_pai_id = id_lancto
@@ -641,9 +772,26 @@ class CreateDespesa(LoginRequiredMixin,CreateView):
                     lancto.dt_vencimento = lancto.dt_vencimento + timedelta(days=dias_vencto)
                 lancto.save()
 
-                grava_movimento_financeiro_c(lancto, self.request.user.user_master)
+                if lancto.situacao is True:
+                    movto_lanc = Movtos_lancamentos()
+                    movto_lanc.master_user = self.request.user.user_master
+                    movto_lanc.lancamento = lancto
+                    movto_lanc.dt_movimento = lancto.dt_lancamento
+                    movto_lanc.vlr_movimento = lancto.vlr_lancamento
+                    movto_lanc.desc_movimento = 'Pago'
+                    movto_lanc.tipo_movto = 'B'
+                    movto_lanc.save()
 
-        # SELECIONADA A OPÇÃO DE REPETIR
+                movto_lanc = Movtos_lancamentos()
+                movto_lanc.master_user = self.request.user.user_master
+                movto_lanc.lancamento = lancto
+                movto_lanc.dt_movimento = lancto.dt_lancamento
+                movto_lanc.vlr_movimento = lancto.vlr_lancamento
+                movto_lanc.desc_movimento = 'Inclusão de despesa'
+                movto_lanc.tipo_movto = 'C'
+                movto_lanc.save()
+
+
         if form.cleaned_data.get('repetir',False):
             lancamento_pai = Lancamentos.objects.get(pk=id_lancto)
             lancamento_pai.lancamento_pai_id = id_lancto
@@ -661,7 +809,24 @@ class CreateDespesa(LoginRequiredMixin,CreateView):
                     seq_lanc.save()
                     lancto.save()
 
-                    grava_movimento_financeiro_c(lancto, self.request.user.user_master)
+                    if lancto.situacao is True:
+                        movto_lanc = Movtos_lancamentos()
+                        movto_lanc.master_user = self.request.user.user_master
+                        movto_lanc.lancamento = lancto
+                        movto_lanc.dt_movimento = lancto.dt_lancamento
+                        movto_lanc.vlr_movimento = lancto.vlr_lancamento
+                        movto_lanc.desc_movimento = 'Pago'
+                        movto_lanc.tipo_movto = 'B'
+                        movto_lanc.save()
+
+                    movto_lanc = Movtos_lancamentos()
+                    movto_lanc.master_user = self.request.user.user_master
+                    movto_lanc.lancamento = lancto
+                    movto_lanc.dt_movimento = lancto.dt_lancamento
+                    movto_lanc.vlr_movimento = lancto.vlr_lancamento
+                    movto_lanc.desc_movimento = 'Inclusão de despesa'
+                    movto_lanc.tipo_movto = 'C'
+                    movto_lanc.save()
 
             if tipo_rept == 'S':
                 for i in range(qtd-1):
@@ -673,7 +838,24 @@ class CreateDespesa(LoginRequiredMixin,CreateView):
                     lancto.save()
                     seq_lanc.save()
 
-                    grava_movimento_financeiro_c(lancto, self.request.user.user_master)
+                    if lancto.situacao is True:
+                        movto_lanc = Movtos_lancamentos()
+                        movto_lanc.master_user = self.request.user.user_master
+                        movto_lanc.lancamento = lancto
+                        movto_lanc.dt_movimento = lancto.dt_lancamento
+                        movto_lanc.vlr_movimento = lancto.vlr_lancamento
+                        movto_lanc.desc_movimento = 'Pago'
+                        movto_lanc.tipo_movto = 'B'
+                        movto_lanc.save()
+
+                    movto_lanc = Movtos_lancamentos()
+                    movto_lanc.master_user = self.request.user.user_master
+                    movto_lanc.lancamento = lancto
+                    movto_lanc.dt_movimento = lancto.dt_lancamento
+                    movto_lanc.vlr_movimento = lancto.vlr_lancamento
+                    movto_lanc.desc_movimento = 'Inclusão de despesa'
+                    movto_lanc.tipo_movto = 'C'
+                    movto_lanc.save()
 
             if tipo_rept == 'D':
                 for i in range(qtd-1):
@@ -685,7 +867,24 @@ class CreateDespesa(LoginRequiredMixin,CreateView):
                     lancto.save()
                     seq_lanc.save()
 
-                    grava_movimento_financeiro_c(lancto, self.request.user.user_master)
+                    if lancto.situacao is True:
+                        movto_lanc = Movtos_lancamentos()
+                        movto_lanc.master_user = self.request.user.user_master
+                        movto_lanc.lancamento = lancto
+                        movto_lanc.dt_movimento = lancto.dt_lancamento
+                        movto_lanc.vlr_movimento = lancto.vlr_lancamento
+                        movto_lanc.desc_movimento = 'Pago'
+                        movto_lanc.tipo_movto = 'B'
+                        movto_lanc.save()
+
+                    movto_lanc = Movtos_lancamentos()
+                    movto_lanc.master_user = self.request.user.user_master
+                    movto_lanc.lancamento = lancto
+                    movto_lanc.dt_movimento = lancto.dt_lancamento
+                    movto_lanc.vlr_movimento = lancto.vlr_lancamento
+                    movto_lanc.desc_movimento = 'Inclusão de despesa'
+                    movto_lanc.tipo_movto = 'C'
+                    movto_lanc.save()
 
             if tipo_rept == 'Q':
                 for i in range(qtd-1):
@@ -696,7 +895,24 @@ class CreateDespesa(LoginRequiredMixin,CreateView):
                     lancto.save()
                     seq_lanc.save()
 
-                    grava_movimento_financeiro_c(lancto, self.request.user.user_master)
+                    if lancto.situacao is True:
+                        movto_lanc = Movtos_lancamentos()
+                        movto_lanc.master_user = self.request.user.user_master
+                        movto_lanc.lancamento = lancto
+                        movto_lanc.dt_movimento = lancto.dt_lancamento
+                        movto_lanc.vlr_movimento = lancto.vlr_lancamento
+                        movto_lanc.desc_movimento = 'Pago'
+                        movto_lanc.tipo_movto = 'B'
+                        movto_lanc.save()
+
+                    movto_lanc = Movtos_lancamentos()
+                    movto_lanc.master_user = self.request.user.user_master
+                    movto_lanc.lancamento = lancto
+                    movto_lanc.dt_movimento = lancto.dt_lancamento
+                    movto_lanc.vlr_movimento = lancto.vlr_lancamento
+                    movto_lanc.desc_movimento = 'Inclusão de despesa'
+                    movto_lanc.tipo_movto = 'C'
+                    movto_lanc.save()
 
         if self.request.is_ajax():
             context = self.get_context_data(form=form, success=True)
@@ -771,7 +987,6 @@ class EditDespesa(LoginRequiredMixin,UpdateView):
                 movto_lanc.dt_movimento = lancto.dt_lancamento
                 movto_lanc.vlr_movimento = lancto.saldo
                 movto_lanc.desc_movimento = 'Pago'
-                movto_lanc.sinal = 'D'
                 movto_lanc.tipo_movto = 'B'
                 movto_lanc.save()
 

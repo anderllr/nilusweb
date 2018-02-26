@@ -1,0 +1,229 @@
+{% extends "base_pdf.html" %}
+{% load static widget_tweaks humanize %}
+{% block layout_style %}
+    <style type="text/css">
+         html {
+            font-family: "Helvetica", "sans-serif";
+            color: #333333;
+        }
+
+        p {
+            margin: 0 0 6px 0;
+            font-size: 11pt;
+        }
+
+        table {
+            line-height: 140%;
+            margin-bottom: 20px;
+            border-collapse: collapse;
+        }
+            table.bordered {
+                border-top: 0.1pt solid #999999;
+                border-bottom: 0.1pt solid #999999;
+            }
+
+
+            tr, td, th { border: none; }
+
+            th {
+                font-size: 10pt;
+                border-bottom: 0.1pt solid #999999;
+                padding: 3px 0;
+                line-height: 1;
+                text-align: inherit;
+                font-weight: bold;
+            }
+
+            td {
+                font-size: 10pt;
+                vertical-align: top;
+                padding: 0.5px 0;
+            }
+
+            td:last-child { padding-bottom: 0; }
+
+        .text-left { text-align: left; }
+        .text-right { text-align: right; }
+        .bottom-10 { margin-bottom: 10px; }
+        .bottom-20 { margin-bottom: 20px; }
+
+
+
+        .header { color: #7f7f7f; }
+        .receita { color: #009933; }
+        .despesa { color: #e62e00; }
+        .ajuste { color: #0101DF; }
+        .header p { font-size: 13px; line-height: 1.5em; }
+        .header-link { font-weight: bold; text-decoration: none; color: #4F81BD; font-size: 14px; }
+        .logo { margin-bottom: 20px; margin-left: -25px; }
+        .logo img { zoom: 60%; }
+
+        .recipient { margin-left: 7cm; }
+
+        .main h1 {
+            margin: 18px 0 18px 0;
+            font-size: 250%;
+            font-weight: normal;
+            color: #4F81BD;
+        }
+
+        .main h2 {
+            margin: 18px 0 6px 0;
+            font-size: 180%;
+            font-weight: normal;
+        }
+
+        .info { border: 1px solid #4F81BD; padding: 10px; margin-top: 50px; margin-bottom: 50px; }
+        .info a { color: #4F81BD; text-decoration: none; }
+
+
+
+    </style>
+{% endblock %}
+
+
+
+{% block content %}
+
+            <p><center><h6>Nilus - Soluções em informática</h6></center></p>
+            <p>
+                <h1>Extrato Movimentações Financeiras</h1>
+            </p>
+
+
+<div class="block block-transparent">
+        <div class="block-header">
+        </div>
+        <div class="block-content">
+            <div class="block block-bordered">
+                                <div class="block-header block-header-default">
+                                    <h4 class="block-title header">Filtros utilizados:</h4>
+                                    <table>
+                                    <thead class="header">
+                                      <tr>
+                                          <th></th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td><span><small><strong>Lançamento: </strong></small><small>&nbsp;&nbsp;{% if data_lanc_ini  %}{{ data_lanc_ini }} {% endif %}</small> <small><strong>até :</strong></small> <small>{% if data_lanc_fim %}{{ data_lanc_fim }} {% endif %}</small></small></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><span><small><strong>Conta Fin.: </strong></small><small>&nbsp;&nbsp;{% if conta_finan  %}{{ conta_finan }} {% endif %}</small></span></td>
+                                    </tr>
+
+                                    </tbody>
+
+                                </table>
+                                </div>
+
+
+                            </div>
+            <table id="rel_lanfinanceiros" class="table table-bordered" >
+                <thead class="header">
+                    <tr>
+                        <th><small>Data</small></th>
+                        <th><small>Descricao</small></th>
+                        <th><small>Débito</small></th>
+                        <th><small>Crédito</small></th>
+                        <th><small></small></th>
+                    </tr>
+                </thead>
+                <tbody>
+                <tr>
+
+                </tr>
+                {% if conta_finan %}
+                <tr>
+                    <td><small><strong>{{ dt_saldo_ant|date:'d/m/Y' }}</strong></small></td>
+                    <td><small><strong>Saldo anterior</strong></small></td>
+                    <td></td>
+                    <td></td>
+                    <td>{% if saldo_anterior < 0  %}<small class="despesa"><strong>{{ saldo_anterior|intcomma }}</strong></small>
+                                    {% elif saldo_anterior == 0 %} <strong>0,00</strong>
+                                    {% else %} <small class="receita"><strong>{{ saldo_anterior|intcomma  }}</strong></small>
+                                    {% endif %}</td>
+                </tr>
+                {% for lanc in lanctos %}
+                        <td style="width:184px"><small>{{ lanc.dt_movimento|date:'d/m/Y' }}</small></td>
+                        <td style="width:941px"><small>{% if lanc.lancamento %} <strong>Lancto:</strong>
+                                                     {{ lanc.lancamento.num_lan }}/{{lanc.lancamento.parcela}}
+                                                     {% endif %}
+                                                     {% if lanc.lancamento.cadgeral %}<strong>Cadastro: </strong>
+                                                     {{ lanc.lancamento.cadgeral }}
+                                                     {% endif %}
+                                                     {% if lanc.lancamento.descricao %}
+                                                     <strong>Descrição : </strong>{{ lanc.lancamento.descricao|slice:"0:10" }}
+                                                    {% endif %}
+                                                    {% if lanc.tipo_movto == 'A' %}
+                                                            <strong class="ajuste">Ajuste de Saldo</strong>
+                                                    {% endif %}
+
+                        </small></td>
+                        <td style="width:181px">{% if lanc.sinal == 'D' %}
+                                            <small class="despesa">{{ lanc.vlr_movimento|intcomma }}</small>
+                                        {% endif %}
+                        </td>
+
+                        <td style="width:181px">{% if lanc.sinal == 'R' %}
+                                                    <small class="receita">{{ lanc.vlr_movimento|intcomma }}</small>
+                                                {% endif %}
+                        </td>
+
+                        <td style="width:181px"></td>
+                    </tr>
+                {% endfor %}
+                    <tr>
+                        <td><hr></td>
+                        <td><hr></td>
+                        <td><hr></td>
+                        <td><hr></td>
+                        <td><hr></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><small><strong>Soma de valores no período</strong></small></td>
+                        <td>{% if total_debitos > 0 %}
+                            <small class="despesa"><strong>{{ total_debitos|intcomma }}</strong></small>
+                            {% else %}
+                            0,00
+                            {% endif %}
+                        </td>
+                        <td>{% if total_creditos > 0 %}
+                                    <small class="receita">{{ total_creditos|intcomma }}</small>
+                                    {% else %}
+                                    0,00
+                                    {% endif %}
+                        </td>
+                        <td></td>
+                    </tr>
+                {% else %}
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+
+                {% endif %}
+
+                </tbody>
+            </table>
+            <hr>
+            <div class="text-right">
+                <h2>{% if dados_conta.usa_limite == True %} Saldo final conta no período (sem limite): {% else %}
+                    Saldo final conta no período: {% endif %} &nbsp;&nbsp;<strong>{{ saldo_atual|intcomma }}</strong></h2>
+                 {% if dados_conta.usa_limite == True %}
+                 <h2>Valor limite: &nbsp;&nbsp;<strong>{{ dados_conta.vlr_limite_text }}</strong></h2>
+                <h2>Saldo c/ limite:<strong>&nbsp;{% if saldo_c_limite < 0  %}<small class="despesa">{{ saldo_c_limite|intcomma }}</small>
+                                    {% elif saldo_c_limite == 0 %} 0,00
+                                    {% else %} <span class="receita">{{ saldo_c_limite|intcomma  }}</span>
+                                    {% endif %} </strong></h2>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

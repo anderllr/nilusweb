@@ -12,6 +12,7 @@ urlpatterns = [
     url(r'^insere_conta/$', views.create_conta, name='create_conta'),
     url(r'^insere_conta/(?P<pk>\d+)$', views.edit_conta, name='edit_conta'),
     url(r'^conta/(?P<pk>\d+)/apagar/$', views.delete_conta, name='delete_conta'),
+    url(r'^conta/ajuste',views.ajc_saldoconta,name='ajc_saldoconta'),
 
     # Indices
     url(r'^insere_indice/$', views.create_indice, name='create_indice'),
@@ -33,4 +34,6 @@ urlpatterns = [
     # url(r'însere_lanc_r',views.create_titrec,name='create_titrec'),
     # url(r'edit_lancto/(?<pk>\d+)$',views.edit_lancto,name='edit_lancto'),
 
+    # Consultas e Extratos
+    url(r'^extrato_contas',views.extrato_contas,name='extrato_contas')
 ]

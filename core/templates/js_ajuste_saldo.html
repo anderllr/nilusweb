@@ -1,0 +1,29 @@
+$(".ajc_conta").on("click",function(e){
+    e.preventDefault();
+    $("#modal-ajsaldo .block-content").load("{% url 'ajc_saldoconta' %}", function(){
+          $('.titulo_modal').text("Ajuste de Saldo Conta Financeira");
+          $('#modal-ajsaldo').modal("show");
+          {% include 'js_floating_labels.html' %}
+          {% include 'js_masks.html' %}
+          {% include 'js_datepickers.html' %}
+          $('.chosen-select').chosen({ width: '100%' });
+
+    });
+});
+
+$("#modal-ajsaldo .block-content").on("submit","form",function(e){
+	 	 e.preventDefault();
+	 	 var dados = $(this).serialize();
+	 	 $.post($(this).attr('action'),dados,function(result){
+	 	    $("#modal-ajsaldo .block-content").html(result);
+            var close_modal = $('#close_form').val();
+            if(close_modal=='ok'){
+               $('#modal-ajsaldo').modal("hide");
+               window.location.reload();
+            }
+            else{
+                $('#modal-ajsaldo').modal("show");
+            }
+	 	 });
+	 });
+

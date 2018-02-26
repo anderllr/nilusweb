@@ -1,0 +1,225 @@
+{% extends "menu.html" %}
+{% load static widget_tweaks humanize %}
+
+
+
+<!-- Bread crumb and right sidebar toggle -->
+{% block title %} Extrato Movimentações Financeiras {% endblock %}
+
+
+{% block page_body %}
+<div class="block">
+    <div class="block-content">
+        <div class="block">
+            <div class="block-content block-content-full ribbon ribbon-left ribbon-bookmark ribbon-primary">
+               <div class="form_busca">
+                    <form>
+                        <div class="filtros_extras">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label for="id_data_lanc_ini">Data Lançamento</label>
+                                    <div class="input-daterange input-group js-datepicker-enabled" data-date-format="dd/mm/yyyy" data-week-start="1" data-autoclose="true" data-today-highlight="true">
+                                        {% render_field form.data_lanc_ini class="form-control js-datepicker"   placeholder="dd/mm/aaaa" data-week-start="1" data-autoclose="true" data-today-highlight="true"%}
+                                        <span class="input-group-addon font-w600">  &nbsp; até  &nbsp; </span>
+                                        {% render_field form.data_lanc_fim class="form-control js-datepicker"   placeholder="dd/mm/aaaa" data-week-start="1" data-autoclose="true" data-today-highlight="true"%}
+                                    </div>
+                                </div>
+                                <div class="col-md-5">
+                                    <div class="form-material input-group">
+                                        <label>{{ form.conta_finan.label_tag }}</label>
+                                        {% render_field form.conta_finan class="chosen-select" %}
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-material input-group">
+                                        <button type="submit"  class="btn  btn-outline-primary mr-5 mb-5 form_pesquisa form_bus"   data-toggle="tooltip" data-placement="bottom" title="Consultar Extrato">
+                                            <i class="fa fa-search"></i> Consultar
+                                        </button>
+                                        <div class="col-md-2"></div>
+                                        <button type="button" class="btn btn-outline-secondary mr-5 mb-5   btn_opcoes ajc_conta pull-right" data-toggle="tooltip" data-placement="bottom" title="Ajustar Saldo Conta">
+                                                <i class="fa fa-money"></i>
+                                        </button>
+                                        <button class="btn btn-outline-secondary mr-5 mb-5 btn_lancamentos pull-right"
+                                                data-toggle="tooltip" data-placement="bottom" title="Imprimir Extrato"  title=""
+                                                id="btn_impressao"><i class="fa fa-print"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <br>
+                <div class="row">
+                    <table class="table table-hover table-vcenter">
+                        <thead>
+                            <tr>
+                                <th style="width: 10px;">Data</th>
+                                <th style="width: 700px;">Descrição </th>
+                                <th style="width: 20px;">Débito</th>
+                                <th style="width: 100px;">Crédito</th>
+                                <th class="pull-letf" style="width: 80px;"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>{{ dt_saldo_ant|date:'d/m/Y' }}</th>
+                                <th>Saldo Anterior</th>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <th>{% if saldo_anterior < 0  %}<span class="text-danger">{{ saldo_anterior|intcomma }}</span>
+                                    {% elif saldo_anterior == 0 %} 0,00
+                                    {% else %} <span class="text-success">{{ saldo_anterior|intcomma  }}</span>
+                                    {% endif %}
+                                </th>
+                            </tr>
+                            <tr>
+                                {% for lanc in lanctos %}
+                                    <td>{{ lanc.dt_movimento|date:'d/m/Y' }}</td>
+                                <td>
+                                    {% if lanc.lancamento %}
+                                    <strong>Lancto:</strong> {{ lanc.lancamento.num_lan }}/{{lanc.lancamento.parcela}}
+                                    {% endif %}
+
+                                    {% if lanc.lancamento.cadgeral %}
+                                     <strong>Cadastro: </strong> {{ lanc.lancamento.cadgeral }}
+                                    {% endif %}
+
+                                    {% if lanc.lancamento.descricao %}
+                                    <strong>Descrição : </strong>{{ lanc.lancamento.descricao }}</td>
+                                    {% endif %}
+
+                                    {% if lanc.tipo_movto == 'A' %}
+                                        <strong><span class="text-info">Ajuste de Saldo</span></strong>
+                                    {% endif %}
+                                    <td>
+                                        {% if lanc.sinal == 'D' %}
+                                            <span class="text-danger">{{ lanc.vlr_movimento|intcomma }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if lanc.sinal == 'R' %}
+                                            <span class="text-success">{{ lanc.vlr_movimento|intcomma}}</span>
+                                        {% endif %}
+                                    </td>
+                                    <th></th>
+                            </tr>
+                            {% endfor %}
+                            <tr>
+                                <th></th>
+                                <th>Soma de Valores no período</th>
+                                <th>{% if total_debitos > 0 %}
+                                    <span class="text-danger">{{ total_debitos|intcomma }}</span>
+                                    {% else %}
+                                    0,00
+                                    {% endif %}
+                                </th>
+                                <th>{% if total_creditos > 0 %}
+                                    <span class="text-success">{{ total_creditos|intcomma }}</span>
+                                    {% else %}
+                                    0,00
+                                    {% endif %}
+                                </th>
+                                <th></th>
+                            </tr>
+                            <tr>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th>
+
+                                </th>
+                            </tr>
+                            <tr>
+                                <th></th>
+                                <th>{% if dados_conta.usa_limite == True %} Saldo final conta no período (sem limite)
+                                    {% else %} Saldo final conta no período
+                                    {% endif %}
+                                </th>
+                                <th></th>
+                                <th></th>
+                                <th>
+                                     {% if saldo_atual < 0  %}<span class="text-danger">{{ saldo_atual|intcomma }}</span>
+                                    {% elif saldo_atual == 0 %} 0,00
+                                    {% else %} <span class="text-success">{{ saldo_atual|intcomma  }}</span>
+                                    {% endif %}
+                                </th>
+                            </tr>
+                            {% if dados_conta.usa_limite == True %}
+                                <tr>
+                                    <th></th>
+                                    <th>Valor Limite</th>
+                                    <th></th>
+                                    <th></th>
+                                    <th>
+                                        {{ dados_conta.vlr_limite_text }}
+                                    </th>
+                                </tr>
+                                <tr>
+                                <th></th>
+                                <th>Saldo c/ Limite
+                                </th>
+                                <th></th>
+                                <th></th>
+                                <th>
+                                     {% if saldo_c_limite < 0  %}<span class="text-danger">{{ saldo_c_limite|intcomma }}</span>
+                                    {% elif saldo_c_limite == 0 %} 0,00
+                                    {% else %} <span class="text-success">{{ saldo_c_limite|intcomma  }}</span>
+                                    {% endif %}
+                                </th>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modal-ajsaldo" tabindex="-1" role="dialog" aria-labelledby="modal-slideright" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-slideright" role="document">
+        <div class="modal-content">
+            <div class="block block-themed block-transparent mb-0">
+                <div class="block-header bg-primary-dark">
+                    <h3 class="block-title titulo_modal"></h3><h3 class="block-title info_modal"></h3>
+                    <div class="block-options">
+                        <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+                            <i class="si si-close"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="block-content">
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-alt-secondary" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}
+
+{% block javascript %}
+ $('.chosen-select').chosen({ width: '100%' });
+{% include 'js_ajuste_saldo.html' %}
+
+$("#btn_impressao").on("click",function(e){
+    var url = window.location.href;
+    var nova_url = url.replace('/fin/extrato_contas','/rel/extrato_financeiro/');
+    window.open(nova_url);
+
+
+});
+
+
+
+{% endblock %}
