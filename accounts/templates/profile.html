@@ -1,111 +1,123 @@
 {% extends "menu.html" %}
 {% load static widget_tweaks humanize %}
 
-{% block title_page %} Perfil de Usuário {% endblock %}
+{% block title %} Perfil de Usuário {% endblock %}
 
 {% block page_body %}
 <div class="row">
-                    <!-- Column -->
-                    <div class="col-lg-4 col-xlg-3 col-md-5">
-                        <div class="card">
-                            <div class="card-body">
-                                <center class="m-t-30"> <label for="id_img_user">
-                                                            <img {% if user.img_user  %}
-                                                                     src="{{ user.img_user.url  }}"
-                                                                {% else %}
-                                                                    src=""
-                                                                {% endif %}
-                                                                 alt="Foto" class="img-circle" width="240" height="242">
-                                                        </label>
-                                    <h4 class="card-title m-t-10">{{ user.name }}</h4>
-                                    <div class="row text-center justify-content-md-center">
-                                        <!--<div class="col-4"><a href="javascript:void(0)" class="link"><i class="icon-people"></i> <font class="font-medium">254</font></a></div>-->
-                                        <!--<div class="col-4"><a href="javascript:void(0)" class="link"><i class="icon-picture"></i> <font class="font-medium">54</font></a></div>-->
-                                    </div>
-                                </center>
+    <div class="col-md-6">
+        <div class="block block-transparent">
+            <div class="block-header">
+                <h3 class="block-title"></h3>
+            </div>
+            <div class="block-content">
+                <div class="bg-image bg-image-bottom" style="background-image: url('{% static 'assets/img/photos/fundoProfile.jpg' %}');">
+                    <div class="bg-primary-dark-op">
+                        <div class="content content-full text-center">
+                            <!-- Avatar -->
+                            <div class="mb-15">
+                                <a class="img-link" href="">
+                                    <label for="id_img_user">
+                                        <img class="img-avatar img-avatar96 img-avatar-thumb" {% if user.img_user %} src="{{ user.img_user.url  }}"
+                                            {% else %} src="{% static 'assets/img/avatars/avatar15.jpg' %}" {% endif %} alt="">
+                                    </label>
+                                </a>
                             </div>
-                            <div>
-                                <hr> </div>
-                            <div class="card-body"> <small class="text-muted">Email </small>
-                                <h6>{{ user.email }}</h6> <small class="text-muted p-t-30 db">Telefone</small>
-                                <h6>{{ user.tel_user }}</h6>
-                                <br>
-                                <!--<button class="btn btn-circle btn-secondary"><i class="fa fa-facebook"></i></button>-->
-                                <!--<button class="btn btn-circle btn-secondary"><i class="fa fa-twitter"></i></button>-->
-                                <!--<button class="btn btn-circle btn-secondary"><i class="fa fa-youtube"></i></button>-->
-                                <a class="btn btn-info btn" id="change_password"  href="{% url 'altera_senha' %}"><small> Alterar senha</small></a>
-                            </div>
+                            <!-- END Avatar -->
+
+                            <!-- Personal -->
+                            <h1 class="h3 text-white font-w700 mb-10">{{ user.name }}</h1>
+                            <h2 class="h5 text-white-op">
+                                <a class="text-primary-light" href="javascript:void(0)">{{ user.email }}</a>
+                            </h2>
+                            <!-- END Personal -->
+
+                            <!-- Actions -->
+                            <button type="button" id="change_password" class="btn btn-rounded btn-hero btn-sm btn-alt-success mb-5">
+                                <i class="fa fa-refresh mr-5"></i> Alterar Senha
+                            </button>
+                            <!-- END Actions -->
                         </div>
                     </div>
-                    <!-- Column -->
-                    <!-- Column -->
-                    <div class="col-lg-8 col-xlg-9 col-md-7">
-                        <div class="card">
-                            <!-- Nav tabs -->
-                            <ul class="nav nav-tabs profile-tab" role="tablist">
-                                <li class="nav-item"> <a class="nav-link active" data-toggle="tab" href="#notificacoes" role="tab" aria-expanded="true">Notificações</a> </li>
-                                <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#alter_dados" role="tab" aria-expanded="false">Alterar Dados</a> </li>
-                            </ul>
-                            <!-- Tab panes -->
-                            <div class="tab-content">
-                                <div class="tab-pane active" id="notificacoes" role="tabpanel" aria-expanded="true">
-                                    <div class="card-body">
-                                        <div class="profiletimeline">
-                                        </div>
-                                    </div>
-                                </div>
-                                <!--second tab-->
-                                <div class="tab-pane" id="alter_dados" role="tabpanel" aria-expanded="false">
-                                    <div class="card-body">
-                                        <form class="form-horizontal form-material" method="post" enctype="multipart/form-data">
-                                        <div class="form-group" >
-								            {% csrf_token %}
-   							                {% for error in form.non_field_errors %}
-								            <div class="alert-danger alert">
-									            {{ error }}
-								            </div>
-								            {% endfor %}
-								        {% for field in form %}
-								        <div class="form-group">
-								        {{ field.label_tag }}
-								        {% render_field field class='form-control' placeholder=field.label  %}
-								        {% for error in field.errors %}
-								        <div class="alert alert-danger">{{ error }}</div>
-								        {% endfor %}
-								        </div>
-								        {% endfor %}
-                                            <div class="form-group">
-                                                <div class="col-sm-12">
-                                                    <button type="submit" class="btn btn-success">Salvar</button>
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="block">
+            <ul class="nav nav-tabs nav-tabs-block js-tabs-enabled" data-toggle="tabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#btabs-static-home">Dados</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#btabs-static-profile">Configurações</a>
+                </li>
+            </ul>
+            <div class="block-content tab-content">
+                <div class="tab-pane active" id="btabs-static-home" role="tabpanel">
+                    <form class="form-horizontal form-material" method="post" enctype="multipart/form-data">
+                        <div class="form-group" >
+                            {% csrf_token %}
+                            {% for error in form.non_field_errors %}
+                            <div class="alert-danger alert">
+                                {{ error }}
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% for field in form %}
+                        <div class="form-group">
+                        {{ field.label_tag }}
+                        {% render_field field class='form-control' placeholder=field.label  %}
+                        {% for error in field.errors %}
+                        <div class="alert alert-danger">{{ error }}</div>
+                        {% endfor %}
+                        </div>
+                        {% endfor %}
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <button type="submit" class="btn btn-success">Salvar</button>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <!-- Column -->
+                        </form>
+                     </div>
                 </div>
 
+            </div>
+        </div>
+                </div>
+                <div class="tab-pane" id="btabs-static-profile" role="tabpanel">
 
-<div id="modal-1" class="modal fade" tabindex="-1" role="dialog">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Alterar Senha</h4>
-      </div>
-      <div class="modal-body">
+                </div>
 
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-danger" data-dismiss="modal">Fechar</button>
-      </div>
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+            </div>
+        </div>
+    </div>
 
+</div>
+
+
+<div class="modal fade" id="modal-1" tabindex="-1" role="dialog" aria-labelledby="modal-slideright" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-slideright" role="document">
+        <div class="modal-content">
+            <div class="block block-themed block-transparent mb-0">
+                <div class="block-header bg-primary-dark">
+                    <h3 class="block-title titulo_modal"></h3>Alterar Senha<h3 class="block-title info_modal"></h3>
+                    <div class="block-options">
+                        <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+                            <i class="si si-close"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="block-content">
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-alt-secondary" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 {% endblock %}
@@ -119,12 +131,13 @@
 
 $("#change_password").on("click", function(e){
         e.preventDefault();
-  		$(".modal-body").load("{% url 'altera_senha' %}", function(){
+
+  		$("#modal-1 .block-content").load("{% url 'altera_senha' %}", function(){
               $('#modal-1').modal("show");
 			});
 	});
 
-	 $(".modal-body").on("submit","form",function(e){
+	 $("#modal-1 .block-content").on("submit","form",function(e){
 	 	 e.preventDefault();
 	 	 var dados = $(this).serialize();
 	 	 $.post("{% url 'altera_senha' %}",dados,function(result){

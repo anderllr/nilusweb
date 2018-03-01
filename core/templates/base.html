@@ -142,18 +142,19 @@
                         <div class="content-side content-side-full content-side-user px-10 align-parent">
                             <!-- Visible only in mini mode -->
                             <div class="sidebar-mini-visible-b align-v animated fadeIn">
-                                <img class="img-avatar img-avatar32" src="{% static 'assets/img/avatars/avatar15.jpg' %}" alt="">
+                                <img class="img-avatar img-avatar32"  {% if user.img_user %} scr="{{ user.img_user.url }}" {% else %} src="{% static 'assets/img/avatars/avatar15.jpg' %}"  {% endif %}alt="">
                             </div>
                             <!-- END Visible only in mini mode -->
 
                             <!-- Visible only in normal mode -->
                             <div class="sidebar-mini-hidden-b text-center">
-                                <a class="img-link" href="#">
-                                    <img class="img-avatar" src="{% static 'assets/img/avatars/avatar15.jpg' %}" alt="">
+                                <a class="img-link" href="{% url 'profile' %}">
+                                    <img class="img-avatar" {% if user.img_user  %} src="{{ user.img_user.url  }}" {% else %}  src="{% static 'assets/img/avatars/avatar15.jpg' %}" {% endif %} alt="">
+                                    <!--<img class="img-avatar" {% if user.img_user %} scr="{{ user.img_user.url }}" {% else %}   {% endif %}>-->
                                 </a>
                                 <ul class="list-inline mt-10">
                                     <li class="list-inline-item">
-                                        <a class="link-effect text-dual-primary-dark font-size-xs font-w600 text-uppercase" href="#"> Olá {{ user.name }}</a>
+                                        <a class="link-effect text-dual-primary-dark font-size-xs font-w600 text-uppercase" href="{% url 'profile' %}"> Olá {{ user.name }}</a>
                                     </li>
                                     <li class="list-inline-item">
                                         <!-- Layout API, functionality initialized in Codebase() -> uiApiLayout() -->
@@ -247,7 +248,7 @@
                                 {{ user.name }}<i class="fa fa-angle-down ml-5"></i>
                             </button>
                             <div class="dropdown-menu dropdown-menu-right min-width-150" aria-labelledby="page-header-user-dropdown">
-                                <a class="dropdown-item" href="be_pages_generic_profile.html">
+                                <a class="dropdown-item" href="{% url 'profile' %}">
                                     <i class="si si-user mr-5"></i> Perfil
                                 </a>
                                 <div class="dropdown-divider"></div>

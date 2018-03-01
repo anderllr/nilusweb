@@ -45,11 +45,13 @@ def principal(request,ano=None, mes=None):
    # 2º Inicia-se o processo de verificar mês a mês
 
    data_hoje = datetime.today()
+   print(data_hoje)
    listaanos = [i for i in range(data_hoje.year - 10, data_hoje.year + 11)]
    listames = [i for i in range(1, 13)]
 
    if ano is None:
-      dt_filtro = timezone.now()
+      dt_filtro = datetime.now()
+      print(dt_filtro)
       ano = dt_filtro.year
       mes = dt_filtro.month
 
@@ -91,11 +93,13 @@ def principal(request,ano=None, mes=None):
    planofinan_desp = planofinan_desp.annotate(valor_plano=Sum('vlr_lancamento'))
    planofinan_desp = planofinan_desp.order_by('-valor_plano')
 
+
    planofinan_rec = Lancamentos.objects.filter(master_user=request.user.user_master, dt_vencimento__year=dt_filtro.year,
                                                 dt_vencimento__month=dt_filtro.month,
                                                         tipo_lancamento='R').values('plr_financeiro__descricao')
    planofinan_rec = planofinan_rec.annotate(valor_plano=Sum('vlr_lancamento'))
    planofinan_rec = planofinan_rec.order_by('-valor_plano')
+
 
    # Grid com os lançamentos em atraso
    lancto_atraso_grid = Lancamentos.objects.filter(master_user=request.user.user_master,situacao=False)

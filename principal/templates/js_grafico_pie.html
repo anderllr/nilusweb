@@ -79,13 +79,13 @@ var NilusCharts = function() {
         var chartPolarPieDonutData = {
             labels: [
                 {% for despl_rec in planofinan_rec %}
-                    '{{ despl_rec.plr_financeiro__descricao }}'
+                    '{{ despl_rec.plr_financeiro__descricao }}',
                 {% endfor %}
             ],
             datasets: [{
                 data: [
                     {% for despl_rec in planofinan_rec %}
-                        {{ despl_rec.valor_plano|unlocalize }}
+                        {{ despl_rec.valor_plano|unlocalize }},
                     {% endfor %}
                 ],
 
