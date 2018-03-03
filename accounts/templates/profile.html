@@ -141,8 +141,9 @@ $("#change_password").on("click", function(e){
 	 	 e.preventDefault();
 	 	 var dados = $(this).serialize();
 	 	 $.post("{% url 'altera_senha' %}",dados,function(result){
-	 	    $(".modal-body").html(result);
-	 	    if(close_modal==true){
+	 	    $("#modal-1 .block-content").html(result);
+            var close_modal = $('#close_form').val();
+	 	    if(close_modal=='ok'){
 	 	       $('#modal-1').modal("hide");
 	 	    }
 	 	    else{

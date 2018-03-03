@@ -34,7 +34,7 @@ $("#id_cnpj_cpf").keyup(function(e){
                                 $("#id_uf").val("...");
 
                                 //Consulta o webservice receitaws.com.br/
-                                $.getJSON("//www.receitaws.com.br/v1/cnpj/"+cnpj, function(dados) {
+                                $.getJSON("//www.receitaws.com.br/v1/cnpj/"+cnpj+'/?callback=?', function(dados) {
                                 var checkcnpj = dados.cnpj
 
                                 if(checkcnpj != undefined){
@@ -51,7 +51,7 @@ $("#id_cnpj_cpf").keyup(function(e){
                                 }
                                 else {
                                     limpa_formulario_cadastro();
-                                    alert("cnpj inválido");
+                                    alert("CNPJ Inválido");
                                 }
 
 

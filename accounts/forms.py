@@ -17,7 +17,7 @@ class UserCustomCreationForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ['username','name','email','qtd_users','qtd_unity','qtd_propriety','company_p']
+        fields = ['username','name','email','qtd_users','qtd_unity','company_p']
 
 
 class UserAdminCreationForm(UserCreationForm):

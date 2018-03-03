@@ -97,6 +97,10 @@ $(".new_cadgeral").on("click",function(e){
         $('.table_cadgeral').hide("drop");
         $('.btn_busca').hide();
 
+        $('#id_cnpj_cpf').cpfcnpj({ mask: true,
+                                validate: 'cpfcnpj',
+                                ifInvalid: function () { alert('invalid'); } });
+
 
           {% include 'js_floating_labels.html' %}
           {% include 'js_tabs.html' %}

@@ -25,6 +25,18 @@
 {% block javascript %}
 
 
+$.ajax({
+	url: window.location.href,
+	headers: {'X-Requested-With': 'XMLHttpRequest'}
+});
+
+$.ajax({
+	url: url: window.location.href,
+	crossDomain: false
+});
+
+
+
 $(".btn_busca").hide();
 $(".campo_obrigatorio").hide();
 $(".principal").hide();
@@ -71,7 +83,8 @@ $("#id_cnpj_cpf").keyup(function(e){
 						$("#id_uf").val("...");
 
                         //Consulta o webservice receitaws.com.br/
-                        $.getJSON("//www.receitaws.com.br/v1/cnpj/"+cnpj, function(dados) {
+                        $.getJSON("//receitaws.com.br/v1/cnpj/"+cnpj+'?callback=?', function(dados) {
+
                         var checkcnpj = dados.cnpj
 
                         if(checkcnpj != undefined){

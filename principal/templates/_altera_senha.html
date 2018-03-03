@@ -1,9 +1,7 @@
 {% load static widget_tweaks %}
- {% if success %}
-   <script>
-	   close_modal=true;
-   </script>
- {% else %}
+{% if success %}
+   		<input type="hidden" id="close_form" value="ok">
+{% else %}
   <form method="post" enctype="multipart/form-data" action="{% url 'altera_senha' %}">
 							  <div class="form-group" >
 								{% csrf_token %}

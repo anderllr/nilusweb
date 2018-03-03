@@ -109,12 +109,18 @@
                                     <h2 class="h5 font-w400 text-muted mb-0">Informe seus dados abaixo.</h2>
                                 </div>
                                 <!-- END Header -->
-                                <br>
+
+                                <div class="block-content block-content-full ribbon ribbon-danger aviso_form" style="display: none">
+                                    <div class="ribbon-box">Atenção verifique o formulário.</div>
+                                </div>
+
                                 <!-- Sign Up Form -->
                                 <!-- jQuery Validation (.js-validation-signup class is initialized in js/pages/op_auth_signup.js) -->
                                 <!-- For more examples you can check out https://github.com/jzaefferer/jquery-validation -->
                                 <div>
                                     <div class="js-wizard-simple block">
+
+
                                 <!-- Wizard Progress Bar -->
                                 <div class="progress rounded-0" data-wizard="progress">
                                     <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 34.3333%; height: 8px;" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
@@ -124,13 +130,13 @@
                                 <!-- Step Tabs -->
                                 <ul class="nav nav-tabs nav-tabs-alt nav-fill" role="tablist">
                                     <li class="nav-item">
-                                        <a class="nav-link active" href="#wizard-progress2-step1" data-toggle="tab">1. Acesso</a>
+                                        <a class="nav-link active" href="#wizard-progress2-step1" data-toggle="tab" id="tab1">1. Acesso</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" href="#wizard-progress2-step2" data-toggle="tab">2. Info. da Conta</a>
+                                        <a class="nav-link" href="#wizard-progress2-step2" data-toggle="tab" id="tab2">2. Info. da Conta</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" href="#wizard-progress2-step3" data-toggle="tab">3. Senha</a>
+                                        <a class="nav-link" href="#wizard-progress2-step3" data-toggle="tab" id="tab3">3. Senha</a>
                                     </li>
                                 </ul>
                                 <!-- END Step Tabs -->
@@ -152,7 +158,10 @@
                                                     {% render_field form.username class='form-control required' id="username" name="username" %}
                                                     <label for="id_username">Usuário</label>
                                                     {% for error in form.username.errors %}
-			                                           <label class="text-danger">{{ error }}</label>
+                                                       <script>
+                                                           var tab1 = 'S'
+                                                       </script>
+			                                           <small class="form-control-feedback text-danger"> {{ error }} </small>
 			                                        {% endfor %}
                                                 </div>
                                             </div>
@@ -161,7 +170,10 @@
                                                     {% render_field form.name class='form-control required'  name="name" %}
                                                     <label for="id_name">Nome</label>
                                                     {% for error in form.name.errors %}
-			                                           <label class="text-danger">{{ error }}</label>
+                                                        <script>
+                                                           var tab1 = 'S'
+                                                       </script>
+			                                           <small class="form-control-feedback text-danger"> {{ error }} </small>
 			                                        {% endfor %}
                                                 </div>
                                             </div>
@@ -170,7 +182,10 @@
                                                     {% render_field form.email class='form-control required' name="email" %}
                                                     <label for="id_email">E-mail</label>
                                                     {% for error in form.email.errors %}
-			                                           <label class="text-danger">{{ error }}</label>
+                                                        <script>
+                                                           var tab1 = 'S'
+                                                       </script>
+			                                           <small class="form-control-feedback text-danger"> {{ error }} </small>
 			                                        {% endfor %}
                                                 </div>
                                             </div>
@@ -184,7 +199,10 @@
                                                     {% render_field form.qtd_users class='form-control required' %}
                                                     <label for="id_qtd_users">Quantidade Usuários</label>
                                                     {% for error in form.qtd_users.errors %}
-			                                           <label class="text-danger">{{ error }}</label>
+                                                        <script>
+                                                           var tab2 = 'S'
+                                                       </script>
+			                                           <small class="form-control-feedback text-danger"> {{ error }} </small>
 			                                        {% endfor %}
                                                 </div>
                                             </div>
@@ -193,16 +211,10 @@
                                                     {% render_field form.qtd_unity class='form-control required' %}
                                                     <label for="id_qtd_unity">Quantidade Empresas</label>
                                                     {% for error in form.id_qtd_unity.errors %}
-			                                           <label class="text-danger">{{ error }}</label>
-			                                        {% endfor %}
-                                                </div>
-                                            </div>
-                                            <div class="form-group">
-                                                <div class="form-material floating">
-                                                    {% render_field form.qtd_propriety class='form-control required' %}
-                                                    <label for="id_qtd_propriety">Quantidade Propriedades</label>
-                                                    {% for error in form.qtd_propriety.errors %}
-			                                           <label class="text-danger">{{ error }}</label>
+                                                        <script>
+                                                           var tab2 = 'S'
+                                                       </script>
+			                                           <small class="form-control-feedback text-danger"> {{ error }} </small>
 			                                        {% endfor %}
                                                 </div>
                                             </div>
@@ -216,7 +228,10 @@
                                                     {% render_field form.password1 class='form-control required' %}
                                                     <label for="id_password1">Senha</label>
                                                     {% for error in form.password1.errors %}
-			                                           <label class="text-danger">{{ error }}</label>
+                                                      <script>
+                                                           var tab3 = 'S'
+                                                       </script>
+			                                          <small class="form-control-feedback text-danger"> {{ error }} </small>
 			                                        {% endfor %}
                                                 </div>
                                             </div>
@@ -225,12 +240,13 @@
                                                     {% render_field form.password2 class='form-control required' %}
                                                     <label for="id_password2">Confirmação de Senha</label>
                                                     {% for error in form.password2.errors %}
-			                                           <label class="text-danger">{{ error }}</label>
+                                                        <script>
+                                                           var tab3 = 'S'
+                                                       </script>
+			                                           <small class="form-control-feedback text-danger"> {{ error }} </small>
 			                                        {% endfor %}
                                                 </div>
                                             </div>
-
-
                                         </div>
                                         <!-- END Step 3 -->
                                     </div>
@@ -297,6 +313,26 @@
 
 
         <script src="{% static 'assets/js/pages/be_forms_wizard.js' %}"></script>
+
+
+        <script>
+             $(document).ready(function() {
+                if(tab1 == 'S'){
+                 $('.aviso_form').show();
+                 $("#tab1").addClass("text-danger");
+                }
+
+                if(tab2 == 'S'){
+                 $('.aviso_form').show();
+                 $("#tab2").addClass("text-danger");
+                }
+
+                if(tab3 == 'S'){
+                 $('.aviso_form').show();
+                 $("#tab3").addClass("text-danger");
+                }
+             });
+        </script>
 
     </body>
 </html>
