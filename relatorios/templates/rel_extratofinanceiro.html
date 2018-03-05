@@ -98,6 +98,7 @@
             <div class="block block-bordered">
                                 <div class="block-header block-header-default">
                                     <h4 class="block-title header">Filtros utilizados:</h4>
+                                    <strong>Empresa :</strong> {% if dados_empresa %} {{ dados_empresa }} {% else %} Todas {% endif %}
                                     <table>
                                     <thead class="header">
                                       <tr>
@@ -133,7 +134,7 @@
                 <tr>
 
                 </tr>
-                {% if conta_finan %}
+
                 <tr>
                     <td><small><strong>{{ dt_saldo_ant|date:'d/m/Y' }}</strong></small></td>
                     <td><small><strong>Saldo anterior</strong></small></td>
@@ -197,16 +198,8 @@
                         </td>
                         <td></td>
                     </tr>
-                {% else %}
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
 
-                {% endif %}
+
 
                 </tbody>
 

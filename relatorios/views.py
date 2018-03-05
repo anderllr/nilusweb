@@ -1,8 +1,9 @@
 from django.shortcuts import render
 from django.utils.dateparse import parse_date
 from lancfinanceiros.models import Lancamentos,Movtos_lancamentos
-from niluscad.models import Cadgeral,PlanoFinan,Ccusto
+from niluscad.models import Cadgeral,PlanoFinan,Ccusto,Company
 from nilusfin.models import Contafinanceira
+
 from datetime import date, timedelta, datetime
 from django.db.models import Sum
 from decimal import Decimal
@@ -226,13 +227,15 @@ class Rel_Extratofinanceiro(LoginRequiredMixin,PDFTemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(Rel_Extratofinanceiro, self).get_context_data(**kwargs)
-        lanctos = Movtos_lancamentos.objects.filter(master_user=self.request.user.pk,tipo_movto='B')
+        # lanctos = Movtos_lancamentos.objects.filter(master_user=self.request.user.pk,tipo_movto='B')
         data_lanc_ini = self.request.GET.get('data_lanc_ini', '')
         data_lanc_fim = self.request.GET.get('data_lanc_fim', '')
         conta_finan = self.request.GET.get('conta_finan','')
+        empresa = self.request.GET.get('empresa','')
 
 
         conta_finan_text = None
+        dados_empresa = None
         dt_saldo_ant = None
         saldo_atual = 0
         saldo_anterior = 0
@@ -250,6 +253,15 @@ class Rel_Extratofinanceiro(LoginRequiredMixin,PDFTemplateView):
         if conta_finan:
             conta_finan_text = Contafinanceira.objects.get(pk=int(conta_finan))
 
+        if empresa :
+            dados_empresa = Company.objects.get(pk=int(empresa))
+
+
+        if empresa:
+            lanctos = Movtos_lancamentos.objects.filter(master_user=self.request.user.pk, tipo_movto='B',
+                                                        lancamento__company=empresa)
+        else:
+            lanctos = Movtos_lancamentos.objects.filter(master_user=self.request.user.pk, tipo_movto='B')
 
 
         if data_lanc_ini != '' and data_lanc_fim != '':
@@ -259,15 +271,29 @@ class Rel_Extratofinanceiro(LoginRequiredMixin,PDFTemplateView):
                 lanctos = lanctos.filter(conta_financeira=conta_finan)
 
             # SALDO ANTERIOR
-            movtos_creditos = Movtos_lancamentos.objects.filter(master_user=self.request.user.user_master,
-                                                                sinal='R', dt_movimento__lt=data_lanc_ini_dt)
+
+            # creditos
+            if empresa:
+                movtos_creditos = Movtos_lancamentos.objects.filter(master_user=self.request.user.user_master,
+                                                                    sinal='R', dt_movimento__lt=data_lanc_ini_dt,
+                                                                    lancamento__company=empresa)
+            else:
+                movtos_creditos = Movtos_lancamentos.objects.filter(master_user=self.request.user.user_master,
+                                                                    sinal='R', dt_movimento__lt=data_lanc_ini_dt)
             if conta_finan:
                 movtos_creditos = movtos_creditos.filter(conta_financeira=conta_finan)
             movtos_creditos = movtos_creditos.aggregate(vlr_creditos=Sum('vlr_movimento'))
 
 
-            movtos_debitos = Movtos_lancamentos.objects.filter(master_user=self.request.user.user_master,
-                                                               sinal='D', dt_movimento__lt=data_lanc_ini_dt)
+            # debitos
+            if empresa:
+                movtos_debitos = Movtos_lancamentos.objects.filter(master_user=self.request.user.user_master,
+                                                                   sinal='D', dt_movimento__lt=data_lanc_ini_dt,
+                                                                   lancamento__company=empresa)
+            else:
+                movtos_debitos = Movtos_lancamentos.objects.filter(master_user=self.request.user.user_master,
+                                                                   sinal='D', dt_movimento__lt=data_lanc_ini_dt)
+
             if conta_finan:
                 movtos_debitos = movtos_debitos.filter(conta_financeira=conta_finan)
             movtos_debitos = movtos_debitos.aggregate(vlr_debitos=Sum('vlr_movimento'))
@@ -281,15 +307,30 @@ class Rel_Extratofinanceiro(LoginRequiredMixin,PDFTemplateView):
             saldo_anterior = Decimal(movtos_creditos['vlr_creditos']) - Decimal(movtos_debitos['vlr_debitos'])
 
 
+            # SALDO ATUAL
 
-            movtos_creditos = Movtos_lancamentos.objects.filter(master_user=self.request.user.user_master,
-                                                                sinal='R', dt_movimento__lte=data_lanc_fim_dt,tipo_movto='B')
+            # creditos
+            if empresa:
+                movtos_creditos = Movtos_lancamentos.objects.filter(master_user=self.request.user.user_master,
+                                                                    sinal='R', dt_movimento__lte=data_lanc_fim_dt,
+                                                                    tipo_movto='B',lancamento__company=empresa)
+            else:
+                movtos_creditos = Movtos_lancamentos.objects.filter(master_user=self.request.user.user_master,
+                                                                    sinal='R', dt_movimento__lte=data_lanc_fim_dt,
+                                                                    tipo_movto='B')
             if conta_finan:
                 movtos_creditos = movtos_creditos.filter(conta_financeira=conta_finan)
             movtos_creditos = movtos_creditos.aggregate(vlr_creditos=Sum('vlr_movimento'))
 
-            movtos_debitos = Movtos_lancamentos.objects.filter(master_user=self.request.user.user_master,
-                                                               sinal='D', dt_movimento__lte=data_lanc_fim_dt)
+            # debitos
+            if empresa:
+                movtos_debitos = Movtos_lancamentos.objects.filter(master_user=self.request.user.user_master,
+                                                                   sinal='D', dt_movimento__lte=data_lanc_fim_dt,
+                                                                   lancamento__company=empresa)
+            else:
+                movtos_debitos = Movtos_lancamentos.objects.filter(master_user=self.request.user.user_master,
+                                                                   sinal='D', dt_movimento__lte=data_lanc_fim_dt)
+
             if conta_finan:
                 movtos_debitos = movtos_debitos.filter(conta_financeira=conta_finan)
             movtos_debitos = movtos_debitos.aggregate(vlr_debitos=Sum('vlr_movimento'))
@@ -331,11 +372,11 @@ class Rel_Extratofinanceiro(LoginRequiredMixin,PDFTemplateView):
                     vlr_limite = conta_finan_text.vlr_limite_text.replace('R$', '').replace('.', '').replace(',', '.')
                     saldo_c_limite = Decimal(saldo_atual) + Decimal(vlr_limite)
 
-        print(lanctos)
         context['lanctos'] = lanctos
         context['data_lanc_ini'] = data_lanc_ini
         context['data_lanc_fim'] = data_lanc_fim
         context['conta_finan'] = conta_finan_text
+        context['dados_empresa'] = dados_empresa
         context['saldo_anterior'] = saldo_anterior
         context['dt_saldo_ant'] = dt_saldo_ant
         context['saldo_atual'] = saldo_atual

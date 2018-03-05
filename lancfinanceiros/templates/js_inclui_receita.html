@@ -116,7 +116,11 @@ $(".new_receita").on("click",function(e){
     });
 });
 
+
+
 $(".form_inc").on("submit","form",function(e){
+     var company_null = $('#id_company').val();
+     alert(company_null);
      e.preventDefault();
      var dados = $(this).serialize();
      $.post("{% url 'create_receita' %}",dados,function(result){
@@ -132,6 +136,10 @@ $(".form_inc").on("submit","form",function(e){
             {% include 'js_floating_labels.html' %}
             {% include 'js_tabs.html' %}
             $('.chosen-select').chosen({ width: '100%' });
+
+
+
+
 
                $(".form_inc .cancel_form").on("click",function(e){
                     $('.form_inc').hide("drop");

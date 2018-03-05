@@ -1,6 +1,7 @@
 from accounts.models import User
 from django import forms
 from .models import Cotacao,Indice,Contafinanceira
+from niluscad.models import Company
 from lancfinanceiros.models import Movtos_lancamentos
 
 
@@ -50,10 +51,12 @@ class FormAjusteSaldo(forms.ModelForm):
 class FiltroLancamentosExtrato(forms.Form):
     data_lanc_ini = forms.DateField(label='Lançamento de:', required=True)
     data_lanc_fim = forms.DateField(label='Lançamento até:', required=True)
+    empresa = forms.ModelChoiceField(label='Empresa',empty_label='Todas',required=False,queryset=Company.objects.none())
     conta_finan = forms.ModelChoiceField(label='Conta Financeira',empty_label='Todas',required=False,queryset=Contafinanceira.objects.none())
 
-    def __init__(self, conta_finan, *args, **kwargs):
+    def __init__(self, conta_finan,empresa, *args, **kwargs):
         super(FiltroLancamentosExtrato, self).__init__(*args, **kwargs)
         self.fields['conta_finan'].queryset = conta_finan
+        self.fields['empresa'].queryset=empresa
 
 

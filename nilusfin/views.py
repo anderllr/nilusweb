@@ -10,6 +10,7 @@ from accounts.models import User
 from nilusadm.models import Sequenciais
 from lancfinanceiros.models import Movtos_lancamentos
 from .models import Contafinanceira,Cotacao,Indice
+from niluscad.models import Company
 from .forms import FormCreateCotacao,FormAjusteSaldo,FiltroLancamentosExtrato
 from django.db.models import Sum
 
@@ -534,11 +535,13 @@ def extrato_contas(request):
     saldo_c_limite = 0
 
 
-    movimentos = Movtos_lancamentos.objects.filter(master_user=request.user.user_master,tipo_movto='B')
+
+    # movimentos = Movtos_lancamentos.objects.filter(master_user=request.user.user_master,tipo_movto='B')
     conta_finan = Contafinanceira.objects.filter(master_user=request.user.user_master)
+    empresa = Company.objects.filter(master_user=request.user.user_master)
     lanctos = Movtos_lancamentos.objects.none()
     dados_conta = conta_finan
-    form = FiltroLancamentosExtrato(conta_finan,request.GET or None)
+    form = FiltroLancamentosExtrato(conta_finan,empresa,request.GET or None)
 
 
 
@@ -546,23 +549,47 @@ def extrato_contas(request):
         data_lanc_ini = form.cleaned_data.get('data_lanc_ini', '')
         data_lanc_fim = form.cleaned_data.get('data_lanc_fim', '')
         conta_finan = form.cleaned_data.get('conta_finan','')
+        empresa = form.cleaned_data.get('empresa','')
         dt_saldo_ant = data_lanc_ini - timedelta(days=1)
+
+        if empresa:
+            movimentos = Movtos_lancamentos.objects.filter(master_user=request.user.user_master,tipo_movto='B'
+                                                           ,lancamento__company=empresa)
+        else:
+            movimentos = Movtos_lancamentos.objects.filter(master_user=request.user.user_master, tipo_movto='B')
 
         if data_lanc_ini and data_lanc_fim:
             lanctos = movimentos.filter(dt_movimento__range=(data_lanc_ini,data_lanc_fim))
+
 
             if conta_finan:
                 lanctos = lanctos.filter(conta_financeira=conta_finan)
 
         # SALDO ANTERIOR
-        movtos_creditos = Movtos_lancamentos.objects.filter(master_user=request.user.user_master,
-                                                            sinal='R', dt_movimento__lt=data_lanc_ini,tipo_movto='B')
+
+        # total debitos
+        if empresa:
+            movtos_creditos = Movtos_lancamentos.objects.filter(master_user=request.user.user_master,
+                                                                sinal='R', dt_movimento__lt=data_lanc_ini,
+                                                                tipo_movto='B',lancamento__company=empresa)
+        else:
+            movtos_creditos = Movtos_lancamentos.objects.filter(master_user=request.user.user_master,
+                                                                sinal='R', dt_movimento__lt=data_lanc_ini,
+                                                                tipo_movto='B')
         if conta_finan:
             movtos_creditos = movtos_creditos.filter(conta_financeira=conta_finan)
         movtos_creditos = movtos_creditos.aggregate(vlr_creditos=Sum('vlr_movimento'))
 
-        movtos_debitos = Movtos_lancamentos.objects.filter(master_user=request.user.user_master,
-                                                           sinal='D', dt_movimento__lt=data_lanc_ini,tipo_movto='B')
+
+        # total debitos
+        if empresa:
+            movtos_debitos = Movtos_lancamentos.objects.filter(master_user=request.user.user_master,
+                                                               sinal='D', dt_movimento__lt=data_lanc_ini,
+                                                               tipo_movto='B',lancamento__company=empresa)
+        else:
+            movtos_debitos = Movtos_lancamentos.objects.filter(master_user=request.user.user_master,
+                                                               sinal='D', dt_movimento__lt=data_lanc_ini,
+                                                               tipo_movto='B')
         if conta_finan:
             movtos_debitos = movtos_debitos.filter(conta_financeira=conta_finan)
         movtos_debitos = movtos_debitos.aggregate(vlr_debitos=Sum('vlr_movimento'))
@@ -578,15 +605,32 @@ def extrato_contas(request):
 
 
         # SALDO ATUAL
-        movtos_creditos = Movtos_lancamentos.objects.filter(master_user=request.user.user_master,
-                                                            sinal='R', dt_movimento__lte=data_lanc_fim,tipo_movto='B')
+
+        # total creditos
+        if empresa:
+            movtos_creditos = Movtos_lancamentos.objects.filter(master_user=request.user.user_master,
+                                                                sinal='R', dt_movimento__lte=data_lanc_fim,
+                                                                tipo_movto='B',lancamento__company=empresa)
+        else:
+            movtos_creditos = Movtos_lancamentos.objects.filter(master_user=request.user.user_master,
+                                                                sinal='R', dt_movimento__lte=data_lanc_fim,
+                                                                tipo_movto='B')
+
         if conta_finan:
             movtos_creditos = movtos_creditos.filter(conta_financeira=conta_finan)
         movtos_creditos = movtos_creditos.aggregate(vlr_creditos=Sum('vlr_movimento'))
 
 
-        movtos_debitos = Movtos_lancamentos.objects.filter(master_user=request.user.user_master,
-                                                           sinal='D', dt_movimento__lte=data_lanc_fim,tipo_movto='B')
+        # total debitos
+        if empresa:
+            movtos_debitos = Movtos_lancamentos.objects.filter(master_user=request.user.user_master,
+                                                               sinal='D', dt_movimento__lte=data_lanc_fim,
+                                                               tipo_movto='B',lancamento__company=empresa)
+        else :
+            movtos_debitos = Movtos_lancamentos.objects.filter(master_user=request.user.user_master,
+                                                               sinal='D', dt_movimento__lte=data_lanc_fim,
+                                                               tipo_movto='B')
+
         if conta_finan:
             movtos_debitos = movtos_debitos.filter(conta_financeira=conta_finan)
         movtos_debitos = movtos_debitos.aggregate(vlr_debitos=Sum('vlr_movimento'))
@@ -644,7 +688,7 @@ def extrato_contas(request):
         'form': form,
         'filtrou': filtrou,
         'data_hoje' : data_hoje,
-            'saldo_atual' : saldo_atual,
+        'saldo_atual' : saldo_atual,
         'total_debitos' : totalizador_deb,
         'total_creditos': totalizador_cre,
         'dados_conta' : conta_finan,

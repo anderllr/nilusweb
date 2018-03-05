@@ -23,7 +23,7 @@
                 <button class="btn btn-outline-danger mr-5 mb-5  new_despesa btn_lancamentos pull-right"  data-toggle="tooltip" data-placement="bottom" title="Nova Despesa"><i class="fa fa-arrow-down"><i class="fa fa-dollar"></i></i></button>
                 <button class="btn btn-outline-primary mr-5 mb-5 new_receita btn_lancamentos pull-right" data-toggle="tooltip" data-placement="bottom" title="Nova Receita"><i class="fa fa-arrow-up"><i class="fa fa-dollar"></i></i></button>
                 <button type="button"  class="btn  btn-outline-primary btn_lancamentos  mr-5 mb-5" id="mostrar_filtros"   data-toggle="tooltip" data-placement="bottom" title="Exibir filtros de pesquisa">
-                   <i class="fa fa-filter"></i> Buscar por...
+                   <i class="fa fa-filter"></i> Pesquisar
                </button>
 
                 <div class="ribbon-box form_busca" style="display:none;">
@@ -68,6 +68,12 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <div class="form-material input-group">
+                                        <label>{{ form.empresa.label_tag }}</label>
+                                        {% render_field form.empresa class="chosen-select" %}
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-material input-group">
                                         <label>{{ form.cadgeral.label_tag }}</label>
                                         {% render_field form.cadgeral class="chosen-select" %}
                                     </div>
@@ -80,26 +86,16 @@
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-material input-group">
-                                        <label>{{ form.c_custo.label_tag }}</label>
-                                        {% render_field form.c_custo class="chosen-select" %}
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-material input-group">
                                         <label>{{ form.conta_finan.label_tag }}</label>
                                         {% render_field form.conta_finan class="chosen-select" %}
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-3">
                                     <div class="form-material input-group">
-                                        <button type="submit"  class="btn  btn-outline-primary mr-5 mb-5 form_pesquisa form_bus"   data-toggle="tooltip" data-placement="bottom" title="Pesquisar lançamentos de acordo com os filtros">
-                                            <i class="fa fa-search"></i> Pesquisar
-                                        </button>
-                                        <button type="button"  class="btn  btn-outline-danger  mr-5 mb-5 limpa_filtro_pesquisa"   data-toggle="tooltip" data-placement="bottom" title="Remover filtros e exibir todos os lançamentos">
-                                             <i class="fa fa-search-minus"></i> Limpar filtros
-                                        </button>
+                                        <label>{{ form.c_custo.label_tag }}</label>
+                                        {% render_field form.c_custo class="chosen-select" %}
                                     </div>
                                 </div>
                                 <div class="col-lg-3">
@@ -112,6 +108,16 @@
                                     <div class="form-material input-group">
                                         <label>{{ form.sit_lancamento.label_tag }}</label>
                                         {% render_field form.sit_lancamento class="chosen-select" %}
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-material input-group">
+                                        <button type="submit"  class="btn  btn-outline-primary mr-5 mb-5 form_pesquisa form_bus"   data-toggle="tooltip" data-placement="bottom" title="Pesquisar lançamentos">
+                                            <i class="fa fa-search"></i>
+                                        </button>
+                                        <button type="button"  class="btn  btn-outline-danger  mr-5 mb-5 limpa_filtro_pesquisa"   data-toggle="tooltip" data-placement="bottom" title="Remover filtros">
+                                             <i class="fa fa-search-minus"></i>
+                                        </button>
                                     </div>
                                 </div>
                             </div>

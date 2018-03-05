@@ -253,7 +253,7 @@ $(".form_edit").on("submit","form",function(e){
 	 	 var dados = $(this).serialize();
 	 	 $.post($(this).attr('action'),dados,function(result){
 	 	    $(".form_edit").html(result);
-	 	    if(ok==ok){
+	 	    if(close_modal==true){
 	 	       $('.form_edit').hide("drop");
                  window.location.reload();
 

@@ -24,27 +24,37 @@
                                         {% render_field form.data_lanc_fim class="form-control js-datepicker"   placeholder="dd/mm/aaaa" data-week-start="1" data-autoclose="true" data-today-highlight="true"%}
                                     </div>
                                 </div>
-                                <div class="col-md-5">
-                                    <div class="form-material input-group">
-                                        <label>{{ form.conta_finan.label_tag }}</label>
-                                        {% render_field form.conta_finan class="chosen-select" %}
+                                <div class="col-md-6 row">
+                                    <div class="col-md-7">
+                                        <div class="form-material input-group">
+                                            <label>{{ form.empresa.label_tag }}</label>
+                                            {% render_field form.empresa class="chosen-select" %}
+                                        </div>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <div class="form-material input-group">
+                                            <label>{{ form.conta_finan.label_tag }}</label>
+                                            {% render_field form.conta_finan class="chosen-select" %}
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
-                                    <div class="form-material input-group">
-                                        <button type="submit"  class="btn  btn-outline-primary mr-5 mb-5 form_pesquisa form_bus"  id="btn_consultar"  data-toggle="tooltip" data-placement="bottom" title="Consultar Extrato">
-                                            <i class="fa fa-search"></i> Consultar
-                                        </button>
-                                        <div class="col-md-2"></div>
-                                        <button type="button" class="btn btn-outline-secondary mr-5 mb-5   btn_opcoes ajc_conta pull-right" data-toggle="tooltip" data-placement="bottom" title="Ajustar Saldo Conta">
-                                                <i class="fa fa-money"></i>
-                                        </button>
-                                        <button class="btn btn-outline-secondary mr-5 mb-5 btn_lancamentos pull-right"
-                                                data-toggle="tooltip" data-placement="bottom" title="Imprimir Extrato"  title=""
-                                                id="btn_impressao"><i class="fa fa-print"></i>
-                                        </button>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-material input-group">
+                                            <button type="submit"  class="btn  btn-outline-primary mr-5 mb-5 form_pesquisa form_bus"  id="btn_consultar"  data-toggle="tooltip" data-placement="bottom" title="Consultar Extrato">
+                                                <i class="fa fa-search"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-outline-secondary mr-5 mb-5   btn_opcoes ajc_conta pull-right" data-toggle="tooltip" data-placement="bottom" title="Ajustar Saldo Conta">
+                                                    <i class="fa fa-money"></i>
+                                            </button>
+                                            <button class="btn btn-outline-secondary mr-5 mb-5 btn_lancamentos"
+                                                    data-toggle="tooltip" data-placement="bottom" title="Imprimir Extrato"  title=""
+                                                    id="btn_impressao"><i class="fa fa-print"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
+
                             </div>
                         </div>
                     </form>
@@ -235,10 +245,12 @@ $("#btn_impressao").on("click",function(e){
 
 
         var conta_finan =  $('#id_conta_finan').val();
+        var empresa = $('#id_empresa').val();
 
     var url = window.location.href;
     var nova_url = url.replace('/fin/extrato_contas','/rel/extrato_financeiro/');
-    var nova_url2 = nova_url + '?data_lanc_ini='+data_lanc_ini+'&data_lanc_fim='+data_lanc_fim+'&conta_finan='+conta_finan
+    var nova_url2 = nova_url + '?data_lanc_ini='+data_lanc_ini+'&data_lanc_fim='+data_lanc_fim+'&empresa='+empresa+'&conta_finan='+conta_finan
+
     buscou = 'S';
     window.open(nova_url2);
 

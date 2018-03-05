@@ -25,14 +25,17 @@
                 </div>
                 {% endfor %}
              <div class="block-content">
-                <div class="form-group row">
+                <div class="form-group row ">
                     <div class="col-md-7">
-                        <div class="form-material input-group">
+                        <div class="form-material input-group ">
                             <label>Empresa</label>
-                            {% render_field form.company class="chosen-select" %}
+                            {% render_field form.company class="chosen-select"  %}
                             {% for error in form.company.errors %}
                             <small class="form-control-feedback"> {{ error }} </small>
                             {% endfor %}
+                        </div>
+                        <div>
+                            <small class="form-control-feedback text-danger aviso_company" > campo obrigatório </small>
                         </div>
                     </div>
                     <div class="col-md-5">
@@ -64,7 +67,7 @@
                    <div class="col-md-4">
                         <div class="form-material input-group">
                             <label>Plano Financeiro</label>
-                            {% render_field form.plr_financeiro class="chosen-select" %}
+                            {% render_field form.plr_financeiro class="chosen-select"  %}
                             {% for error in form.plr_financeiro.errors %}
                             <small class="form-control-feedback"> {{ error }} </small>
                             {% endfor %}
@@ -72,11 +75,14 @@
                                 <button type="button" class="btn btn-primary new_planofinan" title="Novo Plano Financeiro" data-container="body" data-toggle="popover" data-placement="bottom"><i class="fa fa-plus"></i> </button>
                              </span>
                         </div>
+                        <div>
+                            <small class="form-control-feedback text-danger aviso_plr_financeiro" > campo obrigatório </small>
+                        </div>
                    </div>
                    <div class="col-md-4">
                        <div class="form-material input-group">
                             <label>Centro Custo</label>
-                            {% render_field form.c_custo class="chosen-select" id="c_custo_id2" %}
+                            {% render_field form.c_custo class="chosen-select" id="c_custo_id2"  %}
                             {% for error in form.c_custo.errors %}
                             <small class="form-control-feedback"> {{ error }} </small>
                             {% endfor %}
@@ -84,17 +90,23 @@
                                <button type="button" class="btn btn-primary new_ccusto" title="Novo Centro de Custo" data-container="body" data-toggle="popover2" data-placement="bottom"><i class="fa fa-plus"></i> </button>
                             </span>
                         </div>
+                        <div>
+                            <small class="form-control-feedback text-danger aviso_ccusto" > campo obrigatório </small>
+                        </div>
                    </div>
                    <div class="col-md-4">
                         <div class="form-material input-group">
                             <label>Conta</label>
-                            {% render_field form.conta_finan class="chosen-select" id="id_conta_finan2" %}
+                            {% render_field form.conta_finan class="chosen-select" id="id_conta_finan2"  %}
                             {% for error in form.conta_finan.errors %}
                             <small class="form-control-feedback"> {{ error }} </small>
                             {% endfor %}
                             <span class="input-group-btn">
                                 <button type="button" class="btn btn-primary new_conta" title="Nova Conta de Recebimento" data-container="body" data-toggle="popover3" data-placement="bottom"><i class="fa fa-plus"></i> </button>
                              </span>
+                        </div>
+                        <div>
+                           <small class="form-control-feedback text-danger aviso_conta_finan"> campo obrigatório </small>
                         </div>
                    </div>
                 </div>
@@ -237,7 +249,7 @@
           <br>
           <br>
          <div class="form-group row ">
-                <button type="submit" class="btn btn-alt-primary">Salvar</button>
+                <button type="submit" id="btn_salvar" class="btn btn-alt-primary">Salvar</button>
                 <button type="button"  class="btn btn-alt-secondary  cancel_form">Cancelar</button>
          </div>
     </form>
