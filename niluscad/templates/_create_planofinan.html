@@ -25,7 +25,7 @@
                 {% endfor %}
              <div class="block-contentt">
                  <div class="form-group row">
-                      <div class="col-md-8">
+                      <div class="col-md-6">
                             <div class="form-material floating input-group">
                                 {% render_field  form.descricao class='form-control' %}
                                 <label for="{{  form.descricao.id }}">Descrição</label>
@@ -35,11 +35,20 @@
                                 {% endfor %}
 
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="form-material input-group">
                                 <label>Sinal</label>
                                 {% render_field form.sinal class="chosen-select" %}
                                 {% for error in form.sinal.errors %}
+                                <small class="form-control-feedback"> {{ error }} </small>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-material input-group">
+                                <label>Grupo Demonstrativo</label>
+                                {% render_field form.grupodre class="chosen-select" %}
+                                {% for error in form.grupodre.errors %}
                                 <small class="form-control-feedback"> {{ error }} </small>
                                 {% endfor %}
                             </div>

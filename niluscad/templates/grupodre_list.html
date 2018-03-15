@@ -4,7 +4,7 @@
 
 
 <!-- Bread crumb and right sidebar toggle -->
-{% block title %} Cadastro de Plano Financeiro {% endblock %}
+{% block title %} Cadastro de Grupos de Demonstrativo {% endblock %}
 
 {% block page_body %}
 
@@ -14,21 +14,10 @@
                 <div class="block-content">
 
                     <div class="row  btn-insert">
-                        <div>
-                            <button type="button" class="btn btn-outline-primary mr-5 mb-5  new_planofinan"
-                                data-toggle="tooltip" data-placement="bottom" title="Novo Plano"  title="">
-                                <i class="fa fa-plus"></i>
-                            </button>
-                        </div>
-
-                        <div>
-                            <a class="btn btn-outline-secondary mr-5 mb-5 pull-right" href="{% url 'grupodre_list' %}"
-                                data-toggle="tooltip" data-placement="bottom" title="Cadastro de Grupos de Demonstrativos"  title="">
-                                <i class="fa fa-th-list"></i>
-                            </a>
-                        </div>
-
-
+                        <button type="button" class="btn btn-outline-primary mr-5 mb-5  new_grupodre"
+                        data-toggle="tooltip" data-placement="bottom" title="Novo Grupo"  title="">
+                                 <i class="fa fa-plus"></i>
+                        </button>
                     </div>
                     <div>
                         <div class="row">
@@ -43,8 +32,8 @@
 
 
                     </div>
-                    <div class="row table table_planofinan">
-                     {% include '_table_planofinan.html' %}
+                    <div class="row table table_grupodre">
+                     {% include '_table_grupodre.html' %}
                     </div>
                 </div>
             </div>
@@ -64,12 +53,12 @@ $('.form_inc').hide();
 $('.form_edit').hide();
 
 
-function loading_planofinan(){
-      $('.table_planofinan').load('{{ request.path }}');
+function loading_grupodre(){
+      $('.table_grupodre').load('{{ request.path }}');
 }
 
 
-table = $('#tabela_planofinan').DataTable({
+table = $('#tabela_grupodre').DataTable({
     "language": {
      "lengthMenu": "Mostrando _MENU_ registros por página",
      "search" : "Procurar: ",
@@ -103,21 +92,21 @@ table = $('#tabela_planofinan').DataTable({
 
 <!-- Create Company -->
 
-$(".new_planofinan").on("click",function(e){
+$(".new_grupodre").on("click",function(e){
      e.preventDefault();
-     $(".form_inc").load("{% url 'create_planofinan' %}", function(){
+     $(".form_inc").load("{% url 'create_grupodre' %}", function(){
         $('.form_inc').show("puff");
-        $('.new_planofinan').hide("drop");
+        $('.new_grupodre').hide("drop");
         $('.chosen-select').chosen({ width: '100%' });
-
         {% include 'js_floating_labels.html' %}
+
         {% include 'js_tabs.html' %}
         {% include 'js_masks.html' %}
 
 
           $(".form_inc .cancel_form").on("click",function(e){
              $('.form_inc').hide("drop");
-             $('.new_planofinan').show();
+             $('.new_grupodre').show();
           });
     });
 });
@@ -125,13 +114,12 @@ $(".new_planofinan").on("click",function(e){
     $(".form_inc").on("submit","form",function(e){
 	 	 e.preventDefault();
 	 	 var dados = $(this).serialize();
-	 	 $.post("{% url 'create_planofinan' %}",dados,function(result){
+	 	 $.post("{% url 'create_grupodre' %}",dados,function(result){
 	 	    $(".form_inc").html(result);
 	 	    if(close_modal==true){
 	 	       $('.form_inc').hide("drop");
-               $('.new_planofinan').show();
+               $('.new_grupodre').show();
                   window.location.reload();
-
      	    }
  	        else{
                 $(".form_inc").show();
@@ -141,7 +129,7 @@ $(".new_planofinan").on("click",function(e){
 
                    $(".form_inc .cancel_form").on("click",function(e){
                         $('.form_inc').hide("drop");
-                        $('.new_planofinan').show();
+                        $('.new_grupodre').show();
                    });
 
 
@@ -150,21 +138,20 @@ $(".new_planofinan").on("click",function(e){
 	});
 
 <!-- Edit Company -->
-$('.table_planofinan').on('click', '.edit_planofinan',function(e){
+$('.table_grupodre').on('click', '.edit_grupodre',function(e){
     e.preventDefault();
     $(".form_edit ").load($(this).attr('href'), function(){
               $('.form_edit').show("slide");
-               $('.new_planofinan').hide("drop");
+              $('.chosen-select').chosen({ width: '100%' });
+               $('.new_grupodre').hide("drop");
               {% include 'js_floating_labels.html' %}
               {% include 'js_masks.html' %}
               $('.chosen-select').chosen({ width: '100%' });
 
 
-
-
               $(".form_edit .cancel_form").on("click",function(e){
                   $('.form_edit').hide("drop");
-                  $('.new_planofinan').show();
+                  $('.new_grupodre').show();
               });
     });
 
@@ -192,20 +179,20 @@ $(".form_edit").on("submit","form",function(e){
 
                 $(".form_inc .cancel_form").on("click",function(e){
                     $('.form_edit').hide("drop");
-                    $('.new_planofinan').show();
+                    $('.new_grupodre').show();
 	 	        });
             }
 	 	 });
 	 });
 
 
-    $(".delete_planofinan").on("click", function(e){
+    $(".delete_grupodre").on("click", function(e){
 
     e.preventDefault();
     var linkURL = $(this).attr("href");
     swal({
         title: "Tem certeza?",
-        text: "Ao aceitar esta empresa será excluida!",
+        text: "Ao aceitar este registro será excluido!",
         type: "warning",
         showCancelButton: true,
         confirmButtonColor: "#DD6B55",

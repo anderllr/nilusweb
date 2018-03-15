@@ -67,7 +67,7 @@ class FormCreateReceita(forms.ModelForm):
 
     class Meta:
         model = Lancamentos
-        fields = ['company','dt_vencimento', 'plr_financeiro', 'c_custo', 'conta_finan','descricao','valor_text','titulo','cadgeral','indice','cotacao','situacao']
+        fields = ['company','dt_vencimento','dt_lancamento', 'plr_financeiro', 'c_custo', 'conta_finan','descricao','valor_text','titulo','cadgeral','indice','cotacao','situacao']
 
 
 class FormEditReceita(forms.ModelForm):
@@ -101,7 +101,7 @@ class FormEditReceita(forms.ModelForm):
 
     class Meta:
         model = Lancamentos
-        fields = ['dt_vencimento','cadgeral', 'plr_financeiro', 'c_custo', 'conta_finan', 'valor_text',
+        fields = ['dt_vencimento','dt_lancamento','cadgeral', 'plr_financeiro', 'c_custo', 'conta_finan', 'valor_text',
                   'indice','cotacao','descricao','situacao']
 
 
@@ -166,7 +166,7 @@ class FormCreateDespesa(forms.ModelForm):
 
     class Meta:
         model = Lancamentos
-        fields = ['company','dt_vencimento', 'plr_financeiro', 'c_custo', 'conta_finan','descricao','valor_text','titulo','cadgeral','indice','cotacao','situacao']
+        fields = ['company','dt_lancamento','dt_vencimento', 'plr_financeiro', 'c_custo', 'conta_finan','descricao','valor_text','titulo','cadgeral','indice','cotacao','situacao']
 
 
 
@@ -201,7 +201,7 @@ class FormEditDespesa(forms.ModelForm):
 
     class Meta:
         model = Lancamentos
-        fields = ['dt_vencimento','cadgeral', 'plr_financeiro', 'c_custo', 'conta_finan', 'valor_text',
+        fields = ['dt_vencimento','dt_lancamento','cadgeral', 'plr_financeiro', 'c_custo', 'conta_finan', 'valor_text',
                   'indice','cotacao','descricao','situacao']
 
 

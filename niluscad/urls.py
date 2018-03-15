@@ -9,6 +9,7 @@ urlpatterns = [
     url(r'^cadgeral/$',views.cadgeral_list,name='cadgeral_list'),
     url(r'^ccusto/$',views.ccusto_list,name='ccusto_list'),
     url(r'^planofinan/$',views.planofinan_list,name='planofinan_list'),
+    url(r'^grupodre/$',views.grupodre_list,name='grupodre_list'),
 
 
     # Empresas
@@ -41,6 +42,11 @@ urlpatterns = [
        url(r'^planofinan/(?P<pk>\d+)/apagar/$', views.delete_planofinan, name='delete_planofinan'),
 
     # url(r'^permissions/(?P<pk>\d+)',views.edit_permissions,name='edit_permissions'),
+
+    #  Grupos DRE
+       url(r'^insere_grupodre/$', views.create_grupodre, name='create_grupodre'),
+       url(r'^insere_grupodre/(?P<pk>\d+)$', views.edit_grupodre, name='edit_grupodre'),
+       url(r'^grupodre/(?P<pk>\d+)/apagar/$', views.delete_grupodre, name='delete_grupodre'),
 
     # Talhoes
        url(r'^insere_talhao/$', views.create_talhao_create_prop, name='create_talhao_create_prop'),

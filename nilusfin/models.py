@@ -86,3 +86,9 @@ class Cotacao(models.Model):
 
     def __str__(self):
         return str(self.valor_cotacao)
+
+
+
+
+
+

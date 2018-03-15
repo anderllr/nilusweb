@@ -172,11 +172,12 @@ class PlanoFinan(models.Model):
 
 
     # informação do dono da conta (usuario Master)
-    master_user = models.ForeignKey('accounts.User',models.CASCADE,verbose_name='Uusario Master')
+    master_user = models.ForeignKey('accounts.User',models.CASCADE,verbose_name='Usuario Master')
     # dados principais
     num_plfin = models.IntegerField('Código')
     descricao = models.CharField('Descricão',max_length=60)
     sinal = models.CharField('Sinal Conta',max_length=1,choices=Scategoria_Choices)
+    grupodre = models.ForeignKey('niluscad.Grupodre',models.SET_NULL,verbose_name='Grupo Dre',null=True,blank=True,related_name='plano_financeiro')
 
 
     class Meta:
@@ -189,6 +190,36 @@ class PlanoFinan(models.Model):
 
     def __str__(self):
         return self.descricao
+
+
+
+
+class Grupodre(models.Model):
+    sinal_grupo = (
+        (None, 'Informe o calculo'),
+        ('+', 'Soma'),
+        ('-', 'Subtrai'),
+    )
+
+    master_user = models.ForeignKey('accounts.User', models.CASCADE, verbose_name='Usuario Master')
+    num_grupodre = models.IntegerField('Código')
+    descricao = models.CharField('Nome Grupo', max_length=20)
+    ordem = models.PositiveIntegerField('Ordem no relatório')
+    sinal = models.CharField('Sinal Conta', max_length=1, choices=sinal_grupo)
+
+
+    class Meta:
+        verbose_name = 'Grupo DRE'
+        verbose_name_plural = 'Grupos DRE'
+        unique_together = [
+            ('master_user', 'num_grupodre')
+        ]
+
+
+
+    def __str__(self):
+        return str(self.descricao)
+
 
 
 

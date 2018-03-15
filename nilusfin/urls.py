@@ -35,5 +35,9 @@ urlpatterns = [
     # url(r'edit_lancto/(?<pk>\d+)$',views.edit_lancto,name='edit_lancto'),
 
     # Consultas e Extratos
-    url(r'^extrato_contas',views.extrato_contas,name='extrato_contas')
+    url(r'^extrato_contas',views.extrato_contas,name='extrato_contas'),
+
+
+    # DRE
+    url(r'^consulta_dre',views.dre_list,name='dre_list')
 ]

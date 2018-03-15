@@ -1,0 +1,27 @@
+<table id="tabela_grupodre" class="table table-bordered table-striped table-vcenter js-dataTable-full">
+    <thead>
+        <tr>
+            <th>Código</th>
+            <th>Descricao</th>
+            <th>Ordem</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for gdre in gdre %}
+        <tr>
+            <td>{{ gdre.num_grupodre }}</td>
+            <td>{{ gdre.descricao }}</td>
+            <td>{{ gdre.ordem }}</td>
+            <td>
+                 <button type="button" class="btn btn-sm btn-outline-secondary edit_grupodre"  href="{% url 'edit_grupodre' gdre.pk %}" data-toggle="tooltip" data-placement="bottom" title="Editar">
+                    <i class="fa fa-pencil"></i>
+                 </button>
+                 <button type="button" class="btn btn-sm btn-outline-danger delete_grupodre"  href="{% url 'delete_grupodre' gdre.pk %}" data-toggle="tooltip" data-placement="bottom" title="Excluir">
+                    <i class="fa fa-trash-o"></i>
+                 </button>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

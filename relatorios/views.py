@@ -258,10 +258,10 @@ class Rel_Extratofinanceiro(LoginRequiredMixin,PDFTemplateView):
 
 
         if empresa:
-            lanctos = Movtos_lancamentos.objects.filter(master_user=self.request.user.pk, tipo_movto='B',
-                                                        lancamento__company=empresa)
+            lanctos = Movtos_lancamentos.objects.filter(master_user=self.request.user.pk,
+                                                        company=empresa).exclude(tipo_movto='C')
         else:
-            lanctos = Movtos_lancamentos.objects.filter(master_user=self.request.user.pk, tipo_movto='B')
+            lanctos = Movtos_lancamentos.objects.filter(master_user=self.request.user.pk).exclude(tipo_movto='C')
 
 
         if data_lanc_ini != '' and data_lanc_fim != '':
@@ -276,10 +276,10 @@ class Rel_Extratofinanceiro(LoginRequiredMixin,PDFTemplateView):
             if empresa:
                 movtos_creditos = Movtos_lancamentos.objects.filter(master_user=self.request.user.user_master,
                                                                     sinal='R', dt_movimento__lt=data_lanc_ini_dt,
-                                                                    lancamento__company=empresa)
+                                                                    company=empresa).exclude(tipo_movto='C')
             else:
                 movtos_creditos = Movtos_lancamentos.objects.filter(master_user=self.request.user.user_master,
-                                                                    sinal='R', dt_movimento__lt=data_lanc_ini_dt)
+                                                                    sinal='R', dt_movimento__lt=data_lanc_ini_dt).exclude(tipo_movto='C')
             if conta_finan:
                 movtos_creditos = movtos_creditos.filter(conta_financeira=conta_finan)
             movtos_creditos = movtos_creditos.aggregate(vlr_creditos=Sum('vlr_movimento'))
@@ -289,10 +289,10 @@ class Rel_Extratofinanceiro(LoginRequiredMixin,PDFTemplateView):
             if empresa:
                 movtos_debitos = Movtos_lancamentos.objects.filter(master_user=self.request.user.user_master,
                                                                    sinal='D', dt_movimento__lt=data_lanc_ini_dt,
-                                                                   lancamento__company=empresa)
+                                                                   company=empresa).exclude(tipo_movto='C')
             else:
                 movtos_debitos = Movtos_lancamentos.objects.filter(master_user=self.request.user.user_master,
-                                                                   sinal='D', dt_movimento__lt=data_lanc_ini_dt)
+                                                                   sinal='D', dt_movimento__lt=data_lanc_ini_dt).exclude(tipo_movto='C')
 
             if conta_finan:
                 movtos_debitos = movtos_debitos.filter(conta_financeira=conta_finan)
@@ -313,11 +313,10 @@ class Rel_Extratofinanceiro(LoginRequiredMixin,PDFTemplateView):
             if empresa:
                 movtos_creditos = Movtos_lancamentos.objects.filter(master_user=self.request.user.user_master,
                                                                     sinal='R', dt_movimento__lte=data_lanc_fim_dt,
-                                                                    tipo_movto='B',lancamento__company=empresa)
+                                                                    company=empresa).exclude(tipo_movto='C')
             else:
                 movtos_creditos = Movtos_lancamentos.objects.filter(master_user=self.request.user.user_master,
-                                                                    sinal='R', dt_movimento__lte=data_lanc_fim_dt,
-                                                                    tipo_movto='B')
+                                                                    sinal='R', dt_movimento__lte=data_lanc_fim_dt).exclude(tipo_movto='C')
             if conta_finan:
                 movtos_creditos = movtos_creditos.filter(conta_financeira=conta_finan)
             movtos_creditos = movtos_creditos.aggregate(vlr_creditos=Sum('vlr_movimento'))
@@ -326,10 +325,10 @@ class Rel_Extratofinanceiro(LoginRequiredMixin,PDFTemplateView):
             if empresa:
                 movtos_debitos = Movtos_lancamentos.objects.filter(master_user=self.request.user.user_master,
                                                                    sinal='D', dt_movimento__lte=data_lanc_fim_dt,
-                                                                   lancamento__company=empresa)
+                                                                   company=empresa).exclude(tipo_movto='C')
             else:
                 movtos_debitos = Movtos_lancamentos.objects.filter(master_user=self.request.user.user_master,
-                                                                   sinal='D', dt_movimento__lte=data_lanc_fim_dt)
+                                                                   sinal='D', dt_movimento__lte=data_lanc_fim_dt).exclude(tipo_movto='C')
 
             if conta_finan:
                 movtos_debitos = movtos_debitos.filter(conta_financeira=conta_finan)

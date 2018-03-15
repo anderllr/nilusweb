@@ -207,7 +207,7 @@
             <hr>
             <div class="text-right">
                 <h2>{% if dados_conta.usa_limite == True %} Saldo final conta no período (sem limite): {% else %}
-                    Saldo final conta no período: {% endif %} &nbsp;&nbsp;<strong>{{ saldo_atual|intcomma }}</strong></h2>
+                    Saldo final conta no período: {% endif %} &nbsp;&nbsp;<strong {% if saldo_atual < 0  %}class="despesa" {% else %} class="receita" {% endif %}>{{ saldo_atual|intcomma }}</strong></h2>
                  {% if dados_conta.usa_limite == True %}
                  <h2>Valor limite: &nbsp;&nbsp;<strong>{{ dados_conta.vlr_limite_text }}</strong></h2>
                 <h2>Saldo c/ limite:<strong>&nbsp;{% if saldo_c_limite < 0  %}<small class="despesa">{{ saldo_c_limite|intcomma }}</small>

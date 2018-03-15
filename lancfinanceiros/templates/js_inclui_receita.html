@@ -119,8 +119,6 @@ $(".new_receita").on("click",function(e){
 
 
 $(".form_inc").on("submit","form",function(e){
-     var company_null = $('#id_company').val();
-     alert(company_null);
      e.preventDefault();
      var dados = $(this).serialize();
      $.post("{% url 'create_receita' %}",dados,function(result){

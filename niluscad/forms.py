@@ -35,9 +35,9 @@ class FormPropriety(forms.ModelForm):
 
 class FormPlanoFinanceiro(forms.ModelForm):
 
-    def __init__(self,user,*args,**kwargs):
+    def __init__(self,*args,**kwargs):
         super(FormPlanoFinanceiro,self).__init__(*args,**kwargs)
-
+        self.fields['grupodre'].empty_label = 'Informe o grupo'
         self.fields['sinal'].empty_label = "Informe o Sinal da Conta"
 
 
@@ -48,7 +48,7 @@ class FormPlanoFinanceiro(forms.ModelForm):
 
     class Meta:
         model = PlanoFinan
-        fields = ['descricao','sinal']
+        fields = ['descricao','sinal','grupodre']
 
 
 

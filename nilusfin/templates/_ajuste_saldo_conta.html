@@ -34,6 +34,10 @@
                             </div>
                             {% endfor %}
                         </div>
+                        <label class="css-control css-control-sm css-control-danger css-switch">
+                                {% render_field form.saldo_negativo type="checkbox" class='css-control-input' %}
+                                <span class="css-control-indicator"></span> Saldo Negativo?
+                            </label>
                     </div>
 
                 </div>
@@ -42,6 +46,13 @@
                             <label>Conta</label>
                             {% render_field form.conta_financeira class="chosen-select"%}
                             {% for error in form.conta_financeira.errors %}
+                            <small class="form-control-feedback"> {{ error }} </small>
+                            {% endfor %}
+                        </div>
+                        <div class="form-material input-group">
+                            <label>Empresa</label>
+                            {% render_field form.company class="chosen-select"%}
+                            {% for error in form.company.errors %}
                             <small class="form-control-feedback"> {{ error }} </small>
                             {% endfor %}
                         </div>

@@ -1,0 +1,195 @@
+{% extends "menu.html" %}
+{% load static widget_tweaks humanize %}
+
+
+
+<!-- Bread crumb and right sidebar toggle -->
+{% block title %} Demonstrativo Financeiro {% endblock %}
+
+
+{% block page_body %}
+<div class="block">
+    <div class="block-content">
+        <div class="block">
+            <div class="block-content block-content-full ribbon ribbon-left ribbon-bookmark ribbon-primary">
+                    <form id="form_busca_movimentos">
+                        <div class="filtros_extras">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label for="id_data_lanc_ini">Data Filtro</label>
+                                    <div class="input-daterange input-group js-datepicker-enabled" data-date-format="dd/mm/yyyy" data-week-start="1" data-autoclose="true" data-today-highlight="true">
+                                        {% render_field form.data_lanc_ini class="form-control js-datepicker"   placeholder="dd/mm/aaaa" data-week-start="1" data-autoclose="true" data-today-highlight="true"%}
+                                        <span class="input-group-addon font-w600">  &nbsp; até  &nbsp; </span>
+                                        {% render_field form.data_lanc_fim class="form-control js-datepicker"   placeholder="dd/mm/aaaa" data-week-start="1" data-autoclose="true" data-today-highlight="true"%}
+                                    </div>
+                                </div>
+                                <div class="col-md-6 row">
+                                    <div class="col-md-12">
+                                        <div class="form-material input-group">
+                                            <label>{{ form.empresa.label_tag }}</label>
+                                            {% render_field form.empresa class="chosen-select" %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="form-material input-group">
+                                            <button type="submit"  class="btn  btn-outline-primary mr-5 mb-5 form_pesquisa form_bus"  id="btn_consultar"  data-toggle="tooltip" data-placement="bottom" title="Consultar Extrato">
+                                                <i class="fa fa-search"></i>
+                                            </button>
+                                            <button class="btn btn-outline-secondary mr-5 mb-5 btn_lancamentos"
+                                                    data-toggle="tooltip" data-placement="bottom" title="Imprimir Extrato"  title=""
+                                                    id="btn_impressao"><i class="fa fa-print"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <span>Opções de Filtro:</span><div class="col-md-1"></div>
+                             <label class="css-control css-control-sm css-control-primary css-switch">
+                                        {% render_field form.f_lancamento type="checkbox" class='css-control-input' %}
+                                        <span class="css-control-indicator"></span> Data Lancamento
+                                </label>
+                                <label class="css-control css-control-sm css-control-primary css-switch">
+                                    {% render_field form.f_vencimento type="checkbox" class='css-control-input' %}
+                                    <span class="css-control-indicator"></span> Data Vencimento
+                                </label>
+                                <label class="css-control css-control-sm css-control-primary css-switch">
+                                    {% render_field form.f_baixa type="checkbox" class='css-control-input' %}
+                                    <span class="css-control-indicator"></span> Data Baixa
+                                </label>
+                        </div>
+                    </form>
+                {% include '_corpo_dre.html' %}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modal-ajsaldo" tabindex="-1" role="dialog" aria-labelledby="modal-slideright" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-slideright" role="document">
+        <div class="modal-content">
+            <div class="block block-themed block-transparent mb-0">
+                <div class="block-header bg-primary-dark">
+                    <h3 class="block-title titulo_modal"></h3><h3 class="block-title info_modal"></h3>
+                    <div class="block-options">
+                        <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+                            <i class="si si-close"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="block-content">
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-alt-secondary" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}
+
+{% block javascript %}
+ $('.chosen-select').chosen({ width: '100%' });
+
+var buscou = 'N';
+
+Codebase.helpers('table-tools');
+
+
+$("#btn_consultar").on("click",function(e){
+  buscou = 'S';
+});
+
+$("#btn_impressao").on("click",function(e){
+
+    <!--extrato_contas?data_lanc_ini=&data_lanc_fim=&conta_finan=-->
+
+
+    if(buscou == 'N'){
+
+        var data_lanc_ini = $('#id_data_lanc_ini').val();
+        var data_lanc_fim = $('#id_data_lanc_fim').val();
+
+
+        data_lanc_ini = data_lanc_ini.replace('/','%2F').replace('/','%2F');
+        data_lanc_fim = data_lanc_fim.replace('/','%2F').replace('/','%2F');
+
+
+        var conta_finan =  $('#id_conta_finan').val();
+        var empresa = $('#id_empresa').val();
+
+    var url = window.location.href;
+    var nova_url = url.replace('/fin/extrato_contas','/rel/extrato_financeiro/');
+    var nova_url2 = nova_url + '?data_lanc_ini='+data_lanc_ini+'&data_lanc_fim='+data_lanc_fim+'&empresa='+empresa+'&conta_finan='+conta_finan
+
+    buscou = 'S';
+    window.open(nova_url2);
+
+    }else{
+        var url = window.location.href;
+        var nova_url = url.replace('/fin/extrato_contas','/rel/extrato_financeiro/');
+        window.open(nova_url);
+    }
+});
+
+
+
+$('#id_f_lancamento').on("change",function(){
+  if($(this).is(":checked")){
+  $("#id_f_vencimento").prop("checked",false);
+  $("#id_f_baixa").prop("checked",false);
+  }
+});
+
+$('#id_f_vencimento').on("change",function(){
+  if($(this).is(":checked")){
+  $("#id_f_lancamento").prop("checked",false);
+  $("#id_f_baixa").prop("checked",false);
+  }
+});
+
+$('#id_f_baixa').on("change",function(){
+  if($(this).is(":checked")){
+  $("#id_f_vencimento").prop("checked",false);
+  $("#id_f_lancamento").prop("checked",false);
+  }
+});
+
+
+
+function numberToReal(numero) {
+    var numero = numero.toFixed(2).split('.');
+    numero[0] = numero[0].split(/(?=(?:...)*$)/).join('.');
+    return numero.join(',');
+}
+
+
+
+$('.totalizador').each(function(){
+    var totalizador = $(this);
+    var planos = totalizador.closest('tbody').next().find('.valor_plano');
+    var total = 0;
+    for (i = 0; i < planos.length; i++) {
+        total = total + parseFloat($(planos[i]).html().replace('.','').replace(',','.'));
+    }
+
+    total_t = numberToReal(total);
+    totalizador.html(total_t);
+
+
+
+
+
+});
+
+
+
+
+
+{% endblock %}

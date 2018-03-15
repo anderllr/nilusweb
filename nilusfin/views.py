@@ -8,10 +8,10 @@ from django.http import HttpResponse,Http404
 from decimal import Decimal
 from accounts.models import User
 from nilusadm.models import Sequenciais
-from lancfinanceiros.models import Movtos_lancamentos
+from lancfinanceiros.models import Movtos_lancamentos,Lancamentos
 from .models import Contafinanceira,Cotacao,Indice
-from niluscad.models import Company
-from .forms import FormCreateCotacao,FormAjusteSaldo,FiltroLancamentosExtrato
+from niluscad.models import Company,Grupodre,PlanoFinan
+from .forms import FormCreateCotacao,FormAjusteSaldo,FiltroLancamentosExtrato,FiltroDre
 from django.db.models import Sum
 
 # Create your views here.
@@ -158,12 +158,19 @@ class AjusteSaldo(LoginRequiredMixin,CreateView):
     model = Movtos_lancamentos
     form_class = FormAjusteSaldo
 
+
+    def get_initial(self):
+        initial = super(AjusteSaldo,self).get_initial()
+        initial['company'] = self.request.user.company_p
+        return initial
+
     def get_success_url(self):
         return reverse_lazy('conta_list')
 
 
     def form_valid(self,form,**kwargs):
         mvt_ajcsaldo = form.save(commit=False)
+        saldo_negativo = form.cleaned_data.get('saldo_negativo', '')
 
         movtos_creditos = Movtos_lancamentos.objects.filter(master_user=self.request.user.user_master,
                                                             conta_financeira=mvt_ajcsaldo.conta_financeira,
@@ -184,10 +191,16 @@ class AjusteSaldo(LoginRequiredMixin,CreateView):
         saldo_sistema = movtos_creditos['vlr_creditos'] - movtos_debitos['vlr_debitos']
         vlr_novo_saldo = self.request.POST.get('vlr_novosaldo').replace('.', '').replace(',', '.')
 
+        if saldo_negativo:
+            vlr_novo_saldo = Decimal(vlr_novo_saldo) * -1
+
+
         if Decimal(vlr_novo_saldo) > Decimal(saldo_sistema):
             vlr_ajuste_saldo = Decimal(vlr_novo_saldo) - Decimal(saldo_sistema)
             sinal = 'R'
         else:
+            if saldo_negativo:
+                vlr_novo_saldo = Decimal(vlr_novo_saldo) * 1
             vlr_ajuste_saldo = Decimal(saldo_sistema )- Decimal(vlr_novo_saldo)
             sinal = 'D'
 
@@ -203,8 +216,6 @@ class AjusteSaldo(LoginRequiredMixin,CreateView):
             return self.render_to_response(context)
         else:
             return redirect(self.get_success_url())
-
-
 
 
 
@@ -553,10 +564,10 @@ def extrato_contas(request):
         dt_saldo_ant = data_lanc_ini - timedelta(days=1)
 
         if empresa:
-            movimentos = Movtos_lancamentos.objects.filter(master_user=request.user.user_master,tipo_movto='B'
-                                                           ,lancamento__company=empresa)
+            movimentos = Movtos_lancamentos.objects.filter(master_user=request.user.user_master
+                                                           ,company=empresa).exclude(tipo_movto='C')
         else:
-            movimentos = Movtos_lancamentos.objects.filter(master_user=request.user.user_master, tipo_movto='B')
+            movimentos = Movtos_lancamentos.objects.filter(master_user=request.user.user_master).exclude(tipo_movto='C')
 
         if data_lanc_ini and data_lanc_fim:
             lanctos = movimentos.filter(dt_movimento__range=(data_lanc_ini,data_lanc_fim))
@@ -565,17 +576,19 @@ def extrato_contas(request):
             if conta_finan:
                 lanctos = lanctos.filter(conta_financeira=conta_finan)
 
+        lanctos = lanctos.order_by('dt_movimento')
+
         # SALDO ANTERIOR
 
         # total debitos
         if empresa:
             movtos_creditos = Movtos_lancamentos.objects.filter(master_user=request.user.user_master,
                                                                 sinal='R', dt_movimento__lt=data_lanc_ini,
-                                                                tipo_movto='B',lancamento__company=empresa)
+                                                                company=empresa).exclude(tipo_movto='C')
         else:
             movtos_creditos = Movtos_lancamentos.objects.filter(master_user=request.user.user_master,
                                                                 sinal='R', dt_movimento__lt=data_lanc_ini,
-                                                                tipo_movto='B')
+                                                                ).exclude(tipo_movto='C')
         if conta_finan:
             movtos_creditos = movtos_creditos.filter(conta_financeira=conta_finan)
         movtos_creditos = movtos_creditos.aggregate(vlr_creditos=Sum('vlr_movimento'))
@@ -585,11 +598,11 @@ def extrato_contas(request):
         if empresa:
             movtos_debitos = Movtos_lancamentos.objects.filter(master_user=request.user.user_master,
                                                                sinal='D', dt_movimento__lt=data_lanc_ini,
-                                                               tipo_movto='B',lancamento__company=empresa)
+                                                               company=empresa).exclude(tipo_movto='C')
         else:
             movtos_debitos = Movtos_lancamentos.objects.filter(master_user=request.user.user_master,
                                                                sinal='D', dt_movimento__lt=data_lanc_ini,
-                                                               tipo_movto='B')
+                                                               ).exclude(tipo_movto='C')
         if conta_finan:
             movtos_debitos = movtos_debitos.filter(conta_financeira=conta_finan)
         movtos_debitos = movtos_debitos.aggregate(vlr_debitos=Sum('vlr_movimento'))
@@ -610,11 +623,11 @@ def extrato_contas(request):
         if empresa:
             movtos_creditos = Movtos_lancamentos.objects.filter(master_user=request.user.user_master,
                                                                 sinal='R', dt_movimento__lte=data_lanc_fim,
-                                                                tipo_movto='B',lancamento__company=empresa)
+                                                                company=empresa).exclude(tipo_movto='C')
         else:
             movtos_creditos = Movtos_lancamentos.objects.filter(master_user=request.user.user_master,
-                                                                sinal='R', dt_movimento__lte=data_lanc_fim,
-                                                                tipo_movto='B')
+                                                                sinal='R', dt_movimento__lte=data_lanc_fim)\
+                                                                .exclude(tipo_movto='C')
 
         if conta_finan:
             movtos_creditos = movtos_creditos.filter(conta_financeira=conta_finan)
@@ -625,11 +638,11 @@ def extrato_contas(request):
         if empresa:
             movtos_debitos = Movtos_lancamentos.objects.filter(master_user=request.user.user_master,
                                                                sinal='D', dt_movimento__lte=data_lanc_fim,
-                                                               tipo_movto='B',lancamento__company=empresa)
+                                                               company=empresa).exclude(tipo_movto='C')
         else :
             movtos_debitos = Movtos_lancamentos.objects.filter(master_user=request.user.user_master,
-                                                               sinal='D', dt_movimento__lte=data_lanc_fim,
-                                                               tipo_movto='B')
+                                                               sinal='D', dt_movimento__lte=data_lanc_fim
+                                                               ).exclude(tipo_movto='C')
 
         if conta_finan:
             movtos_debitos = movtos_debitos.filter(conta_financeira=conta_finan)
@@ -698,9 +711,102 @@ def extrato_contas(request):
     return render(request, template_name, context)
 
 
+##########################################################################################
+#                                  DRE FINANCEIRA                                        #
+##########################################################################################
+
+@login_required
+def dre_list(request):
+    if request.is_ajax():
+        template_name = '_corpo_dre.html'
+    else:
+        template_name = 'consulta_dre.html'
+
+
+    data_hoje = datetime.today
+
+    empresa = Company.objects.filter(master_user=request.user.user_master)
+    soma_grupodre = None
+    valor_plr_finan = None
+    creditos = 0
+    debitos = 0
+    saldo_atual = 0
+
+    form = FiltroDre(empresa, request.GET or None)
+
+    if form.is_valid():
+        data_lanc_ini = form.cleaned_data.get('data_lanc_ini', '')
+        data_lanc_fim = form.cleaned_data.get('data_lanc_fim', '')
+        empresa = form.cleaned_data.get('empresa', '')
+        f_lancamento = form.cleaned_data.get('f_lancamento', '')
+        f_vencimento = form.cleaned_data.get('f_vencimento', '')
+        f_baixa = form.cleaned_data.get('f_baixa', '')
+
+
+        if empresa:
+            soma_grupodre = Lancamentos.objects.filter(master_user=request.user.user_master,company=empresa)
+            debitos = soma_grupodre.filter(master_user=request.user.user_master,
+                                                 tipo_lancamento='D').aggregate(vlr_debitos=Sum('vlr_lancamento'))
+
+            creditos =  soma_grupodre.filter(master_user=request.user.user_master,
+                                                   tipo_lancamento='R').aggregate(vlr_creditos=Sum('vlr_lancamento'))
+
+        else:
+            soma_grupodre = Lancamentos.objects.filter(master_user=request.user.user_master)
+            debitos = soma_grupodre.filter(master_user=request.user.user_master,
+                                                 tipo_lancamento='D').aggregate(vlr_debitos=Sum('vlr_lancamento'))
+            creditos = soma_grupodre.filter(master_user=request.user.user_master,
+                                                  tipo_lancamento='R').aggregate(vlr_creditos=Sum('vlr_lancamento'))
+
+
+        if f_lancamento:
+            soma_grupodre = soma_grupodre.filter(dt_lancamento__range=(data_lanc_ini,data_lanc_fim))
+            debitos = soma_grupodre.filter(master_user=request.user.user_master,
+                                                 tipo_lancamento='D').aggregate(vlr_debitos=Sum('vlr_lancamento'))
+            creditos = soma_grupodre.filter(master_user=request.user.user_master,
+                                                  tipo_lancamento='R').aggregate(vlr_creditos=Sum('vlr_lancamento'))
+
+        if f_vencimento:
+            soma_grupodre = soma_grupodre.filter(dt_vencimento__range=(data_lanc_ini, data_lanc_fim))
+            debitos = soma_grupodre.filter(master_user=request.user.user_master,
+                                                 tipo_lancamento='D').aggregate(vlr_debitos=Sum('vlr_lancamento'))
+            creditos = soma_grupodre.filter(master_user=request.user.user_master,
+                                                  tipo_lancamento='R').aggregate(vlr_creditos=Sum('vlr_lancamento'))
+
+        if f_baixa:
+            soma_grupodre = soma_grupodre.filter(data_baixa__range=(data_lanc_ini, data_lanc_fim))
+            debitos = soma_grupodre.filter(master_user=request.user.user_master,
+                                                 tipo_lancamento='D').aggregate(vlr_debitos=Sum('vlr_lancamento'))
+            creditos = soma_grupodre.filter(master_user=request.user.user_master,
+                                                  tipo_lancamento='R').aggregate(vlr_creditos=Sum('vlr_lancamento'))
+
+        soma_grupodre = soma_grupodre.values('plr_financeiro__grupodre__descricao','plr_financeiro__descricao','plr_financeiro__grupodre__sinal').annotate(vlr_lancamentos=Sum('vlr_lancamento'))
+        soma_grupodre = soma_grupodre.order_by('plr_financeiro__grupodre__ordem')
+
+        # print(soma_grupodre)
+
+         # SALDO FINAL DO RESULTADO (CREDITOS - DÉBITOS)
+        if creditos['vlr_creditos'] is None:
+            creditos['vlr_creditos'] = 0
+
+        if debitos['vlr_debitos'] is None:
+            debitos['vlr_debitos'] = 0
+
+        # print(creditos)
+        # print(debitos)
+        saldo_atual = Decimal(creditos['vlr_creditos']) - Decimal(debitos['vlr_debitos'])
 
 
 
+
+    context = {
+        'form': form,
+        'soma_grupodre' : soma_grupodre,
+        'valor_plr_finan': valor_plr_finan,
+         'saldo_atual' :saldo_atual,
+    }
+
+    return render(request, template_name, context)
 
 
 

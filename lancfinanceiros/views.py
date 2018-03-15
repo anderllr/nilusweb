@@ -177,10 +177,19 @@ class CreateReceita(LoginRequiredMixin,CreateView):
         else:
             return ["create_receita.html"]
 
+    def get_context_data(self, **kwargs):
+        context = super(CreateReceita, self).get_context_data(**kwargs)
+        context['data_hoje'] = datetime.today
+        return context
+
     def get_form_kwargs(self):
         kwargs = super(CreateReceita, self).get_form_kwargs()
         kwargs['user'] = self.request.user
         return kwargs
+
+
+
+
 
     model = Lancamentos
     form_class = FormCreateReceita
@@ -206,6 +215,9 @@ class CreateReceita(LoginRequiredMixin,CreateView):
 
         if lancto.dt_vencimento is None:
             lancto.dt_vencimento = datetime.now()
+
+        if lancto.dt_lancamento is None:
+            lancto.dt_lancamento = datetime.now()
 
 
         lancto.vlr_lancamento = lancto.valor_text.replace('R$','').replace('.','').replace(',','.')
@@ -379,6 +391,7 @@ class EditReceita(LoginRequiredMixin,UpdateView):
                 lancto.data_baixa = datetime.now()
 
                 movto_lanc = Movtos_lancamentos()
+                movto_lanc.company = lancto.company
                 movto_lanc.master_user = self.request.user.user_master
                 movto_lanc.lancamento = lancto
                 movto_lanc.dt_movimento = lancto.dt_lancamento
@@ -547,6 +560,12 @@ class CreateDespesa(LoginRequiredMixin,CreateView):
             return ["_create_despesa.html"]
         else:
             raise Http404
+
+
+    def get_context_data(self, **kwargs):
+        context = super(CreateDespesa, self).get_context_data(**kwargs)
+        context['data_hoje'] = datetime.today
+        return context
 
     def get_form_kwargs(self):
         kwargs = super(CreateDespesa, self).get_form_kwargs()
@@ -767,6 +786,7 @@ class EditDespesa(LoginRequiredMixin,UpdateView):
 
                 movto_lanc = Movtos_lancamentos()
                 movto_lanc.master_user = self.request.user.user_master
+                movto_lanc.company = lancto.company
                 movto_lanc.lancamento = lancto
                 movto_lanc.dt_movimento = lancto.dt_lancamento
                 movto_lanc.vlr_movimento = lancto.saldo
@@ -1004,12 +1024,15 @@ class BaixaParcial(LoginRequiredMixin,UpdateView):
             lancto.saldo = 0
             lancto.vlr_lancamento = valor_baixa
             lancto.valor_text = valor_baixa
-            vlr_movtos_baixas = Movtos_lancamentos.objects.filter(lancamento=lancto, tipo_movto='B').aggregate(
+            vlr_movtos_baixas = Movtos_lancamentos.objects.filter(lancamento=lancto).exclude(tipo_movto='C').aggregate(
                                                                              vlr_movimento=Sum('vlr_movimento'))
             if vlr_movtos_baixas['vlr_movimento'] is None:
                 vlr_movtos_baixas['vlr_movimento'] = 0
 
-            valor_baixa = Decimal(valor_baixa) - vlr_movtos_baixas['vlr_movimento']
+            if baixar_totalmente:
+                valor_baixa = Decimal(valor_baixa)
+            else:
+                valor_baixa = Decimal(valor_baixa) - vlr_movtos_baixas['vlr_movimento']
 
             movto_lanc = Movtos_lancamentos.objects.get(lancamento=lancto, tipo_movto='C')
             movto_lanc.vlr_movimento = lancto.vlr_lancamento

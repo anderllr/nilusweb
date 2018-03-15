@@ -45,7 +45,6 @@ def principal(request,ano=None, mes=None):
    # 2º Inicia-se o processo de verificar mês a mês
 
    data_hoje = datetime.today()
-   print(data_hoje)
    listaanos = [i for i in range(data_hoje.year - 10, data_hoje.year + 11)]
    listames = [i for i in range(1, 13)]
 

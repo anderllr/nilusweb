@@ -4,16 +4,17 @@
 	   close_modal=true;
    </script>
 {% else %}
-<div class="block block-themed block-rounded">
-    <div class="block-header bg-flat-dark">
-        <h3 class="block-title">Alterar Plano: {{ dados_cadastro.num_planofinan }} - {{ dados_cadastro.descricao }}</h3>
+<div class="block">
+    <div class="block-header ribbon ribbon-success ribbon-left">
+        <h3 class="block-title antes_insert titulo_form">Novo Grupo de Demonstrativo</h3>
         <div class="block-options antes_insert">
             <button type="button" class="btn-block-option cancel_form">
                 <i class="fa fa-close"></i>
             </button>
         </div>
+
     </div>
-    <form method="post" class="form_planofinan" id="form_edit" action="{% url 'edit_planofinan' object.pk %}">
+    <form method="post" class="form_grupodre" id="form_create">
              {% csrf_token %}
                 {% for error in form.non_field_errors %}
                 <div class="alert-danger alert">
@@ -30,30 +31,35 @@
                                 {% for error in form.descricao.errors %}
                                 <div class="alert alert-danger alert-dismissable">{{ error }}</div>
                                 {% endfor %}
-
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <div class="form-material input-group">
-                                <label>Sinal</label>
+                                <label>Cálculo</label>
                                 {% render_field form.sinal class="chosen-select" %}
                                 {% for error in form.sinal.errors %}
                                 <small class="form-control-feedback"> {{ error }} </small>
                                 {% endfor %}
                             </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-material input-group">
-                                <label>Grupo Demonstrativo</label>
-                                {% render_field form.grupodre class="chosen-select" %}
-                                {% for error in form.grupodre.errors %}
-                                <small class="form-control-feedback"> {{ error }} </small>
+                                {% for error in form.sinal.errors %}
+                                <div class="alert alert-danger alert-dismissable">{{ error }}</div>
                                 {% endfor %}
-                            </div>
                         </div>
+                         <div class="col-md-2">
+                            <div class="form-material floating input-group">
+                                {% render_field  form.ordem class='form-control' %}
+                                <label for="{{  form.ordem.id }}">Ordem</label>
+                            </div>
+                                {% for error in form.ordem.errors %}
+                                <div class="alert alert-danger alert-dismissable">{{ error }}</div>
+                                {% endfor %}
+                         </div>
                  </div>
+
                      <button type="submit" class="btn btn-alt-primary">Salvar</button>
                      <button type="button"  class="btn btn-alt-secondary  cancel_form">Cancelar</button>
+
              </div>
     </form>
 </div>
+
 {% endif %}

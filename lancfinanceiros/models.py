@@ -15,7 +15,7 @@ class Lancamentos(models.Model):
 
     #dados do titulo
     cadgeral = models.ForeignKey('niluscad.CadGeral',models.CASCADE,verbose_name='Cliente',blank=True,null=True)
-    dt_lancamento = models.DateField('Data Lançamento',auto_now_add=True)
+    dt_lancamento = models.DateField('Data Lançamento',null=True,blank=True)
     dt_vencimento = models.DateField('Data Vencimento',null=True,blank=True)
     plr_financeiro = models.ForeignKey('niluscad.Planofinan',models.PROTECT,verbose_name='Plano Financeiro')
     conta_finan = models.ForeignKey('nilusfin.Contafinanceira',models.PROTECT,verbose_name='Conta Recebimento')
@@ -77,6 +77,7 @@ class Lancamentos(models.Model):
                 for p in parcelas:
                     movto_lanc = Movtos_lancamentos.objects.get(lancamento=p, tipo_movto='C')
                     movto_lanc.vlr_movimento = p.vlr_lancamento
+                    movto_lanc.company = p.company
                     movto_lanc.save()
                     if situacao_new == 'situacao':
                         if p.situacao == True:
@@ -84,6 +85,7 @@ class Lancamentos(models.Model):
                             movto_lanc_del.delete()
 
                             movto_lanc = Movtos_lancamentos()
+                            movto_lanc.company = p.company
                             movto_lanc.lancamento = p
                             movto_lanc.dt_movimento = p.dt_baixa
                             movto_lanc.vlr_movimento = p.saldo
@@ -114,6 +116,7 @@ class Lancamentos(models.Model):
                 for p in parcelas:
                     movto_lanc = Movtos_lancamentos.objects.get(lancamento=p, tipo_movto='C')
                     movto_lanc.vlr_movimento = p.vlr_lancamento
+                    movto_lanc.company = p.company
                     movto_lanc.save()
                     if situacao_new == 'situacao':
                         if p.situacao == True:
@@ -121,6 +124,7 @@ class Lancamentos(models.Model):
                             movto_lanc_del.delete()
 
                             movto_lanc = Movtos_lancamentos()
+                            movto_lanc.company = p.company
                             movto_lanc.lancamento = p
                             movto_lanc.dt_movimento = p.data_baixa
                             movto_lanc.vlr_movimento = p.saldo
@@ -157,6 +161,7 @@ class Lancamentos(models.Model):
                 for p in parcelas:
                     movto_lanc = Movtos_lancamentos.objects.get(lancamento=p, tipo_movto='C')
                     movto_lanc.vlr_movimento = p.vlr_lancamento
+                    movto_lanc.company = p.company
                     movto_lanc.save()
                     if situacao_new == 'situacao':
                         if p.situacao == True:
@@ -164,6 +169,7 @@ class Lancamentos(models.Model):
                             movto_lanc_del.delete()
 
                             movto_lanc = Movtos_lancamentos()
+                            movto_lanc.company = p.company
                             movto_lanc.lancamento = p
                             movto_lanc.dt_movimento = p.dt_baixa
                             movto_lanc.vlr_movimento = p.saldo
@@ -194,6 +200,7 @@ class Lancamentos(models.Model):
                 for p in parcelas:
                     movto_lanc = Movtos_lancamentos.objects.get(lancamento=p, tipo_movto='C')
                     movto_lanc.vlr_movimento = p.vlr_lancamento
+                    movto_lanc.company = p.company
                     movto_lanc.save()
                     if situacao_new == 'situacao':
                         if p.situacao == True:
@@ -201,6 +208,7 @@ class Lancamentos(models.Model):
                             movto_lanc_del.delete()
 
                             movto_lanc = Movtos_lancamentos()
+                            movto_lanc.company = p.company
                             movto_lanc.lancamento = p
                             movto_lanc.dt_movimento = p.data_baixa
                             movto_lanc.vlr_movimento = p.saldo
@@ -232,6 +240,7 @@ class Lancamentos(models.Model):
 class Movtos_lancamentos(models.Model):
 
     master_user = models.ForeignKey('accounts.User', models.CASCADE, verbose_name='Usuario Master')
+    company = models.ForeignKey('niluscad.Company',models.CASCADE,verbose_name='empresa')
     lancamento = models.ForeignKey('lancfinanceiros.Lancamentos',models.CASCADE,verbose_name='lancamento',null=True)
     dt_movimento = models.DateField('Data Movimento')
     vlr_movimento = models.DecimalField('Valor do Lançamento', max_digits=13, decimal_places=2, blank=True, null=True)

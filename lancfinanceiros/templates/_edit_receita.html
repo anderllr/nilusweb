@@ -42,7 +42,7 @@
              <div class="block-content tab-content">
                 <div class="tab-pane active" id="aba_lancamento" role="tabpanel">
                     <div class="form-group row">
-                        <div class="col-md-4">
+                        <div class="col-md-2">
                             <div class="form-material input-group">
                                 <label>Vencimento</label>
                                 {% render_field form.dt_vencimento class="js-datepicker form-control" data-week-start="1" data-autoclose="true" data-today-highlight="true" data-date-format="dd/mm/yyyy" placeholder="dd/mm/aaaa" %}
@@ -51,7 +51,16 @@
                                 {% endfor %}
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-2">
+                            <div class="form-material input-group">
+                                <label>Lancamento</label>
+                                {% render_field form.dt_lancamento class="js-datepicker form-control" data-week-start="1" data-autoclose="true" data-today-highlight="true" data-date-format="dd/mm/yyyy" placeholder="dd/mm/aaaa" %}
+                                {% for error in form.dt_lancamento.errors %}
+                                <small class="form-control-feedback"> {{ error }} </small>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="col-md-3">
                             <div class="form-material form-material-success floating">
                                 {% render_field  form.valor_text class='form-control money2' %}
                                 <label for="{{  form.valor_text.id }}">Valor Receita</label>

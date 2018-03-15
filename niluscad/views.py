@@ -8,8 +8,8 @@ from django.http import HttpResponse,Http404
 from accounts.models import User
 from nilusadm.models import Sequenciais
 from django.db.models import Sum
-from .models import Company,Propriety,Cadgeral,Ccusto,PlanoFinan,Talhao
-from .forms import FormPropriety
+from .models import Company,Propriety,Cadgeral,Ccusto,PlanoFinan,Talhao,Grupodre
+from .forms import FormPropriety,FormPlanoFinanceiro
 
 from django.db.models import Max,Count
 
@@ -605,14 +605,8 @@ class CreatePlanoFinan(LoginRequiredMixin,CreateView):
         else:
             raise Http404
 
-
-
-
-
-
-
     model = PlanoFinan
-    fields = ['descricao','sinal']
+    form_class =  FormPlanoFinanceiro
 
 
     def get_success_url(self):
@@ -664,8 +658,7 @@ class EditPlanofinan(LoginRequiredMixin,UpdateView):
 
 
     model = PlanoFinan
-    fields = ['descricao','sinal']
-
+    form_class =  FormPlanoFinanceiro
 
     def form_valid(self,form):
         form.save()
@@ -695,6 +688,120 @@ def delete_planofinan(request, pk):
 
 
 
+########################################################################################################################
+#          GRUPOS DRE                                                                                                  #
+########################################################################################################################
+
+@login_required
+def grupodre_list(request):
+
+    if request.is_ajax():
+        template_name = '_table_grupodre.html'
+    else:
+        template_name = 'grupodre_list.html'
+
+
+    if request.user.is_masteruser is True:
+         gdre = Grupodre.objects.filter(master_user=request.user.pk)
+    else:
+         gdre = Grupodre.objects.filter(master_user=request.user.user_master)
+
+
+
+    context = {
+       'gdre' : gdre
+    }
+
+    return render(request, template_name, context)
+
+
+
+
+class CreateGrupoDRE(LoginRequiredMixin,CreateView):
+    def get_template_names(self):
+        if self.request.is_ajax():
+            return ["_create_grupodre.html"]
+        else:
+            raise Http404
+
+    model = Grupodre
+    fields = ['descricao','ordem','sinal']
+
+
+    def get_success_url(self):
+        return reverse_lazy('grupodre_list')
+
+
+    def form_valid(self,form):
+        grupodre = form.save(commit=False)
+        if self.request.user.is_masteruser is True:
+            grupodre.master_user = self.request.user
+            seq_grupodre = Sequenciais.objects.get(user=self.request.user)
+        else:
+            grupodre.master_user = self.request.user.user_master
+            seq_grupodre = Sequenciais.objects.get(user=self.request.user.user_master)
+
+
+
+        grupodre.num_grupodre = seq_grupodre.grupodre + 1
+        seq_grupodre.grupodre = grupodre.num_grupodre
+        seq_grupodre.save()
+        grupodre.save()
+
+        if self.request.is_ajax():
+            context = self.get_context_data(form=form, success=True)
+            return self.render_to_response(context)
+        else:
+            return redirect(self.get_success_url())
+
+
+class EditGrupodre(LoginRequiredMixin,UpdateView):
+
+    def get_template_names(self):
+        if self.request.is_ajax():
+            return ["_edit_grupodre.html"]
+        else:
+            raise Http404
+
+    def get_success_url(self):
+        return reverse_lazy('grupodre_list')
+
+
+
+    def get_context_data(self, **kwargs):
+        context = super(EditGrupodre, self).get_context_data(**kwargs)
+        context['dados_cadastro'] = Grupodre.objects.get(pk=self.kwargs['pk'])
+        return context
+
+
+
+    model = Grupodre
+    fields = ['descricao','ordem','sinal']
+
+
+    def form_valid(self,form):
+        form.save()
+
+        if self.request.is_ajax():
+            context = self.get_context_data(form=form,success=True, ok='ok')
+            return self.render_to_response(context)
+        else:
+            return redirect(self.get_success_url())
+
+
+
+
+@login_required
+def delete_grupodre(request, pk):
+    if request.user.is_masteruser is True:
+        grupodre = get_object_or_404(Grupodre,master_user=request.user,pk=pk)
+    else:
+        grupodre = get_object_or_404(Grupodre,master_user=request.user.user_master,pk=pk)
+
+    grupodre.delete()
+
+    # messages.success(request, 'Grupo removido com sucesso !!')
+    return redirect('grupodre_list')
 
 ########################################################################################################################
 #                                      Talhões                                                                         #
@@ -785,5 +892,6 @@ edit_planofinan = EditPlanofinan.as_view()
 create_planofinan = CreatePlanoFinan.as_view()
 create_talhao_create_prop = CreateTalhao_create_prop.as_view()
 create_talhao_edit_prop = CreateTalhao_edit_prop.as_view()
-
+create_grupodre = CreateGrupoDRE.as_view()
+edit_grupodre = EditGrupodre.as_view()
 

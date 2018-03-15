@@ -8,6 +8,7 @@ def grava_movimento_financeiro_b(lancamento,situacao,valor_lancamento,user_maste
         
         movto_lanc = Movtos_lancamentos()
         movto_lanc.master_user = user_master
+        movto_lanc.company = lancamento.company
         movto_lanc.lancamento = lancamento
         movto_lanc.dt_movimento = lancamento.data_baixa
         movto_lanc.vlr_movimento = valor_lancamento
@@ -24,6 +25,7 @@ def grava_movimento_financeiro_b(lancamento,situacao,valor_lancamento,user_maste
     
         movto_lanc = Movtos_lancamentos()
         movto_lanc.master_user = user_master
+        movto_lanc.company = lancamento.company
         movto_lanc.lancamento = lancamento
         movto_lanc.dt_movimento = lancamento.data_baixa
         movto_lanc.vlr_movimento = valor_lancamento
@@ -43,6 +45,7 @@ def grava_movimento_financeiro_c(lancamento,user_master):
 
     movto_lanc = Movtos_lancamentos()
     movto_lanc.master_user = user_master
+    movto_lanc.company = lancamento.company
     movto_lanc.lancamento = lancamento
     movto_lanc.dt_movimento = lancamento.dt_lancamento
     movto_lanc.vlr_movimento = lancamento.vlr_lancamento
@@ -60,6 +63,7 @@ def grava_movimento_financeiro_c(lancamento,user_master):
     if lancamento.situacao is True:
         movto_lanc = Movtos_lancamentos()
         movto_lanc.master_user = user_master
+        movto_lanc.company = lancamento.company
         movto_lanc.lancamento = lancamento
         movto_lanc.dt_movimento = lancamento.dt_lancamento
         movto_lanc.vlr_movimento = lancamento.vlr_lancamento
