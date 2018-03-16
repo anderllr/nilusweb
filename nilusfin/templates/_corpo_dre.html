@@ -1,5 +1,5 @@
 {% load static widget_tweaks humanize utils %}
-<div class="row">
+
             <div class="block col-xl-12">
                         <div class="block-header block-header-default">
                         </div>
@@ -27,11 +27,12 @@
                                         <td class="text-center">
                                             <i class="fa fa-angle-right"></i>
                                         </td>
-                                        <td class="font-w600">{{ grupo.plr_financeiro__grupodre__descricao }}{% if  grupo.plr_financeiro__grupodre__sinal ==  '+' %} <span class="text-success">(+)</span> {% else %} <span class="text-danger">(-)</span> {% endif %}</td>
+                                        <td class="font-w600">{% if grupo.plr_financeiro__grupodre__descricao %}{{ grupo.plr_financeiro__grupodre__descricao }} {% else %} Sem Grupo Informado {% endif %}
+                                            {% if  grupo.plr_financeiro__grupodre__sinal ==  '+' %} <span class="text-success">(+)</span> {% elif grupo.plr_financeiro__grupodre__sinal ==  '-' %} <span class="text-danger">(-)</span> {% endif %}</td>
                                         <td>
                                         </td>
                                         <td class="d-none d-sm-table-cell">
-                                            <strong><em class="{% if grupo.plr_financeiro__grupodre__sinal == '-' %} text-danger {% else %} text-success {% endif %} totalizador" ></em></strong>
+                                            <strong><em class="{% if grupo.plr_financeiro__grupodre__sinal == '-' %} text-danger {% elif grupo.plr_financeiro__grupodre__sinal == '+' %} text-success {% endif %} totalizador" ></em></strong>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -42,7 +43,7 @@
                                         <td class="font-w600"><small>{{ grupo.plr_financeiro__descricao  }}</small></td>
                                         <td class="font-size-sm"></td>
                                         <td class="d-none d-sm-table-cell">
-                                            <strong><span class="font-size-sm {% if  grupo.plr_financeiro__grupodre__sinal ==  '+' %} text-success {% else %} text-danger {% endif %} valor_plano">{{ grupo.vlr_lancamentos|intcomma }}</span></strong>
+                                            <strong><span class="font-size-sm {% if  grupo.plr_financeiro__grupodre__sinal ==  '+' %} text-success {% elif grupo.plr_financeiro__grupodre__sinal ==  '-' %} text-danger {% endif %} valor_plano">{{ grupo.vlr_lancamentos|intcomma }}</span></strong>
                                         </td>
                                     </tr>
                                 <!--Verifica se é o primeiro-->
@@ -65,5 +66,3 @@
                             </table>
                         </div>
                     </div>
-
-        </div>

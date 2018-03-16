@@ -172,7 +172,33 @@ def principal(request,ano=None, mes=None):
 
 
 
+    # DRE
 
+   soma_grupodre = Lancamentos.objects.filter(master_user=request.user.user_master)
+   soma_grupodre = soma_grupodre.filter(dt_vencimento__year=dt_filtro.year,
+                                                        dt_vencimento__month=dt_filtro.month)
+   debitos = soma_grupodre.filter(master_user=request.user.user_master,
+                                  tipo_lancamento='D').aggregate(vlr_debitos=Sum('vlr_lancamento'))
+   creditos = soma_grupodre.filter(master_user=request.user.user_master,
+                                   tipo_lancamento='R').aggregate(vlr_creditos=Sum('vlr_lancamento'))
+
+   soma_grupodre = soma_grupodre.values('plr_financeiro__grupodre__descricao', 'plr_financeiro__descricao',
+                                        'plr_financeiro__grupodre__sinal').annotate(
+      vlr_lancamentos=Sum('vlr_lancamento'))
+   soma_grupodre = soma_grupodre.order_by('plr_financeiro__grupodre__ordem')
+
+
+
+   # SALDO FINAL DO RESULTADO (CREDITOS - DÉBITOS)
+   if creditos['vlr_creditos'] is None:
+      creditos['vlr_creditos'] = 0
+
+   if debitos['vlr_debitos'] is None:
+      debitos['vlr_debitos'] = 0
+
+
+
+   saldo_atual = Decimal(creditos['vlr_creditos']) - Decimal(debitos['vlr_debitos'])
 
    context = {
       'dt_lancamentos_proximo': dt_lancamentos_proximo,
@@ -210,6 +236,9 @@ def principal(request,ano=None, mes=None):
       'bars_despesas4': bars_despesas4,
       'bars_despesas5': bars_despesas5,
       'bars_despesas6': bars_despesas6,
+
+      'soma_grupodre' :soma_grupodre,
+      'saldo_atual': saldo_atual,
    }
    return render(request,'principal.html',context)
 

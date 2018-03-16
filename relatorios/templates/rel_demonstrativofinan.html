@@ -1,0 +1,192 @@
+{% extends "base_pdf.html" %}
+{% load static widget_tweaks humanize %}
+{% block layout_style %}
+    <style type="text/css">
+         html {
+            font-family: "Helvetica", "sans-serif";
+            color: #333333;
+        }
+
+        p {
+            margin: 0 0 6px 0;
+            font-size: 11pt;
+        }
+
+        table {
+            line-height: 140%;
+            margin-bottom: 20px;
+            border-collapse: collapse;
+        }
+            table.bordered {
+                border-top: 0.1pt solid #999999;
+                border-bottom: 0.1pt solid #999999;
+            }
+
+
+            tr, td, th { border: none; }
+
+            th {
+                font-size: 10pt;
+                border-bottom: 0.1pt solid #999999;
+                padding: 3px 0;
+                line-height: 1;
+                text-align: inherit;
+                font-weight: bold;
+            }
+
+            td {
+                font-size: 10pt;
+                vertical-align: top;
+                padding: 0.5px 0;
+            }
+
+            td:last-child { padding-bottom: 0; }
+
+        .text-left { text-align: left; }
+        .text-right { text-align: right; }
+        .bottom-10 { margin-bottom: 10px; }
+        .bottom-20 { margin-bottom: 20px; }
+
+
+
+        .header { color: #7f7f7f; }
+        .receita { color: #009933; }
+        .despesa { color: #e62e00; }
+        .ajuste { color: #0101DF; }
+        .header p { font-size: 13px; line-height: 1.5em; }
+        .header-link { font-weight: bold; text-decoration: none; color: #4F81BD; font-size: 14px; }
+        .logo { margin-bottom: 20px; margin-left: -25px; }
+        .logo img { zoom: 60%; }
+
+        .recipient { margin-left: 7cm; }
+
+        .main h1 {
+            margin: 18px 0 18px 0;
+            font-size: 250%;
+            font-weight: normal;
+            color: #4F81BD;
+        }
+
+        .main h2 {
+            margin: 18px 0 6px 0;
+            font-size: 180%;
+            font-weight: normal;
+        }
+
+        .info { border: 1px solid #4F81BD; padding: 10px; margin-top: 50px; margin-bottom: 50px; }
+        .info a { color: #4F81BD; text-decoration: none; }
+
+
+
+    </style>
+{% endblock %}
+
+
+
+{% block content %}
+
+            <p><center><h6>Nilus - Soluções em informática</h6></center></p>
+            <p>
+                <h1>Demonstrativo Financeiro</h1>
+            </p>
+
+
+<div class="block block-transparent">
+        <div class="block-header">
+        </div>
+        <div class="block-content">
+            <div class="block block-bordered">
+                                <div class="block-header block-header-default">
+                                    <h4 class="block-title header">Filtros utilizados:</h4>
+                                    <strong>Empresa :</strong> {% if dados_empresa %} {{ dados_empresa }} {% else %} Todas {% endif %}
+                                    <table>
+                                    <tbody>
+                                    <tr>
+                                        <td><span><small><strong>{% if tp_filtro == 'l' %}Lançamento:
+                                                                 {% elif tp_filtro == 'v' %}Vencimento:
+                                                                 {% elif tp_filtro == 'b' %}Baixa: {% endif %}
+
+                                        </strong></small><small>&nbsp;&nbsp;{% if data_lanc_ini  %}{{ data_lanc_ini }} {% endif %}</small> <small><strong>até :</strong></small> <small>{% if data_lanc_fim %}{{ data_lanc_fim }} {% endif %}</small></small></span></td>
+                                    </tr>
+                                    </tbody>
+                                    </table>
+                                </div>
+
+
+                            </div>
+            <table id="rel_lanfinanceiros" class="table table-bordered" >
+                <thead class="header">
+
+                    <tr>
+                         <th style="width:85%;"></th>
+                         <th style="width:75%;">Descrição</th>
+                         <th></th>
+                         <th>Valor</th>
+                         <th><small></small></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <td></td>
+                {% for grupo in soma_grupodre %}
+
+                                <!--No for só troca se mudar a linha-->
+                                 {% ifchanged grupo.plr_financeiro__grupodre__descricao  %}
+                                <!--Verifica se não é o primeiro -->
+                                 {% if not forloop.first %}
+                                  </tbody>
+                                 {% endif %}
+                                <tbody class="js-table-sections-header">
+
+                                    <tr>
+                                        <td class="text-center">
+                                            <i class="fa fa-angle-right"></i>
+                                        </td>
+                                        <td class="font-w600">{% if grupo.plr_financeiro__grupodre__descricao %}{{ grupo.plr_financeiro__grupodre__descricao }} {% else %} Sem Grupo Informado {% endif %}
+                                            {% if  grupo.plr_financeiro__grupodre__sinal ==  '+' %} <span class="receita text-right">(+)</span> {% elif grupo.plr_financeiro__grupodre__sinal ==  '-' %} <span class="despesa text-right">(-)</span> {% endif %}</td>
+                                        <td>
+                                        </td>
+                                        <td class="d-none d-sm-table-cell">
+                                            <strong><em class="{% if grupo.plr_financeiro__grupodre__sinal == '-' %} despessa {% elif grupo.plr_financeiro__grupodre__sinal == '+' %} receita {% endif %} totalizador" ></em></strong>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                                <tbody>
+                                {% endifchanged %}
+                                    <tr>
+                                        <td class="text-center"></td>
+                                        <td class="font-w600"><small>&nbsp;&nbsp;&nbsp;&nbsp;{{ grupo.plr_financeiro__descricao  }}</small></td>
+                                        <td class="font-size-sm"></td>
+                                        <td class="d-none d-sm-table-cell">
+                                            <small class="font-size-sm  text-left{% if  grupo.plr_financeiro__grupodre__sinal ==  '+' %} receita {% elif grupo.plr_financeiro__grupodre__sinal ==  '-' %} despesa {% endif %} valor_plano">{{ grupo.vlr_lancamentos|intcomma }}</small>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                <!--Verifica se é o primeiro-->
+                                {% if forloop.last %}
+                                </tbody>
+                                {% endif %}
+                                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+        <script>
+                 $(document).ready(function() {
+
+                 alert('urubu);
+                 });
+
+        </script>
+
+
+
+
+{% endblock %}
+
+
+
+
+

@@ -34,12 +34,12 @@
                                 <div class="row">
                                     <div class="col-md-3">
                                         <div class="form-material input-group">
-                                            <button type="submit"  class="btn  btn-outline-primary mr-5 mb-5 form_pesquisa form_bus"  id="btn_consultar"  data-toggle="tooltip" data-placement="bottom" title="Consultar Extrato">
-                                                <i class="fa fa-search"></i>
+                                            <button type="submit"  class="btn  btn-outline-primary mr-5 mb-5 form_pesquisa form_bus"  id="btn_consultar"  data-toggle="tooltip" data-placement="bottom" title="Calcular">
+                                                <i class="fa fa-gears"></i>
                                             </button>
                                             <button class="btn btn-outline-secondary mr-5 mb-5 btn_lancamentos"
                                                     data-toggle="tooltip" data-placement="bottom" title="Imprimir Extrato"  title=""
-                                                    id="btn_impressao"><i class="fa fa-print"></i>
+                                                    id="btn_impressao" hidden><i class="fa fa-print"></i>
                                             </button>
                                         </div>
                                     </div>
@@ -106,7 +106,15 @@ $("#btn_consultar").on("click",function(e){
   buscou = 'S';
 });
 
+if($('#id_f_vencimento').not(":checked") && $('#id_f_baixa').not(":checked") ){
+      $("#id_f_lancamento").prop("checked",true);
+    }
+
+
+
 $("#btn_impressao").on("click",function(e){
+
+
 
     <!--extrato_contas?data_lanc_ini=&data_lanc_fim=&conta_finan=-->
 
@@ -116,27 +124,45 @@ $("#btn_impressao").on("click",function(e){
         var data_lanc_ini = $('#id_data_lanc_ini').val();
         var data_lanc_fim = $('#id_data_lanc_fim').val();
 
+        if( data_lanc_ini == '' && data_lanc_fim == ''  ){
+          alert('Favor informar o período a ser consultado!');
+          e.PreventDefault()
+        }
+
 
         data_lanc_ini = data_lanc_ini.replace('/','%2F').replace('/','%2F');
         data_lanc_fim = data_lanc_fim.replace('/','%2F').replace('/','%2F');
 
 
-        var conta_finan =  $('#id_conta_finan').val();
         var empresa = $('#id_empresa').val();
 
+    if($('#id_f_lancamento').is(":checked")){
+      var f_lancamento = 'on'
+    }
+
+    if($('#id_f_vencimento').is(":checked")){
+      var f_vencimento = 'on'
+    }
+
+    if($('#id_f_baixa').is(":checked")){
+      var f_baixa = 'on'
+    }
     var url = window.location.href;
-    var nova_url = url.replace('/fin/extrato_contas','/rel/extrato_financeiro/');
-    var nova_url2 = nova_url + '?data_lanc_ini='+data_lanc_ini+'&data_lanc_fim='+data_lanc_fim+'&empresa='+empresa+'&conta_finan='+conta_finan
+    var nova_url = url.replace('/fin/consulta_dre','/rel/rel_demonstrativo/');
+    var nova_url2 = nova_url + '?data_lanc_ini='+data_lanc_ini+'&data_lanc_fim='+data_lanc_fim+'&empresa='+empresa+'&f_lancamento='+f_lancamento+
+    '&f_vencimento='+f_vencimento+'&f_baixa='+f_baixa
 
     buscou = 'S';
     window.open(nova_url2);
 
     }else{
         var url = window.location.href;
-        var nova_url = url.replace('/fin/extrato_contas','/rel/extrato_financeiro/');
+        var nova_url = url.replace('/fin/consulta_dre','/rel/rel_demonstrativo/');
         window.open(nova_url);
     }
 });
+
+
 
 
 
@@ -160,6 +186,8 @@ $('#id_f_baixa').on("change",function(){
   $("#id_f_lancamento").prop("checked",false);
   }
 });
+
+
 
 
 

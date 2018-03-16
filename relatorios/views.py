@@ -386,5 +386,113 @@ class Rel_Extratofinanceiro(LoginRequiredMixin,PDFTemplateView):
         return context
 
 
+
+
+class Rel_DRE(LoginRequiredMixin, PDFTemplateView):
+     template_name = 'rel_demonstrativofinan.html'
+
+     def get_context_data(self, **kwargs):
+       context = super(Rel_DRE, self).get_context_data(**kwargs)
+       data_lanc_ini = self.request.GET.get('data_lanc_ini','')
+       data_lanc_fim = self.request.GET.get('data_lanc_fim','')
+       empresa = self.request.GET.get('empresa','')
+       f_lancamento = self.request.GET.get('f_lancamento','')
+       f_vencimento = self.request.GET.get('f_vencimento', '')
+       f_baixa = self.request.GET.get('f_baixa', '')
+
+       data_hoje = datetime.today
+
+       soma_grupodre = None
+       valor_plr_finan = None
+       dados_empresa = None
+       creditos = 0
+       debitos = 0
+       saldo_atual = 0
+       tp_filtro = None
+
+
+
+       if data_lanc_ini != '':
+           data_lanc_ini_dt = datetime.strptime(data_lanc_ini, "%d/%m/%Y").date()
+
+       if data_lanc_fim != '':
+           data_lanc_fim_dt = datetime.strptime(data_lanc_fim, "%d/%m/%Y").date()
+
+
+
+       if empresa:
+          soma_grupodre = Lancamentos.objects.filter(master_user=self.request.user.user_master,company=empresa)
+          debitos = soma_grupodre.filter(master_user=self.request.user.user_master,
+                                                 tipo_lancamento='D').aggregate(vlr_debitos=Sum('vlr_lancamento'))
+
+          creditos =  soma_grupodre.filter(master_user=self.request.user.user_master,
+                                               tipo_lancamento='R').aggregate(vlr_creditos=Sum('vlr_lancamento'))
+
+          dados_empresa = Company.objects.get(pk=int(empresa))
+
+       else:
+          soma_grupodre = Lancamentos.objects.filter(master_user=self.request.user.user_master)
+          debitos = soma_grupodre.filter(master_user=self.request.user.user_master,
+                                               tipo_lancamento='D').aggregate(vlr_debitos=Sum('vlr_lancamento'))
+          creditos = soma_grupodre.filter(master_user=self.request.user.user_master,
+                                                tipo_lancamento='R').aggregate(vlr_creditos=Sum('vlr_lancamento'))
+
+
+       if f_lancamento == 'on':
+           tp_filtro = 'l'
+           soma_grupodre = soma_grupodre.filter(dt_lancamento__range=(data_lanc_ini_dt,data_lanc_fim_dt))
+           debitos = soma_grupodre.filter(master_user=self.request.user.user_master,
+                                                 tipo_lancamento='D').aggregate(vlr_debitos=Sum('vlr_lancamento'))
+           creditos = soma_grupodre.filter(master_user=self.request.user.user_master,
+                                                  tipo_lancamento='R').aggregate(vlr_creditos=Sum('vlr_lancamento'))
+
+       if f_vencimento == 'on':
+           tp_filtro = 'v'
+           soma_grupodre = soma_grupodre.filter(dt_vencimento__range=(data_lanc_ini_dt, data_lanc_fim_dt))
+           debitos = soma_grupodre.filter(master_user=self.request.user.user_master,
+                                                 tipo_lancamento='D').aggregate(vlr_debitos=Sum('vlr_lancamento'))
+           creditos = soma_grupodre.filter(master_user=self.request.user.user_master,
+                                                  tipo_lancamento='R').aggregate(vlr_creditos=Sum('vlr_lancamento'))
+
+       if f_baixa == 'on':
+           tp_filtro = 'b'
+           soma_grupodre = soma_grupodre.filter(data_baixa__range=(data_lanc_ini_dt, data_lanc_fim_dt))
+           debitos = soma_grupodre.filter(master_user=self.request.user.user_master,
+                                                 tipo_lancamento='D').aggregate(vlr_debitos=Sum('vlr_lancamento'))
+           creditos = soma_grupodre.filter(master_user=self.request.user.user_master,
+                                                  tipo_lancamento='R').aggregate(vlr_creditos=Sum('vlr_lancamento'))
+
+       soma_grupodre = soma_grupodre.values('plr_financeiro__grupodre__descricao','plr_financeiro__descricao','plr_financeiro__grupodre__sinal').annotate(vlr_lancamentos=Sum('vlr_lancamento'))
+       soma_grupodre = soma_grupodre.order_by('plr_financeiro__grupodre__ordem')
+
+        # print(soma_grupodre)
+
+         # SALDO FINAL DO RESULTADO (CREDITOS - DÉBITOS)
+       if creditos['vlr_creditos'] is None:
+           creditos['vlr_creditos'] = 0
+
+       if debitos['vlr_debitos'] is None:
+           debitos['vlr_debitos'] = 0
+
+        # print(creditos)
+        # print(debitos)
+       saldo_atual = Decimal(creditos['vlr_creditos']) - Decimal(debitos['vlr_debitos'])
+
+
+       context['soma_grupodre'] = soma_grupodre
+       context['valor_plr_finan']  = valor_plr_finan
+       context['saldo_atual'] = saldo_atual
+       context['dados_empresa'] = dados_empresa
+       context['tp_filtro'] = tp_filtro
+       return context
+
+
+
+
+
+
+
+
+rel_dre = Rel_DRE.as_view()
 rel_lanfinanceiros = Rel_lanfinanceiros.as_view()
 rel_extratofinanceiro = Rel_Extratofinanceiro.as_view()

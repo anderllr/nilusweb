@@ -19,7 +19,7 @@ class Company(models.Model):
 
     # endereço
     cep = models.CharField('CEP', max_length=12, blank=True, null=True)
-    endereco = models.CharField('Endereço',max_length=60,blank=True,null=True)
+    endereco = models.CharField('Endereço',max_length=100,blank=True,null=True)
     numero = models.CharField('Nº',max_length=10, blank=True,null=True)
     complemento = models.CharField('Complemento', max_length=20,blank=True,null=True)
     bairro = models.CharField('Bairro', max_length=40, blank=True, null=True)
@@ -196,16 +196,16 @@ class PlanoFinan(models.Model):
 
 class Grupodre(models.Model):
     sinal_grupo = (
-        (None, 'Informe o calculo'),
-        ('+', 'Soma'),
-        ('-', 'Subtrai'),
+        (None, 'Informe o tipo'),
+        ('+', 'Receita'),
+        ('-', 'Despesa'),
     )
 
     master_user = models.ForeignKey('accounts.User', models.CASCADE, verbose_name='Usuario Master')
     num_grupodre = models.IntegerField('Código')
     descricao = models.CharField('Nome Grupo', max_length=20)
     ordem = models.PositiveIntegerField('Ordem no relatório')
-    sinal = models.CharField('Sinal Conta', max_length=1, choices=sinal_grupo)
+    sinal = models.CharField('Grupo Tipo', max_length=1, choices=sinal_grupo,null=True,blank=True)
 
 
     class Meta:
