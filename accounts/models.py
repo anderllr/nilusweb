@@ -35,7 +35,7 @@ class User(AbstractBaseUser,PermissionsMixin):
     img_user = models.ImageField('Imagem do perfil', blank=True, upload_to='images', null=True)
     qtd_users = models.PositiveIntegerField('Usuarios',blank=True, null=True)
     qtd_unity = models.PositiveIntegerField('Unidades', blank=True, null=True)
-    qtd_propriety = models.PositiveIntegerField('Propriedades', blank=True, null=True)
+    # qtd_propriety = models.PositiveIntegerField('Propriedades', blank=True, null=True)
     user_master = models.ForeignKey('self',models.CASCADE,verbose_name='Usuario Master',blank=True,null=True)
     token = models.CharField('Token Senha', max_length=100, blank=True)
     company_p = models.ForeignKey('niluscad.Company',models.SET_NULL,verbose_name='Empresa Padrão',null=True)

@@ -2,6 +2,7 @@ $(".new_receita").on("click",function(e){
      e.preventDefault();
      $(".form_inc").load("{% url 'create_receita' %}", function(){
         $('.form_inc').show("puff");
+
         $('.form_busca').hide("drop");
         $('.table_lancfinanceiro').hide("drop");
         $('.btn_lancamentos').hide("drop");
@@ -113,6 +114,38 @@ $(".new_receita").on("click",function(e){
             $('.btn_lancamentos').show("puff");
 
           });
+
+
+        $('#btn_salvar').on("click",function(e){
+            var cpo_empresa
+            var cpo_plr_finan
+            var cpo_ccusto
+            var cpo_contafin
+
+            cpo_empresa = $('#id_company').val();
+            cpo_plr_finan = $('#id_plr_financeiro').val();
+            cpo_ccusto  = $('#c_custo_id2').val();
+            cpo_contafin = $('#id_conta_finan2').val();
+
+            if((cpo_plr_finan == '') || (cpo_empresa == '') || (cpo_ccusto == '')
+               (cpo_contafin == '')) {
+                    alert ('Favor preencher os campos obigatórios!');
+                    if (cpo_plr_finan == ''){
+                    $('.aviso_plr_financeiro').show();
+                    }
+                    if (cpo_empresa == ''){
+                    $('.aviso_company').show();
+                    }
+                    if (cpo_ccusto == ''){
+                    $('.aviso_ccusto').show();
+                    }
+                    if (cpo_contafin == ''){
+                    $('.aviso_conta_finan').show();
+                    }
+            }
+        });
+
+
     });
 });
 
@@ -120,6 +153,9 @@ $(".new_receita").on("click",function(e){
 
 $(".form_inc").on("submit","form",function(e){
      e.preventDefault();
+
+
+
      var dados = $(this).serialize();
      $.post("{% url 'create_receita' %}",dados,function(result){
         $(".form_inc").html(result);

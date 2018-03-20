@@ -103,11 +103,42 @@ $(".new_despesa").on("click",function(e){
               load_cotacaoform();
 
 
+
           $(".form_inc_despesa .cancel_form").on("click",function(e){
             $('.form_inc_despesa').hide("drop");
             $('.table_lancfinanceiro').show("puff");
             $('.btn_lancamentos').show("puff");
           });
+
+        $('#btn_salvar').on("click",function(e){
+            var cpo_empresa
+            var cpo_plr_finan
+            var cpo_ccusto
+            var cpo_contafin
+
+            cpo_empresa = $('#id_company').val();
+            cpo_plr_finan = $('#id_plr_financeiro').val();
+            cpo_ccusto  = $('#c_custo_id2').val();
+            cpo_contafin = $('#id_conta_finan2').val();
+
+            if((cpo_plr_finan == '') || (cpo_empresa == '') || (cpo_ccusto == '')
+               (cpo_contafin == '')) {
+                    alert ('Favor preencher os campos obigatórios!');
+                    if (cpo_plr_finan == ''){
+                    $('.aviso_plr_financeiro').show();
+                    }
+                    if (cpo_empresa == ''){
+                    $('.aviso_company').show();
+                    }
+                    if (cpo_ccusto == ''){
+                    $('.aviso_ccusto').show();
+                    }
+                    if (cpo_contafin == ''){
+                    $('.aviso_conta_finan').show();
+                    }
+            }
+        });
+
     });
 });
 

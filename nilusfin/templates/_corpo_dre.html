@@ -60,7 +60,7 @@
 
                                     </td>
                                     <td class="d-none d-sm-table-cell">
-                                        <h5><span class="{% if saldo_atual < 0 %}text-danger {% else %} text-success {% endif %}">{{ saldo_atual }}</span></h5>
+                                        <h5><span class="{% if saldo_atual < 0 %}text-danger {% else %} text-success {% endif %}">{{ saldo_atual|intcomma }}</span></h5>
                                     </td>
                                     </tr>
                             </table>

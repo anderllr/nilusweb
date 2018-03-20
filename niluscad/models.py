@@ -36,6 +36,11 @@ class Company(models.Model):
     situacao = models.BooleanField('Ativo',default=True)
 
 
+
+    # dados de configuração
+
+
+
     class Meta:
         verbose_name = 'Empresa'
         verbose_name_plural = 'Empresas'
