@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from nilusadm.models import Permissions,Sequenciais
-from niluscad.models import Company,Propriety,Cadgeral,Ccusto,PlanoFinan,Talhao,GrupoDre
+from niluscad.models import Company,Propriety,Cadgeral,Ccusto,PlanoFinan,Talhao,Grupodre
 from nilusfin.models import Contafinanceira
 from principal.models import Instancia
 from nilusfin.models import Indice,Cotacao
@@ -27,4 +27,4 @@ admin.site.register(Talhao)
 admin.site.register(Lancamentos)
 admin.site.register(Contafinanceira)
 admin.site.register(Movtos_lancamentos)
-admin.site.register(GrupoDre)
+admin.site.register(Grupodre)
