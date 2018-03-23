@@ -605,6 +605,13 @@ class CreatePlanoFinan(LoginRequiredMixin,CreateView):
         else:
             raise Http404
 
+    def get_form_kwargs(self):
+        kwargs = super(CreatePlanoFinan, self).get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+
+
     model = PlanoFinan
     form_class =  FormPlanoFinanceiro
 
@@ -654,6 +661,13 @@ class EditPlanofinan(LoginRequiredMixin,UpdateView):
         context = super(EditPlanofinan, self).get_context_data(**kwargs)
         context['dados_cadastro'] = PlanoFinan.objects.get(pk=self.kwargs['pk'])
         return context
+
+    def get_form_kwargs(self):
+        kwargs = super(CreatePlanoFinan, self).get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+
 
 
 

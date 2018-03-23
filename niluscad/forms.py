@@ -1,5 +1,5 @@
 from accounts.models import User
-from niluscad.models import Company,Propriety,Talhao,PlanoFinan
+from niluscad.models import Company,Propriety,Talhao,PlanoFinan,Grupodre
 from django import forms
 
 
@@ -35,8 +35,9 @@ class FormPropriety(forms.ModelForm):
 
 class FormPlanoFinanceiro(forms.ModelForm):
 
-    def __init__(self,*args,**kwargs):
+    def __init__(self,user,*args,**kwargs):
         super(FormPlanoFinanceiro,self).__init__(*args,**kwargs)
+        self.fields['grupodre'].quryset = Grupodre.objects.filter(master_user=user.user_master)
         self.fields['grupodre'].empty_label = 'Informe o grupo'
         self.fields['sinal'].empty_label = "Informe o Sinal da Conta"
 
