@@ -748,12 +748,11 @@ class CreateGrupoDRE(LoginRequiredMixin,CreateView):
 
     def form_valid(self,form):
         grupodre = form.save(commit=False)
-        if self.request.user.is_masteruser is True:
-            grupodre.master_user = self.request.user
-            seq_grupodre = Sequenciais.objects.get(user=self.request.user)
-        else:
-            grupodre.master_user = self.request.user.user_master
-            seq_grupodre = Sequenciais.objects.get(user=self.request.user.user_master)
+        grupodre.master_user = self.request.user.user_master
+        seq_grupodre = Sequenciais.objects.get(user=self.request.user.user_master)
+
+
+
 
 
 

@@ -35,17 +35,12 @@ class FormPropriety(forms.ModelForm):
 
 class FormPlanoFinanceiro(forms.ModelForm):
 
-    def __init__(self,user,*args,**kwargs):
-        super(FormPlanoFinanceiro,self).__init__(*args,**kwargs)
-        self.fields['grupodre'].quryset = Grupodre.objects.filter(master_user=user.user_master)
+    def __init__(self, user, *args, **kwargs):
+        super(FormPlanoFinanceiro, self).__init__(*args, **kwargs)
+        self.fields['grupodre'].queryset = PlanoFinan.objects.filter(master_user=user.user_master)
         self.fields['grupodre'].empty_label = 'Informe o grupo'
         self.fields['sinal'].empty_label = "Informe o Sinal da Conta"
 
-
-    def get_initial(self):
-        initial = super(FormPlanoFinanceiro,self).get_initial()
-        initial['sinal'] = 'Sinal'
-        return initial
 
     class Meta:
         model = PlanoFinan
