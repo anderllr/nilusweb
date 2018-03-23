@@ -5,7 +5,16 @@ var options = {
     el.mask(mask, op);
      }
 }
-$('.cnpjoucpf').mask('000.000.000-000', options);
+
+var tipodoc = $('#id_cnpj_cpf').val();
+
+
+if(tipodoc == ''){
+ tipodoc = '000.000.000-000'
+}
+
+$('.cnpjoucpf').mask(tipodoc, options);
+
 
 
 

@@ -20,7 +20,7 @@ class UserAdmin(BaseUserAdmin):
            'fields' :('username','email','img_user')
        }),
        ('Informações Básicas',{
-           'fields' :('name','last_login','qtd_users','qtd_unity','qtd_propriety','user_master')
+           'fields' :('name','last_login','qtd_users','qtd_unity','user_master')
        }),
        ('Permissões', {
            'fields': (
