@@ -663,7 +663,7 @@ class EditPlanofinan(LoginRequiredMixin,UpdateView):
         return context
 
     def get_form_kwargs(self):
-        kwargs = super(CreatePlanoFinan, self).get_form_kwargs()
+        kwargs = super(EditPlanofinan, self).get_form_kwargs()
         kwargs['user'] = self.request.user
         return kwargs
 
