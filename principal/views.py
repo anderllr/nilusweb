@@ -133,11 +133,11 @@ def principal(request,ano=None, mes=None):
    # 3º mês
    mes3_range = dt_filtro - relativedelta(months=4)
    bars_receitas3 = Lancamentos.objects.filter(master_user=request.user.user_master, tipo_lancamento='R')
-   bars_receitas3 = bars_receitas3.filter(dt_lancamento__year=mes3_range.year, dt_lancamento__month=mes3_range.month)
+   bars_receitas3 = bars_receitas3.filter(dt_vencimento__year=mes3_range.year, dt_vencimento__month=mes3_range.month)
    bars_receitas3 = bars_receitas3.aggregate(vlr_mes=Sum('vlr_lancamento'))
 
    bars_despesas3 = Lancamentos.objects.filter(master_user=request.user.user_master, tipo_lancamento='D')
-   bars_despesas3 = bars_despesas3.filter(dt_lancamento__year=mes3_range.year, dt_lancamento__month=mes3_range.month)
+   bars_despesas3 = bars_despesas3.filter(dt_vencimento__year=mes3_range.year, dt_vencimento__month=mes3_range.month)
    bars_despesas3 = bars_despesas3.aggregate(vlr_mes=Sum('vlr_lancamento'))
 
    # 4º mês
@@ -147,27 +147,27 @@ def principal(request,ano=None, mes=None):
    bars_receitas4 = bars_receitas4.aggregate(vlr_saldo=Sum('vlr_lancamento'))
 
    bars_despesas4 = Lancamentos.objects.filter(master_user=request.user.user_master, tipo_lancamento='D')
-   bars_despesas4 = bars_despesas4.filter(dt_lancamento__year=mes4_range.year, dt_lancamento__month=mes4_range.month)
+   bars_despesas4 = bars_despesas4.filter(dt_vencimento__year=mes4_range.year, dt_vencimento__month=mes4_range.month)
    bars_despesas4 = bars_despesas4.aggregate(vlr_mes=Sum('vlr_lancamento'))
 
    # 5º mês
    mes5_range = dt_filtro - relativedelta(months=2)
    bars_receitas5 = Lancamentos.objects.filter(master_user=request.user.user_master, tipo_lancamento='R')
-   bars_receitas5 = bars_receitas5.filter(dt_lancamento__year=mes5_range.year, dt_lancamento__month=mes5_range.month)
+   bars_receitas5 = bars_receitas5.filter(dt_vencimento__year=mes5_range.year, dt_vencimento__month=mes5_range.month)
    bars_receitas5 = bars_receitas5.aggregate(vlr_mes=Sum('vlr_lancamento'))
 
    bars_despesas5 = Lancamentos.objects.filter(master_user=request.user.user_master, tipo_lancamento='D')
-   bars_despesas5 = bars_despesas5.filter(dt_lancamento__year=mes5_range.year, dt_lancamento__month=mes5_range.month)
+   bars_despesas5 = bars_despesas5.filter(dt_vencimento__year=mes5_range.year, dt_vencimento__month=mes5_range.month)
    bars_despesas5 = bars_despesas5.aggregate(vlr_mes=Sum('vlr_lancamento'))
 
    # 6º mês
    mes6_range = dt_filtro - relativedelta(months=1)
    bars_receitas6 = Lancamentos.objects.filter(master_user=request.user.user_master, tipo_lancamento='R')
-   bars_receitas6 = bars_receitas6.filter(dt_lancamento__year=mes6_range.year, dt_lancamento__month=mes6_range.month)
+   bars_receitas6 = bars_receitas6.filter(dt_vencimento__year=mes6_range.year, dt_vencimento__month=mes6_range.month)
    bars_receitas6 = bars_receitas6.aggregate(vlr_mes=Sum('vlr_lancamento'))
 
    bars_despesas6 = Lancamentos.objects.filter(master_user=request.user.user_master, tipo_lancamento='D')
-   bars_despesas6 = bars_despesas6.filter(dt_lancamento__year=mes6_range.year, dt_lancamento__month=mes6_range.month)
+   bars_despesas6 = bars_despesas6.filter(dt_vencimento__year=mes6_range.year, dt_vencimento__month=mes6_range.month)
    bars_despesas6 = bars_despesas6.aggregate(vlr_mes=Sum('vlr_lancamento'))
 
 
@@ -175,8 +175,8 @@ def principal(request,ano=None, mes=None):
     # DRE
 
    soma_grupodre = Lancamentos.objects.filter(master_user=request.user.user_master)
-   soma_grupodre = soma_grupodre.filter(dt_lancamento__year=dt_filtro.year,
-                                                        dt_lancamento__month=dt_filtro.month)
+   soma_grupodre = soma_grupodre.filter(dt_vencimento__year=dt_filtro.year,
+                                                        dt_vencimento__month=dt_filtro.month)
    debitos = soma_grupodre.filter(master_user=request.user.user_master,
                                   tipo_lancamento='D').aggregate(vlr_debitos=Sum('vlr_lancamento'))
    creditos = soma_grupodre.filter(master_user=request.user.user_master,
