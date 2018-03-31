@@ -1,3 +1,6 @@
+from datetime import date, timedelta
+
+
 def add_one_month(t):
     """Return a `datetime.date` or `datetime.datetime` (as given) that is
     one month earlier.
@@ -20,3 +23,14 @@ def add_one_month(t):
             one_month_later -= one_day
             break
     return one_month_later
+
+
+
+def get_first_day(dt, d_years=0, d_months=0):
+    # d_years, d_months are "deltas" to apply to dt
+    y, m = dt.year + d_years, dt.month + d_months
+    a, m = divmod(m-1, 12)
+    return date(y+a, m+1, 1)
+
+def get_last_day(dt):
+    return get_first_day(dt, 0, 1) + timedelta(-1)

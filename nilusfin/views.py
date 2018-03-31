@@ -13,6 +13,7 @@ from .models import Contafinanceira,Cotacao,Indice
 from niluscad.models import Company,Grupodre,PlanoFinan
 from .forms import FormCreateCotacao,FormAjusteSaldo,FiltroLancamentosExtrato,FiltroDre
 from django.db.models import Sum
+from nilusfin.calc_dre import calc_dre
 
 # Create your views here.
 
@@ -722,15 +723,16 @@ def dre_list(request):
     else:
         template_name = 'consulta_dre.html'
 
-
     data_hoje = datetime.today
 
     empresa = Company.objects.filter(master_user=request.user.user_master)
     soma_grupodre = None
     valor_plr_finan = None
-    creditos = 0
-    debitos = 0
     saldo_atual = 0
+    saldos = []
+    retorno_dre = []
+    retorno_planosdre = []
+
 
     form = FiltroDre(empresa, request.GET or None)
 
@@ -743,67 +745,17 @@ def dre_list(request):
         f_baixa = form.cleaned_data.get('f_baixa', '')
 
 
-        if empresa:
-            soma_grupodre = Lancamentos.objects.filter(master_user=request.user.user_master,company=empresa)
-            debitos = soma_grupodre.filter(master_user=request.user.user_master,
-                                                 tipo_lancamento='D').aggregate(vlr_debitos=Sum('vlr_lancamento'))
-
-            creditos =  soma_grupodre.filter(master_user=request.user.user_master,
-                                                   tipo_lancamento='R').aggregate(vlr_creditos=Sum('vlr_lancamento'))
-
-        else:
-            soma_grupodre = Lancamentos.objects.filter(master_user=request.user.user_master)
-            debitos = soma_grupodre.filter(master_user=request.user.user_master,
-                                                 tipo_lancamento='D').aggregate(vlr_debitos=Sum('vlr_lancamento'))
-            creditos = soma_grupodre.filter(master_user=request.user.user_master,
-                                                  tipo_lancamento='R').aggregate(vlr_creditos=Sum('vlr_lancamento'))
-
-
-        if f_lancamento:
-            soma_grupodre = soma_grupodre.filter(dt_lancamento__range=(data_lanc_ini,data_lanc_fim))
-            debitos = soma_grupodre.filter(master_user=request.user.user_master,
-                                                 tipo_lancamento='D').aggregate(vlr_debitos=Sum('vlr_lancamento'))
-            creditos = soma_grupodre.filter(master_user=request.user.user_master,
-                                                  tipo_lancamento='R').aggregate(vlr_creditos=Sum('vlr_lancamento'))
-
-        if f_vencimento:
-            soma_grupodre = soma_grupodre.filter(dt_vencimento__range=(data_lanc_ini, data_lanc_fim))
-            debitos = soma_grupodre.filter(master_user=request.user.user_master,
-                                                 tipo_lancamento='D').aggregate(vlr_debitos=Sum('vlr_lancamento'))
-            creditos = soma_grupodre.filter(master_user=request.user.user_master,
-                                                  tipo_lancamento='R').aggregate(vlr_creditos=Sum('vlr_lancamento'))
-
-        if f_baixa:
-            soma_grupodre = soma_grupodre.filter(data_baixa__range=(data_lanc_ini, data_lanc_fim))
-            debitos = soma_grupodre.filter(master_user=request.user.user_master,
-                                                 tipo_lancamento='D').aggregate(vlr_debitos=Sum('vlr_lancamento'))
-            creditos = soma_grupodre.filter(master_user=request.user.user_master,
-                                                  tipo_lancamento='R').aggregate(vlr_creditos=Sum('vlr_lancamento'))
-
-        soma_grupodre = soma_grupodre.values('plr_financeiro__grupodre__descricao','plr_financeiro__descricao','plr_financeiro__grupodre__sinal').annotate(vlr_lancamentos=Sum('vlr_lancamento'))
-        soma_grupodre = soma_grupodre.order_by('plr_financeiro__grupodre__ordem')
-
-        # print(soma_grupodre)
-
-         # SALDO FINAL DO RESULTADO (CREDITOS - DÉBITOS)
-        if creditos['vlr_creditos'] is None:
-            creditos['vlr_creditos'] = 0
-
-        if debitos['vlr_debitos'] is None:
-            debitos['vlr_debitos'] = 0
-
-        # print(creditos)
-        # print(debitos)
-        saldo_atual = Decimal(creditos['vlr_creditos']) - Decimal(debitos['vlr_debitos'])
-
-
+        retorno_dre,retorno_planosdre,saldos = calc_dre(empresa,f_lancamento,f_vencimento,f_baixa,data_lanc_ini,data_lanc_fim,request)
 
 
     context = {
         'form': form,
         'soma_grupodre' : soma_grupodre,
         'valor_plr_finan': valor_plr_finan,
-         'saldo_atual' :saldo_atual,
+        'saldo_atual' :saldo_atual,
+        'saldo_contas_dre' : saldos,
+        'retorno_dre' : retorno_dre,
+        'retorono_planosdre': retorno_planosdre,
     }
 
     return render(request, template_name, context)

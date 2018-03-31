@@ -20,6 +20,8 @@ from .models import Instancia
 from niluscad.models import Company,Propriety
 from nilusfin.models import Indice,Cotacao
 from lancfinanceiros.models import Lancamentos
+from core.utils import get_first_day,get_last_day
+from nilusfin.calc_dre import calc_dre
 # Create your views here.
 
 
@@ -33,13 +35,7 @@ class Month(Func):
 def principal(request,ano=None, mes=None):
 
 
-   # 1º Posição de todos os lançamentos em aberto e seus valores de saldos até o momento.
-   # lancfin_rec = Lancamentos.objects.filter(master_user=request.user.user_master, situacao=False, tipo_lancamento='R')
-   # lancfin_des = Lancamentos.objects.filter(master_user=request.user.user_master, situacao=False, tipo_lancamento='D')
-   # lancfin_rec_val = lancfin_rec.aggregate(vlr_saldo=Sum('saldo'))
-   # lancfin_des_val = lancfin_des.aggregate(vlr_saldo=Sum('saldo'))
-   # lancfin_rec_qtd = lancfin_rec.count()
-   # lancfin_des_qtd = lancfin_des.count()
+
 
 
    # 2º Inicia-se o processo de verificar mês a mês
@@ -48,9 +44,9 @@ def principal(request,ano=None, mes=None):
    listaanos = [i for i in range(data_hoje.year - 10, data_hoje.year + 11)]
    listames = [i for i in range(1, 13)]
 
+
    if ano is None:
       dt_filtro = datetime.now()
-      print(dt_filtro)
       ano = dt_filtro.year
       mes = dt_filtro.month
 
@@ -174,31 +170,44 @@ def principal(request,ano=None, mes=None):
 
     # DRE
 
-   soma_grupodre = Lancamentos.objects.filter(master_user=request.user.user_master)
-   soma_grupodre = soma_grupodre.filter(dt_vencimento__year=dt_filtro.year,
-                                                        dt_vencimento__month=dt_filtro.month)
-   debitos = soma_grupodre.filter(master_user=request.user.user_master,
-                                  tipo_lancamento='D').aggregate(vlr_debitos=Sum('vlr_lancamento'))
-   creditos = soma_grupodre.filter(master_user=request.user.user_master,
-                                   tipo_lancamento='R').aggregate(vlr_creditos=Sum('vlr_lancamento'))
+   saldos = []
+   retorno_dre = []
+   retorno_planosdre = []
 
-   soma_grupodre = soma_grupodre.values('plr_financeiro__grupodre__descricao', 'plr_financeiro__descricao',
-                                        'plr_financeiro__grupodre__sinal').annotate(
-      vlr_lancamentos=Sum('vlr_lancamento'))
-   soma_grupodre = soma_grupodre.order_by('plr_financeiro__grupodre__ordem')
+   data_lanc_ini = get_first_day(dt_filtro)
+   data_lanc_fim = get_last_day(dt_filtro)
+
+   retorno_dre, retorno_planosdre, saldos = calc_dre(empresa=False, f_lancamento=False, f_vencimento=True, f_baixa=False,
+                                                     data_lanc_ini = data_lanc_ini,data_lanc_fim = data_lanc_fim,
+                                                     request = request)
 
 
 
-   # SALDO FINAL DO RESULTADO (CREDITOS - DÉBITOS)
-   if creditos['vlr_creditos'] is None:
-      creditos['vlr_creditos'] = 0
-
-   if debitos['vlr_debitos'] is None:
-      debitos['vlr_debitos'] = 0
-
-
-
-   saldo_atual = Decimal(creditos['vlr_creditos']) - Decimal(debitos['vlr_debitos'])
+   # soma_grupodre = Lancamentos.objects.filter(master_user=request.user.user_master)
+   # soma_grupodre = soma_grupodre.filter(dt_vencimento__year=dt_filtro.year,
+   #                                                      dt_vencimento__month=dt_filtro.month)
+   # debitos = soma_grupodre.filter(master_user=request.user.user_master,
+   #                                tipo_lancamento='D').aggregate(vlr_debitos=Sum('vlr_lancamento'))
+   # creditos = soma_grupodre.filter(master_user=request.user.user_master,
+   #                                 tipo_lancamento='R').aggregate(vlr_creditos=Sum('vlr_lancamento'))
+   #
+   # soma_grupodre = soma_grupodre.values('plr_financeiro__grupodre__descricao', 'plr_financeiro__descricao',
+   #                                      'plr_financeiro__grupodre__sinal').annotate(
+   #    vlr_lancamentos=Sum('vlr_lancamento'))
+   # soma_grupodre = soma_grupodre.order_by('plr_financeiro__grupodre__ordem')
+   #
+   #
+   #
+   # # SALDO FINAL DO RESULTADO (CREDITOS - DÉBITOS)
+   # if creditos['vlr_creditos'] is None:
+   #    creditos['vlr_creditos'] = 0
+   #
+   # if debitos['vlr_debitos'] is None:
+   #    debitos['vlr_debitos'] = 0
+   #
+   #
+   #
+   # saldo_atual = Decimal(creditos['vlr_creditos']) - Decimal(debitos['vlr_debitos'])
 
    context = {
       'dt_lancamentos_proximo': dt_lancamentos_proximo,
@@ -237,8 +246,9 @@ def principal(request,ano=None, mes=None):
       'bars_despesas5': bars_despesas5,
       'bars_despesas6': bars_despesas6,
 
-      'soma_grupodre' :soma_grupodre,
-      'saldo_atual': saldo_atual,
+      'saldo_contas_dre': saldos,
+      'retorno_dre': retorno_dre,
+      'retorono_planosdre': retorno_planosdre,
    }
    return render(request,'principal.html',context)
 
