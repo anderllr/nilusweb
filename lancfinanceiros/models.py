@@ -10,15 +10,15 @@ class Lancamentos(models.Model):
     # dados principais (empresa e numero do lançamento)
     num_lan = models.IntegerField('Nº Registro')
     parcela = models.IntegerField('Parcela',default=1)
-    company = models.ForeignKey('niluscad.Company',models.CASCADE,verbose_name='Empresa')
+    company = models.ForeignKey('niluscad.Company',models.PROTECT,verbose_name='Empresa')
 
 
     #dados do titulo
-    cadgeral = models.ForeignKey('niluscad.CadGeral',models.CASCADE,verbose_name='Cliente',blank=True,null=True)
+    cadgeral = models.ForeignKey('niluscad.CadGeral',models.PROTECT,verbose_name='Cliente',blank=True,null=True)
     dt_lancamento = models.DateField('Data Lançamento',null=True,blank=True)
     dt_vencimento = models.DateField('Data Vencimento',null=True,blank=True)
-    plr_financeiro = models.ForeignKey('niluscad.Planofinan',models.CASCADE,verbose_name='Plano Financeiro')
-    conta_finan = models.ForeignKey('nilusfin.Contafinanceira',models.CASCADE,verbose_name='Conta Recebimento')
+    plr_financeiro = models.ForeignKey('niluscad.Planofinan',models.PROTECT,verbose_name='Plano Financeiro')
+    conta_finan = models.ForeignKey('nilusfin.Contafinanceira',models.PROTECT,verbose_name='Conta Recebimento')
     c_custo = models.ForeignKey('niluscad.Ccusto',models.PROTECT,verbose_name='Centro de Custo')
     vlr_lancamento = models.DecimalField('Valor do Lançamento',max_digits=13,decimal_places=2,blank=True,null=True)
     valor_text = models.CharField(verbose_name='Valor',  max_length=20)
@@ -240,11 +240,11 @@ class Lancamentos(models.Model):
 class Movtos_lancamentos(models.Model):
 
     master_user = models.ForeignKey('accounts.User', models.CASCADE, verbose_name='Usuario Master')
-    company = models.ForeignKey('niluscad.Company',models.CASCADE,verbose_name='empresa')
+    company = models.ForeignKey('niluscad.Company',models.PROTECT,verbose_name='empresa')
     lancamento = models.ForeignKey('lancfinanceiros.Lancamentos',models.CASCADE,verbose_name='lancamento',null=True)
     dt_movimento = models.DateField('Data Movimento')
     vlr_movimento = models.DecimalField('Valor do Lançamento', max_digits=13, decimal_places=2, blank=True, null=True)
-    conta_financeira = models.ForeignKey('nilusfin.Contafinanceira',models.CASCADE,verbose_name='Conta Financeira',blank=True,null=True)
+    conta_financeira = models.ForeignKey('nilusfin.Contafinanceira',models.PROTECT,verbose_name='Conta Financeira',blank=True,null=True)
     desc_movimento = models.CharField(verbose_name='Observação', max_length=70,null=True)
     sinal = models.CharField(verbose_name='Sinal da Conta',max_length=3)
 

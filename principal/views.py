@@ -34,10 +34,6 @@ class Month(Func):
 @login_required
 def principal(request,ano=None, mes=None):
 
-
-
-
-
    # 2º Inicia-se o processo de verificar mês a mês
 
    data_hoje = datetime.today()
@@ -105,109 +101,35 @@ def principal(request,ano=None, mes=None):
 
 
 
-   # # Valores nos ultimos 6 meses (CHART BAR)
-   # 1º Mês
-   mes1_range = dt_filtro - relativedelta(months=6)
-   bars_receitas1 = Lancamentos.objects.filter(master_user=request.user.user_master, tipo_lancamento='R')
-   bars_receitas1 = bars_receitas1.filter(dt_vencimento__year=mes1_range.year, dt_vencimento__month=mes1_range.month)
-   bars_receitas1 = bars_receitas1.aggregate(vlr_mes=Sum('vlr_lancamento'))
 
-   bars_despesas1 = Lancamentos.objects.filter(master_user=request.user.user_master, tipo_lancamento='D')
-   bars_despesas1 = bars_despesas1.filter(dt_vencimento__year=mes1_range.year, dt_vencimento__month=mes1_range.month)
-   bars_despesas1 = bars_despesas1.aggregate(vlr_mes=Sum('vlr_lancamento'))
+   barras = []
 
-   # 2º mês
-   mes2_range = dt_filtro - relativedelta(months=5)
-   bars_receitas2 = Lancamentos.objects.filter(master_user=request.user.user_master, tipo_lancamento='R')
-   bars_receitas2 = bars_receitas2.filter(dt_vencimento__year=mes2_range.year, dt_vencimento__month=mes2_range.month)
-   bars_receitas2 = bars_receitas2.aggregate(vlr_mes=Sum('vlr_lancamento'))
-
-   bars_despesas2 = Lancamentos.objects.filter(master_user=request.user.user_master, tipo_lancamento='D')
-   bars_despesas2 = bars_despesas2.filter(dt_vencimento__year=mes2_range.year, dt_vencimento__month=mes2_range.month)
-   bars_despesas2 = bars_despesas2.aggregate(vlr_mes=Sum('vlr_lancamento'))
-
-   # 3º mês
-   mes3_range = dt_filtro - relativedelta(months=4)
-   bars_receitas3 = Lancamentos.objects.filter(master_user=request.user.user_master, tipo_lancamento='R')
-   bars_receitas3 = bars_receitas3.filter(dt_vencimento__year=mes3_range.year, dt_vencimento__month=mes3_range.month)
-   bars_receitas3 = bars_receitas3.aggregate(vlr_mes=Sum('vlr_lancamento'))
-
-   bars_despesas3 = Lancamentos.objects.filter(master_user=request.user.user_master, tipo_lancamento='D')
-   bars_despesas3 = bars_despesas3.filter(dt_vencimento__year=mes3_range.year, dt_vencimento__month=mes3_range.month)
-   bars_despesas3 = bars_despesas3.aggregate(vlr_mes=Sum('vlr_lancamento'))
-
-   # 4º mês
-   mes4_range = dt_filtro - relativedelta(months=3)
-   bars_receitas4 = Lancamentos.objects.filter(master_user=request.user.user_master, tipo_lancamento='R')
-   bars_receitas4 = bars_receitas4.filter(dt_vencimento__year=mes4_range.year, dt_vencimento__month=mes4_range.month)
-   bars_receitas4 = bars_receitas4.aggregate(vlr_saldo=Sum('vlr_lancamento'))
-
-   bars_despesas4 = Lancamentos.objects.filter(master_user=request.user.user_master, tipo_lancamento='D')
-   bars_despesas4 = bars_despesas4.filter(dt_vencimento__year=mes4_range.year, dt_vencimento__month=mes4_range.month)
-   bars_despesas4 = bars_despesas4.aggregate(vlr_mes=Sum('vlr_lancamento'))
-
-   # 5º mês
-   mes5_range = dt_filtro - relativedelta(months=2)
-   bars_receitas5 = Lancamentos.objects.filter(master_user=request.user.user_master, tipo_lancamento='R')
-   bars_receitas5 = bars_receitas5.filter(dt_vencimento__year=mes5_range.year, dt_vencimento__month=mes5_range.month)
-   bars_receitas5 = bars_receitas5.aggregate(vlr_mes=Sum('vlr_lancamento'))
-
-   bars_despesas5 = Lancamentos.objects.filter(master_user=request.user.user_master, tipo_lancamento='D')
-   bars_despesas5 = bars_despesas5.filter(dt_vencimento__year=mes5_range.year, dt_vencimento__month=mes5_range.month)
-   bars_despesas5 = bars_despesas5.aggregate(vlr_mes=Sum('vlr_lancamento'))
-
-   # 6º mês
-   mes6_range = dt_filtro - relativedelta(months=1)
-   bars_receitas6 = Lancamentos.objects.filter(master_user=request.user.user_master, tipo_lancamento='R')
-   bars_receitas6 = bars_receitas6.filter(dt_vencimento__year=mes6_range.year, dt_vencimento__month=mes6_range.month)
-   bars_receitas6 = bars_receitas6.aggregate(vlr_mes=Sum('vlr_lancamento'))
-
-   bars_despesas6 = Lancamentos.objects.filter(master_user=request.user.user_master, tipo_lancamento='D')
-   bars_despesas6 = bars_despesas6.filter(dt_vencimento__year=mes6_range.year, dt_vencimento__month=mes6_range.month)
-   bars_despesas6 = bars_despesas6.aggregate(vlr_mes=Sum('vlr_lancamento'))
+   range_mes = 6
+   while(range_mes > 0):
+      range_mes -=1
+      mes_range = dt_filtro - relativedelta(months=int(range_mes))
+      bars_receitas = Lancamentos.objects.filter(master_user=request.user.user_master, tipo_lancamento='R')
+      bars_receitas = bars_receitas.filter(dt_vencimento__year=mes_range.year, dt_vencimento__month=mes_range.month)
+      bars_receitas = bars_receitas.aggregate(vlr_mes=Sum('vlr_lancamento'))
 
 
+      bars_despesas = Lancamentos.objects.filter(master_user=request.user.user_master, tipo_lancamento='D')
+      bars_despesas = bars_despesas.filter(dt_vencimento__year=mes_range.year, dt_vencimento__month=mes_range.month)
+      bars_despesas = bars_despesas.aggregate(vlr_mes=Sum('vlr_lancamento'))
+
+      barras.append({"mes_range" : mes_range, "bars_receitas" : bars_receitas['vlr_mes'], "bars_despesas" : bars_despesas['vlr_mes']})
 
     # DRE
-
-   saldos = []
-   retorno_dre = []
-   retorno_planosdre = []
-
+   user = request.user
    data_lanc_ini = get_first_day(dt_filtro)
    data_lanc_fim = get_last_day(dt_filtro)
 
    retorno_dre, retorno_planosdre, saldos = calc_dre(empresa=False, f_lancamento=False, f_vencimento=True, f_baixa=False,
                                                      data_lanc_ini = data_lanc_ini,data_lanc_fim = data_lanc_fim,
-                                                     request = request)
+                                                     user = user)
 
 
 
-   # soma_grupodre = Lancamentos.objects.filter(master_user=request.user.user_master)
-   # soma_grupodre = soma_grupodre.filter(dt_vencimento__year=dt_filtro.year,
-   #                                                      dt_vencimento__month=dt_filtro.month)
-   # debitos = soma_grupodre.filter(master_user=request.user.user_master,
-   #                                tipo_lancamento='D').aggregate(vlr_debitos=Sum('vlr_lancamento'))
-   # creditos = soma_grupodre.filter(master_user=request.user.user_master,
-   #                                 tipo_lancamento='R').aggregate(vlr_creditos=Sum('vlr_lancamento'))
-   #
-   # soma_grupodre = soma_grupodre.values('plr_financeiro__grupodre__descricao', 'plr_financeiro__descricao',
-   #                                      'plr_financeiro__grupodre__sinal').annotate(
-   #    vlr_lancamentos=Sum('vlr_lancamento'))
-   # soma_grupodre = soma_grupodre.order_by('plr_financeiro__grupodre__ordem')
-   #
-   #
-   #
-   # # SALDO FINAL DO RESULTADO (CREDITOS - DÉBITOS)
-   # if creditos['vlr_creditos'] is None:
-   #    creditos['vlr_creditos'] = 0
-   #
-   # if debitos['vlr_debitos'] is None:
-   #    debitos['vlr_debitos'] = 0
-   #
-   #
-   #
-   # saldo_atual = Decimal(creditos['vlr_creditos']) - Decimal(debitos['vlr_debitos'])
 
    context = {
       'dt_lancamentos_proximo': dt_lancamentos_proximo,
@@ -226,26 +148,26 @@ def principal(request,ano=None, mes=None):
       'planofinan_rec' : planofinan_rec,
       'planofinan_desp': planofinan_desp,
       'lancto_atraso_grid' : lancto_atraso_grid,
-      'mes1_range' : mes1_range,
-      'mes2_range': mes2_range,
-      'mes3_range': mes3_range,
-      'mes4_range': mes4_range,
-      'mes5_range': mes5_range,
-      'mes6_range': mes6_range,
-      'bars_receitas1' : bars_receitas1,
-      'bars_receitas2': bars_receitas2,
-      'bars_receitas3': bars_receitas3,
-      'bars_receitas4': bars_receitas4,
-      'bars_receitas5': bars_receitas5,
-      'bars_receitas6': bars_receitas6,
-
-      'bars_despesas1': bars_despesas1,
-      'bars_despesas2': bars_despesas2,
-      'bars_despesas3': bars_despesas3,
-      'bars_despesas4': bars_despesas4,
-      'bars_despesas5': bars_despesas5,
-      'bars_despesas6': bars_despesas6,
-
+      # 'mes1_range' : mes1_range,
+      # 'mes2_range': mes2_range,
+      # 'mes3_range': mes3_range,
+      # 'mes4_range': mes4_range,
+      # 'mes5_range': mes5_range,
+      # 'mes6_range': mes6_range,
+      # 'bars_receitas1' : bars_receitas1,
+      # 'bars_receitas2': bars_receitas2,
+      # 'bars_receitas3': bars_receitas3,
+      # 'bars_receitas4': bars_receitas4,
+      # 'bars_receitas5': bars_receitas5,
+      # 'bars_receitas6': bars_receitas6,
+      #
+      # 'bars_despesas1': bars_despesas1,
+      # 'bars_despesas2': bars_despesas2,
+      # 'bars_despesas3': bars_despesas3,
+      # 'bars_despesas4': bars_despesas4,
+      # 'bars_despesas5': bars_despesas5,
+      # 'bars_despesas6': bars_despesas6,
+      'barras' : barras,
       'saldo_contas_dre': saldos,
       'retorno_dre': retorno_dre,
       'retorono_planosdre': retorno_planosdre,

@@ -30,7 +30,7 @@
                 border-bottom: 0.1pt solid #999999;
                 padding: 3px 0;
                 line-height: 1;
-                text-align: inherit;
+
                 font-weight: bold;
             }
 
@@ -87,7 +87,7 @@
 
             <p><center><h6>Nilus - Soluções em informática</h6></center></p>
             <p>
-                <h1>Demonstrativo Financeiro</h1>
+                <h1>DRE Financeiro</h1>
             </p>
 
 
@@ -118,54 +118,69 @@
                 <thead class="header">
 
                     <tr>
-                         <th style="width:85%;"></th>
-                         <th style="width:75%;">Descrição</th>
                          <th></th>
-                         <th>Valor</th>
-                         <th><small></small></th>
+                         <th>Descrição</th>
+                         <th></th>
+                         <th> <div class="text-right">Valor</div></th>
+                         <th> <div class="text-right">Totais</div></th>
+                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     <td></td>
-                {% for grupo in soma_grupodre %}
-
-                                <!--No for só troca se mudar a linha-->
-                                 {% ifchanged grupo.plr_financeiro__grupodre__descricao  %}
-                                <!--Verifica se não é o primeiro -->
-                                 {% if not forloop.first %}
-                                  </tbody>
-                                 {% endif %}
+                {% for dre in retorno_dre %}
                                 <tbody class="js-table-sections-header">
 
                                     <tr>
                                         <td class="text-center">
                                             <i class="fa fa-angle-right"></i>
                                         </td>
-                                        <td class="font-w600">{% if grupo.plr_financeiro__grupodre__descricao %}{{ grupo.plr_financeiro__grupodre__descricao }} {% else %} Sem Grupo Informado {% endif %}
-                                            {% if  grupo.plr_financeiro__grupodre__sinal ==  '+' %} <span class="receita text-right">(+)</span> {% elif grupo.plr_financeiro__grupodre__sinal ==  '-' %} <span class="despesa text-right">(-)</span> {% endif %}</td>
-                                        <td>
+                                        <td colspan="2">{% if dre.plr_financeiro__grupodre__descricao %}{{ dre.plr_financeiro__grupodre__descricao }} {% else %} Sem Grupo Informado {% endif %}
+                                            {% if  dre.plr_financeiro__grupodre__sinal ==  '+' %} <span class="receita text-right">(+)</span> {% elif dre.plr_financeiro__grupodre__sinal ==  '-' %} <span class="despesa text-right">(-)</span> {% endif %}</td>
+                                        <td class="text-right">
+                                            <strong><em class="{% if dre.plr_financeiro__grupodre__sinal == '-' %} despesa {% elif dre.plr_financeiro__grupodre__sinal == '+' %} receita {% endif %} text-right" >{{ dre.vlr_lancamentos|intcomma }}</em></strong>
                                         </td>
-                                        <td class="d-none d-sm-table-cell">
-                                            <strong><em class="{% if grupo.plr_financeiro__grupodre__sinal == '-' %} despessa {% elif grupo.plr_financeiro__grupodre__sinal == '+' %} receita {% endif %} totalizador" ></em></strong>
-                                        </td>
+                                        <td></td>
                                         <td></td>
                                     </tr>
                                 </tbody>
                                 <tbody>
-                                {% endifchanged %}
+                                {% for filhodre in retorno_planosdre %}
+                                    {% if dre.plr_financeiro__grupodre__pk  == filhodre.plr_financeiro__grupodre__pk%}
                                     <tr>
                                         <td class="text-center"></td>
-                                        <td class="font-w600"><small>&nbsp;&nbsp;&nbsp;&nbsp;{{ grupo.plr_financeiro__descricao  }}</small></td>
+                                        <td class="font-w600"><small>&nbsp;&nbsp;&nbsp;&nbsp;{{ filhodre.plr_financeiro__descricao  }}</small></td>
                                         <td class="font-size-sm"></td>
-                                        <td class="d-none d-sm-table-cell">
-                                            <small class="font-size-sm  text-left{% if  grupo.plr_financeiro__grupodre__sinal ==  '+' %} receita {% elif grupo.plr_financeiro__grupodre__sinal ==  '-' %} despesa {% endif %} valor_plano">{{ grupo.vlr_lancamentos|intcomma }}</small>
+                                        <td class="text-right">
+                                            <small class="text-right {% if  dre.plr_financeiro__grupodre__sinal ==  '+' %} receita {% elif dre.plr_financeiro__grupodre__sinal ==  '-' %} despesa {% endif %}">{{ filhodre.vlr_lancamento|intcomma }}</>
                                         </td>
                                         <td></td>
                                     </tr>
-                                <!--Verifica se é o primeiro-->
-                                {% if forloop.last %}
-                                </tbody>
                                 {% endif %}
+
+                                {% endfor %}
+
+                                </tbody>
+                                {% for sld in saldo_contas_dre %}
+                                {% if sld.pk == dre.plr_financeiro__grupodre__pk %}
+                                <tr class="table-active" style="border: 28px;">
+                                    <td></td>
+                                    <td></td>
+
+                                    <td></td>
+                                    <td class="text-right"><small>{% if forloop.last %}<strong> Resultado </strong>{% else %} = {% endif %}</small></td>
+                                    <td class="text-right">
+                                        {% if forloop.last %}
+                                        <small{% if  sld.vlr_saldo < 0 %} class="text-danger"{% else %} class="text-success" {% endif %}><strong>{{ sld.vlr_saldo|intcomma }}</strong></span>
+                                        {% else %}
+                                        <small>{{ sld.vlr_saldo|intcomma }}</small>
+                                        {% endif %}
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                {% endif %}
+
+                                {% endfor %}
                                 {% endfor %}
                 </tbody>
             </table>

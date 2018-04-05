@@ -67,7 +67,7 @@ class Indice(models.Model):
 class Cotacao(models.Model):
     # informação do dono da conta (usuario Master)
     # master_user = models.ForeignKey('accounts.User', models.CASCADE, verbose_name='Uusario Master')
-    indice = models.ForeignKey('nilusfin.Indice',models.CASCADE,verbose_name='Indice',null=True,blank=True)
+    indice = models.ForeignKey('nilusfin.Indice',models.PROTECT,verbose_name='Indice',null=True,blank=True)
 
     data_indice = models.DateField('Data',null=True,blank=True)
     valor_cotacao = models.DecimalField('Valor',null=True,blank=True,decimal_places=4,max_digits=13)

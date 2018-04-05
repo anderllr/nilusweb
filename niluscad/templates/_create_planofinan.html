@@ -43,6 +43,9 @@
                                 <small class="form-control-feedback"> {{ error }} </small>
                                 {% endfor %}
                             </div>
+                            <div>
+                                    <small class="form-control-feedback text-danger aviso_sinal" style="display:none;"> campo obrigatório </small>
+                            </div>
                         </div>
                         <div class="col-md-3">
                             <div class="form-material input-group">
@@ -55,7 +58,7 @@
                         </div>
                  </div>
 
-                     <button type="submit" class="btn btn-alt-primary">Salvar</button>
+                     <button type="submit"  id="btn_salvar" class="btn btn-alt-primary">Salvar</button>
                      <button type="button"  class="btn btn-alt-secondary  cancel_form">Cancelar</button>
 
              </div>

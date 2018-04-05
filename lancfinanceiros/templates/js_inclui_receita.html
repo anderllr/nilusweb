@@ -121,15 +121,52 @@ $(".new_receita").on("click",function(e){
             var cpo_plr_finan
             var cpo_ccusto
             var cpo_contafin
+            var alerta = 'n'
 
             cpo_empresa = $('#id_company').val();
             cpo_plr_finan = $('#id_plr_financeiro').val();
             cpo_ccusto  = $('#c_custo_id2').val();
             cpo_contafin = $('#id_conta_finan2').val();
 
+
+            if(cpo_plr_finan == ''){
+                if(alerta == 'n'){
+                alert ('Favor preencher os campos obigatórios!');
+                }
+                alerta = 's';
+                $('.aviso_plr_financeiro').show();
+            }
+
+            if(cpo_empresa == ''){
+                if(alerta == 'n'){
+                alert ('Favor preencher os campos obigatórios!');
+                }
+                alerta = 's';
+                $('.aviso_company').show();
+            }
+
+            if(cpo_ccusto == ''){
+                if(alerta == 'n'){
+                alert ('Favor preencher os campos obigatórios!');
+                }
+                alerta = 's';
+                $('.aviso_ccusto').show();
+            }
+
+            if(cpo_contafin == ''){
+                if(alerta == 'n'){
+                alert ('Favor preencher os campos obigatórios!');
+                }
+                alerta = 's';
+                $('.aviso_conta_finan').show();
+            }
+
+
             if((cpo_plr_finan == '') || (cpo_empresa == '') || (cpo_ccusto == '')
                (cpo_contafin == '')) {
-                    alert ('Favor preencher os campos obigatórios!');
+                    if(alerta == 'n'){
+                        alert ('Favor preencher os campos obigatórios!');
+                    }
                     if (cpo_plr_finan == ''){
                     $('.aviso_plr_financeiro').show();
                     }

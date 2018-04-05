@@ -30,7 +30,7 @@
 
 
                 </div>
-                <div class="row table table_planofinan">
+                <div class="row table table_ccusto">
                  {% include '_table_ccusto.html' %}
                 </div>
             </div>
@@ -132,7 +132,7 @@ $(".new_ccusto").on("click",function(e){
 	});
 
 <!-- Edit Company -->
-$('.table_planofinan').on('click', '.edit_ccusto',function(e){
+$('.table_ccusto').on('click', '.edit_ccusto',function(e){
     e.preventDefault();
     $(".form_edit ").load($(this).attr('href'), function(){
               $('.form_edit').show("slide");
@@ -179,7 +179,7 @@ $(".form_edit").on("submit","form",function(e){
 	 });
 
 
-    $(".delete_ccusto").on("click", function(e){
+    $(".table_ccusto").on("click",".delete_ccusto", function(e){
 
     e.preventDefault();
     var linkURL = $(this).attr("href");

@@ -6,7 +6,7 @@ from lancfinanceiros.models import Movtos_lancamentos,Lancamentos
 
 
 
-def calc_dre(empresa,f_lancamento,f_vencimento,f_baixa,data_lanc_ini,data_lanc_fim,request):
+def calc_dre(empresa,f_lancamento,f_vencimento,f_baixa,data_lanc_ini,data_lanc_fim,user):
 
     saldos = []
     retorno_dre = []
@@ -14,20 +14,23 @@ def calc_dre(empresa,f_lancamento,f_vencimento,f_baixa,data_lanc_ini,data_lanc_f
 
 
     if empresa:
-        lanctos = Lancamentos.objects.filter(master_user=request.user.user_master, company=empresa)
+        lanctos = Lancamentos.objects.filter(master_user=user.user_master.pk, company=empresa)
     else:
-        lanctos = Lancamentos.objects.filter(master_user=request.user.user_master)
+        lanctos = Lancamentos.objects.filter(master_user=user.user_master.pk)
 
-    if f_lancamento:
+
+
+    if f_lancamento == True:
         lanctos = lanctos.filter(dt_lancamento__range=(data_lanc_ini, data_lanc_fim))
-    if f_vencimento:
+    if f_vencimento == True:
         lanctos = lanctos.filter(dt_vencimento__range=(data_lanc_ini, data_lanc_fim))
-    if f_baixa:
+    if f_baixa == True:
         lanctos = lanctos.filter(data_baixa__range=(data_lanc_ini, data_lanc_fim))
 
     soma_grupodre = lanctos.values('plr_financeiro__grupodre__descricao', 'plr_financeiro__grupodre__sinal',
                                    'plr_financeiro__grupodre__pk').annotate(vlr_lancamentos=Sum('vlr_lancamento'))
     soma_grupodre = soma_grupodre.order_by('plr_financeiro__grupodre__ordem')
+
 
     for s in soma_grupodre:
         retorno_dre.append(s)
@@ -50,5 +53,7 @@ def calc_dre(empresa,f_lancamento,f_vencimento,f_baixa,data_lanc_ini,data_lanc_f
             else:
                 vlr_plano = vlr_plano + Decimal(s['vlr_lancamentos'])
             saldos.append({"pk": s['plr_financeiro__grupodre__pk'], "vlr_saldo": vlr_plano})
+
+
 
     return(retorno_dre,retorno_planosdre,saldos)

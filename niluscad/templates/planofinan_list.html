@@ -114,40 +114,50 @@ $(".new_planofinan").on("click",function(e){
         {% include 'js_tabs.html' %}
         {% include 'js_masks.html' %}
 
+        $('#btn_salvar').on("click",function(e){
+            var cpo_sinal
 
-          $(".form_inc .cancel_form").on("click",function(e){
-             $('.form_inc').hide("drop");
-             $('.new_planofinan').show();
-          });
-    });
+            cpo_sinal = $('#id_sinal').val();
+            if(cpo_sinal == '') {
+                    alert ('Favor preencher os campos obigatórios!');
+                    $('.aviso_sinal').show();
+            }
+        });
+
+
+        $(".form_inc .cancel_form").on("click",function(e){
+           $('.form_inc').hide("drop");
+           $('.new_planofinan').show();
+        });
+     });
 });
 
-    $(".form_inc").on("submit","form",function(e){
-	 	 e.preventDefault();
-	 	 var dados = $(this).serialize();
-	 	 $.post("{% url 'create_planofinan' %}",dados,function(result){
-	 	    $(".form_inc").html(result);
-	 	    if(close_modal==true){
-	 	       $('.form_inc').hide("drop");
-               $('.new_planofinan').show();
-                  window.location.reload();
+$(".form_inc").on("submit","form",function(e){
+     e.preventDefault();
+     var dados = $(this).serialize();
+     $.post("{% url 'create_planofinan' %}",dados,function(result){
+        $(".form_inc").html(result);
+        if(close_modal==true){
+           $('.form_inc').hide("drop");
+           $('.new_planofinan').show();
+              window.location.reload();
 
-     	    }
- 	        else{
-                $(".form_inc").show();
-                {% include 'js_floating_labels.html' %}
-                {% include 'js_tabs.html' %}
-                $('.chosen-select').chosen({ width: '100%' });
+        }
+        else{
+            $(".form_inc").show();
+            {% include 'js_floating_labels.html' %}
+            {% include 'js_tabs.html' %}
+            $('.chosen-select').chosen({ width: '100%' });
 
-                   $(".form_inc .cancel_form").on("click",function(e){
-                        $('.form_inc').hide("drop");
-                        $('.new_planofinan').show();
-                   });
+               $(".form_inc .cancel_form").on("click",function(e){
+                    $('.form_inc').hide("drop");
+                    $('.new_planofinan').show();
+               });
 
 
- 	        }
-	 	 });
-	});
+        }
+     });
+});
 
 <!-- Edit Company -->
 $('.table_planofinan').on('click', '.edit_planofinan',function(e){
@@ -199,7 +209,7 @@ $(".form_edit").on("submit","form",function(e){
 	 });
 
 
-    $(".delete_planofinan").on("click", function(e){
+$(".table_planofinan").on("click",".delete_planofinan", function(e){
 
     e.preventDefault();
     var linkURL = $(this).attr("href");

@@ -143,9 +143,10 @@ def delete_company(request, pk):
     else:
         empresa = get_object_or_404(Company,master_user=request.user.user_master,pk=pk)
 
-
-    empresa.delete()
-
+    try:
+        empresa.delete()
+    except:
+        print('erro na exclusao')
 
     # messages.success(request, 'Grupo removido com sucesso !!')
     return redirect('company_list')
@@ -434,8 +435,11 @@ def delete_cadgeral(request, pk):
     else:
         cad = get_object_or_404(Cadgeral,master_user=request.user.user_master,pk=pk)
 
+    try:
+        cad.delete()
+    except:
+        print('erro na exclusao')
 
-    cad.delete()
 
 
     # messages.success(request, 'Grupo removido com sucesso !!')
@@ -561,9 +565,10 @@ def delete_ccusto(request, pk):
     else:
         ccusto = get_object_or_404(Ccusto,master_user=request.user.user_master,pk=pk)
 
-
-    ccusto.delete()
-
+    try:
+        ccusto.delete()
+    except:
+        print('erro na exclusao')
 
     # messages.success(request, 'Grupo removido com sucesso !!')
     return redirect('ccusto_list')
@@ -693,11 +698,11 @@ def delete_planofinan(request, pk):
     else:
         planofinan = get_object_or_404(PlanoFinan,master_user=request.user.user_master,pk=pk)
 
+    try:
+       planofinan.delete()
+    except:
+       print('erro na exclusao')
 
-    planofinan.delete()
-
-
-    # messages.success(request, 'Grupo removido com sucesso !!')
     return redirect('planofinan_list')
 
 

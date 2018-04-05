@@ -49,36 +49,6 @@ $('#botao-baixar-atrasados').on('click',function(e){
 });
 
 
-function numberToReal(numero) {
-    var numero = numero.toFixed(2).split('.');
-    numero[0] = numero[0].split(/(?=(?:...)*$)/).join('.');
-    return numero.join(',');
-}
-
-
-
-$('.totalizador').each(function(){
-    var totalizador = $(this);
-    var planos = totalizador.closest('tbody').next().find('.valor_plano');
-    var total = 0;
-    for (i = 0; i < planos.length; i++) {
-        total = total + parseFloat($(planos[i]).html().replace('.','').replace(',','.'));
-    }
-
-    total_t = numberToReal(total);
-    totalizador.html(total_t);
-
-
-
-
-
-});
-
-
-
-
-
-
 {% endblock %}
 
 

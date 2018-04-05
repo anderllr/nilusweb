@@ -9,7 +9,7 @@ from django.views.generic import CreateView,TemplateView,UpdateView,FormView
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.urlresolvers import reverse_lazy
-from core.utils import add_one_month
+from core.utils import add_one_month,lookahead
 from django.http import HttpResponse,Http404
 from .forms import FormCreateReceita,FormEditReceita,FiltroLancamentosForm,FormCreateDespesa,FormEditDespesa,\
                    FormBaixaLancamento,FiltroLancamentosbaixa,FormBaixaParcial,FormDeletaLancto
@@ -245,6 +245,8 @@ class CreateReceita(LoginRequiredMixin,CreateView):
         if form.cleaned_data.get('parcela',False):
             qtd = form.cleaned_data['qtd']
             valor_parcela = Decimal(lancto.vlr_lancamento) / qtd
+            valor_corrigido = Decimal(valor_parcela) * qtd
+            arredondamento = Decimal(lancto.vlr_lancamento) - Decimal(valor_corrigido)
             lancto.vlr_lancamento = round(valor_parcela,2)
             lancto.valor_text = str(lancto.vlr_lancamento).replace('.',',')
             lancto.saldo =  lancto.vlr_lancamento
@@ -273,7 +275,11 @@ class CreateReceita(LoginRequiredMixin,CreateView):
             qtd = form.cleaned_data['qtd']
             dias_vencto = form.cleaned_data['dias_entre_vencto']
             dia_fixo = form.cleaned_data['dia_fixo']
-            for i in range(qtd-1):
+            for i,has_more in lookahead(range(qtd-1)):
+                if arredondamento > 0.00:
+                    if has_more == False:
+                        lancto.vlr_lancamento = Decimal(lancto.vlr_lancamento) + Decimal(0.01)
+                        lancto.saldo = lancto.vlr_lancamento
                 lancto.pk = None
                 lancto.parcela = lancto.parcela + 1
                 lancto.lancamento_pai_id = id_lancto
@@ -300,6 +306,7 @@ class CreateReceita(LoginRequiredMixin,CreateView):
                     seq_lanc.lanc_financeiros = lancto.num_lan
                     lancto.dt_vencimento = add_one_month(lancto.dt_vencimento)
                     lancto.lancamento_pai_id = id_lancto
+                    lancto.dt_lancamento = lancto.dt_vencimento
                     seq_lanc.save()
 
                     lancto.save()
@@ -312,6 +319,7 @@ class CreateReceita(LoginRequiredMixin,CreateView):
                     lancto.num_lan = seq_lanc.lanc_financeiros + 1
                     seq_lanc.lanc_financeiros = lancto.num_lan
                     lancto.dt_vencimento = lancto.dt_vencimento + timedelta(days=7)
+                    lancto.dt_lancamento = lancto.dt_vencimento
                     lancto.lancamento_pai_id = id_lancto
                     seq_lanc.save()
 
@@ -324,6 +332,7 @@ class CreateReceita(LoginRequiredMixin,CreateView):
                     lancto.num_lan = seq_lanc.lanc_financeiros + 1
                     seq_lanc.lanc_financeiros = lancto.num_lan
                     lancto.dt_vencimento = lancto.dt_vencimento + timedelta(days=1)
+                    lancto.dt_lancamento = lancto.dt_vencimento
                     lancto.lancamento_pai_id = id_lancto
                     seq_lanc.save()
 
@@ -335,6 +344,7 @@ class CreateReceita(LoginRequiredMixin,CreateView):
                     lancto.pk = None
                     lancto.num_lan = seq_lanc.lanc_financeiros + 1
                     lancto.dt_vencimento = lancto.dt_vencimento + timedelta(days=15)
+                    lancto.dt_lancamento = lancto.dt_vencimento
                     lancto.lancamento_pai_id = id_lancto
                     seq_lanc.save()
 
@@ -622,8 +632,9 @@ class CreateDespesa(LoginRequiredMixin,CreateView):
 
         if form.cleaned_data.get('parcela',False):
             qtd = form.cleaned_data['qtd']
-            saldo = lancto.vlr_lancamento
             valor_parcela = Decimal(lancto.vlr_lancamento) / qtd
+            valor_corrigido = Decimal(valor_parcela) * qtd
+            arredondamento = Decimal(lancto.vlr_lancamento) - Decimal(valor_corrigido)
             lancto.vlr_lancamento = round(valor_parcela,2)
             lancto.valor_text = str(lancto.vlr_lancamento).replace('.',',')
             lancto.saldo = lancto.vlr_lancamento
@@ -650,7 +661,11 @@ class CreateDespesa(LoginRequiredMixin,CreateView):
             qtd = form.cleaned_data['qtd']
             dias_vencto = form.cleaned_data['dias_entre_vencto']
             dia_fixo = form.cleaned_data['dia_fixo']
-            for i in range(qtd-1):
+            for i,has_more in lookahead(range(qtd-1)):
+                if arredondamento > 0.00:
+                    if has_more == False:
+                        lancto.vlr_lancamento = Decimal(lancto.vlr_lancamento) + Decimal(0.01)
+                        lancto.saldo = lancto.vlr_lancamento
                 lancto.pk = None
                 lancto.parcela = lancto.parcela + 1
                 lancto.lancamento_pai_id = id_lancto
@@ -677,6 +692,7 @@ class CreateDespesa(LoginRequiredMixin,CreateView):
                     seq_lanc.lanc_financeiros = lancto.num_lan
                     lancto.dt_vencimento = add_one_month(lancto.dt_vencimento)
                     lancto.lancamento_pai_id = id_lancto
+                    lancto.dt_lancamento = lancto.dt_vencimento
                     seq_lanc.save()
                     lancto.save()
 
@@ -689,6 +705,7 @@ class CreateDespesa(LoginRequiredMixin,CreateView):
                     seq_lanc.lanc_financeiros = lancto.num_lan
                     lancto.dt_vencimento = lancto.dt_vencimento + timedelta(days=7)
                     lancto.lancamento_pai_id = id_lancto
+                    lancto.dt_lancamento = lancto.dt_vencimento
                     lancto.save()
                     seq_lanc.save()
 
@@ -701,6 +718,7 @@ class CreateDespesa(LoginRequiredMixin,CreateView):
                     seq_lanc.lanc_financeiros = lancto.num_lan
                     lancto.dt_vencimento = lancto.dt_vencimento + timedelta(days=1)
                     lancto.lancamento_pai_id = id_lancto
+                    lancto.dt_lancamento = lancto.dt_vencimento
                     lancto.save()
                     seq_lanc.save()
 
@@ -712,6 +730,7 @@ class CreateDespesa(LoginRequiredMixin,CreateView):
                     lancto.num_lan = seq_lanc.lanc_financeiros + 1
                     lancto.dt_vencimento = lancto.dt_vencimento + timedelta(days=15)
                     lancto.lancamento_pai_id = id_lancto
+                    lancto.dt_lancamento = lancto.dt_vencimento
                     lancto.save()
                     seq_lanc.save()
 

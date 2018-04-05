@@ -63,7 +63,42 @@ $('.form_edit').hide();
 
 
 function loading_grupodre(){
+
+
+
+
       $('.table_grupodre').load('{{ request.path }}');
+
+
+      table.destroy();
+
+    table = $('#tabela_grupodre').DataTable({
+    "language": {
+     "lengthMenu": "Mostrando _MENU_ registros por página",
+     "search" : "Procurar: ",
+     "info" : "Exibindo de _START_ a _END_ de _TOTAL_ registros",
+     "infoEmpty": "Nenhum registro encontrado",
+     "infoFiltered": "(filtrado entre _MAX_ registros)",
+     "paginate" : {
+       "first":      "Primeiro",
+       "last":       "Último",
+       "next":       "Próximo",
+       "previous":   "Anterior"
+     },
+     responsive: {
+            details: {
+                type: 'column'
+            }
+        },
+        columnDefs: [ {
+            className: 'control',
+            orderable: false,
+            targets:   0
+        } ],
+        order: [ 1, 'asc' ]
+ }
+});
+
 }
 
 
@@ -99,7 +134,7 @@ table = $('#tabela_grupodre').DataTable({
 
 
 
-<!-- Create Company -->
+
 
 $(".new_grupodre").on("click",function(e){
      e.preventDefault();
@@ -128,7 +163,7 @@ $(".new_grupodre").on("click",function(e){
 	 	    if(close_modal==true){
 	 	       $('.form_inc').hide("drop");
                $('.new_grupodre').show();
-                  window.location.reload();
+               loading_grupodre();
      	    }
  	        else{
                 $(".form_inc").show();

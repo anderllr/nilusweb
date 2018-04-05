@@ -130,8 +130,11 @@ def delete_conta(request, pk):
     else:
         conta = get_object_or_404(Contafinanceira,master_user=request.user.user_master,pk=pk)
 
+    try:
+        conta.delete()
+    except:
+        print('erro na exclusao')
 
-    conta.delete()
 
 
     # messages.success(request, 'Grupo removido com sucesso !!')
@@ -385,9 +388,10 @@ def delete_indice(request, pk):
     else:
         indice = get_object_or_404(Indice,master_user=request.user.user_master,pk=pk)
 
-
-    indice.delete()
-
+    try:
+        indice.delete()
+    except:
+        print('erro na exclusao')
 
     # messages.success(request, 'Grupo removido com sucesso !!')
     return redirect('indice_list')
@@ -520,7 +524,11 @@ class CreateCotacao_grid_indice(LoginRequiredMixin,CreateView):
 @login_required
 def delete_cotacao(request, pk):
     cotacao = get_object_or_404(Cotacao,pk=pk)
-    cotacao.delete()
+
+    try:
+        cotacao.delete()
+    except:
+        print('erro na exclusao')
     # messages.success(request, 'Grupo removido com sucesso !!')
     return HttpResponse('ok')
 
@@ -732,7 +740,7 @@ def dre_list(request):
     saldos = []
     retorno_dre = []
     retorno_planosdre = []
-
+    user = request.user
 
     form = FiltroDre(empresa, request.GET or None)
 
@@ -745,7 +753,8 @@ def dre_list(request):
         f_baixa = form.cleaned_data.get('f_baixa', '')
 
 
-        retorno_dre,retorno_planosdre,saldos = calc_dre(empresa,f_lancamento,f_vencimento,f_baixa,data_lanc_ini,data_lanc_fim,request)
+
+        retorno_dre,retorno_planosdre,saldos = calc_dre(empresa,f_lancamento,f_vencimento,f_baixa,data_lanc_ini,data_lanc_fim,user)
 
 
     context = {
