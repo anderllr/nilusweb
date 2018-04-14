@@ -1,0 +1,35 @@
+{% load static widget_tweaks humanize %}
+        <table id="table_contassaldo" class="table table-hover table-vcenter" >
+            <thead>
+                <tr>
+                    <th><small>Sel.</small></th>
+                    <th><small>Conta</small></th>
+                    <th><small>Saldo</small></th>
+                    <th><small>Limite</small></th>
+                    <th><small>Saldo c/ Limite</small></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for s in saldos %}
+
+                    <td style="width:1%; heigth:10%;">
+                        <center><label class="custom-control custom-checkbox baixa_lancamento">
+                                                <input type="checkbox" class="custom-control-input baixa_lancamento" name="contas_financeiras" value="{{s.pk}}"
+                                                {% for c in contas %} {% if c.pk == s.pk %} checked {% endif %}  {% endfor %}>
+
+                                                <span class="custom-control-indicator"></span>
+                                                <span class="custom-control-description"></span>
+                        </label></center>
+                    <!--<center><input class="baixa_lancamento"  name="lanc_baixa" value="{{ lanc.pk }}" type="checkbox"></center>-->
+                    </td>
+                    <td><small>{{ s.conta }}</small></td>
+                    <td><small>{{ s.saldo|intcomma }}</small></td>
+                    <td><small>{{ s.vlr_limite|intcomma }}</small></td>
+                    <td><small>{{ s.saldo_final|intcomma  }}</small></td>
+
+
+                </tr>
+
+            {% endfor %}
+            </tbody>
+        </table>

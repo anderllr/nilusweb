@@ -1,0 +1,190 @@
+{% extends "menu.html" %}
+{% load static widget_tweaks humanize %}
+
+
+
+<!-- Bread crumb and right sidebar toggle -->
+{% block title %} Fluxo de Caixa Projetado {% endblock %}
+
+
+{% block page_body %}
+<div class="block">
+    <div class="block-content">
+        <div class="block">
+            <div class="block-content block-content-full ribbon ribbon-left ribbon-bookmark ribbon-primary">
+               <div class="form_busca">
+                    <form id="form_busca_movimentos" method="post">
+                        {% csrf_token %}
+                        <div class="filtros_extras">
+                            <div class="row">
+                               <div class="col-4">
+                                        <label for="id_data_venc_ini">Data Vencimento</label>
+                                        <div class="input-daterange input-group js-datepicker-enabled" data-date-format="dd/mm/yyyy" data-week-start="1" data-autoclose="true" data-today-highlight="true">
+                                            {% render_field form_fluxo.data_venc_ini class="form-control js-datepicker"   placeholder="dd/mm/aaaa" data-week-start="1" data-autoclose="true" data-today-highlight="true"%}
+                                            <span class="input-group-addon font-w600"> &nbsp; até  &nbsp; </span>
+                                            {% render_field form_fluxo.data_venc_fim class="form-control js-datepicker"   placeholder="dd/mm/aaaa" data-week-start="1" data-autoclose="true" data-today-highlight="true"%}
+                                        </div>
+                                </div>
+
+                                <div class="col-md-7 row">
+                                    <div class="col-md-12">
+                                        <div class="form-material input-group">
+                                            <label>{{ form_fluxo.empresa.label_tag }}</label>
+                                            {% render_field form_fluxo.empresa class="chosen-select" %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+
+                                        <div class="form-material input-group">
+                                            <button type="submit"  class="btn  btn-outline-primary mr-5 mb-5 form_pesquisa form_bus"  id="btn_consultar"  data-toggle="tooltip" data-placement="bottom" title="Consultar Fluxo">
+                                                <i class="fa fa-search"></i>
+                                            </button>
+
+                                            <!--<button class="btn btn-outline-secondary mr-5 mb-5 btn_lancamentos"-->
+                                                    <!--data-toggle="tooltip" data-placement="bottom" title="Imprimir Extrato"  title=""-->
+                                                    <!--id="btn_impressao"><i class="fa fa-print"></i>-->
+                                            <!--</button>-->
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                            <div>
+                                <a class="block block-link-pop block-bordered" href="javascript:void(0)">
+                                    <div class="block-header">
+                                        <h3 class="block-title">Selecionar Contas</h3>
+                                    </div>
+                                    <div class="block-content">
+                                        {% include '_table_contassaldo.html' %}
+                                    </div>
+                                </a>
+                            </div>
+                    </form>
+                </div>
+                <br>
+                <div class="row">
+                    {% include 'fc_card_rec_atraso.html' %}
+                    {% include 'fc_card_desp_atraso.html' %}
+                </div>
+                <div class="row">
+                    {% include 'fc_lanctos_avencer.html' %}
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+{% endblock %}
+
+{% block javascript %}
+
+
+
+
+$("#mostra_rec_atraso").on("click",function(e){
+  $('#mostra_rec_atraso').hide();
+    $('#oculta_rec_atraso').show();
+    $('.table_receitas_atraso').show("drop");
+});
+
+
+$("#oculta_rec_atraso").on("click",function(e){
+  $('#oculta_rec_atraso').hide();
+    $('#mostra_rec_atraso').show();
+    $('.table_receitas_atraso').hide("drop");
+});
+
+
+$("#mostra_desp_atraso").on("click",function(e){
+  $('#mostra_desp_atraso').hide();
+    $('#oculta_desp_atraso').show();
+    $('.table_despesas_atraso').show("drop");
+});
+
+
+$("#oculta_desp_atraso").on("click",function(e){
+  $('#oculta_desp_atraso').hide();
+    $('#mostra_desp_atraso').show();
+    $('.table_despesas_atraso').hide("drop");
+});
+
+mostra_dia
+
+$("#mostra_dia").on("click",function(e){
+  $('#mostra_dia').hide();
+    $('#oculta_dia').show();
+    $('.table_dia_dia').show("drop");
+});
+
+
+$("#oculta_dia").on("click",function(e){
+  $('#oculta_dia').hide();
+    $('#mostra_dia').show();
+    $('.table_dia_dia').hide("drop");
+});
+
+
+$('.chosen-select').chosen({ width: '100%' });
+{% include 'js_ajuste_saldo.html' %}
+
+
+var buscou = 'N';
+
+
+$("#btn_consultar").on("click",function(e){
+  buscou = 'S';
+});
+
+
+
+
+$("#btn_impressao").on("click",function(e){
+
+    <!--extrato_contas?data_lanc_ini=&data_lanc_fim=&conta_finan=-->
+
+
+
+
+
+    if(buscou == 'N'){
+
+        var data_lanc_ini = $('#id_data_lanc_ini').val();
+        var data_lanc_fim = $('#id_data_lanc_fim').val();
+
+
+        data_lanc_ini = data_lanc_ini.replace('/','%2F').replace('/','%2F');
+        data_lanc_fim = data_lanc_fim.replace('/','%2F').replace('/','%2F');
+
+
+        var conta_finan =  $('#id_conta_finan').val();
+        var empresa = $('#id_empresa').val();
+
+    var url = window.location.href;
+    var nova_url = url.replace('/fin/extrato_contas','/rel/extrato_financeiro/');
+    var nova_url2 = nova_url + '?data_lanc_ini='+data_lanc_ini+'&data_lanc_fim='+data_lanc_fim+'&empresa='+empresa+'&conta_finan='+conta_finan
+
+    buscou = 'S';
+    window.open(nova_url2);
+
+    }else{
+        var url = window.location.href;
+        var nova_url = url.replace('/fin/extrato_contas','/rel/extrato_financeiro/');
+        window.open(nova_url);
+    }
+
+
+
+
+});
+
+
+
+{% endblock %}

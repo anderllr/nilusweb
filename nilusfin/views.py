@@ -11,9 +11,9 @@ from nilusadm.models import Sequenciais
 from lancfinanceiros.models import Movtos_lancamentos,Lancamentos
 from .models import Contafinanceira,Cotacao,Indice
 from niluscad.models import Company,Grupodre,PlanoFinan
-from .forms import FormCreateCotacao,FormAjusteSaldo,FiltroLancamentosExtrato,FiltroDre
+from .forms import FormCreateCotacao,FormAjusteSaldo,FiltroLancamentosExtrato,FiltroDre,FormFluxoCaixa
 from django.db.models import Sum
-from nilusfin.calc_dre import calc_dre
+from nilusfin.calculos import calc_dre,saldo_conta,lanctos_atraso,lanctos_avencer
 
 # Create your views here.
 
@@ -589,7 +589,7 @@ def extrato_contas(request):
 
         # SALDO ANTERIOR
 
-        # total debitos
+        # total creditos
         if empresa:
             movtos_creditos = Movtos_lancamentos.objects.filter(master_user=request.user.user_master,
                                                                 sinal='R', dt_movimento__lt=data_lanc_ini,
@@ -768,6 +768,74 @@ def dre_list(request):
     }
 
     return render(request, template_name, context)
+
+
+##########################################################################################
+#                                  FLUXO CAIXA                                           #
+##########################################################################################
+
+
+
+@login_required
+def fluxo_caixa(request):
+    if request.is_ajax():
+        template_name = 'fluxo_caixa.html'
+    else:
+        template_name = 'fluxo_caixa.html'
+
+
+    contas = Contafinanceira.objects.filter(master_user=request.user.user_master)
+    empresa = Company.objects.filter(master_user=request.user.user_master)
+    data_saldo = datetime.now()
+    data_hoje = datetime.now()
+    usuario = request.user
+    contas_pk = []
+    saldos = saldo_conta(empresa,contas,data_saldo,usuario)
+    rec_atraso_lanc = None
+    rec_atraso_tot = None
+    desp_atraso_lanc = None
+    desp_atraso_tot = None
+    rec_tot = None
+    desp_tot = None
+    fluxo_dia = None
+    lanctos = None
+
+
+    form_fluxo = FormFluxoCaixa(empresa,contas,request.POST or None)
+
+    if form_fluxo.is_valid():
+        data_venc_ini = form_fluxo.cleaned_data.get('data_venc_ini', '')
+        data_venc_fim = form_fluxo.cleaned_data.get('data_venc_fim', '')
+        contas =        form_fluxo.cleaned_data.get('contas_financeiras', '')
+        empresa =       form_fluxo.cleaned_data.get('empresa', '')
+
+
+        for c in contas:
+            contas_pk.append(c.pk)
+
+
+        rec_atraso_lanc,rec_atraso_tot,desp_atraso_lanc,desp_atraso_tot = lanctos_atraso(empresa,contas_pk,data_venc_ini,usuario)
+        rec_tot,desp_tot,fluxo_dia,lanctos = lanctos_avencer(empresa,contas_pk,data_venc_ini,data_venc_fim,usuario)
+
+
+    context = {
+        'form_fluxo': form_fluxo,
+        'saldos' : saldos,
+        'data_hoje' : data_hoje,
+        'contas' : contas,
+        'rec_atraso_lanc' : rec_atraso_lanc,
+        'rec_atraso_tot' : rec_atraso_tot,
+        'desp_atraso_lanc' : desp_atraso_lanc,
+        'desp_atraso_tot' : desp_atraso_tot,
+        'rec_tot' : rec_tot,
+        'desp_tot': desp_tot,
+        'fluxo_dia': fluxo_dia,
+        'lanctos' : lanctos
+    }
+
+    return render(request, template_name, context)
+
+
 
 
 

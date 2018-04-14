@@ -155,8 +155,8 @@
                                         </small></td>
 
                                         <td><small>{{ lanc_atraso.dt_vencimento|date:'d/m/Y'  }}</small></td>
-                                        <td>{% if lanc_atraso.tipo_lancamento == 'R' %}<strong class="text-success pull-right">{{ lanc_atraso.saldo }}</strong>
-                                                              {% else %}   <strong class="text-danger pull-right">{{ lanc_atraso.saldo }}</strong>
+                                        <td>{% if lanc_atraso.tipo_lancamento == 'R' %}<strong class="text-success pull-right text-right">{{ lanc_atraso.saldo|intcomma }}</strong>
+                                                              {% else %}   <strong class="text-danger pull-right text-right">{{ lanc_atraso.saldo|intcomma }}</strong>
                                                               {% endif %}
                                         </td>
                                     </tr>

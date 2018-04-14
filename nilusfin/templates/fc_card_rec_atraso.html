@@ -1,0 +1,62 @@
+{% load static widget_tweaks humanize %}
+<div class="col-md-6">
+   <a class="block block-link-shadow" href="javascript:void(0)">
+      <div class="block block-bordered ">
+
+         <div class="block-content block-content-full text-right">
+             <div class="float-left mt-10">
+                 <button  class="btn btn-lg btn-circle btn-outline-success mr-5 mb-5" id="mostra_rec_atraso" data-toggle="tooltip"
+                         data-placement="bottom" title="Mostrar Lançamentos" >
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                 <button class="btn btn-lg btn-circle btn-outline-success mr-5 mb-5" id="oculta_rec_atraso" data-toggle="tooltip"
+                         data-placement="bottom" title="Ocultar Lançamentos" style="display:none;">
+                                    <i class="fa fa-minus"></i>
+                                </button>
+             </div>
+              <div class="font-size-h3 font-w700 text-success">
+                  {% if rec_atraso_tot.vlr_saldo != None %} {{ rec_atraso_tot.vlr_saldo|intcomma }}
+                                                                                 {% else  %} 0,00 {% endif %}
+
+              </div>
+              <div class="font-size-sm font-w600 text-uppercase text-muted">Total Receitas em atraso</div>
+         </div>
+
+          <div class="table_receitas_atraso " style="display:none;">
+              <hr>
+              <div class=" tabela_formulario" >
+                <table class="table table-sm table-vcenter">
+                    <thead>
+                        <tr>
+                            <th class="text-center">Lanc.</th>
+                            <th>Cliente</th>
+                            <th class="d-none d-sm-table-cell">Vencimento</th>
+                            <th class="text-right" >Valor</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for r in rec_atraso_lanc %}
+                        <tr>
+                            <th class="text-center" scope="row"><small><small>{{ r.num_lan }}/{{ r.parcela }}</small></small></th>
+                            <td><small>{% if r.cadgeral %} {{ r.cadgeral }} {% else  %} Não Informado {% endif %}</small></td>
+                            <td class="d-none d-sm-table-cell">
+                                <small>{{ r.dt_vencimento|date:'d/m/Y' }}</small>
+                            </td>
+                            <td class="text-right">
+                                <small class="text-success"><strong>{{ r.saldo|intcomma }}</strong></small>
+                            </td>
+                            <td></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+              </div>
+          </div>
+
+
+      </div>
+
+   </a>
+
+</div>

@@ -7,7 +7,7 @@ from nilusfin.models import Contafinanceira
 from datetime import date, timedelta, datetime
 from django.db.models import Sum
 from decimal import Decimal
-from nilusfin.calc_dre import calc_dre
+from nilusfin.calculos import calc_dre
 
 from django.contrib.auth.decorators import login_required
 from easy_pdf.views import PDFTemplateView

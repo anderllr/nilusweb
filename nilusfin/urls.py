@@ -39,5 +39,10 @@ urlpatterns = [
 
 
     # DRE
-    url(r'^consulta_dre',views.dre_list,name='dre_list')
+    url(r'^consulta_dre',views.dre_list,name='dre_list'),
+
+
+    # FLUXO DE CAIXA
+    url(r'^fluxo_caixa',views.fluxo_caixa,name='fluxo_caixa'),
+    # url(r'^fluxo_caixa/consulta',views.fluxo_caixa_consulta,name='fluxo_caixa_consulta')
 ]

@@ -21,7 +21,7 @@ from niluscad.models import Company,Propriety
 from nilusfin.models import Indice,Cotacao
 from lancfinanceiros.models import Lancamentos
 from core.utils import get_first_day,get_last_day
-from nilusfin.calc_dre import calc_dre
+from nilusfin.calculos import calc_dre
 # Create your views here.
 
 

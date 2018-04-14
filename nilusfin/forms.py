@@ -77,10 +77,20 @@ class FiltroDre(forms.Form):
     f_vencimento = forms.BooleanField(label='Data Vencimento', required=False)
     f_baixa = forms.BooleanField(label='Data Baixa', required=False)
 
-
-
-
     def __init__(self,empresa, *args, **kwargs):
         super(FiltroDre, self).__init__(*args, **kwargs)
-        self.fields['empresa'].queryset=empresa
+        self.fields['empresa'].queryset= empresa
+
+
+class FormFluxoCaixa(forms.Form):
+    data_venc_ini = forms.DateField(label='Vencimento de:', required=True)
+    data_venc_fim = forms.DateField(label='Vencimento até:', required=True)
+    empresa = forms.ModelChoiceField(label='Empresa', empty_label='Todas', required=False,
+                                     queryset=Company.objects.none())
+    contas_financeiras = forms.ModelMultipleChoiceField(queryset=Contafinanceira.objects.none())
+
+    def __init__(self,empresa,contas,*args, **kwargs):
+        super(FormFluxoCaixa, self).__init__(*args, **kwargs)
+        self.fields['contas_financeiras'].queryset = contas
+        self.fields['empresa'].queryset = empresa
 

@@ -55,7 +55,7 @@
                                     </td>
                                     <td></td>
                                     <td></td>
-                                    <td><span class="text-right ">{% if forloop.last %}<strong> = Resultado </strong>{% else %} = {% endif %}</span></td>
+                                    <td><span class="text-right ">{% if forloop.last %}<strong> Resultado no período </strong>{% else %} = {% endif %}</span></td>
                                     <td class="d-none d-sm-table-cell text-right">
                                         {% if forloop.last %}
                                         <span{% if  sld.vlr_saldo < 0 %} class="text-danger"{% else %} class="text-success" {% endif %}><strong>{{ sld.vlr_saldo|intcomma }}</strong></span>

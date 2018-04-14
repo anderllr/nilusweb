@@ -1,6 +1,5 @@
 .tabela_formulario{
-    height: 292px;
-    width: 450px;	
+    height: 298px;
     overflow: auto;
     table-layout: fixed;
     border-collapse: collapse;
