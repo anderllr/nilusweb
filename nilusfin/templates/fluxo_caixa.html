@@ -47,23 +47,31 @@
                                                     <!--id="btn_impressao"><i class="fa fa-print"></i>-->
                                             <!--</button>-->
                                         </div>
+
                                     </div>
+
+                                </div>
+                                <div class="col-md-12">
+                                    <label class="css-control css-control-sm css-control-primary css-switch pull-right">
+                                {% render_field form_fluxo.considera_atraso type="checkbox" class='css-control-input' %}
+                                <span class="css-control-indicator"></span> Adiciona/Subtrai valores atrasados no saldo final?
+                            </label>
                                 </div>
 
                             </div>
                         </div>
                             <div>
                                 <a class="block block-link-pop block-bordered" href="javascript:void(0)">
-                                    <div class="block-header">
+                                    <div class="block-content" >
                                         <h3 class="block-title">Selecionar Contas</h3>
-                                    </div>
-                                    <div class="block-content">
                                         {% include '_table_contassaldo.html' %}
                                     </div>
                                 </a>
                             </div>
+
                     </form>
                 </div>
+                {% if fluxo_gerado == 'S' %}
                 <br>
                 <div class="row">
                     {% include 'fc_card_rec_atraso.html' %}
@@ -72,8 +80,11 @@
                 <div class="row">
                     {% include 'fc_lanctos_avencer.html' %}
                 </div>
+                <div class="row">
+                    {% include 'fc_resumo_fluxo.html' %}
+                </div>
             </div>
-
+            {% endif %}
         </div>
     </div>
 </div>
@@ -184,6 +195,9 @@ $("#btn_impressao").on("click",function(e){
 
 
 });
+{% if fluxo_gerado == 'S' %}
+{% include 'js_graficos_fluxocaixa.html' %}
+{% endif %}
 
 
 

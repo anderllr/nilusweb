@@ -88,6 +88,7 @@ class FormFluxoCaixa(forms.Form):
     empresa = forms.ModelChoiceField(label='Empresa', empty_label='Todas', required=False,
                                      queryset=Company.objects.none())
     contas_financeiras = forms.ModelMultipleChoiceField(queryset=Contafinanceira.objects.none())
+    considera_atraso = forms.BooleanField(label='Considera Atrasados',required=False)
 
     def __init__(self,empresa,contas,*args, **kwargs):
         super(FormFluxoCaixa, self).__init__(*args, **kwargs)

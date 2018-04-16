@@ -791,6 +791,7 @@ def fluxo_caixa(request):
     usuario = request.user
     contas_pk = []
     saldos = saldo_conta(empresa,contas,data_saldo,usuario)
+    saldo_final = None
     rec_atraso_lanc = None
     rec_atraso_tot = None
     desp_atraso_lanc = None
@@ -799,6 +800,7 @@ def fluxo_caixa(request):
     desp_tot = None
     fluxo_dia = None
     lanctos = None
+    fluxo_gerado = None
 
 
     form_fluxo = FormFluxoCaixa(empresa,contas,request.POST or None)
@@ -808,6 +810,7 @@ def fluxo_caixa(request):
         data_venc_fim = form_fluxo.cleaned_data.get('data_venc_fim', '')
         contas =        form_fluxo.cleaned_data.get('contas_financeiras', '')
         empresa =       form_fluxo.cleaned_data.get('empresa', '')
+        atrasados =     form_fluxo.cleaned_data.get('considera_atraso','')
 
 
         for c in contas:
@@ -815,11 +818,18 @@ def fluxo_caixa(request):
 
 
         rec_atraso_lanc,rec_atraso_tot,desp_atraso_lanc,desp_atraso_tot = lanctos_atraso(empresa,contas_pk,data_venc_ini,usuario)
-        rec_tot,desp_tot,fluxo_dia,lanctos = lanctos_avencer(empresa,contas_pk,data_venc_ini,data_venc_fim,usuario)
+        rec_tot,desp_tot,fluxo_dia,lanctos,saldo_final = lanctos_avencer(empresa,contas_pk,data_venc_ini,data_venc_fim,usuario)
+        fluxo_gerado = 'S'
+
+
+        if atrasados:
+            saldo_final = Decimal(saldo_final) + (Decimal(rec_atraso_tot['vlr_saldo']) - Decimal(desp_atraso_tot['vlr_saldo']))
+
 
 
     context = {
         'form_fluxo': form_fluxo,
+        'fluxo_gerado': fluxo_gerado,
         'saldos' : saldos,
         'data_hoje' : data_hoje,
         'contas' : contas,
@@ -830,7 +840,8 @@ def fluxo_caixa(request):
         'rec_tot' : rec_tot,
         'desp_tot': desp_tot,
         'fluxo_dia': fluxo_dia,
-        'lanctos' : lanctos
+        'lanctos' : lanctos,
+        'saldo_final' : saldo_final
     }
 
     return render(request, template_name, context)

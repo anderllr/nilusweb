@@ -216,7 +216,7 @@ def lanctos_avencer(empresa,contas,data_venc_ini,data_venc_fim,user):
 
 
 
-    return(rec_tot,desp_tot,fluxo_dia,lanctos)
+    return(rec_tot,desp_tot,fluxo_dia,lanctos,tot_acum)
 
 
 

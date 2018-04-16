@@ -1,0 +1,44 @@
+{% load static widget_tweaks humanize %}
+<div class="col-md-12">
+   <a class="block block-link-shadow" href="javascript:void(0)">
+
+      <div class="block block-bordered ">
+         <div class="block-header">
+                <h3 class="block-title">Resultado Fluxo de Caixa</h3>
+         </div>
+         <div class="block-content block-content-full">
+            <div class="col-md-2">
+                       <div class="font-size-h3 font-w700 text-right {% if saldo_final > 0 %} text-success  {% else %} text-danger {% endif %}">
+                                                                                {% if saldo_final != None %} {{ saldo_final|intcomma }}
+                                                                                     {% else  %} 0,00 {% endif %}
+                       </div>
+                    <div class="font-size-sm font-w600 text-uppercase text-right text-muted">Saldo Final</div>
+
+                 </div>
+            <div class="row">
+                <div class="col-md-12">
+                   <div class="block">
+                    <div class="block-content block-content-full text-center">
+                        <p>Receitas x Despesas por dia (sem atrasados)</p>
+                        <canvas class="js-chartjs-bars"></canvas>
+                    </div>
+                </div>
+                 </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                   <div class="block">
+                    <div class="block-content block-content-full text-center">
+                        <p>Movimentação de saldo no período (sem atrasados)</p>
+                        <canvas class="js-chartjs-dashboard-lines2"></canvas>
+                    </div>
+                </div>
+                 </div>
+            </div>
+
+
+         </div>
+
+      </div>
+   </a>
+</div>

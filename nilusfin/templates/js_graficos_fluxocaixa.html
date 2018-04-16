@@ -1,0 +1,157 @@
+{% load static widget_tweaks humanize utils l10n %}
+var NilusCharts = function() {
+
+
+    var initChartsChartJS = function () {
+        // Set Global Chart.js configuration
+        Chart.defaults.global.defaultFontColor              = '#555555';
+        Chart.defaults.scale.gridLines.color                = "rgba(0,0,0,.04)";
+        Chart.defaults.scale.gridLines.zeroLineColor        = "rgba(0,0,0,.1)";
+        Chart.defaults.scale.ticks.beginAtZero              = false;
+        Chart.defaults.global.elements.line.borderWidth     = 1;
+        Chart.defaults.global.elements.point.radius         = 5;
+        Chart.defaults.global.elements.point.hoverRadius    = 7;
+        Chart.defaults.global.tooltips.cornerRadius         = 3;
+        Chart.defaults.global.legend.labels.boxWidth        = 12;
+        Chart.defaults.global.scaleLabel = function(label){
+                        return label.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");};
+        Chart.defaults.global.multiTooltipTemplate = function(label){
+                        return label.datasetLabel + ': ' + label.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");};
+
+
+
+        // Get Chart Containers
+
+        var chartBarsCon   = jQuery('.js-chartjs-bars');
+        var chartDashboardLinesCon2 = jQuery('.js-chartjs-dashboard-lines2');
+
+
+
+        // Set Chart and Chart Data variables
+        var chartLinesBarsRadarData,chartDashboardLines2;
+
+        // Lines/Bar/Radar Chart Data
+
+        var chartLinesBarsRadarData = {
+            labels: [
+                     {% for fd in fluxo_dia %}
+                        '{{ fd.data|date:"d/m/y" }}',
+                    {% endfor %}
+                    ],
+            datasets: [
+                {
+                    label: 'Receitas',
+                    fill: true,
+                    backgroundColor: 'rgba(39, 92, 68, 0.9)',
+                    borderColor: 'rgba(39, 92, 68, 2.1)',
+                    pointBackgroundColor: 'rgba(66,165,245,1)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgba(66,165,245,1)',
+                    data: [
+                          {% for fd in fluxo_dia %}
+                                {% if fd.tot_rec_dia == None %}
+                                    0
+                                {% else %}
+                                    {{ fd.tot_rec_dia.vlr_saldo|unlocalize }}
+                                {% endif %},
+                          {% endfor %}
+                    ]
+                },
+                {
+                    label: 'Despesas',
+                    fill: true,
+                    backgroundColor: 'rgba(202, 69, 62, 0.9)',
+                    borderColor: 'rgba(202, 69, 62, 2.1)',
+                    pointBackgroundColor: 'rgba(66,165,245,1)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgba(66,165,245,1)',
+                    data: [
+                            {% for fd in fluxo_dia %}
+                                {% if fd.tot_desp_dia == None %}
+                                    0
+                                {% else %}
+                                    {{ fd.tot_desp_dia.vlr_saldo|unlocalize }}
+                                {% endif %},
+                          {% endfor %}
+                    ]
+                }
+            ]
+        };
+
+        var chartDashboardLinesData2 = {
+            labels: [
+                      {% for fd in fluxo_dia %}
+                        '{{ fd.data|date:"d/m/y" }}',
+                    {% endfor %}
+                        ],
+            datasets: [
+                {
+                    label: 'Saldo do dia',
+                    fill: true,
+                     backgroundColor: 'rgba(66,165,245,.25)',
+                    borderColor: 'rgba(66,165,245,1)',
+                    pointBackgroundColor: 'rgba(66,165,245,1)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgba(66,165,245,1)',
+                    data: [
+                            {% for fd in fluxo_dia %}
+                                {% if fd.tot_acum == None %}
+                                    0
+                                {% else %}
+                                    {{ fd.tot_acum|unlocalize }}
+                                {% endif %},
+                            {% endfor %}
+                            ]
+                }
+            ]
+        };
+
+        var chartDashboardLinesOptions2 = {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        suggestedMax: 480
+                    }
+                }]
+            },
+            tooltips: {
+                callbacks: {
+                    label: function(tooltipItems, data) {
+                        return ' $ ' + tooltipItems.yLabel;
+                    }
+                }
+            }
+        };
+
+
+
+
+        // Init Charts
+
+        if ( chartBarsCon.length ) {
+            chartBars  = new Chart(chartBarsCon, { type: 'bar', data: chartLinesBarsRadarData });
+        }
+
+         if ( chartDashboardLinesCon2.length ) {
+            chartDashboardLines2 = new Chart(chartDashboardLinesCon2, { type: 'line', data: chartDashboardLinesData2, options: chartDashboardLinesOptions2 });
+        }
+
+    };
+
+
+
+    return {
+        init: function () {
+            // Init Chart.js Charts
+            initChartsChartJS();
+        }
+    };
+}();
+
+// Initialize when page loads
+jQuery(function(){ NilusCharts.init(); });
+
+
