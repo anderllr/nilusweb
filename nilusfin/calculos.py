@@ -211,6 +211,9 @@ def lanctos_avencer(empresa,contas,data_venc_ini,data_venc_fim,user):
         tot_dia = Decimal(tot_rec_dia['vlr_saldo']) - Decimal(tot_desp_dia['vlr_saldo'])
         tot_acum = tot_acum + tot_dia
 
+        if tot_acum is None:
+            tot_acum = 0
+
         fluxo_dia.append({"data": d['dt_vencimento'] ,"tot_rec_dia": tot_rec_dia,"tot_desp_dia" :tot_desp_dia, "tot_dia" : tot_dia,"tot_acum": tot_acum})
 
 

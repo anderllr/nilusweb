@@ -823,6 +823,11 @@ def fluxo_caixa(request):
 
 
         if atrasados:
+            if rec_atraso_tot['vlr_saldo'] is None:
+                 rec_atraso_tot['vlr_saldo'] = 0
+            if desp_atraso_tot['vlr_saldo'] is None:
+                 rec_atraso_tot['vlr_saldo'] = 0
+
             saldo_final = Decimal(saldo_final) + (Decimal(rec_atraso_tot['vlr_saldo']) - Decimal(desp_atraso_tot['vlr_saldo']))
 
 
