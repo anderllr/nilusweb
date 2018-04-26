@@ -1,0 +1,68 @@
+var cpo_empresa
+            var cpo_fantasia
+            var cpo_inc_mun
+            var cpo_cep
+            var cpo_endereco
+            var cpo_num
+            var cpo_bairro
+            var cpo_mun
+            var cpo_uf
+
+
+            cpo_fantasia = $('#id_company').val();
+            cpo_plr_finan = $('#id_plr_financeiro').val();
+            cpo_ccusto  = $('#c_custo_id2').val();
+            cpo_contafin = $('#id_conta_finan2').val();
+
+
+            if(cpo_plr_finan == ''){
+                if(alerta == 'n'){
+                alert ('Favor preencher os campos obigatórios!');
+                }
+                alerta = 's';
+                $('.aviso_plr_financeiro').show();
+            }
+
+            if(cpo_empresa == ''){
+                if(alerta == 'n'){
+                alert ('Favor preencher os campos obigatórios!');
+                }
+                alerta = 's';
+                $('.aviso_company').show();
+            }
+
+            if(cpo_ccusto == ''){
+                if(alerta == 'n'){
+                alert ('Favor preencher os campos obigatórios!');
+                }
+                alerta = 's';
+                $('.aviso_ccusto').show();
+            }
+
+            if(cpo_contafin == ''){
+                if(alerta == 'n'){
+                alert ('Favor preencher os campos obigatórios!');
+                }
+                alerta = 's';
+                $('.aviso_conta_finan').show();
+            }
+
+
+            if((cpo_plr_finan == '') || (cpo_empresa == '') || (cpo_ccusto == '')
+               (cpo_contafin == '')) {
+                    if(alerta == 'n'){
+                        alert ('Favor preencher os campos obigatórios!');
+                    }
+                    if (cpo_plr_finan == ''){
+                    $('.aviso_plr_financeiro').show();
+                    }
+                    if (cpo_empresa == ''){
+                    $('.aviso_company').show();
+                    }
+                    if (cpo_ccusto == ''){
+                    $('.aviso_ccusto').show();
+                    }
+                    if (cpo_contafin == ''){
+                    $('.aviso_conta_finan').show();
+                    }
+            }

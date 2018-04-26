@@ -64,7 +64,7 @@ class CreateCompany(LoginRequiredMixin,CreateView):
         return context
 
     model = Company
-    fields = ['cnpj_cpf','razao','fantasia','cep','endereco','numero','complemento','bairro','cidade','uf',
+    fields = ['cnpj_cpf','insc_est','insc_mun','razao','fantasia','cep','endereco','numero','complemento','bairro','cidade','uf',
               'email','telefone']
 
     def get_success_url(self):
@@ -117,7 +117,7 @@ class EditCompany(LoginRequiredMixin,UpdateView):
 
 
     model = Company
-    fields = ['cnpj_cpf','razao', 'fantasia', 'cep', 'endereco', 'numero', 'complemento', 'bairro', 'cidade', 'uf',
+    fields = ['cnpj_cpf','insc_mun','insc_est','razao', 'fantasia', 'cep', 'endereco', 'numero', 'complemento', 'bairro', 'cidade', 'uf',
               'email', 'telefone','situacao']
 
 
@@ -719,7 +719,6 @@ def grupodre_list(request):
     else:
         template_name = 'grupodre_list.html'
 
-
     if request.user.is_masteruser is True:
          gdre = Grupodre.objects.filter(master_user=request.user.pk)
     else:
@@ -755,11 +754,6 @@ class CreateGrupoDRE(LoginRequiredMixin,CreateView):
         grupodre = form.save(commit=False)
         grupodre.master_user = self.request.user.user_master
         seq_grupodre = Sequenciais.objects.get(user=self.request.user.user_master)
-
-
-
-
-
 
         grupodre.num_grupodre = seq_grupodre.grupodre + 1
         seq_grupodre.grupodre = grupodre.num_grupodre

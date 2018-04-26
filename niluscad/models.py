@@ -16,6 +16,8 @@ class Company(models.Model):
     cnpj_cpf = models.CharField('CNPJ/CPF', max_length=20,unique=True)
     razao = models.CharField('Razão/Nome',max_length=60)
     fantasia = models.CharField('Fantasia',max_length=40,blank=True)
+    insc_est = models.CharField('Inscrição Estadual',max_length=20, blank=True)
+    insc_mun = models.CharField('Inscrição Municipal', max_length=20, blank=True)
 
     # endereço
     cep = models.CharField('CEP', max_length=12, blank=True, null=True)
@@ -35,10 +37,7 @@ class Company(models.Model):
     data_cadastro = models.DateTimeField('Data de cadastro', auto_now_add=True,blank=True,null=True)
     situacao = models.BooleanField('Ativo',default=True)
 
-
-
     # dados de configuração
-
 
 
     class Meta:

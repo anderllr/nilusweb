@@ -7,7 +7,12 @@
 {% else %}
 <div class="block block-themed block-rounded">
     <div class="block-header bg-flat-dark">
-        <h3 class="block-title">Alterar Empresa: {{ dados_cadastro.num_company }} - {{ dados_cadastro.razao }}</div></h3>
+        <h3 class="block-title">Alterar Empresa: {{ dados_cadastro.num_company }} - {{ dados_cadastro.razao }}</h3>
+        <div class="block-options antes_insert">
+                            <button type="button" class="btn-block-option cancel_form">
+                                <i class="fa fa-close"></i>
+                            </button>
+                        </div>
     </div>
     <ul class="nav nav-tabs nav-tabs-alt" data-toggle="tabs" role="tablist">
         <li class="nav-item">
@@ -44,14 +49,6 @@
                                 {% endfor %}
                         </div>
                         <div class="col-md-8">
-                             <label class="css-control css-control-sm css-control-primary css-switch col-md-5 pull-right">
-                                {% render_field form.situacao type="checkbox" class='css-control-input' %}
-                                <span class="css-control-indicator"></span> Ativo
-                            </label>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                       <div class="col-md-6">
                             <div class="form-material floating retorno_busca">
                                 {% render_field  form.razao class='form-control' %}
                                 <label for="{{  form.razao.id }}">Razão Social/Nome</label>
@@ -62,7 +59,9 @@
                                 {% endfor %}
                             </div>
                        </div>
-                       <div class="col-md-6">
+                    </div>
+                    <div class="form-group row">
+                       <div class="col-md-4">
                            <div class="form-material floating retorno_busca">
                                {% render_field  form.fantasia class='form-control' %}
                                <label for="{{  form.fantasia.id }}">Nome Fantasia</label>
@@ -71,7 +70,42 @@
                                    <p class="mb-0">{{ error }}</p>
                                </div>
                                {% endfor %}
+                               <div>
+                                    <small class="form-control-feedback text-danger campo_necessario" style="display:none;" > campo necessário para emissão de notas </small>
+                               </div>
                            </div>
+                        </div>
+                        <div class="col-md-3">
+                           <div class="form-material floating retorno_busca">
+                               {% render_field  form.insc_est class='form-control' %}
+                               <label for="{{  form.insc_est.id }}">Insc. Estadual</label>
+                               {% for error in form.insc_est.errors %}
+                               <div class="alert alert-danger alert-dismissable">
+                                   <p class="mb-0">{{ error }}</p>
+                               </div>
+                               {% endfor %}
+                           </div>
+                        </div>
+                        <div class="col-md-3">
+                           <div class="form-material floating retorno_busca">
+                               {% render_field  form.insc_mun class='form-control' %}
+                               <label for="{{  form.insc_mun.id }}">Insc. Municipal</label>
+                               {% for error in form.insc_mun.errors %}
+                               <div class="alert alert-danger alert-dismissable">
+                                   <p class="mb-0">{{ error }}</p>
+                               </div>
+                               {% endfor %}
+                               <div>
+                                    <small class="form-control-feedback text-danger campo_necessario" style="display:none;" > campo necessário para emissão de notas </small>
+                               </div>
+                           </div>
+                            
+                        </div>
+                        <div class="col-md-2">
+                             <label class="css-control css-control-sm css-control-primary css-switch col-md-5 pull-right">
+                                {% render_field form.situacao type="checkbox" class='css-control-input' %}
+                                <span class="css-control-indicator"></span> Ativo
+                            </label>
                         </div>
                     </div>
                 </div>
@@ -86,6 +120,9 @@
                                 <p class="mb-0">{{ error }}</p>
                             </div>
                             {% endfor %}
+                            <div>
+                                 <small class="form-control-feedback text-danger campo_necessario" style="display:none;" > campo necessário para emissão de notas </small>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-7">
@@ -97,6 +134,9 @@
                                 <p class="mb-0">{{ error }}</p>
                             </div>
                             {% endfor %}
+                            <div>
+                                    <small class="form-control-feedback text-danger campo_necessario" style="display:none;" > campo necessário para emissão de notas </small>
+                               </div>
                         </div>
                     </div>
                     <div class="col-md-2">
@@ -108,6 +148,9 @@
                                 <p class="mb-0">{{ error }}</p>
                             </div>
                             {% endfor %}
+                            <div>
+                                    <small class="form-control-feedback text-danger campo_necessario" style="display:none;" > campo necessário para emissão de notas </small>
+                               </div>
                         </div>
                     </div>
                 </div>
@@ -132,6 +175,9 @@
                                 <p class="mb-0">{{ error }}</p>
                             </div>
                             {% endfor %}
+                            <div>
+                                <small class="form-control-feedback text-danger campo_necessario" style="display:none;" > campo necessário para emissão de notas </small>
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-4">
@@ -143,6 +189,9 @@
                                 <p class="mb-0">{{ error }}</p>
                             </div>
                             {% endfor %}
+                            <div>
+                                    <small class="form-control-feedback text-danger campo_necessario" style="display:none;" > campo necessário para emissão de notas </small>
+                               </div>
                         </div>
                     </div>
                     <div class="col-md-2">
@@ -154,6 +203,9 @@
                                 <p class="mb-0">{{ error }}</p>
                             </div>
                             {% endfor %}
+                            <div>
+                                    <small class="form-control-feedback text-danger campo_necessario" style="display:none;" > campo necessário para emissão de notas </small>
+                               </div>
                         </div>
                     </div>
                 </div>

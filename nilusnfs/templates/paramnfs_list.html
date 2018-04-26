@@ -1,0 +1,264 @@
+{% extends "menu.html" %}
+{% load static widget_tweaks humanize %}
+
+
+
+<!-- Bread crumb and right sidebar toggle -->
+{% block title %} Parametros de NFS {% endblock %}
+
+{% block page_body %}
+
+<div class="block">
+    <div class="block-content">
+                    <div class="block">
+                <div class="block-content">
+                        <div class="row  btn-insert">
+                            <div>
+                                <button type="button" class="btn btn-outline-primary mr-5 mb-5  new_paramnfs"
+                                    data-toggle="tooltip" data-placement="bottom" title="Novo Parametro"  title="">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="row">
+                                <div class="form_inc col-md-12">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form_edit col-md-12"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row table table_paramnfs">
+                     {% include '_table_paramnfs.html' %}
+                    </div>
+                </div>
+            </div>
+
+    </div>
+</div>
+
+{% endblock %}
+
+
+{% block javascript %}
+
+
+
+$('.chosen-select').chosen({ width: '100%' });
+$('.form_inc').hide();
+$('.form_edit').hide();
+
+
+
+
+table = $('#tabela_paramnfs').DataTable({
+    "language": {
+     "lengthMenu": "Mostrando _MENU_ registros por página",
+     "search" : "Procurar: ",
+     "info" : "Exibindo de _START_ a _END_ de _TOTAL_ registros",
+     "infoEmpty": "Nenhum registro encontrado",
+     "infoFiltered": "(filtrado entre _MAX_ registros)",
+     "paginate" : {
+       "first":      "Primeiro",
+       "last":       "Último",
+       "next":       "Próximo",
+       "previous":   "Anterior"
+     },
+     responsive: {
+            details: {
+                type: 'column'
+            }
+        },
+        columnDefs: [ {
+            className: 'control',
+            orderable: false,
+            targets:   0
+        } ],
+        order: [ 1, 'asc' ]
+ }
+});
+
+
+
+
+
+
+<!-- Create Company -->
+
+$(".new_paramnfs").on("click",function(e){
+     e.preventDefault();
+     $(".form_inc").load("{% url 'create_paramnfs' %}", function(){
+        $('.form_inc').show("puff");
+        $('.new_paramnfs').hide("drop");
+        $('.table_paramnfs').hide("drop");
+        $('.chosen-select').chosen({ width: '100%' });
+
+
+        {% include 'js_floating_labels.html' %}
+        {% include 'js_tabs.html' %}
+        {% include 'js_masks.html' %}
+
+
+
+        $(".form_inc .cancel_form").on("click",function(e){
+           $('.form_inc').hide("drop");
+           $('.new_paramnfs').show();
+           $('.table_paramnfs').show();
+        });
+     });
+});
+
+
+
+
+$(".form_inc").on("submit","form",function(e){
+     e.preventDefault();
+     var dados = $(this).serialize();
+     var data = new FormData($('form').get(0));
+
+
+
+     $.post("{% url 'create_paramnfs' %}",dados,function(result){
+        $(".form_inc").html(result);
+        if(close_modal==true){
+           $('.form_inc').hide("drop");
+           $('.new_paramnfs').show();
+              window.location.reload();
+        }
+        else{
+            $(".form_inc").show();
+            {% include 'js_floating_labels.html' %}
+            {% include 'js_tabs.html' %}
+            $('.chosen-select').chosen({ width: '100%' });
+
+               $(".form_inc .cancel_form").on("click",function(e){
+                    $('.form_inc').hide("drop");
+                    $('.new_paramnfs').show();
+                    $('.table_paramnfs').show();
+               });
+
+
+        }
+     });
+});
+
+
+<!-- Edit Company -->
+$('.table_paramnfs').on('click', '.edit_paramnfs',function(e){
+    e.preventDefault();
+    $(".form_edit ").load($(this).attr('href'), function(){
+              $('.form_edit').show("slide");
+              $('.new_paramnfs').hide("drop");
+              $('.table_paramnfs').hide("drop");
+              {% include 'js_floating_labels.html' %}
+              {% include 'js_masks.html' %}
+              $('.chosen-select').chosen({ width: '100%' });
+
+
+
+
+              $(".form_edit .cancel_form").on("click",function(e){
+                  $('.form_edit').hide("drop");
+                  $('.new_planofinan').show();
+                  $('.table_paramnfs').show();
+              });
+    });
+
+
+});
+
+
+
+$('.table_paramnfs').on('click', '.pendencias_cad',function(e){
+    e.preventDefault();
+    $(".form_edit ").load($(this).attr('href'), function(){
+              $('.form_edit').show("slide");
+              $('.new_paramnfs').hide("drop");
+              $('.table_paramnfs').hide("drop");
+              {% include 'js_floating_labels.html' %}
+              {% include 'js_masks.html' %}
+              {% include 'js_tabs.html' %}
+              {% include 'js_pesquisas_cnpj_cep.html' %}
+              $('.campo_necessario').show();
+              $('.chosen-select').chosen({ width: '100%' });
+
+
+
+
+              $(".form_edit .cancel_form").on("click",function(e){
+                  $('.form_edit').hide("drop");
+                  $('.new_planofinan').show();
+                  $('.table_paramnfs').show();
+              });
+    });
+
+
+});
+
+
+
+
+
+$(".form_edit").on("submit","form",function(e){
+	 	 e.preventDefault();
+
+	 	 var dados = $(this).serialize();
+	 	 $.post($(this).attr('action'),dados,function(result){
+	 	    $(".form_edit").html(result);
+	 	    if(close_modal==true){
+	 	       $('.form_edit').hide("drop");
+                 window.location.reload();
+
+	 	    }
+	 	    else{
+	 	       $('.form_edit').show("puff");
+                {% include 'js_floating_labels.html' %}
+                $('.chosen-select').chosen({ width: '100%' });
+
+
+                $(".form_inc .cancel_form").on("click",function(e){
+                    $('.form_edit').hide("drop");
+                    $('.new_paramnfs').show();
+                     $('.table_paramnfs').show();
+	 	        });
+            }
+	 	 });
+	 });
+
+
+$(".table_paramnfs").on("click",".delete_paramnfs", function(e){
+
+    e.preventDefault();
+    var linkURL = $(this).attr("href");
+    swal({
+        title: "Tem certeza?",
+        text: "Ao aceitar esta empresa será excluida!",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Sim, Excluir!",
+        cancelButtonText: "Não, Cancelar!",
+        closeOnConfirm: false,
+        closeOnCancel: false
+    },
+    function(isConfirm){
+        if (isConfirm) {
+
+            swal("Excluido!", "Registro excluido com sucesso!", "success");
+            window.location.href = linkURL;
+        }
+        else {
+
+            swal("Cancelado", "Exclusão cancelada", "error");
+        }
+	});
+
+});
+
+
+{% endblock %}
+
+
+

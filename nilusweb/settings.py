@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'nilusadm',
     'niluscad',
     'nilusfin',
+    'nilusnfs',
     'recebiveis',
     'lancfinanceiros',
     'relatorios',

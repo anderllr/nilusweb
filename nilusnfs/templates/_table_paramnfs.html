@@ -1,0 +1,33 @@
+    <table id="tabela_paramnfs" class="table table-bordered table-striped table-vcenter js-dataTable-full">
+                <thead>
+                    <tr>
+                        <th style="width:10%;">Código</th>
+                        <th style="width:70%;">Empresa</th>
+                        <th style="width:20%;"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for p in paramnfs %}
+                    <tr>
+                        <td>{{ p.num_param }}</td>
+                        <td>{{ p.company }}</td>
+                        <td>
+                            {% for pend in pendencias  %}
+                              {% if p.company.pk == pend.pk_empresa %}
+                                    <button type="button" class="btn btn-sm btn-warning pendencias_cad"  href="{% url 'edit_company' pend.pk_empresa %}" data-toggle="tooltip" data-placement="bottom" title="Empresa com pendências/Clique para atualizar o cadastro">
+                                        <i class="fa fa-warning"></i>
+                                    </button>
+                              {% endif %}
+                            {% endfor %}
+                             <button type="button" class="btn btn-sm btn-outline-secondary edit_paramnfs"  href="{% url 'edit_paramnfs' p.pk  %}" data-toggle="tooltip" data-placement="bottom" title="Editar">
+                                <i class="fa fa-pencil"></i>
+                             </button>
+                             <button type="button" class="btn btn-sm btn-outline-danger delete_paramnfs"  href="{% url 'delete_paramnfs' p.pk %}" data-toggle="tooltip" data-placement="bottom" title="Excluir">
+                                <i class="fa fa-trash-o"></i>
+                             </button>
+
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>

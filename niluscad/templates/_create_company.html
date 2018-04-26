@@ -48,9 +48,7 @@
                                 <div class="alert alert-danger alert-dismissable">{{ error }}</div>
                                 {% endfor %}
                         </div>
-                    </div>
-                    <div class="form-group row">
-                       <div class="col-md-6">
+                        <div class="col-md-8">
                             <div class="form-material floating retorno_busca">
                                 {% render_field  form.razao class='form-control' %}
                                 <label for="{{  form.razao.id }}">Razão Social/Nome</label>
@@ -61,6 +59,8 @@
                                 {% endfor %}
                             </div>
                        </div>
+                    </div>
+                    <div class="form-group row">
                        <div class="col-md-6">
                            <div class="form-material floating retorno_busca">
                                {% render_field  form.fantasia class='form-control' %}
@@ -71,6 +71,24 @@
                                </div>
                                {% endfor %}
                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-material floating input-group">
+                                {% render_field  form.insc_est class='form-control' %}
+                                <label for="{{  form.insc_est.id }}">Insc. Estadual</label>
+                            </div>
+                                {% for error in form.insc_est.errors %}
+                                <div class="alert alert-danger alert-dismissable">{{ error }}</div>
+                                {% endfor %}
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-material floating input-group">
+                                {% render_field  form.insc_mun class='form-control' %}
+                                <label for="{{  form.insc_mun.id }}">Insc. Municipal</label>
+                            </div>
+                                {% for error in form.insc_mun.errors %}
+                                <div class="alert alert-danger alert-dismissable">{{ error }}</div>
+                                {% endfor %}
                         </div>
                     </div>
                 </div>

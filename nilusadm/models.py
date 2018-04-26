@@ -41,6 +41,7 @@ class Sequenciais(models.Model):
     recebiveis = models.IntegerField('Seq Tit. Receber', default=0)
     lanc_financeiros = models.IntegerField('Seq Lancamento Financeiro', default=0)
     grupodre = models.IntegerField('Seq Lancamento Financeiro', default=0)
+    paramnfs = models.IntegerField('Seq Parametros Nfs',default=0)
 
 
 
