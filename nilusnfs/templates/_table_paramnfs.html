@@ -19,9 +19,9 @@
                                     </button>
                               {% endif %}
                             {% endfor %}
-                             <button type="button" class="btn btn-sm btn-outline-secondary edit_paramnfs"  href="{% url 'edit_paramnfs' p.pk  %}" data-toggle="tooltip" data-placement="bottom" title="Editar">
+                             <a  class="btn btn-sm btn-outline-secondary edit_paramnfs"  href="{% url 'edit_paramnfs' p.pk  %}" data-toggle="tooltip" data-placement="bottom" title="Editar">
                                 <i class="fa fa-pencil"></i>
-                             </button>
+                             </a>
                              <button type="button" class="btn btn-sm btn-outline-danger delete_paramnfs"  href="{% url 'delete_paramnfs' p.pk %}" data-toggle="tooltip" data-placement="bottom" title="Excluir">
                                 <i class="fa fa-trash-o"></i>
                              </button>

@@ -46,10 +46,7 @@ def paramnfs_list(request):
 
 class CreateParamNFS(LoginRequiredMixin,CreateView):
     def get_template_names(self):
-        if self.request.is_ajax():
-            return ["_create_paramnfs.html"]
-        else:
-            return ["_create_paramnfs.html"]
+        return ["create_paramnfs.html"]
 
     def get_context_data(self, **kwargs):
         context = super(CreateParamNFS, self).get_context_data(**kwargs)
@@ -82,12 +79,7 @@ class CreateParamNFS(LoginRequiredMixin,CreateView):
         seq_paramnfs.save()
         paramnfs.save()
 
-
-        if self.request.is_ajax():
-            context = self.get_context_data(form=form, success=True)
-            return self.render_to_response(context)
-        else:
-            return redirect(self.get_success_url())
+        return redirect(self.get_success_url())
 
 
 
@@ -95,10 +87,7 @@ class CreateParamNFS(LoginRequiredMixin,CreateView):
 class EditParamNFS(LoginRequiredMixin,UpdateView):
 
     def get_template_names(self):
-        if self.request.is_ajax():
-            return ["_edit_paramnfs.html"]
-        else:
-            raise Http404
+       return ["edit_paramnfs.html"]
 
     def get_success_url(self):
         return reverse_lazy('paramnfs_list')
@@ -119,12 +108,7 @@ class EditParamNFS(LoginRequiredMixin,UpdateView):
 
     def form_valid(self,form):
         form.save()
-
-        if self.request.is_ajax():
-            context = self.get_context_data(form=form,success=True, ok='ok')
-            return self.render_to_response(context)
-        else:
-            return redirect(self.get_success_url())
+        return redirect(self.get_success_url())
 
 
 @login_required

@@ -14,10 +14,10 @@
                 <div class="block-content">
                         <div class="row  btn-insert">
                             <div>
-                                <button type="button" class="btn btn-outline-primary mr-5 mb-5  new_paramnfs"
+                                <a  class="btn btn-outline-primary mr-5 mb-5  new_paramnfs" href="{% url 'create_paramnfs'  %}"
                                     data-toggle="tooltip" data-placement="bottom" title="Novo Parametro"  title="">
                                     <i class="fa fa-plus"></i>
-                                </button>
+                                </a>
                             </div>
                         </div>
                         <div>
@@ -87,87 +87,7 @@ table = $('#tabela_paramnfs').DataTable({
 
 <!-- Create Company -->
 
-$(".new_paramnfs").on("click",function(e){
-     e.preventDefault();
-     $(".form_inc").load("{% url 'create_paramnfs' %}", function(){
-        $('.form_inc').show("puff");
-        $('.new_paramnfs').hide("drop");
-        $('.table_paramnfs').hide("drop");
-        $('.chosen-select').chosen({ width: '100%' });
 
-
-        {% include 'js_floating_labels.html' %}
-        {% include 'js_tabs.html' %}
-        {% include 'js_masks.html' %}
-
-
-
-        $(".form_inc .cancel_form").on("click",function(e){
-           $('.form_inc').hide("drop");
-           $('.new_paramnfs').show();
-           $('.table_paramnfs').show();
-        });
-     });
-});
-
-
-
-
-$(".form_inc").on("submit","form",function(e){
-     e.preventDefault();
-     var dados = $(this).serialize();
-     var data = new FormData($('form').get(0));
-
-
-
-     $.post("{% url 'create_paramnfs' %}",dados,function(result){
-        $(".form_inc").html(result);
-        if(close_modal==true){
-           $('.form_inc').hide("drop");
-           $('.new_paramnfs').show();
-              window.location.reload();
-        }
-        else{
-            $(".form_inc").show();
-            {% include 'js_floating_labels.html' %}
-            {% include 'js_tabs.html' %}
-            $('.chosen-select').chosen({ width: '100%' });
-
-               $(".form_inc .cancel_form").on("click",function(e){
-                    $('.form_inc').hide("drop");
-                    $('.new_paramnfs').show();
-                    $('.table_paramnfs').show();
-               });
-
-
-        }
-     });
-});
-
-
-<!-- Edit Company -->
-$('.table_paramnfs').on('click', '.edit_paramnfs',function(e){
-    e.preventDefault();
-    $(".form_edit ").load($(this).attr('href'), function(){
-              $('.form_edit').show("slide");
-              $('.new_paramnfs').hide("drop");
-              $('.table_paramnfs').hide("drop");
-              {% include 'js_floating_labels.html' %}
-              {% include 'js_masks.html' %}
-              $('.chosen-select').chosen({ width: '100%' });
-
-
-
-
-              $(".form_edit .cancel_form").on("click",function(e){
-                  $('.form_edit').hide("drop");
-                  $('.new_planofinan').show();
-                  $('.table_paramnfs').show();
-              });
-    });
-
-
-});
 
 
 
@@ -184,9 +104,6 @@ $('.table_paramnfs').on('click', '.pendencias_cad',function(e){
               $('.campo_necessario').show();
               $('.chosen-select').chosen({ width: '100%' });
 
-
-
-
               $(".form_edit .cancel_form").on("click",function(e){
                   $('.form_edit').hide("drop");
                   $('.new_planofinan').show();
@@ -194,11 +111,7 @@ $('.table_paramnfs').on('click', '.pendencias_cad',function(e){
               });
     });
 
-
 });
-
-
-
 
 
 $(".form_edit").on("submit","form",function(e){
