@@ -71,6 +71,7 @@ class Cotacao(models.Model):
 
     data_indice = models.DateField('Data',null=True,blank=True)
     valor_cotacao = models.DecimalField('Valor',null=True,blank=True,decimal_places=4,max_digits=13)
+    valor_cotacao_text = models.CharField(verbose_name='Valor', max_length=20)
     user_cad = models.ForeignKey('accounts.User',models.SET_NULL, verbose_name='Usuario Criação',null=True,blank=True)
 
     cotacao_padrao = models.BooleanField('Cotação Padrão',default=False)
@@ -85,7 +86,7 @@ class Cotacao(models.Model):
 
 
     def __str__(self):
-        return str(self.valor_cotacao)
+        return str(self.valor_cotacao_text)
 
 
 

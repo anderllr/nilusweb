@@ -1,4 +1,4 @@
-{% load l10n %}
+{% load l10n humanize %}
 {% for cot in cotacao %}
-    <option value="{{ cot.pk|unlocalize }}">{{ cot.valor_cotacao }} - {{ cot.data_indice|date:'d/m/Y' }}</option>
+    <option value="{{ cot.pk|unlocalize }}">{{ cot.valor_cotacao_text|intcomma }} - {{ cot.data_indice|date:'d/m/Y' }}</option>
 {% endfor %}

@@ -37,6 +37,9 @@
         <link href="{% static 'assets/plugins/table_header_fixed/tb_header_fixed.css' %}" rel="stylesheet">
         <link rel="stylesheet" href="{% static 'assets/js/plugins/bootstrap-datepicker/css/bootstrap-datepicker3.min.css' %}">
 
+         <link rel="stylesheet" href="{% static 'assets/js/plugins/summernote/summernote-bs4.css' %}">
+
+
 
 
 
@@ -211,7 +214,7 @@
                                     <ul>
                                         <li>
                                             <a  href="{% url 'lancfin_list' %}">Lançamentos</a>
-                                            <!--<a  href="{% url 'indice_list' %}">Indices e Cotações</a>-->
+                                            <a  href="{% url 'indice_list' %}">Indices e Cotações</a>
                                             <li>
                                              <a class="nav-submenu" data-toggle="nav-submenu" href="#">Consultas/Relatórios</a>
                                              <ul>
@@ -223,8 +226,20 @@
                                         </li>
                                     </ul>
                                 </li>
+                            {% endif %}
+                             {% if permissions.nilusContratos == True %}
+                                <li>
+                                    <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="si si-book-open"></i><span class="sidebar-mini-hide">Serviços</span></a>
+                                    <ul>
+                                        <li>
+                                            <a  href="{% url 'contratos_list' %}">Contratos</a>
+                                            <!--<a  href="{% url 'indice_list' %}">Indices e Cotações</a>-->
+                                        </li>
+                                    </ul>
+                                </li>
                             </ul>
                             {% endif %}
+
                         </div>
                         <!-- END Side Navigation -->
                     </div>
@@ -351,9 +366,6 @@
             <footer id="page-footer" class="opacity-0">
                 <div class="content py-20 font-size-xs clearfix">
                     <div class="float-right">
-                        Crafted with <i class="fa fa-angellist text-pulse"></i> by <a class="font-w600" href="" target="_blank">mjcDEV</a>
-                    </div>
-                    <div class="float-left">
                         <a class="font-w600" href="" target="_blank">NilusWEB 1.1</a> &copy; <span class="js-year-copy">2017</span>
                     </div>
                 </div>
@@ -393,6 +405,12 @@
         <script src="{% static 'assets/js/plugins/flot/jquery.flot.resize.min.js' %}"></script>
 
 
+        <!--Campos de Editores-->
+        <script src="{% static 'assets/js/plugins/summernote/summernote-bs4.min.js' %}"></script>
+        <script src="{% static 'assets/js/plugins/summernote/lang/summernote-pt-BR.js' %}"></script>
+
+
+
 
 
         <!-- Page JS Code -->
@@ -405,7 +423,8 @@
 
                   {% include 'js_datepickers.html' %}
                   {% include 'js_modal_config_user.html' %}
-                  Codebase.helpers('table-tools');
+                  Codebase.helpers('table-tools','summernote');
+
 
 
 

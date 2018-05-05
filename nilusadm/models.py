@@ -15,6 +15,7 @@ class Permissions(models.Model):
     nilusProducao = models.BooleanField('Producao', default=False)
     nilusMaquinas = models.BooleanField('Máquinas', default=False)
     nilusFiscalCont = models.BooleanField('Fiscal e Contábil', default=False)
+    nilusContratos = models.BooleanField('Contratos',default=False)
 
 
 class Meta:
@@ -42,7 +43,7 @@ class Sequenciais(models.Model):
     lanc_financeiros = models.IntegerField('Seq Lancamento Financeiro', default=0)
     grupodre = models.IntegerField('Seq Lancamento Financeiro', default=0)
     paramnfs = models.IntegerField('Seq Parametros Nfs',default=0)
-
+    contratos = models.IntegerField('Seq Contratos',default=0)
 
 
 class Meta:

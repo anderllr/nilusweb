@@ -1,0 +1,434 @@
+{% extends "menu.html" %}
+{% load static widget_tweaks humanize %}
+
+
+
+<!-- Bread crumb and right sidebar toggle -->
+{% block title %} Contratos {% endblock %}
+
+{% block page_body %}
+
+<div class="block">
+    <div class="block-content">
+        <div class="block">
+            <div class="block-content block-content-full ribbon ribbon-left ribbon-bookmark ribbon-primary">
+                    <button class="btn btn-outline-secondary mr-5 mb-5 baixa btn_lancamentos pull-right" hidden
+                        data-toggle="tooltip" data-placement="bottom" title="Imprimir lançamentos listados"
+                         id="btn_impressao"><i class="fa fa-print"></i></button>
+                    <button class="btn btn-outline-primary mr-5 mb-5 new_contratos btn_lancamentos pull-right" data-toggle="tooltip" data-placement="bottom" title="Novo Contrato"><i class="fa fa-plus"></i></i></button>
+                    <button type="button"  class="btn  btn-outline-primary btn_lancamentos  mr-5 mb-5" id="mostrar_filtros"   data-toggle="tooltip" data-placement="bottom" title="Exibir filtros de pesquisa">
+                       <i class="fa fa-filter"></i> Pesquisar
+                   </button>
+
+                <div class="ribbon-box form_busca" style="display:none;">
+                    Filtros de Pesquisa
+                </div>
+                <br>
+                <br>
+                <div class="form_busca" style="display:none;">
+                    <form>
+                        <div class="filtros_extras">
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <div class="form-material input-group">
+                                        <label>{{ form.empresa.label_tag }}</label>
+                                        {% render_field form.empresa class="chosen-select" %}
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-material input-group">
+                                        <label>{{ form.cadgeral.label_tag }}</label>
+                                        {% render_field form.cadgeral class="chosen-select" %}
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-material input-group">
+                                        <label>{{ form.indice.label_tag }}</label>
+                                        {% render_field form.indice class="chosen-select" %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4">
+                                        <label for="id_data_lanc_ini">Data Contrato</label>
+                                        <div class="input-daterange input-group js-datepicker-enabled" data-date-format="dd/mm/yyyy" data-week-start="1" data-autoclose="true" data-today-highlight="true">
+                                            {% render_field form.data_contrato_ini class="form-control js-datepicker"   placeholder="dd/mm/aaaa" data-week-start="1" data-autoclose="true" data-today-highlight="true"%}
+                                            <span class="input-group-addon font-w600">  &nbsp; até  &nbsp; </span>
+                                            {% render_field form.data_contrato_fim class="form-control js-datepicker"   placeholder="dd/mm/aaaa" data-week-start="1" data-autoclose="true" data-today-highlight="true"%}
+                                        </div>
+                                    </div>
+                                <div class="col-4">
+                                        <label for="id_data_venc_ini">Data Vigencia</label>
+                                        <div class="input-daterange input-group js-datepicker-enabled" data-date-format="dd/mm/yyyy" data-week-start="1" data-autoclose="true" data-today-highlight="true">
+                                            {% render_field form.data_vigencia_ini class="form-control js-datepicker"   placeholder="dd/mm/aaaa" data-week-start="1" data-autoclose="true" data-today-highlight="true"%}
+                                            <span class="input-group-addon font-w600"> &nbsp; até  &nbsp; </span>
+                                            {% render_field form.data_vigencia_fim class="form-control js-datepicker"   placeholder="dd/mm/aaaa" data-week-start="1" data-autoclose="true" data-today-highlight="true"%}
+                                        </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-material input-group">
+                                        <button type="submit"  class="btn  btn-outline-primary mr-5 mb-5 form_pesquisa form_bus"   data-toggle="tooltip" data-placement="bottom" title="Pesquisar contratos">
+                                            <i class="fa fa-search"></i>
+                                        </button>
+                                        <button type="button"  class="btn  btn-outline-danger  mr-5 mb-5 limpa_filtro_pesquisa_contratos"   data-toggle="tooltip" data-placement="bottom" title="Remover filtros">
+                                             <i class="fa fa-search-minus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                    <div>
+                        <div class="row">
+                            <div class="form_inc col-md-12">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form_edit col-md-12"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row table table_contratos">
+                 {% include '_table_contratos.html' %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include 'modais_lancfin.html' %}
+
+
+{% endblock %}
+
+
+{% block javascript %}
+
+{% include 'js_filtros_pesquisas.html' %}
+
+$('.chosen-select').chosen({ width: '100%' });
+$('.form_inc').hide();
+$('.form_edit').hide();
+
+
+
+
+table = $('#table_contratos').DataTable({
+    "language": {
+     "lengthMenu": "Mostrando _MENU_ registros por página",
+     "search" : "Procurar: ",
+     "info" : "Exibindo de _START_ a _END_ de _TOTAL_ registros",
+     "infoEmpty": "Nenhum registro encontrado",
+     "infoFiltered": "(filtrado entre _MAX_ registros)",
+     "paginate" : {
+       "first":      "Primeiro",
+       "last":       "Último",
+       "next":       "Próximo",
+       "previous":   "Anterior"
+     },
+     responsive: {
+            details: {
+                type: 'column'
+            }
+        },
+        columnDefs: [ {
+            className: 'control',
+            orderable: false,
+            targets:   0
+        } ],
+        order: [ 1, 'asc' ]
+ }
+});
+
+
+
+
+
+
+<!-- Create Company -->
+$(".new_contratos").on("click",function(e){
+     e.preventDefault();
+     $(".form_inc").load("{% url 'create_contratos' %}", function(){
+        $('.form_inc').show("puff");
+        $('.form_busca').hide("drop");
+        $('.btn_lancamentos').hide("drop");
+        $('.new_contratos').hide("drop");
+        $('.chosen-select').chosen({ width: '100%' });
+        $('.table_contratos').hide("drop");
+
+        {% include 'js_floating_labels.html' %}
+        {% include 'js_tabs.html' %}
+        {% include 'js_masks.html' %}
+        {% include 'js_summernote.html' %}
+        {% include 'js_inclusoes.html' %}
+
+        $(".js-datepicker").datepicker({
+            todayBtn: true,
+            language: "pt-BR",
+            autoclose: true,
+            todayHighlight: true
+        });
+
+        $("#id_periodo_fat").on("change",function(e){
+            var periodo_fat = $('#id_periodo_fat').val();
+
+            if(periodo_fat == 'M'){
+                $('.dia_base').show();
+                $('#id_dia_base').val(undefined);
+            }
+            else
+            if(periodo_fat == 'A'){
+                $('.dia_base').show();
+                $('#id_dia_base').val(undefined);
+            }
+            else
+            if (periodo_fat == 'Q'){
+                $('.dia_base').hide();
+                $('#id_dia_base').val(0);
+            }
+            else if
+             (periodo_fat == 'S'){
+                $('.dia_base').hide();
+                $('#id_dia_base').val(0);
+            }
+
+        });
+
+        function load_cotacaoform(){
+            var indice_id = $('#indice_id2').val();
+            if(indice_id2 != ''){
+                var url = '{% url 'indice_cotacao' %}';
+                url = url+'?indice_id='+indice_id;
+                 $("#id_cotacao").load(url,function(){
+                $("#id_cotacao").trigger("chosen:updated");
+                });
+            }
+            else{
+                $("#id_cotacao").html('');
+            }
+        }
+
+
+        $("#indice_id2").on("change",function(e){
+               load_cotacaoform();
+        });
+              load_cotacaoform();
+
+
+
+
+        $('#btn_salvar').on("click",function(e){
+            var cpo_cadgeral
+
+            cpo_cadgeral = $('#cadgeral_id2').val();
+
+            if(cpo_cadgeral == '') {
+                    alert ('Favor preencher os campos obigatórios!');
+                    $('.aviso_cadgeral').show();
+            }
+        });
+
+
+
+        $(".form_inc .cancel_form").on("click",function(e){
+           $('.form_inc').hide("drop");
+           $('.new_contratos').show();
+           $('.btn_lancamentos').show("puff");
+           $('.table_contratos').show("drop");
+        });
+     });
+});
+
+$(".form_inc").on("submit","form",function(e){
+     e.preventDefault();
+     var dados = $(this).serialize();
+     $.post("{% url 'create_contratos' %}",dados,function(result){
+        $(".form_inc").html(result);
+        if(close_modal==true){
+           $('.form_inc').hide("drop");
+           $('.new_contrato').show();
+              window.location.reload();
+        }
+        else{
+            $(".form_inc").show();
+            {% include 'js_floating_labels.html' %}
+            {% include 'js_tabs.html' %}
+            $('.chosen-select').chosen({ width: '100%' });
+
+            $(".form_inc .cancel_form").on("click",function(e){
+                $('.form_inc').hide("drop");
+                $('.new_contrato').show();
+            });
+        }
+     });
+});
+
+
+
+$('.table_contratos').on('click', '.edit_contrato',function(e){
+    e.preventDefault();
+    $(".form_edit ").load($(this).attr('href'), function(){
+        $('.form_edit').show("slide");
+        $('.form_busca').hide("drop");
+        $('.new_contratos').hide("drop");
+        $('.btn_lancamentos').hide("drop");
+        $('.chosen-select').chosen({ width: '100%' });
+        $('.table_contratos').hide("drop");
+
+        {% include 'js_floating_labels.html' %}
+        {% include 'js_tabs.html' %}
+        {% include 'js_masks.html' %}
+        {% include 'js_summernote.html' %}
+        {% include 'js_inclusoes.html' %}
+
+        $(".js-datepicker").datepicker({
+            todayBtn: true,
+            language: "pt-BR",
+            autoclose: true,
+            todayHighlight: true
+        });
+
+        $("#id_periodo_fat").on("change",function(e){
+            var periodo_fat = $('#id_periodo_fat').val();
+
+            if(periodo_fat == 'M'){
+                $('.dia_base').show();
+                $('#id_dia_base').val(undefined);
+            }
+            else
+            if(periodo_fat == 'A'){
+                $('.dia_base').show();
+                $('#id_dia_base').val(undefined);
+            }
+            else
+            if (periodo_fat == 'Q'){
+                $('.dia_base').hide();
+                $('#id_dia_base').val(0);
+            }
+            else if
+             (periodo_fat == 'S'){
+                $('.dia_base').hide();
+                $('#id_dia_base').val(0);
+            }
+
+        });
+
+        function load_cotacaoform(){
+            var indice_id = $('#id_indice').val();
+            if(indice_id != ''){
+                var url = '{% url 'indice_cotacao' %}';
+                url = url+'?indice_id='+indice_id;
+                 $("#id_cotacao").load(url,function(){
+                $("#id_cotacao").trigger("chosen:updated");
+                });
+            }
+            else{
+                $("#id_cotacao").html('');
+            }
+        }
+
+
+        $("#id_indice").on("change",function(e){
+               load_cotacaoform();
+        });
+              load_cotacaoform();
+
+
+
+
+        $('#btn_salvar').on("click",function(e){
+            var cpo_cadgeral
+
+            cpo_cadgeral = $('#cadgeral_id2').val();
+
+            if(cpo_cadgeral == '') {
+                    alert ('Favor preencher os campos obigatórios!');
+                    $('.aviso_cadgeral').show();
+            }
+        });
+
+
+
+
+              $(".form_edit .cancel_form").on("click",function(e){
+                  $('.form_edit').hide("drop");
+                  $('.new_contratos').show();
+                    $('.btn_lancamentos').show("puff");
+                    $('.table_contratos').show("drop");
+              });
+    });
+
+
+});
+
+
+
+$(".form_edit").on("submit","form",function(e){
+	 	 e.preventDefault();
+
+	 	 var dados = $(this).serialize();
+	 	 $.post($(this).attr('action'),dados,function(result){
+	 	    $(".form_edit").html(result);
+	 	    if(close_modal==true){
+	 	       $('.form_edit').hide("drop");
+                 window.location.reload();
+
+	 	    }
+	 	    else{
+	 	       $('.form_edit').show("puff");
+                {% include 'js_floating_labels.html' %}
+                $('.chosen-select').chosen({ width: '100%' });
+
+
+                $(".form_inc .cancel_form").on("click",function(e){
+                    $('.form_edit').hide("drop");
+                    $('.new_planofinan').show();
+	 	        });
+            }
+	 	 });
+	 });
+
+
+
+$(".table_contratos").on("click",".delete_contrato", function(e){
+
+    e.preventDefault();
+    var linkURL = $(this).attr("href");
+    swal({
+        title: "Tem certeza?",
+        text: "Ao aceitar este registro será excluido!",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Sim, Excluir!",
+        cancelButtonText: "Não, Cancelar!",
+        closeOnConfirm: false,
+        closeOnCancel: false
+    },
+    function(isConfirm){
+        if (isConfirm) {
+
+            swal("Excluido!", "Registro excluido com sucesso!", "success");
+            window.location.href = linkURL;
+        }
+        else {
+
+            swal("Cancelado", "Exclusão cancelada", "error");
+        }
+	});
+
+});
+
+
+
+
+
+
+{% endblock %}
+
+
+

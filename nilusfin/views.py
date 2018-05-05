@@ -437,7 +437,7 @@ class CreateCotacao_create_indice(LoginRequiredMixin,CreateView):
 
 
     model = Cotacao
-    fields = ['data_indice','valor_cotacao']
+    fields = ['data_indice','valor_cotacao_text']
 
     def get_success_url(self):
         return reverse_lazy('indice_list')
@@ -446,6 +446,7 @@ class CreateCotacao_create_indice(LoginRequiredMixin,CreateView):
     def form_valid(self,form):
         cotacao = form.save(commit=False)
         cotacao.user_cad = self.request.user
+        cotacao.valor_cotacao = cotacao.valor_cotacao_text.replace('R$','').replace('.','').replace(',','.')
         cotacao.save()
 
         if self.request.is_ajax():
@@ -465,7 +466,7 @@ class CreateCotacao_edit_indice(LoginRequiredMixin,CreateView):
 
 
     model = Cotacao
-    fields = ['data_indice', 'valor_cotacao']
+    fields = ['data_indice', 'valor_cotacao_text']
 
     def get_success_url(self):
         return reverse_lazy('indice_list')
@@ -474,6 +475,8 @@ class CreateCotacao_edit_indice(LoginRequiredMixin,CreateView):
     def form_valid(self,form):
         cotacao = form.save(commit=False)
         cotacao.user_cad = self.request.user
+        cotacao.valor_cotacao = cotacao.valor_cotacao_text.replace('R$','').replace('.','').replace(',','.')
+
         cotacao.save()
 
         if self.request.is_ajax():
@@ -500,6 +503,8 @@ class CreateCotacao_grid_indice(LoginRequiredMixin,CreateView):
     model = Cotacao
     form_class = FormCreateCotacao
 
+
+
     def get_success_url(self):
         return reverse_lazy('indice_list')
 
@@ -508,6 +513,9 @@ class CreateCotacao_grid_indice(LoginRequiredMixin,CreateView):
         cotacao = form.save(commit=False)
         cotacao.user_cad = self.request.user
         indice_cot = cotacao.indice
+
+        cotacao.valor_cotacao = cotacao.valor_cotacao_text.replace('R$','').replace('.','').replace(',','.')
+
         cotacao.save()
 
         if self.request.is_ajax():

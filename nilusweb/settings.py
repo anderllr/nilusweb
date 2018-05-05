@@ -57,12 +57,11 @@ INSTALLED_APPS = [
     'niluscad',
     'nilusfin',
     'nilusnfs',
+    'niluscont',
     'recebiveis',
     'lancfinanceiros',
     'relatorios',
-
     'easy_pdf',
-
 ]
 
 MIDDLEWARE = [

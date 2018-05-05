@@ -95,6 +95,7 @@ def post_save_user(instance,created,**kwargs):
             permissions.nilusProducao = True
             permissions.nilusMaquinas = True
             permissions.nilusFiscalCont = True
+            permissions.nulusContratos = True
             permissions.save()
 
             # Insere Sequencias.
@@ -124,6 +125,7 @@ def post_save_user(instance,created,**kwargs):
             cotacao = Cotacao()
             cotacao.indice = Indice.objects.get(master_user=instance)
             cotacao.valor_cotacao = 1.00
+            cotacao.valor_cotacao_text = '1,00'
             cotacao.cotacao_padrao = True
             cotacao.save()
 
@@ -149,6 +151,7 @@ def post_save_user(instance,created,**kwargs):
             permissions.nilusProducao = False
             permissions.nilusMaquinas = False
             permissions.nilusFiscalCont = False
+            permissions.nilusContratos = False
             permissions.save()
 
             # Insere Instancia.

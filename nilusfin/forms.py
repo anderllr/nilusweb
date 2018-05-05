@@ -19,11 +19,9 @@ class FormCreateCotacao(forms.ModelForm):
             self.fields['indice'].empty_label = 'Selecione um indice'
 
 
-
-
     class Meta:
             model = Cotacao
-            fields = ['indice','data_indice','valor_cotacao']
+            fields = ['indice','data_indice','valor_cotacao_text']
 
 
 

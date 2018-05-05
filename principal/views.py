@@ -243,7 +243,6 @@ def indice_cotacao(request):
    raise Http404
 
 
-
 # def dashboard_financeiro(request):
 #    if request.is_ajax():
 #       template_name = '_dashboard_financeiro.html'

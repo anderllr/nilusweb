@@ -46,6 +46,19 @@
 
                 {% endif %}
 
+                {% if permissions.nilusContratos == True %}
+                <li> <a class="has-arrow waves-effect waves-dark" href="#" aria-expanded="false"><i class="mdi mdi-currency-usd"></i><span class="hide-menu"> Financeiro</span></a>
+                    <ul aria-expanded="" class="collapse">
+                        <li><a  href="{% url 'conta_list' %}"><i class="mdi mdi-bank"></i> Conta</a></li>
+                        <li><a  href="{% url 'indice_list' %}"><i class="fa  fa-money"></i> Indices e Cotações</a></li>
+                        <li><a  href="{% url 'lancfin_list' %}"><i class="fa fa-book"></i> Lançamentos</a></li>
+                        <li><a  href="{% url 'baixfin_list' %}"><i class="fa fa-book"></i> Baixas de Lançamentos</a></li>
+                        <li><a  href="{% url 'dre_list' %}"><i class="fa fa-book"></i> Consulta DRE</a></li>
+                    </ul>
+                </li>
+
+                {% endif %}
+
 
             </ul>
         </nav>

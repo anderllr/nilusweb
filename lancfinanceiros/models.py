@@ -26,12 +26,9 @@ class Lancamentos(models.Model):
     descricao = models.CharField(verbose_name='Observação', max_length=70,null=True,blank=True)
     titulo = models.BooleanField('É Titulo', default=False)
 
-
     #Dados Cotação/Indice
     indice = models.ForeignKey('nilusfin.Indice',models.PROTECT,null=True,blank=True)
     cotacao = models.ForeignKey('nilusfin.Cotacao',models.PROTECT,null=True,blank=True)
-
-
 
     situacao = models.BooleanField('Baixado',default=False)
     reaberto = models.BooleanField('Reaberto',default=False)
@@ -43,9 +40,7 @@ class Lancamentos(models.Model):
         ('R', 'Receita'),
         ('D', 'Despesa'),
     )
-
     tipo_lancamento = models.CharField('Tipo', max_length=1, choices=tipoLancto_Choices)
-
 
     def verifica_parcela(self):
         if self.lancamento_pai:

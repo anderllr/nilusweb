@@ -22,9 +22,9 @@
         </div>
 
         <div class="form-material floating">
-            {% render_field  form.valor_cotacao class='form-control' %}
-            <label for="{{  form.valor_cotacao.id }}">Valor Cotação</label>
-            {% for error in form.valor_cotacao.errors %}
+            {% render_field  form.valor_cotacao_text class='form-control money2' %}
+            <label for="{{  form.valor_cotacao_text.id }}">Valor Cotação</label>
+            {% for error in form.valor_cotacao_text.errors %}
             <div class="alert alert-danger alert-dismissable">
                 <p class="mb-0">{{ error }}</p>
             </div>

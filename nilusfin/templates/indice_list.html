@@ -235,6 +235,7 @@ $(".new_indice").on("click",function(e){
             $("#modal-cotacao .block-content").load("{% url 'create_cotacao_create_indice' %}", function(){
             $('#modal-cotacao').modal("show");
             {% include 'js_floating_labels.html' %}
+            {% include 'js_masks.html' %}
             {% include 'js_datepickers.html' %}
 
 
@@ -309,6 +310,7 @@ $(".nova_cotacao_grid").on("click",function(e){
     $('#modal-cotacao_grid').modal("show");
     {% include 'js_floating_labels.html' %}
     {% include 'js_datepickers.html' %}
+    {% include 'js_masks.html' %}
     $('.chosen-select').chosen({ width: '100%' });
     });
 });
@@ -324,6 +326,8 @@ $("#modal-cotacao_grid .block-content").on("submit","#form_cotacao_create",funct
         }
         else{
            $('#modal-cotacao').modal("show");
+           {% include 'js_masks.html' %}
+           {% include 'js_datepickers.html' %}
         }
      });
  });
@@ -352,6 +356,7 @@ $('.table_indice').on('click', '.edit_indice',function(e){
                     $("#modal-cotacao .block-content").load("{% url 'create_cotacao_edit_indice' %}", function(){
                     $('#modal-cotacao').modal("show");
                     {% include 'js_floating_labels.html' %}
+                    {% include 'js_masks.html' %}
                     $(".js-datepicker").datepicker({
                             todayBtn: true,
                             language: "pt-BR",

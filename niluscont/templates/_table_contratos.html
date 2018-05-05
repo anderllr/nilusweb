@@ -1,0 +1,41 @@
+{% load static widget_tweaks humanize %}
+        <table id="table_contratos" class="table table-bordered table-striped table-vcenter js-dataTable-full" >
+            <thead>
+                <tr>
+                    <th><small>Nº</small></th>
+                    <th><small>Cadastro</small></th>
+                    <th><small>Contrato</small></th>
+                    <th><small>Vigencia</small></th>
+                    <th><small>Faturamento</small></th>
+                    <th><small>Indice</small></th>
+                    <th><small>Valor</small></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for cont in contratos %}
+                    <td style="width:1%; heigth:1%;"><small>{{ cont.num_cont }}</small></td>
+                    <td style="width:1%; heigth:50%;"><small>{% if cont.cadgeral == None %} Não Informado {% else %}<strong>{{cont.cadgeral}}</strong>  {% endif %}
+                    </small></td>
+                    <td style="width:1%; heigth:1%;"><small>{{ cont.data_contrato|date:'d/m/Y' }}</small></td>
+                    <td style="width:1%; heigth:1%;"><small>{{ cont.vigencia|date:'d/m/Y' }}</small></td>
+                    <td style="width:1%; heigth:1%;"><small>{% if cont.periodo_fat == 'M' %}Mensal
+                                          {% elif cont.periodo_fat == 'S' %}Semanal
+                                          {% elif cont.periodo_fat == 'Q' %}Quinzenal
+                                          {% elif cont.periodo_fat == 'A' %}Anual
+                        {% endif %}</small>
+                    </td>
+                    <td style="width:1%; heigth:25%;"><small>{{ cont.indice }}</small></td>
+                    <td style="width:1%; heigth:1%;"><small>{{ cont.valor|intcomma }}</small></td>
+                    <td style="width:1%; heigth:1%;">
+                        <button type="button" class="btn btn-sm btn-outline-secondary edit_contrato" href="{% url 'edit_contratos' cont.pk  %}" data-toggle="tooltip" data-placement="bottom" title="Editar">
+                           <i class="fa fa-pencil"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-danger delete_contrato" href="{% url 'delete_contratos' cont.pk  %}" data-toggle="tooltip" data-placement="bottom" title="Excluir">
+                            <i class="fa fa-trash-o"></i>
+                        </button>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>

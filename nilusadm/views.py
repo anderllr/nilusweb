@@ -43,7 +43,8 @@ class EditPermissions(LoginRequiredMixin,UpdateView):
 
 
     model = Permissions
-    fields = ['nilusCadastro','nilusFinanceiro','nilusCompras','nilusProducao','nilusMaquinas','nilusFiscalCont']
+    fields = ['nilusCadastro','nilusFinanceiro','nilusCompras','nilusProducao','nilusMaquinas','nilusFiscalCont',
+              'nilusContratos']
 
 
 
