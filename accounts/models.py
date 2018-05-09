@@ -40,6 +40,7 @@ class User(AbstractBaseUser,PermissionsMixin):
     token = models.CharField('Token Senha', max_length=100, blank=True)
     company_p = models.ForeignKey('niluscad.Company',models.SET_NULL,verbose_name='Empresa Padrão',null=True)
     propriety_p = models.ForeignKey('niluscad.Propriety',models.SET_NULL, verbose_name='Propriedade Padrão',null=True,blank=True)
+    conta_presente = models.BooleanField('Conta Presente',default=False)
 
 
     USERNAME_FIELD = 'username'

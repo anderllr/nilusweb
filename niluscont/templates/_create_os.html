@@ -1,0 +1,118 @@
+{% load static widget_tweaks %}
+{% if success %}
+   <script>
+  	 close_modal=true;
+  	 ok = true;
+   </script>
+{% else %}
+<div class="block block-rounded">
+    <div class="block-header">
+                        <h3 class="block-title antes_insert">Nova Ordem de Serviço</h3>
+                        <div class="block-options antes_insert">
+                            <button type="button" class="btn-block-option cancel_form">
+                                <i class="fa fa-close"></i>
+                            </button>
+                        </div>
+                    </div>
+    <form method="post" class="form_contrato" id="form_create">
+             {% csrf_token %}
+                {% for error in form.non_field_errors %}
+                <div class="alert-danger alert">
+                {{ error }}
+                </div>
+                {% endfor %}
+             <div class="block-content">
+                <div class="form-group row ">
+                    <div class="col-md-6">
+                        <div class="form-material input-group ">
+                            <label>Empresa</label>
+                            {% render_field form.company class="chosen-select"  %}
+                            {% for error in form.company.errors %}
+                            <small class="form-control-feedback"> {{ error }} </small>
+                            {% endfor %}
+                        </div>
+                        <div>
+                            <small class="form-control-feedback text-danger aviso_company" style="display:none;" > campo obrigatório </small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-material input-group">
+                            <label>Data Ordem Serviço</label>
+                            <input  type="text"  name="data_os" id="id_data_os" class="js-datepicker form-control"
+                              data-week-start="1" data-autoclose="true" data-today-highlight="true"
+                              data-date-format="dd/mm/yyyy" placeholder="dd/mm/aaaa" value="{{  data_hoje|date:'d/m/Y'  }}" required>
+                            {% for error in form.data_os.errors %}
+                            <small class="form-control-feedback"> {{ error }} </small>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="form-group row">
+                    <div class="col-md-6">
+                        <div class="form-material input-group">
+                            <label>Cliente</label>
+                            {% render_field form.cadgeral class="chosen-select" id="cadgeral_id2" %}
+                            {% for error in form.cadgeral.errors %}
+                            <small class="form-control-feedback"> {{ error }} </small>
+                            {% endfor %}
+                            <span class="input-group-btn">
+                                <button type="button" title="Novo Cliente" class="btn btn-primary new_cadgeral"><i class="fa fa-plus"></i> </button>
+                            </span>
+                        </div>
+                        <div>
+                           <small class="form-control-feedback text-danger aviso_cadgeral" style="display:none;"> campo obrigatório </small>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-material input-group">
+                            <label>Contrato</label>
+                            {% render_field form.contrato class="chosen-select" id="id_contrato2" %}
+                            {% for error in form.contrato.errors %}
+                            <small class="form-control-feedback"> {{ error }} </small>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-8">
+                        <div class="form-material  floating">
+                            {% render_field  form.desc_item class='form-control'%}
+                            <label for="{{  form.desc_item.id }}">Item Contratado</label>
+                            {% for error in form.desc_item.errors %}
+                            <div class="alert alert-danger alert-dismissable">
+                                <p class="mb-0">{{ error }}</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                       <div class="form-material form-material floating">
+                            {% render_field  form.valor_unit_text class='form-control money2' %}
+                            <label for="{{ form.valor_unit_text.id }}">Valor</label>
+                            {% for error in form.valor_unit_text.errors %}
+                            <div class="alert alert-danger alert-dismissable">
+                                <p class="mb-0">{{ error }}</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="form-material">
+                        <label>Observações do Serviço</label>
+                        {% render_field form.obs  class='summernote' cols='4' rows='2' %}
+                    </div>
+                </div>
+             </div>
+          <br>
+          <br>
+         <div class="form-group row ">
+                <button type="submit" id="btn_salvar" class="btn btn-alt-primary">Salvar</button>
+                <button type="button"  class="btn btn-alt-secondary  cancel_form">Cancelar</button>
+         </div>
+    </form>
+
+
+</div>
+{% endif %}

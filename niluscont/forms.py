@@ -1,5 +1,5 @@
 from django import forms
-from .models import Contratos
+from .models import Contratos,OrdemServico
 from niluscad.models import Company, Propriety, Cadgeral, Ccusto, PlanoFinan, Cadgeral
 from nilusfin.models import Contafinanceira, Cotacao, Indice
 
@@ -42,9 +42,63 @@ class FiltroContratosForm(forms.Form):
     indice = forms.ModelChoiceField(label='Índice', required=False, empty_label='Todos',
                                      queryset=Indice.objects.none())
 
+
+    periodofat_choices = (
+        ('T', 'Todos'),
+        ('M', 'Mensal'),
+        ('S', 'Semanal'),
+        ('Q', 'Quinzenal'),
+        ('A', 'Anual'),
+    )
+    periodofat = forms.ChoiceField(label='Periodicidade Faturamento', choices=periodofat_choices, initial='T')
+
+
     def __init__(self,empresa,cadgeral,indice,*args,**kwargs):
         super(FiltroContratosForm,self).__init__(*args,**kwargs)
         self.fields['empresa'].queryset = empresa
         self.fields['cadgeral'].queryset = cadgeral
         self.fields['indice'].queryset = indice
+
+
+
+class FiltroOSForm(forms.Form):
+    data_os_ini = forms.DateField(label='Data de:', required=False)
+    data_os_fim = forms.DateField(label='Data até:', required=False)
+
+    empresa = forms.ModelChoiceField(label='Empresa', required=False, empty_label='Todas',
+                                     queryset=Company.objects.none())
+    cadgeral = forms.ModelChoiceField(label='Cliente / Fornecedor', empty_label='Todos', required=False,
+                                      queryset=Cadgeral.objects.none())
+
+    contrato = forms.ModelChoiceField(label='Contratos', required=False, empty_label='Todos',
+                                     queryset=Indice.objects.none())
+
+
+    def __init__(self,empresa,cadgeral,contrato,*args,**kwargs):
+        super(FiltroOSForm,self).__init__(*args,**kwargs)
+        self.fields['empresa'].queryset = empresa
+        self.fields['cadgeral'].queryset = cadgeral
+        self.fields['contrato'].queryset = contrato
+
+
+
+
+class FormOS(forms.ModelForm):
+
+    def __init__(self,user,*args,**kwargs):
+        super(FormOS,self).__init__(*args,**kwargs)
+        self.fields['company'].queryset = Company.objects.filter(master_user=user.user_master)
+        self.fields['cadgeral'].queryset = Cadgeral.objects.filter(master_user=user.user_master, cliente=True)
+        self.fields['contrato'].queryset = Contratos.objects.filter(master_user=user.user_master)
+
+
+
+        self.fields['company'].empty_label = 'Selecione uma empresa'
+        self.fields['cadgeral'].empty_label = 'Selecione um cadastro'
+        self.fields['contrato'].empty_label = 'Selecione um contrato'
+
+
+    class Meta:
+        model = OrdemServico
+        fields = ['company','data_os','cadgeral','contrato','desc_item','valor_unit_text','obs']
 

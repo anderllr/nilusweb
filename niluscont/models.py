@@ -51,7 +51,7 @@ class Contratos(models.Model):
         ]
 
     def __str__(self):
-      return str(self.num_cont)
+      return '%s - %s' % (str(self.num_cont), self.item)
 
 
 
@@ -80,7 +80,26 @@ class Contratos(models.Model):
 #
 
 
+class OrdemServico(models.Model):
+    master_user = models.ForeignKey('accounts.User', models.CASCADE, verbose_name='Usuário Master')
+    num_os = models.PositiveIntegerField('Nº Ordem Serviço',)
+    data_os = models.DateField('Data Contrato', blank=True, null=True)
+    company = models.ForeignKey('niluscad.Company', models.PROTECT, verbose_name='Empresa')
+    cadgeral = models.ForeignKey('niluscad.Cadgeral', models.PROTECT, verbose_name='Cliente')
+    contrato = models.ForeignKey('niluscont.Contratos',models.PROTECT,verbose_name='Contrato',null=True,blank=True)
+    desc_item = models.CharField(verbose_name='Item',max_length=40)
+    valor_unit_text = models.CharField(verbose_name='Valor unitário', max_length=20)
+    valor_unit = models.DecimalField('Valor', max_digits=13, decimal_places=2, null=True, blank=True)
+    obs = models.TextField('Observações', blank=True)
 
+
+
+    class Meta:
+        verbose_name = 'Ordens de Serviço'
+
+
+    def __str__(self):
+      return str(self.desc_item)
 
 
 

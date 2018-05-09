@@ -20,7 +20,7 @@ class UserAdmin(BaseUserAdmin):
            'fields' :('username','email','img_user')
        }),
        ('Informações Básicas',{
-           'fields' :('name','last_login','qtd_users','qtd_unity','user_master')
+           'fields' :('name','last_login','qtd_users','qtd_unity','user_master','conta_presente')
        }),
        ('Permissões', {
            'fields': (
@@ -29,7 +29,7 @@ class UserAdmin(BaseUserAdmin):
        }),
 
    )
-   list_display = ['username','name','email','img_user','is_active','is_staff','date_joined','is_masteruser']
+   list_display = ['username','name','email','img_user','is_active','is_staff','date_joined','is_masteruser','conta_presente']
 
 
 

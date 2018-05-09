@@ -44,12 +44,12 @@ class Sequenciais(models.Model):
     grupodre = models.IntegerField('Seq Lancamento Financeiro', default=0)
     paramnfs = models.IntegerField('Seq Parametros Nfs',default=0)
     contratos = models.IntegerField('Seq Contratos',default=0)
+    ordensservico = models.IntegerField('Seq O.S',default=0)
 
 
 class Meta:
     verbose_name = 'Sequenciais'
     verbose_name_pural = 'Sequenciais'
-
 
 
     def __str__(self):

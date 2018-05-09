@@ -116,6 +116,8 @@ class RegisterUserViewer(LoginRequiredMixin,CreateView):
         def form_valid(self, form):
             userv = form.save(commit=False)
             userv.user_master = self.request.user
+            if userv.user_master.conta_presente == True:
+                userv.conta_presente = True
             userv.is_masteruser = False
             userv.is_active = True
             userv.save()

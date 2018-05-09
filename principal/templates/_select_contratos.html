@@ -1,0 +1,4 @@
+{% load l10n humanize %}
+{% for cont in contratos %}
+    <option value="{{ cont.pk|unlocalize }}">{{ cont.num_cont }} - {{ cont.item }}</option>
+{% endfor %}

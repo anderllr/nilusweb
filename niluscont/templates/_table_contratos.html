@@ -3,9 +3,9 @@
             <thead>
                 <tr>
                     <th><small>Nº</small></th>
-                    <th><small>Cadastro</small></th>
-                    <th><small>Contrato</small></th>
-                    <th><small>Vigencia</small></th>
+                    <th ><small>Cadastro</small></th>
+                    <th><small>Dt. Contrato</small></th>
+                    <th><small>Dt. Vigencia</small></th>
                     <th><small>Faturamento</small></th>
                     <th><small>Indice</small></th>
                     <th><small>Valor</small></th>
@@ -14,20 +14,21 @@
             </thead>
             <tbody>
             {% for cont in contratos %}
-                    <td style="width:1%; heigth:1%;"><small>{{ cont.num_cont }}</small></td>
-                    <td style="width:1%; heigth:50%;"><small>{% if cont.cadgeral == None %} Não Informado {% else %}<strong>{{cont.cadgeral}}</strong>  {% endif %}
-                    </small></td>
-                    <td style="width:1%; heigth:1%;"><small>{{ cont.data_contrato|date:'d/m/Y' }}</small></td>
-                    <td style="width:1%; heigth:1%;"><small>{{ cont.vigencia|date:'d/m/Y' }}</small></td>
-                    <td style="width:1%; heigth:1%;"><small>{% if cont.periodo_fat == 'M' %}Mensal
+                    <td><small>{{ cont.num_cont }}</small></td>
+                    <td><small><strong>{{cont.cadgeral}}</strong></small></td>
+                    <td><small>{{ cont.data_contrato|date:'d/m/Y' }}</small></td>
+                    <td><small>{{ cont.vigencia|date:'d/m/Y'  }}</small></td>
+                    <td>
+                        <small>{% if cont.periodo_fat == 'M' %}Mensal
                                           {% elif cont.periodo_fat == 'S' %}Semanal
                                           {% elif cont.periodo_fat == 'Q' %}Quinzenal
                                           {% elif cont.periodo_fat == 'A' %}Anual
                         {% endif %}</small>
                     </td>
-                    <td style="width:1%; heigth:25%;"><small>{{ cont.indice }}</small></td>
-                    <td style="width:1%; heigth:1%;"><small>{{ cont.valor|intcomma }}</small></td>
-                    <td style="width:1%; heigth:1%;">
+                    <td><small>{{ cont.indice }}</small></td>
+
+                    <td><strong>{{ cont.valor|intcomma }}</strong></td>
+                    <td>
                         <button type="button" class="btn btn-sm btn-outline-secondary edit_contrato" href="{% url 'edit_contratos' cont.pk  %}" data-toggle="tooltip" data-placement="bottom" title="Editar">
                            <i class="fa fa-pencil"></i>
                         </button>
@@ -36,6 +37,25 @@
                         </button>
                     </td>
                 </tr>
+
             {% endfor %}
             </tbody>
         </table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

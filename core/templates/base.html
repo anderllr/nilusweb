@@ -227,19 +227,20 @@
                                     </ul>
                                 </li>
                             {% endif %}
-                             {% if permissions.nilusContratos == True %}
-                                <li>
-                                    <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="si si-book-open"></i><span class="sidebar-mini-hide">Serviços</span></a>
-                                    <ul>
-                                        <li>
-                                            <a  href="{% url 'contratos_list' %}">Contratos</a>
-                                            <!--<a  href="{% url 'indice_list' %}">Indices e Cotações</a>-->
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
-                            {% endif %}
-
+                              {% if user.conta_presente == True %}
+                                 {% if permissions.nilusContratos == True %}
+                                    <li>
+                                        <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="si si-book-open"></i><span class="sidebar-mini-hide">Serviços</span></a>
+                                        <ul>
+                                            <li>
+                                                <a  href="{% url 'contratos_list' %}">Contratos</a>
+                                                <a  href="{% url 'os_list' %}">Ordens de Serviço</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                                {% endif %}
+                              {% endif %}
                         </div>
                         <!-- END Side Navigation -->
                     </div>

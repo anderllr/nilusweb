@@ -7,7 +7,7 @@ from principal.models import Instancia
 from nilusfin.models import Indice,Cotacao
 from recebiveis.models import Recebiveis
 from lancfinanceiros.models import Lancamentos,Movtos_lancamentos
-from niluscont.models import Contratos
+from niluscont.models import Contratos,OrdemServico
 
 # Register your models here.
 
@@ -29,3 +29,4 @@ admin.site.register(Contafinanceira)
 admin.site.register(Movtos_lancamentos)
 admin.site.register(Grupodre)
 admin.site.register(Contratos)
+admin.site.register(OrdemServico)

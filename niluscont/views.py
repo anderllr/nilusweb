@@ -8,11 +8,11 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponse,Http404
-from .models import Contratos
+from .models import Contratos,OrdemServico
 from nilusfin.models import Indice,Cotacao
 from nilusadm.models import Sequenciais
 from niluscad.models import Company,Cadgeral
-from .forms import FormContrato,FiltroContratosForm
+from .forms import FormContrato,FiltroContratosForm,FiltroOSForm,FormOS
 from django.db.models import Max,Count
 
 @login_required
@@ -42,6 +42,7 @@ def contratos_list(request):
        data_contrato_fim = form.cleaned_data.get('data_contrato_fim', '')
        data_vigencia_ini = form.cleaned_data.get('data_vigencia_ini', '')
        data_vigencia_fim = form.cleaned_data.get('data_vigencia_fim', '')
+       periodofat = form.cleaned_data.get('periodofat','')
        empresa = form.cleaned_data.get('empresa', '')
        cadgeral = form.cleaned_data.get('cadgeral', '')
        indice = form.cleaned_data.get('indice','')
@@ -74,6 +75,9 @@ def contratos_list(request):
            contratos = contratos.filter(indice=indice)
            filtrou = 'ok'
 
+       if periodofat != 'T':
+           contratos = contratos.filter(periodo_fat=periodofat)
+           filtrou = 'ok'
 
 
    context = {
@@ -226,7 +230,185 @@ def delete_contratos(request, pk):
 
 
 
+###################################################################################
+#                   ORDENS DE SERVIÇOS                                            #
+###################################################################################
+
+@login_required
+def os_list(request):
+
+   if request.is_ajax():
+        template_name = '_table_os.html'
+   else:
+       template_name = 'os_list.html'
+
+   filtrou = 'nao'
+   data_hoje = datetime.today
 
 
+
+
+   os = OrdemServico.objects.filter(master_user=request.user.user_master)
+   empresa = Company.objects.filter(master_user=request.user.user_master)
+   cadgeral = Cadgeral.objects.filter(master_user=request.user.user_master)
+   contratos = Contratos.objects.filter(master_user=request.user.user_master)
+
+   form = FiltroOSForm(empresa,cadgeral,contratos, request.GET or None)
+
+
+   if form.is_valid():
+       data_os_ini = form.cleaned_data.get('data_os_ini','')
+       data_os_fim = form.cleaned_data.get('data_os_fim', '')
+       empresa = form.cleaned_data.get('empresa', '')
+       cadgeral = form.cleaned_data.get('cadgeral', '')
+       contratos = form.cleaned_data.get('contratos','')
+
+       if data_os_ini:
+           os = os.filter(data_os__gte=data_os_ini)
+           filtrou = 'ok'
+
+       if data_os_fim:
+           os = os.filter(data_os__lt=data_os_fim)
+           filtrou = 'ok'
+
+       if empresa:
+           os = os.filter(company=empresa)
+           filtrou = 'ok'
+
+       if cadgeral:
+           os = os.filter(cadgeral=cadgeral)
+           filtrou = 'ok'
+
+       if contratos:
+           os = os.filter(contrato=contratos)
+           filtrou = 'ok'
+
+   context = {
+        'os' : os,
+        'form' : form,
+        'filtrou' : filtrou,
+        'data_hoje' : data_hoje,
+   }
+
+   return render(request, template_name,context)
+
+
+
+
+class CreateOS(LoginRequiredMixin,CreateView):
+    def get_template_names(self):
+        if self.request.is_ajax():
+            return ["_create_os.html"]
+        else:
+            raise Http404
+
+    def get_form_kwargs(self):
+        kwargs = super(CreateOS, self).get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super(CreateOS, self).get_context_data(**kwargs)
+        context['data_hoje'] = datetime.today
+        return context
+
+    model = OrdemServico
+    form_class =  FormOS
+
+    def get_initial(self):
+        initial = super(CreateOS,self).get_initial()
+        initial['company'] = self.request.user.company_p
+        return initial
+
+    def get_success_url(self):
+        return reverse_lazy('os_list')
+
+
+    def form_valid(self,form):
+        os = form.save(commit=False)
+
+        if os.data_os is None:
+             os.data_os = datetime.now()
+
+        os.valor_unit = os.valor_unit_text.replace('R$','').replace('.','').replace(',','.')
+
+        os.master_user = self.request.user.user_master
+        seq_os = Sequenciais.objects.get(user=self.request.user.user_master)
+        os.num_os = seq_os.ordensservico + 1
+        seq_os.ordensservico = os.num_os
+        seq_os.save()
+        os.save()
+
+        if self.request.is_ajax():
+            context = self.get_context_data(form=form, success=True)
+            return self.render_to_response(context)
+        else:
+            return redirect(self.get_success_url())
+
+
+class EditOS(LoginRequiredMixin,UpdateView):
+
+    def get_template_names(self):
+        if self.request.is_ajax():
+            return ["_edit_os.html"]
+        else:
+            raise Http404
+
+
+
+    def get_success_url(self):
+        return reverse_lazy('os_list')
+
+
+
+    def get_context_data(self, **kwargs):
+        context = super(EditOS, self).get_context_data(**kwargs)
+        context['dados_cadastro'] = OrdemServico.objects.get(pk=self.kwargs['pk'])
+        context['data_hoje'] = datetime.today
+        return context
+
+    def get_form_kwargs(self):
+        kwargs = super(EditOS, self).get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+
+    model = OrdemServico
+    form_class = FormOS
+
+    def form_valid(self,form):
+        os = form.save(commit=False)
+
+
+        if 'valor_unit_text' in form.changed_data:
+
+            os.valor_unit = os.valor_unit_text.replace('R$', '').replace('.', '').replace(',', '.')
+
+        form.save()
+
+        if self.request.is_ajax():
+            context = self.get_context_data(form=form,success=True, ok='ok')
+            return self.render_to_response(context)
+        else:
+            return redirect(self.get_success_url())
+
+
+@login_required
+def delete_os(request, pk):
+
+    os = get_object_or_404(OrdemServico,master_user=request.user.user_master,pk=pk)
+
+    try:
+       os.delete()
+    except:
+       print('erro na exclusao')
+
+    return redirect('os_list')
+
+
+
+
+edit_os = EditOS.as_view()
+create_os = CreateOS.as_view()
 create_contratos = CreateContrato.as_view()
 edit_contratos = EditContrato.as_view()

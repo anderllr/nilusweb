@@ -17,8 +17,9 @@ from django.db.models import Func
 
 from accounts.models import User
 from .models import Instancia
-from niluscad.models import Company,Propriety
+from niluscad.models import Company,Propriety,Cadgeral
 from nilusfin.models import Indice,Cotacao
+from niluscont.models import Contratos
 from lancfinanceiros.models import Lancamentos
 from core.utils import get_first_day,get_last_day
 from nilusfin.calculos import calc_dre
@@ -241,6 +242,20 @@ def indice_cotacao(request):
       context = {'indice' : indice, 'cotacao' : cotacao}
       return render(request,'_select_cotacao.html',context)
    raise Http404
+
+
+
+@login_required
+def cadgeral_contrato(request):
+
+   cadgeral_id = request.GET.get('cadgeral_id',None)
+   if cadgeral_id:
+      cadgeral = get_object_or_404(Cadgeral,pk=cadgeral_id)
+      contratos = Contratos.objects.filter(cadgeral=cadgeral)
+      context = {'cadgeral' : cadgeral, 'contratos' : contratos}
+      return render(request,'_select_contratos.html',context)
+   raise Http404
+
 
 
 # def dashboard_financeiro(request):
