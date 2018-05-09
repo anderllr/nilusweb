@@ -210,7 +210,6 @@ $(".new_contratos").on("click",function(e){
 
                 var url = '{% url 'indice_cotacao' %}';
                 url = url+'?indice_id='+indice_id;
-                alert(url);
                  $("#id_cotacao").load(url,function(){
                 $("#id_cotacao").trigger("chosen:updated");
                 });
