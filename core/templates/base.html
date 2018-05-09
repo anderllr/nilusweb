@@ -227,7 +227,7 @@
                                     </ul>
                                 </li>
                             {% endif %}
-                              {% if user.conta_presente == False %}
+                              {% if not user.conta_presente  %}
                                  {% if permissions.nilusContratos == True %}
                                     <li>
                                         <a class="nav-submenu" data-toggle="nav-submenu" href="#"><i class="si si-book-open"></i><span class="sidebar-mini-hide">Serviços</span></a>
