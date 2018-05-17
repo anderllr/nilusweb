@@ -13,6 +13,7 @@ from nilusfin.models import Indice,Cotacao
 from nilusadm.models import Sequenciais
 from niluscad.models import Company,Cadgeral
 from .forms import FormContrato,FiltroContratosForm,FiltroOSForm,FormOS
+from core.utils import add_one_month,lookahead
 from django.db.models import Max,Count
 
 @login_required
@@ -125,6 +126,17 @@ class CreateContrato(LoginRequiredMixin,CreateView):
 
         if contrato.data_contrato is None:
              contrato.data_contrato = datetime.now()
+
+
+        if contrato.periodo_fat == 'M':
+            contrato.prox_faturamento = add_one_month(contrato.data_contrato)
+
+        elif contrato.periodo_fat == 'S':
+            contrato.prox_faturamento = contrato.data_contrato + timedelta(days=7)
+        elif contrato.prox_faturamento == 'Q':
+            contrato.prox_faturamento = contrato.data_contrato + timedelta(days=15)
+        elif contrato.prox_faturamento == 'A':
+            contrato.prox_faturamento = contrato.data_contrato + timedelta(days=15)
 
         contrato.valor_unit = contrato.valor_unit_text.replace('R$','').replace('.','').replace(',','.')
 
@@ -333,6 +345,7 @@ class CreateOS(LoginRequiredMixin,CreateView):
         os.valor_unit = os.valor_unit_text.replace('R$','').replace('.','').replace(',','.')
 
         os.master_user = self.request.user.user_master
+        os.prestador = self.request.user.pk
         seq_os = Sequenciais.objects.get(user=self.request.user.user_master)
         os.num_os = seq_os.ordensservico + 1
         seq_os.ordensservico = os.num_os

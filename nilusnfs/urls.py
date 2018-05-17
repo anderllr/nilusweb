@@ -12,4 +12,5 @@ urlpatterns = [
     # url(r'^insere_conta/(?P<pk>\d+)$', views.edit_conta, name='edit_conta'),
     # url(r'^conta/(?P<pk>\d+)/apagar/$', views.delete_conta, name='delete_conta'),
     # url(r'^conta/ajuste',views.ajc_saldoconta,name='ajc_saldoconta'),
+    url(r'^faturamento/$',views.fat_list,name='fat_list'),
 ]

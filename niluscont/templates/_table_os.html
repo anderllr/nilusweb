@@ -18,6 +18,9 @@
                     <td><small>{{ os.data_os|date:'d/m/Y' }}</small></td>
                     <td><strong>{{ os.valor_unit|intcomma }}</strong></td>
                     <td>
+                        <button type="button" class="btn btn-sm btn-outline-info print_os"  href="{% url 'rel_os' %}" value="{{ os.id }}" data-toggle="tooltip" data-placement="bottom" title="Imprimir OS">
+                           <i class="fa fa-print"></i></i>
+                        </button>
                         <button type="button" class="btn btn-sm btn-outline-secondary edit_os" href="{% url 'edit_os' os.pk %}" data-toggle="tooltip" data-placement="bottom" title="Editar">
                            <i class="fa fa-pencil"></i>
                         </button>

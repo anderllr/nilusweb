@@ -30,6 +30,8 @@ class Contratos(models.Model):
     modo_fat = models.CharField('Modo de Faturamento', max_length=1, choices=modofat_Choices, default='U')
     dia_base = models.PositiveIntegerField('Dia Base')
 
+    prox_faturamento = models.DateField('Próximo Faturamento', blank=True, null=True)
+
 
     cadgeral = models.ForeignKey('niluscad.Cadgeral', models.PROTECT,verbose_name='Cliente')
     gera_nfs = models.BooleanField('Gera nota fiscal de serviços?',default=False)
@@ -44,6 +46,7 @@ class Contratos(models.Model):
     obs_contrato = models.TextField('Observações',blank=True)
 
 
+
     class Meta:
         verbose_name = 'Contratos'
         unique_together = [
@@ -53,31 +56,6 @@ class Contratos(models.Model):
     def __str__(self):
       return '%s - %s' % (str(self.num_cont), self.item)
 
-
-
-
-
-# class Contratos_itens(models.Model):
-#
-#      contrato = models.ForeignKey('niluscont.Contratos',models.PROTECT,verbose_name='Item',null=True,blank=True)
-#      item = models.CharField('Item',max_length=30)
-#      indice = models.ForeignKey('nilusfin.Indice', models.PROTECT, null=True, blank=True)
-#      qtd = models.PositiveIntegerField('Quantidade')
-#      valor_text = models.CharField(verbose_name='Valor', max_length=20)
-#      valor = models.DecimalField('Valor',max_digits=13,decimal_places=2,null=True,blank=True)
-#      user_cad = models.ForeignKey('accounts.User', models.SET_NULL, verbose_name='Usuario Criação', null=True,
-#                                   blank=True)
-#
-#
-#      class Meta:
-#        verbose_name = 'Contrato_item'
-#        verbose_name_plural = 'Contratos_itens'
-#
-#
-#
-#      def __str__(self):
-#         return self.item
-#
 
 
 class OrdemServico(models.Model):
@@ -91,6 +69,14 @@ class OrdemServico(models.Model):
     valor_unit_text = models.CharField(verbose_name='Valor unitário', max_length=20)
     valor_unit = models.DecimalField('Valor', max_digits=13, decimal_places=2, null=True, blank=True)
     obs = models.TextField('Observações', blank=True)
+    prestador = models.IntegerField('Cod. Prestador',null=True)
+
+    situacao_Choices = (
+        ('A', 'Ativo'),
+        ('F', 'Faturada'),
+    )
+
+    situacao_fat = models.CharField('Situação de faturamento', max_length=1, choices=situacao_Choices, default='A')
 
 
 

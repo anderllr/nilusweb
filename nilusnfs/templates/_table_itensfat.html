@@ -1,0 +1,36 @@
+        <table id="table_lanfinanceiro" class="table table-bordered table-striped table-vcenter js-dataTable-full" >
+            <thead>
+                <tr>
+                    <th><small>Faturar</small></th>
+                    <th><small>Nº</small></th>
+                    <th><small>Tipo</small></th>
+                    <th><small>Cliente</small></th>
+                    <th><small>Serviço</small></th>
+                    <th><small>Dt Fat/OS</small></th>
+                    <th><small>Valor</small></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for l in lista %}
+                    <td>
+                        <center><label class="custom-control custom-checkbox baixa_lancamento">
+                                                <input type="checkbox" class="custom-control-input baixa_lancamento" name="sel_fatura" value="{{ l.id }}">
+                                                <span class="custom-control-indicator"></span>
+                                                <span class="custom-control-description"></span>
+                        </label></center>
+                    <!--<center><input class="baixa_lancamento"  name="lanc_baixa" value="{{ lanc.pk }}" type="checkbox"></center>-->
+                    </td>
+                    <td><small>{{ l.num }}</small></td>
+                    <td>{% if l.tipo == 'c' %} <span class="badge badge-primary" text="Contrato">CONTRATO</span>
+                                          {% else %} <span class="badge badge-info" text="O.S">O.S</span>
+                                          {% endif %}
+                    </td>
+                    <td><small><strong>{{ l.cliente }} </strong></small></td>
+                    <td><small>{{ l.servico }}</small></td>
+                    <td><small>{{ l.pfat|date:'d/m/Y'  }}</small></td>
+                    <td><span>{{ l.valor }}</span></td>
+                </tr>
+
+            {% endfor %}
+            </tbody>
+        </table>

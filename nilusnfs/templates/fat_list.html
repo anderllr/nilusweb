@@ -1,0 +1,225 @@
+{% extends "menu.html" %}
+{% load static widget_tweaks humanize %}
+
+
+
+<!-- Bread crumb and right sidebar toggle -->
+{% block title %} Faturamento de Contratos e Ordens de Serviços {% endblock %}
+
+{% block page_body %}
+<div class="block">
+    <div class="block-content">
+        <div class="block">
+            <div class="block-content block-content-full ribbon ribbon-left ribbon-bookmark ribbon-primary">
+                <button class="btn btn-outline-info mr-5 mb-5 baixa btn_lancamentos pull-right"
+                        data-toggle="tooltip" data-placement="bottom" title="Baixar Selecionados"  title="Pagar / Receber Lancamentos Selecionados"
+                         id="btn_baixa_total"><i class="fa fa-check-circle"></i></button>
+                <button type="button"  class="btn  btn-outline-primary btn_lancamentos  mr-5 mb-5" id="mostrar_filtros"   data-toggle="tooltip" data-placement="bottom" title="Exibir filtros de pesquisa">
+                   <i class="fa fa-filter"></i> Pesquisar
+               </button>
+
+                <div class="ribbon-box form_busca" style="display:none;">
+                    Filtros de Pesquisa
+                </div>
+                <input type="hidden" name="info_delete_vinculado" id="info_delete_vinculado" value="0">
+
+                <br>
+
+                <br>
+                <div class="form_busca" style="display:none;">
+                    <form>
+                        <div class="filtros_extras">
+                            <div class="row">
+                                <div class="col-md-8">
+
+                                        <div class="form-material input-group">
+                                            <label>{{ form.empresa.label_tag }}</label>
+                                            {% render_field form.empresa class="chosen-select" %}
+                                        </div>
+
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="mt-20">
+                                        <label class="css-control css-control-sm css-control-primary css-switch">
+                                            {% render_field form.lista_os type="checkbox" class='css-control-input' %}
+                                            <span class="css-control-indicator"></span> Listar O.S's?
+                                    </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-material input-group">
+                                        <label>{{ form.cadgeral.label_tag }}</label>
+                                        {% render_field form.cadgeral class="chosen-select" %}
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <label for="id_prox_fat_ini">Data:</label>
+                                    <div class="input-daterange input-group js-datepicker-enabled" data-date-format="dd/mm/yyyy" data-week-start="1" data-autoclose="true" data-today-highlight="true">
+                                        {% render_field form.prox_fat_ini class="form-control js-datepicker"   placeholder="dd/mm/aaaa" data-week-start="1" data-autoclose="true" data-today-highlight="true"%}
+                                        <span class="input-group-addon font-w600">  &nbsp; até  &nbsp; </span>
+                                        {% render_field form.prox_fat_fim class="form-control js-datepicker"   placeholder="dd/mm/aaaa" data-week-start="1" data-autoclose="true" data-today-highlight="true"%}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-material input-group">
+                                        <button type="submit"  class="btn  btn-outline-primary mr-5 mb-5 form_pesquisa form_bus"   data-toggle="tooltip" data-placement="bottom" title="Pesquisar">
+                                            <i class="fa fa-search"></i>
+                                        </button>
+                                        <button type="button"  class="btn  btn-outline-danger  mr-5 mb-5 limpa_filtro_pesquisa"   data-toggle="tooltip" data-placement="bottom" title="Remover filtros">
+                                             <i class="fa fa-search-minus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div>
+                    <div class="row">
+                        <div class="form_inc col-md-12">
+                        </div>
+                        <div class="form_inc_despesa col-md-12">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form_edit col-md-12"></div>
+                    </div>
+                </div>
+            </div>
+                <div class="row table table_os_contratos">
+                 <form method="post" action="" id="form_faturamento">
+                     <div>
+                        <input type="hidden"  name="data_fat" id="data_fat">
+                     </div>
+
+                     {% csrf_token %}
+                     {% include '_table_itensfat.html' %}
+                 </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% include 'modais_lancfin.html' %}
+
+
+<div class="modal fade" id="modal-databaixa" tabindex="-1" role="dialog" aria-labelledby="modal-slideright" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-slideright modal-sm " role="document">
+        <div class="modal-content">
+            <div class="block block-themed block-transparent mb-0">
+                <div class="block-header bg-primary-dark">
+                    <h3 class="block-title titulo_modal">Baixar selecionados.</h3>
+                    <div class="block-options">
+                        <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+                            <i class="si si-close"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="block-content">
+                    <div class="form-material input-group">
+                      <label>Data da Baixa</label>
+                      <input  type="text"  name="data_baixa_modal" id="data_baixa_modal" class="js-datepicker form-control"
+                              data-week-start="1" data-autoclose="true" data-today-highlight="true"
+                              data-date-format="dd/mm/yyyy" placeholder="dd/mm/aaaa" value="{{ data_hoje|date:'d/m/Y'  }}">
+                    </div>
+                    <div class="form-material input-group">
+                        <label class="css-control css-control-sm css-control-primary css-switch">
+                                <input type="checkbox" class='css-control-input' id="permite_alterar_conta">
+                                <span class="css-control-indicator"></span>Alterar conta financeira ?
+                         </label>
+                    </div>
+                    <br>
+                    <div class="row modal-data-baixa" style="display:none;">
+                        <div class="form-material input-group">
+                        <label>{{ form_baixa.conta_financeira.label_tag }}</label>
+                        {% render_field form_baixa.conta_financeira class="chosen-select"   %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-alt-primary" id="confirma_baixa" data-dismiss="modal">OK</button>
+                <button type="button" class="btn btn-alt-secondary" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+{% endblock %}
+
+
+{% block javascript %}
+
+$('.form_inc').hide();
+$('.form_edit').hide();
+$('.chosen-select').chosen({ width: '100%' });
+
+{% include 'js_filtros_pesquisas.html' %}
+
+
+
+function load_lanctos(){
+    $('.table_lancfinanceiro').load('{{ request.path }}');
+}
+
+
+table = $('#table_lanfinanceiro').DataTable({
+    "language": {
+     "lengthMenu": "Mostrando _MENU_ registros por página",
+     "search" : "Procurar: ",
+     "info" : "Exibindo de _START_ a _END_ de _TOTAL_ registros",
+     "infoEmpty": "Nenhum registro encontrado",
+     "infoFiltered": "(filtrado entre _MAX_ registros)",
+     "paginate" : {
+       "first":      "Primeiro",
+       "last":       "Último",
+       "next":       "Próximo",
+       "previous":   "Anterior"
+     },
+     responsive: {
+            details: {
+                type: 'column'
+            }
+        },
+        columnDefs: [ {
+            className: 'control',
+            orderable: false,
+            targets:   0
+        } ],
+        order: [ 1, 'asc' ]
+ }
+});
+
+{% include 'js_inclui_receita.html' %}
+{% include 'js_inclui_despesa.html' %}
+{% include 'js_edicao_lancamentos.html' %}
+{% include 'js_info_lancamentos.html' %}
+{% include 'js_delete_lancamentos.html' %}
+
+{% include 'js_baixa_lancamentos.html' %}
+
+
+$("#btn_impressao").on("click",function(e){
+    var url = window.location.href;
+    var nova_url = url.replace('/fin/lanc/','/rel/lanfinanceiros/');
+    window.open(nova_url);
+
+
+});
+
+
+{% endblock %}
+
+
+

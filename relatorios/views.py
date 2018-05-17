@@ -3,12 +3,13 @@ from django.utils.dateparse import parse_date
 from lancfinanceiros.models import Lancamentos,Movtos_lancamentos
 from niluscad.models import Cadgeral,PlanoFinan,Ccusto,Company
 from nilusfin.models import Contafinanceira
-
+from niluscont.models import OrdemServico
+from django.http import HttpResponse,Http404
 from datetime import date, timedelta, datetime
 from django.db.models import Sum
 from decimal import Decimal
 from nilusfin.calculos import calc_dre
-
+from accounts.models import User
 from django.contrib.auth.decorators import login_required
 from easy_pdf.views import PDFTemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -122,105 +123,6 @@ class Rel_lanfinanceiros(LoginRequiredMixin,PDFTemplateView):
         context['soma_saldo'] = soma_lanctos_saldo
         context['soma_vlr_lanctos'] = soma_lanctos_vlr
         return context
-
-# class Rel_Extratofinanceiro(LoginRequiredMixin, PDFTemplateView):
-#    template_name = 'rel_extratofinanceiro.html'
-#
-#
-#    def get_context_data(self, **kwargs):
-#        context = super(Rel_Extratofinanceiro,self).get_context_data(**kwargs)
-#        movimentos = Movtos_lancamentos.objects.filter(master_user=self.request.user.user_master)
-#        data_lanc_ini = self.request.GET.get('data_lanc_ini', '')
-#        data_lanc_fim = self.request.GET.get('data_lanc_fim', '')
-#        conta_finan = self.request.GET.get('conta_finan', '')
-#        dt_saldo_ant = None
-#        conta_finan_text = None
-#
-#
-#
-#
-#
-#        if conta_finan:
-#            conta_finan_text = Contafinanceira.objects.get(pk=int(conta_finan))
-#
-#        if data_lanc_ini !='':
-#            data_lanc_ini_dt = datetime.strptime(data_lanc_ini, "%d/%m/%Y").date()
-#            data_lanc_fim_dt = datetime.strptime(data_lanc_fim, "%d/%m/%Y").date()
-#            dt_saldo_ant = data_lanc_ini - timedelta(days=1)
-#            lanctos = movimentos.filter(dt_movimento__range=(data_lanc_ini_dt, data_lanc_fim_dt), conta_financeira=conta_finan)
-#
-#        movtos_creditos = Movtos_lancamentos.objects.filter(master_user=self.request.user.user_master,
-#                                                            conta_financeira=conta_finan,
-#                                                            sinal='R', dt_movimento__lt=data_lanc_ini_dt)
-#        movtos_creditos = movtos_creditos.aggregate(vlr_creditos=Sum('vlr_movimento'))
-#        movtos_debitos = Movtos_lancamentos.objects.filter(master_user=self.request.user.user_master,
-#                                                           conta_financeira=conta_finan,
-#                                                           sinal='D', dt_movimento__lt=data_lanc_ini_dt)
-#        movtos_debitos = movtos_debitos.aggregate(vlr_debitos=Sum('vlr_movimento'))
-#
-#        if movtos_creditos['vlr_creditos'] is None:
-#            movtos_creditos['vlr_creditos'] = 0
-#
-#        if movtos_debitos['vlr_debitos'] is None:
-#            movtos_debitos['vlr_debitos'] = 0
-#
-#        saldo_anterior = Decimal(movtos_creditos['vlr_creditos']) - Decimal(movtos_debitos['vlr_debitos'])
-#        #  FIM SALDO ANTERIOR
-#
-#        # SALDO ATUAL
-#        movtos_creditos = Movtos_lancamentos.objects.filter(master_user=self.request.user.user_master,
-#                                                            conta_financeira=conta_finan,
-#                                                            sinal='R', dt_movimento__lte=data_lanc_fim_dt)
-#        movtos_creditos = movtos_creditos.aggregate(vlr_creditos=Sum('vlr_movimento'))
-#        movtos_debitos = Movtos_lancamentos.objects.filter(master_user=self.request.user.user_master,
-#                                                           conta_financeira=conta_finan,
-#                                                           sinal='D', dt_movimento__lte=data_lanc_fim_dt)
-#        movtos_debitos = movtos_debitos.aggregate(vlr_debitos=Sum('vlr_movimento'))
-#
-#        if movtos_creditos['vlr_creditos'] is None:
-#            movtos_creditos['vlr_creditos'] = 0
-#
-#        if movtos_debitos['vlr_debitos'] is None:
-#            movtos_debitos['vlr_debitos'] = 0
-#
-#        saldo_atual = Decimal(movtos_creditos['vlr_creditos']) - Decimal(movtos_debitos['vlr_debitos'])
-#        # FIM SALDO ATUAL
-#
-#        # VALORES DE CRÉDITO E DÉBITO DENTRO DO PERÍODO
-#        total_debitos = movimentos.filter(dt_movimento__range=(data_lanc_ini_dt, data_lanc_fim_dt),
-#                                          conta_financeira=conta_finan,
-#                                          sinal='D')
-#        total_debitos = total_debitos.aggregate(vlr_debitos=Sum('vlr_movimento'))
-#
-#        total_creditos = movimentos.filter(dt_movimento__range=(data_lanc_ini_dt, data_lanc_fim_dt),
-#                                           conta_financeira=conta_finan,
-#                                           sinal='R')
-#        total_creditos = total_creditos.aggregate(vlr_creditos=Sum('vlr_movimento'))
-#
-#        if total_creditos['vlr_creditos'] is None:
-#            total_creditos['vlr_creditos'] = 0
-#
-#        if total_debitos['vlr_debitos'] is None:
-#            total_debitos['vlr_debitos'] = 0
-#
-#        totalizador_cre = total_creditos['vlr_creditos']
-#        totalizador_deb = total_debitos['vlr_debitos']
-#        # FIM VALORES DE CRÉDITO E DÉBITO
-#
-#        # soma_lanctos_vlr = lanctos.aggregate(vlr_lancto=Sum('vlr_lancamento'))
-#
-#        context['lanctos'] = lanctos
-#        context['saldo_anterior'] = saldo_anterior
-#        context['dt_saldo_ant'] = dt_saldo_ant
-#        context['saldo_atual'] = saldo_atual
-#        context['data_lanc_ini'] = data_lanc_ini
-#        context['data_lanc_fim'] = data_lanc_fim
-#        context['conta_finan'] = conta_finan_text
-#        # context['soma_vlr_lanctos'] = soma_lanctos_vlr
-#        context['total_debitos'] = totalizador_deb
-#        context['total_creditos'] = totalizador_cre
-#        return context
-
 
 class Rel_Extratofinanceiro(LoginRequiredMixin,PDFTemplateView):
     template_name = 'rel_extratofinanceiro.html'
@@ -401,12 +303,8 @@ class Rel_DRE(LoginRequiredMixin, PDFTemplateView):
        f_vencimento = self.request.GET.get('f_vencimento', '')
        f_baixa = self.request.GET.get('f_baixa', '')
 
-       data_hoje = datetime.today
+
        dados_empresa = None
-       # empresa = Company.objects.filter(master_user=self.request.user.user_master)
-       saldos = []
-       retorno_dre = []
-       retorno_planosdre = []
        tp_filtro = None
        user = self.request.user
 
@@ -448,12 +346,29 @@ class Rel_DRE(LoginRequiredMixin, PDFTemplateView):
        return context
 
 
+class Rel_OS(LoginRequiredMixin, PDFTemplateView):
+
+    def get_template_names(self):
+        return ["rel_os_producao.html"]
 
 
+    def get_form_kwargs(self):
+        kwargs = super(Rel_OS, self).get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super(Rel_OS, self).get_context_data(**kwargs)
+        pk_os =  self.request.GET.get('pk','')
+        ordem = OrdemServico.objects.get(pk=pk_os)
+        prestador = User.objects.get(pk=ordem.prestador)
+
+        context['ordem'] = ordem
+        context['prestador'] = prestador
+        return context
 
 
-
-
+rel_os = Rel_OS.as_view()
 rel_dre = Rel_DRE.as_view()
 rel_lanfinanceiros = Rel_lanfinanceiros.as_view()
 rel_extratofinanceiro = Rel_Extratofinanceiro.as_view()

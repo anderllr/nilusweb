@@ -1,3 +1,4 @@
+from datetime import date, timedelta, datetime
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.views.generic import CreateView,TemplateView,UpdateView,FormView
@@ -6,9 +7,13 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponse,Http404
 from .models import Paramnfs
-from .forms import FormCreateParamnfs
+from niluscont.models import Contratos,OrdemServico
+from niluscont.servicos import lista_contratoeos
+from .forms import FormCreateParamnfs,FiltroBuscaFaturamento,FormFaturamento
 from nilusadm.models import Sequenciais
+from niluscad.models import Company,Cadgeral
 from django.db.models import Max,Count
+from operator import itemgetter
 
 @login_required
 def paramnfs_list(request):
@@ -120,6 +125,77 @@ def delete_paramnfs(request, pk):
        print('erro na exclusao')
 
     return redirect('paramnfs_list')
+
+
+
+# ######################################################################################################
+#               FATURAMENTO E EMISSÃO DE NOTAS DE SERVIÇOS                                             #
+########################################################################################################
+
+@login_required
+def fat_list(request):
+
+    if request.is_ajax():
+        template_name = '_table_faturamento.html'
+    else:
+        template_name = 'fat_list.html'
+
+    filtrou = 'nao'
+    data_hoje = datetime.today
+
+    contratos = Contratos.objects.filter(master_user=request.user.user_master)
+    ordemservico = OrdemServico.objects.none()
+    empresa = Company.objects.filter(master_user=request.user.user_master)
+    cadgeral = Cadgeral.objects.filter(master_user=request.user.user_master)
+    # contratos_filtro = Contratos.objects.filter(master_user = request.user.user_master)
+
+    form = FiltroBuscaFaturamento(empresa,cadgeral,request.GET or None)
+
+    if form.is_valid():
+        prox_fat_ini = form.cleaned_data.get('prox_fat_ini', '')
+        prox_fat_fim = form.cleaned_data.get('prox_fat_fim', '')
+        empresa = form.cleaned_data.get('empresa', '')
+        cadgeral = form.cleaned_data.get('cadgeral', '')
+        lista_os = form.cleaned_data.get('lista_os','')
+
+
+
+        if lista_os:
+            ordemservico = OrdemServico.objects.filter(master_user=request.user.user_master, situacao_fat='A')
+            filtrou = 'ok'
+
+        if prox_fat_ini:
+            contratos = contratos.filter(prox_faturamento__gte=prox_fat_ini)
+            ordemservico = ordemservico.filter(data_os__gte=prox_fat_ini)
+            filtrou = 'ok'
+
+        if prox_fat_fim:
+            contratos = contratos.filter(prox_faturamento__lt=prox_fat_fim+timedelta(days=1))
+            ordemservico = ordemservico.filter(data_os__lt=prox_fat_fim+timedelta(days=1))
+            filtrou = 'ok'
+
+        if empresa:
+            contratos = contratos.filter(company=empresa)
+            ordemservico = ordemservico.filter(company=empresa)
+            filtrou = 'ok'
+
+        if cadgeral:
+            contratos = contratos.filter(cadgeral=cadgeral)
+            ordemservico = ordemservico.filter(cadgeral=cadgeral)
+            filtrou = 'ok'
+
+
+    lista = lista_contratoeos(contratos,ordemservico)
+
+    lista = sorted(lista,key=itemgetter('pfat'))
+
+    context = {
+        'lista': lista,
+        'form' : form,
+        'filtrou' : filtrou,
+        'data_hoje' : data_hoje
+    }
+    return render(request, template_name, context)
 
 
 
