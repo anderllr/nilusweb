@@ -64,7 +64,8 @@ def cad_empresa_emissora(paramnfs):
             url,json=data,headers={"Authorization": "Basic"+settings.ENOTASKEY}
         )
 
-
+        print(resposta)
+        print(resposta.text)
 
         xml = BeautifulSoup(resposta.text,"lxml")
 
@@ -140,6 +141,9 @@ def edit_empresa_emissora(paramnfs):
     resposta = requests.post(
         url, json=data, headers={"Authorization": "Basic "+settings.ENOTASKEY}
     )
+
+    print(resposta)
+    print(resposta.text)
 
     xml = BeautifulSoup(resposta.text, "lxml")
 
