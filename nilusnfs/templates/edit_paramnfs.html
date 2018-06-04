@@ -8,8 +8,14 @@
 
 {% block page_body %}
 
+{% load static widget_tweaks %}
+{% if success %}
+   <script>
+  	 close_form=true;
+   </script>
+{% else %}
 <div class="block">
-    <div class="block-content">
+     <div class="block-content">
         <div class="block block-themed block-rounded">
             <div class="block-header bg-flat-dark">
                 <h3 class="block-title antes_insert">Alterar Parametros empresa: {{ dados_cadastro.num_param }} - {{ dados_cadastro.company }}</h3>
@@ -19,177 +25,238 @@
                     </a>
                 </div>
             </div>
-            <form method="post" class="form_parametros" id="form_create" action="{% url 'edit_paramnfs' object.pk %}" enctype="multipart/form-data">
-                     {% csrf_token %}
-                        {% for error in form.non_field_errors %}
-                        <div class="alert-danger alert">
-                        {{ error }}
-                        </div>
-                        {% endfor %}
-                     <div class="block-content">
-                         <div>
-                             <h5><small>Dados da Empresa</small></h5>
-                             <hr>
-                         </div>
-                        <div class="form-group row ">
-                            <div class="col-md-7">
-                                <div class="form-material input-group ">
-                                    <label>Empresa</label>
-                                    {% render_field form.company class="chosen-select"  %}
-                                    {% for error in form.company.errors %}
-                                    <small class="form-control-feedback"> {{ error }} </small>
-                                    {% endfor %}
-                                </div>
-                                <div>
-                                    <small class="form-control-feedback text-danger aviso_company" style="display:none;" > campo obrigatório </small>
-                                </div>
-                            </div>
-                            <div class="col-md-5">
-                                <div class="col-12">
-                                    <label class="css-control css-control-sm css-control-primary css-switch">
-                                        {% render_field form.simples_nac type="checkbox" class='css-control-input' %}
-                                        <span class="css-control-indicator"></span> Optante simples nacional
-                                    </label>
-                                </div>
-                                <div class="col-12">
-                                    <label class="css-control css-control-sm css-control-primary css-switch">
-                                        {% render_field form.incent_cult type="checkbox" class='css-control-input' %}
-                                        <span class="css-control-indicator"></span> Incentivador cultural
-                                    </label>
-                                </div>
-
-                            </div>
-                        </div>
-                         <div>
-                             <h5><small>Dados Serviço Padrão</small></h5>
-                             <hr>
-                         </div>
-                        <div class="form-group row">
-                            <div class="col-md-8">
-                                <div class="form-material  floating">
-                                    {% render_field  form.cd_srv_padrao class='form-control' %}
-                                    <label for="{{  form.cd_srv_padrao.id }}">Código serviço padrão</label>
-                                    {% for error in form.cd_srv_padrao.errors %}
-                                    <div class="alert alert-danger alert-dismissable">
-                                        <p class="mb-0">{{ error }}</p>
-                                    </div>
-                                    {% endfor %}
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                 <div class="form-material  floating">
-                                    {% render_field  form.aliquota_iss class='form-control' %}
-                                    <label for="{{  form.aliquota_iss.id }}">Aliquota %</label>
-                                    {% for error in form.aliquota_iss.errors %}
-                                    <div class="alert alert-danger alert-dismissable">
-                                        <p class="mb-0">{{ error }}</p>
-                                    </div>
-                                    {% endfor %}
-                                </div>
-                           </div>
-                        </div>
-                        <div class="form-group row">
-                           <div class="col-md-11">
-                                <div class="form-material  floating">
-                                    {% render_field  form.desc_srv class='form-control' %}
-                                    <label for="{{  form.desc_srv.id }}">Descrição Serviço</label>
-                                    {% for error in form.desc_srv.errors %}
-                                    <div class="alert alert-danger alert-dismissable">
-                                        <p class="mb-0">{{ error }}</p>
-                                    </div>
-                                    {% endfor %}
-                                </div>
-                           </div>
-                           <div class="col-md-5">
-                                <div class="form-material  floating">
-                                    {% render_field  form.cnae class='form-control' %}
-                                    <label for="{{  form.cnae.id }}">CNAE</label>
-                                    {% for error in form.cnae.errors %}
-                                    <div class="alert alert-danger alert-dismissable">
-                                        <p class="mb-0">{{ error }}</p>
-                                    </div>
-                                    {% endfor %}
-                                </div>
-                           </div>
-                           <div class="col-md-6">
-                                <div class="form-material  floating">
-                                    {% render_field  form.it_lista_srv class='form-control' %}
-                                    <label for="{{  form.it_lista_srv.id }}">Item na lista de serviços</label>
-                                    {% for error in form.it_lista_srv.errors %}
-                                    <div class="alert alert-danger alert-dismissable">
-                                        <p class="mb-0">{{ error }}</p>
-                                    </div>
-                                    {% endfor %}
-                                </div>
-                           </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-md-5">
-                                <div class="form-material input-group ">
-                                    <label>Regime especial de tributação</label>
-                                    {% render_field form.regime_trib class="chosen-select"  %}
-                                    {% for error in form.regime_trib.errors %}
-                                    <small class="form-control-feedback"> {{ error }} </small>
-                                    {% endfor %}
-                                </div>
-                                <div>
-                                    <small class="form-control-feedback text-danger aviso_company" style="display:none;" > campo obrigatório </small>
-                                </div>
-                            </div>
-                        </div>
-                         <div>
-                             <h5><small>Certificado Digital</small></h5>
-                             <hr>
-                         </div>
-                        <div class="form-group row e_titulo">
-                           <div class="col-md-5">
-                               <div class="form-material  floating">
-                                    {% render_field  form.certificado_nome class='form-control' %}
-                                    <label for="{{  form.certificado_nome.id }}">Nome</label>
-                                    {% for error in form.certificado_nome.errors %}
-                                    <div class="alert alert-danger alert-dismissable">
-                                        <p class="mb-0">{{ error }}</p>
-                                    </div>
-                                    {% endfor %}
-                                </div>
-                           </div>
-                           <div class="col-md-5">
-                                <div class="form-group">
-                                    <label for="{{  form.certificado_pfx.id }}">Upload Certificado</label>
-                                    <br>
-                                    {% render_field  form.certificado_pfx class='form-control' %}
-                                    {% for error in form.certificado_pfx.errors %}
-                                    <div class="alert alert-danger alert-dismissable">
-                                        <p class="mb-0">{{ error }}</p>
-                                    </div>
-                                    {% endfor %}
-                                </div>
-                           </div>
-                        </div>
-                        <div class="form-group row e_titulo">
-                           <div class="col-md-5">
-                                   <div class="form-material  floating">
-                                    {% render_field  form.certificado_senha class='form-control' %}
-                                    <label for="{{  form.certificado_senha.id }}">Senha Certificado</label>
-                                    {% for error in form.certificado_senha.errors %}
-                                    <div class="alert alert-danger alert-dismissable">
-                                        <p class="mb-0">{{ error }}</p>
-                                    </div>
-                                    {% endfor %}
-                                </div>
-                        </div>
-                     </div>
-                  <br>
-                  <br>
-                 <div class="form-group row ">
-                        <button type="submit" id="btn_salvar" class="btn btn-alt-primary">Salvar</button>
-                        <a  class="btn btn-alt-secondary  cancel_form" >Cancelar</a>
-                 </div>
-            </form>
         </div>
-    </div>
-</div>
+    <ul class="nav nav-tabs nav-tabs-alt" data-toggle="tabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" href="#aba_principal">Dados Empresa</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#aba_servicos">Item de Serviço</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#aba_config">Configurações</a>
+        </li>
+    </ul>
 
+    <form method="post" class="form_parametros" id="form_create" action="{% url 'edit_paramnfs' object.pk %}" enctype="multipart/form-data">
+             {% csrf_token %}
+                {% for error in form.non_field_errors %}
+                <div class="alert-danger alert">
+                {{ error }}
+                </div>
+                {% endfor %}
+             <div class="block-content tab-content">
+                <div class="tab-pane active" id="aba_principal" role="tabpanel">
+                    <div class="form-group row ">
+                        <div class="col-md-7">
+                            <div class="form-material input-group ">
+                                <label>Empresa</label>
+                                {% render_field form.company class="chosen-select"  %}
+                                {% for error in form.company.errors %}
+                                <small class="form-control-feedback"> {{ error }} </small>
+                                {% endfor %}
+                            </div>
+                            <div>
+                                <small class="form-control-feedback text-danger aviso_company" style="display:none;" > campo obrigatório </small>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="col-12">
+                                <label class="css-control css-control-sm css-control-primary css-switch">
+                                    {% render_field form.simples_nac type="checkbox" class='css-control-input' %}
+                                    <span class="css-control-indicator"></span> Optante simples nacional
+                                </label>
+                            </div>
+                            <div class="col-12">
+                                <label class="css-control css-control-sm css-control-primary css-switch">
+                                    {% render_field form.incent_cult type="checkbox" class='css-control-input' %}
+                                    <span class="css-control-indicator"></span> Incentivador cultural
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-5">
+                            <div class="form-material  floating">
+                                {% render_field  form.cnae class='form-control' %}
+                                <label for="{{  form.cnae.id }}">CNAE</label>
+                                {% for error in form.cnae.errors %}
+                                <div class="alert alert-danger alert-dismissable">
+                                    <p class="mb-0">{{ error }}</p>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                        <div class="form-material input-group ">
+                            <label>Regime especial de tributação</label>
+                            {% render_field form.regime_trib class="chosen-select"  %}
+                            {% for error in form.regime_trib.errors %}
+                            <small class="form-control-feedback"> {{ error }} </small>
+                            {% endfor %}
+                        </div>
+                        <div>
+                            <small class="form-control-feedback text-danger aviso_company" style="display:none;" > campo obrigatório </small>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="aba_servicos" role="tabpanel">
+                    <div class="form-group row">
+                        <div class="col-md-4">
+                            <div class="form-material  floating">
+                                {% render_field  form.cd_srv_padrao class='form-control' %}
+                                <label for="{{  form.cd_srv_padrao.id }}">Código serviço padrão</label>
+                                {% for error in form.cd_srv_padrao.errors %}
+                                <div class="alert alert-danger alert-dismissable">
+                                    <p class="mb-0">{{ error }}</p>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="form-material  floating">
+                                {% render_field  form.desc_srv class='form-control' %}
+                                <label for="{{  form.desc_srv.id }}">Descrição Serviço</label>
+                                {% for error in form.desc_srv.errors %}
+                                <div class="alert alert-danger alert-dismissable">
+                                    <p class="mb-0">{{ error }}</p>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-4">
+                            <div class="form-material  floating">
+                                {% render_field  form.it_lista_srv class='form-control' %}
+                                <label for="{{  form.it_lista_srv.id }}">Item da lista de serviço (LC116)</label>
+                                {% for error in form.it_lista_srv.errors %}
+                                <div class="alert alert-danger alert-dismissable">
+                                    <p class="mb-0">{{ error }}</p>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                             <div class="form-material  floating">
+                                {% render_field  form.aliquota_iss class='form-control' %}
+                                <label for="{{  form.aliquota_iss.id }}">Aliquota ISS (%)</label>
+                                {% for error in form.aliquota_iss.errors %}
+                                <div class="alert alert-danger alert-dismissable">
+                                    <p class="mb-0">{{ error }}</p>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="tab-pane" id="aba_config" role="tabpanel">
+                    <div class="form-group row e_titulo">
+                       <div class="col-md-4">
+                           <div class="form-material  floating">
+                                {% render_field  form.certificado_nome class='form-control' %}
+                                <label for="{{  form.certificado_nome.id }}">Nome Certificado</label>
+                                {% for error in form.certificado_nome.errors %}
+                                <div class="alert alert-danger alert-dismissable">
+                                    <p class="mb-0">{{ error }}</p>
+                                </div>
+                                {% endfor %}
+                            </div>
+                       </div>
+                       <div class="col-md-4">
+                            <div class="form-material">
+                                {% render_field  form.certificado_pfx class='form-control' %}
+                                <label for="{{  form.certificado_pfx.id }}">Upload Certificado</label>
+                                {% for error in form.certificado_pfx.errors %}
+                                <div class="alert alert-danger alert-dismissable">
+                                    <p class="mb-0">{{ error }}</p>
+                                </div>
+                                {% endfor %}
+                            </div>
+                       </div>
+                       <div class="col-md-4">
+                           <div class="form-material  floating">
+                                {% render_field  form.certificado_senha class='form-control' %}
+                                <label for="{{  form.certificado_senha.id }}">Senha Certificado</label>
+                                {% for error in form.certificado_senha.errors %}
+                                <div class="alert alert-danger alert-dismissable">
+                                    <p class="mb-0">{{ error }}</p>
+                                </div>
+                                {% endfor %}
+                           </div>
+                       </div>
+                </div>
+                <div class="form-group row">
+                      <div class="col-md-4">
+                           <div class="form-material  floating">
+                                {% render_field  form.conf_serieNFE class='form-control' %}
+                                <label for="{{  form.conf_serieNFE.id }}">Serie</label>
+                                {% for error in form.conf_serieNFE.errors %}
+                                <div class="alert alert-danger alert-dismissable">
+                                    <p class="mb-0">{{ error }}</p>
+                                </div>
+                                {% endfor %}
+                            </div>
+                       </div>
+                       <div class="col-md-4">
+                            <div class="form-material floating">
+                                {% render_field  form.conf_sequenciaNFE class='form-control' %}
+                                <label for="{{  form.conf_sequenciaNFE.id }}">Número do RPS atual</label>
+                                {% for error in form.conf_sequenciaNFE.errors %}
+                                <div class="alert alert-danger alert-dismissable">
+                                    <p class="mb-0">{{ error }}</p>
+                                </div>
+                                {% endfor %}
+                            </div>
+                       </div>
+                       <div class="col-md-4">
+                           <div class="form-material  floating">
+                                {% render_field  form.conf_sequencialoteNFe class='form-control' %}
+                                <label for="{{  form.conf_sequencialoteNFe.id }}">Número do lote atual</label>
+                                {% for error in form.conf_sequencialoteNFe.errors %}
+                                <div class="alert alert-danger alert-dismissable">
+                                    <p class="mb-0">{{ error }}</p>
+                                </div>
+                                {% endfor %}
+                           </div>
+                       </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-6">
+                            <div class="form-material floating">
+                                {% render_field  form.conf_usuarioAcesso class='form-control' %}
+                                <label for="{{  form.conf_usuarioAcesso.id }}">Login Portal Prefeitura</label>
+                                {% for error in form.conf_usuarioAcesso.errors %}
+                                <div class="alert alert-danger alert-dismissable">
+                                    <p class="mb-0">{{ error }}</p>
+                                </div>
+                                {% endfor %}
+                            </div>
+                       </div>
+                       <div class="col-md-4">
+                           <div class="form-material  floating">
+                                {% render_field  form.conf_senhaUsuarioAcesso class='form-control' %}
+                                <label for="{{  form.conf_senhaUsuarioAcesso.id }}">Senha Portal Prefeitura</label>
+                                {% for error in form.conf_senhaUsuarioAcesso.errors %}
+                                <div class="alert alert-danger alert-dismissable">
+                                    <p class="mb-0">{{ error }}</p>
+                                </div>
+                                {% endfor %}
+                           </div>
+                       </div>
+                </div>
+             </div>
+            <div class="form-group row ">
+                <button type="submit" id="btn_salvar" class="btn btn-alt-primary">Salvar</button>
+                <a class="btn btn-alt-secondary  cancel_form" href="{% url 'paramnfs_list' %}">Cancelar</a>
+         </div>
+    </form>
+
+
+</div>
+{% endif %}
 {% endblock %}
 
 

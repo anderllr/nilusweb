@@ -120,7 +120,7 @@ $(".new_cadgeral").on("click",function(e){
 	 	 var dados = $(this).serialize();
 	 	 $.post("{% url 'create_cadgeral' %}",dados,function(result){
 	 	    $(".form_inc").html(result);
-	 	    if(close_form_cadgeral==true){
+	 	    if(ok=='ok'){
 	 	        window.location.reload();
 
 

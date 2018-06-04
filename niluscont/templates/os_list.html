@@ -214,6 +214,16 @@ $(".new_os").on("click",function(e){
               load_contratoform();
 
 
+        $(".form_inc").on("change", "#id_os_avulsa", function(e){
+              if ($(this).is(":checked")){
+                  $(".contratos").hide();
+              }
+              else {
+                  $(".contratos").show();
+              }
+        });
+
+
         $('#btn_salvar').on("click",function(e){
             var cpo_cadgeral
 

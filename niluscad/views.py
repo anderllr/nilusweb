@@ -64,8 +64,8 @@ class CreateCompany(LoginRequiredMixin,CreateView):
         return context
 
     model = Company
-    fields = ['cnpj_cpf','insc_est','insc_mun','razao','fantasia','cep','endereco','numero','complemento','bairro','cidade','uf',
-              'email','telefone']
+    fields = ['cnpj_cpf','insc_est','insc_mun','razao','fantasia','cep','endereco','numero','complemento','bairro',
+              'cidade','uf','ibge_uf','ibge_mun','email','telefone']
 
     def get_success_url(self):
         return reverse_lazy('company_list')
@@ -117,8 +117,8 @@ class EditCompany(LoginRequiredMixin,UpdateView):
 
 
     model = Company
-    fields = ['cnpj_cpf','insc_mun','insc_est','razao', 'fantasia', 'cep', 'endereco', 'numero', 'complemento', 'bairro', 'cidade', 'uf',
-              'email', 'telefone','situacao']
+    fields = ['cnpj_cpf','insc_mun','insc_est','razao','fantasia','cep','endereco','numero','complemento',
+              'bairro', 'cidade', 'uf','ibge_uf','ibge_mun','email','telefone','situacao']
 
 
     def form_valid(self,form):
@@ -348,14 +348,6 @@ class CreateCadGeral(LoginRequiredMixin,CreateView):
             return ["_create_cadgeral.html"]
         else:
             return ["create_cadgeral.html"]
-
-
-    # def get_context_data(self,**kwargs):
-    #     context = super(CreateCompany,self).get_context_data(**kwargs)
-    #     context['test'] = 'Luan'
-    #
-    #     return context
-
 
 
     model = Cadgeral

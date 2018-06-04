@@ -14,6 +14,7 @@ from nilusadm.models import Sequenciais
 from niluscad.models import Company,Cadgeral
 from .forms import FormContrato,FiltroContratosForm,FiltroOSForm,FormOS
 from core.utils import add_one_month,lookahead
+from .servicos import post_save_tmpfat,post_edit_tmpfat
 from django.db.models import Max,Count
 
 @login_required
@@ -152,6 +153,10 @@ class CreateContrato(LoginRequiredMixin,CreateView):
         seq_contrato.save()
         contrato.save()
 
+
+        post_save_tmpfat(contrato,None)
+
+
         if self.request.is_ajax():
             context = self.get_context_data(form=form, success=True)
             return self.render_to_response(context)
@@ -188,7 +193,7 @@ class EditContrato(LoginRequiredMixin,UpdateView):
 
 
     model = Contratos
-    form_class =  FormContrato
+    form_class = FormContrato
 
     def form_valid(self,form):
         contrato = form.save(commit=False)
@@ -220,6 +225,11 @@ class EditContrato(LoginRequiredMixin,UpdateView):
             contrato.valor = conta
 
         form.save()
+
+        post_edit_tmpfat(contrato, None)
+
+
+
 
         if self.request.is_ajax():
             context = self.get_context_data(form=form,success=True, ok='ok')
@@ -344,6 +354,8 @@ class CreateOS(LoginRequiredMixin,CreateView):
 
         os.valor_unit = os.valor_unit_text.replace('R$','').replace('.','').replace(',','.')
 
+        if os.os_avulsa == True:
+            os.contrato = None
         os.master_user = self.request.user.user_master
         os.prestador = self.request.user.pk
         seq_os = Sequenciais.objects.get(user=self.request.user.user_master)
@@ -351,6 +363,8 @@ class CreateOS(LoginRequiredMixin,CreateView):
         seq_os.ordensservico = os.num_os
         seq_os.save()
         os.save()
+
+        post_save_tmpfat(None,os)
 
         if self.request.is_ajax():
             context = self.get_context_data(form=form, success=True)
@@ -396,7 +410,11 @@ class EditOS(LoginRequiredMixin,UpdateView):
         if 'valor_unit_text' in form.changed_data:
 
             os.valor_unit = os.valor_unit_text.replace('R$', '').replace('.', '').replace(',', '.')
+        if 'os_avulsa' in form.changed_data:
+            if os.os_avulsa is True:
+                os.contrato = None
 
+        post_edit_tmpfat(None, os)
         form.save()
 
         if self.request.is_ajax():
@@ -408,9 +426,7 @@ class EditOS(LoginRequiredMixin,UpdateView):
 
 @login_required
 def delete_os(request, pk):
-
     os = get_object_or_404(OrdemServico,master_user=request.user.user_master,pk=pk)
-
     try:
        os.delete()
     except:

@@ -100,5 +100,5 @@ class FormOS(forms.ModelForm):
 
     class Meta:
         model = OrdemServico
-        fields = ['company','data_os','cadgeral','contrato','desc_item','valor_unit_text','obs']
+        fields = ['company','data_os','cadgeral','contrato','desc_item','valor_unit_text','obs','os_avulsa']
 

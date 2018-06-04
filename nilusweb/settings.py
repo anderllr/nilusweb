@@ -211,6 +211,12 @@ ALLOWED_HOSTS = ['*']
 STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
 
 
+# ENOTAS
+
+ENOTASKEY = 'ZDhkMzE3NjUtYjE1NC00NjJmLTg2MjctZmIzNjAzNzAwMzAw'
+ENOTASURL = 'https://api.enotasgw.com.br/v1'
+
+
 
 
 try:

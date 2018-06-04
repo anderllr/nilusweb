@@ -46,11 +46,19 @@
                             {% endfor %}
                         </div>
                     </div>
+                    <div class="col-md-3">
+                        <div class="mt-30">
+                              <label class="css-control css-control-sm css-control-primary css-switch ">
+                                {% render_field form.os_avulsa type="checkbox" class='css-control-input' %}
+                                <span class="css-control-indicator"></span> OS Avulsa
+                            </label>
+                        </div>
+                    </div>
                 </div>
                 <hr>
                 <div class="form-group row">
                     <div class="col-md-6">
-                        <div class="form-material input-group">
+                        <div class="form-material input-group ">
                             <label>Cliente</label>
                             {% render_field form.cadgeral class="chosen-select" id="cadgeral_id2" %}
                             {% for error in form.cadgeral.errors %}
@@ -65,7 +73,7 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="form-material input-group">
+                        <div class="form-material input-group contratos">
                             <label>Contrato</label>
                             {% render_field form.contrato class="chosen-select" id="id_contrato2" %}
                             {% for error in form.contrato.errors %}
@@ -101,7 +109,7 @@
                 <div class="form-group">
                     <div class="form-material">
                         <label>Observações do Serviço</label>
-                        {% render_field form.obs  class='form-control' cols='4' rows='2' %}
+                        {% render_field form.obs  class='summernote' cols='4' rows='2' %}
                     </div>
                 </div>
              </div>

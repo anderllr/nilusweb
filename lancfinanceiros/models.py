@@ -19,7 +19,7 @@ class Lancamentos(models.Model):
     dt_vencimento = models.DateField('Data Vencimento',null=True,blank=True)
     plr_financeiro = models.ForeignKey('niluscad.Planofinan',models.PROTECT,verbose_name='Plano Financeiro')
     conta_finan = models.ForeignKey('nilusfin.Contafinanceira',models.PROTECT,verbose_name='Conta Recebimento')
-    c_custo = models.ForeignKey('niluscad.Ccusto',models.PROTECT,verbose_name='Centro de Custo')
+    c_custo = models.ForeignKey('niluscad.Ccusto',models.PROTECT,verbose_name='Centro de Custo',blank=True,null=True)
     vlr_lancamento = models.DecimalField('Valor do Lançamento',max_digits=13,decimal_places=2,blank=True,null=True)
     valor_text = models.CharField(verbose_name='Valor',  max_length=20)
     saldo = models.DecimalField('Saldo', max_digits=13,decimal_places=2,blank=True,null=True)

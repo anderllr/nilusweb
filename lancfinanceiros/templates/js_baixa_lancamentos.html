@@ -1,8 +1,7 @@
+
 $("#confirma_baixa").on("click",function(e){
     var data = $('#data_baixa_modal').val();
     $('#data_baixa').val(data);
-    var conta = $('#id_conta_financeira').val();
-    $('#conta_financeira').val(conta);
     $('#form_baixa_lancamento').submit();
 
 });
@@ -16,8 +15,6 @@ $("#btn_baixa_total").on("click",function(e){
     }else{
        swal('Atenção', 'Nenhum lançamento selecionado!', 'warning');
     }
-
-
 });
 
 

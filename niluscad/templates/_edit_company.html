@@ -207,6 +207,24 @@
                                     <small class="form-control-feedback text-danger campo_necessario" style="display:none;" > campo necessário para emissão de notas </small>
                                </div>
                         </div>
+                        <div class="form-material floating retorno_busca ret_cep" hidden>
+                            {% render_field  form.ibge_uf class='form-control' %}
+                            <label for="{{  form.ibge_uf.id }}">IBGE_UF</label>
+                            {% for error in form.ibge_uf.errors %}
+                            <div class="alert alert-danger alert-dismissable">
+                                <p class="mb-0">{{ error }}</p>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div class="form-material floating retorno_busca ret_cep" hidden>
+                            {% render_field  form.ibge_mun class='form-control' %}
+                            <label for="{{  form.ibge_mun.id }}">IBGE_UF</label>
+                            {% for error in form.ibge_mun.errors %}
+                            <div class="alert alert-danger alert-dismissable">
+                                <p class="mb-0">{{ error }}</p>
+                            </div>
+                            {% endfor %}
+                        </div>
                     </div>
                 </div>
              </div>

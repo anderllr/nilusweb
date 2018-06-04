@@ -27,6 +27,8 @@ class Company(models.Model):
     bairro = models.CharField('Bairro', max_length=40, blank=True, null=True)
     cidade = models.CharField('Cidade', max_length=30, blank=True, null=True)
     uf = models.CharField('UF', max_length=2, blank=True, null=True)
+    ibge_uf = models.IntegerField('IBGE UF',null=True,blank=True)
+    ibge_mun = models.IntegerField('IBGE Cidade', null=True, blank=True)
 
     # dados contato
     email = models.EmailField('Email',max_length=100,blank=True,null=True)
@@ -109,7 +111,7 @@ class Cadgeral(models.Model):
 
     # endereço
     cep = models.CharField('CEP', max_length=12, blank=True, null=True)
-    endereco = models.CharField('Endereço',max_length=60,blank=True,null=True)
+    endereco = models.CharField('Endereço',max_length=100,blank=True,null=True)
     numero = models.CharField('Nº',max_length=10, blank=True,null=True)
     complemento = models.CharField('Complemento', max_length=20,blank=True,null=True)
     bairro = models.CharField('Bairro', max_length=40, blank=True, null=True)

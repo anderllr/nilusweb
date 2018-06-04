@@ -1,19 +1,19 @@
+from threading import Thread
 from datetime import date, timedelta, datetime
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.views.generic import CreateView,TemplateView,UpdateView,FormView
-from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.urlresolvers import reverse_lazy
-from django.http import HttpResponse,Http404
-from .models import Paramnfs
-from niluscont.models import Contratos,OrdemServico
-from niluscont.servicos import lista_contratoeos
+from .models import Paramnfs,TmpFat
 from .forms import FormCreateParamnfs,FiltroBuscaFaturamento,FormFaturamento
 from nilusadm.models import Sequenciais
-from niluscad.models import Company,Cadgeral
-from django.db.models import Max,Count
-from operator import itemgetter
+from nilusfin.models import Contafinanceira
+from niluscad.models import Company,Cadgeral,PlanoFinan
+from niluscont.servicos import cria_lancamento_credito,cria_lancamento_credito_unificado
+from django.db.models import Q
+from .enotas_util import cad_empresa_emissora,edit_empresa_emissora
+
 
 @login_required
 def paramnfs_list(request):
@@ -82,6 +82,8 @@ class CreateParamNFS(LoginRequiredMixin,CreateView):
         paramnfs.num_param = seq_paramnfs.paramnfs + 1
         seq_paramnfs.paramnfs = paramnfs.num_param
         seq_paramnfs.save()
+
+        cad_empresa_emissora(paramnfs)
         paramnfs.save()
 
         return redirect(self.get_success_url())
@@ -112,7 +114,11 @@ class EditParamNFS(LoginRequiredMixin,UpdateView):
     form_class = FormCreateParamnfs
 
     def form_valid(self,form):
+        paramnfs = form.save(commit=False)
+
+        edit_empresa_emissora(paramnfs)
         form.save()
+
         return redirect(self.get_success_url())
 
 
@@ -143,13 +149,18 @@ def fat_list(request):
     filtrou = 'nao'
     data_hoje = datetime.today
 
-    contratos = Contratos.objects.filter(master_user=request.user.user_master)
-    ordemservico = OrdemServico.objects.none()
+    lista_fat = TmpFat.objects.filter(master_user=request.user.user_master,tipo='C',situacao=False)
     empresa = Company.objects.filter(master_user=request.user.user_master)
     cadgeral = Cadgeral.objects.filter(master_user=request.user.user_master)
-    # contratos_filtro = Contratos.objects.filter(master_user = request.user.user_master)
+    planofinan = PlanoFinan.objects.filter(master_user=request.user.user_master,sinal='R')
+    contafinan = Contafinanceira.objects.filter(master_user=request.user.user_master,conta_recebimento=True)
+
+
 
     form = FiltroBuscaFaturamento(empresa,cadgeral,request.GET or None)
+
+
+
 
     if form.is_valid():
         prox_fat_ini = form.cleaned_data.get('prox_fat_ini', '')
@@ -160,40 +171,59 @@ def fat_list(request):
 
 
 
+
         if lista_os:
-            ordemservico = OrdemServico.objects.filter(master_user=request.user.user_master, situacao_fat='A')
+            lista_fat = TmpFat.objects.filter(master_user=request.user.user_master, situacao=False)
             filtrou = 'ok'
 
         if prox_fat_ini:
-            contratos = contratos.filter(prox_faturamento__gte=prox_fat_ini)
-            ordemservico = ordemservico.filter(data_os__gte=prox_fat_ini)
+            lista_fat = lista_fat.filter(data_fat__gte=prox_fat_ini)
             filtrou = 'ok'
 
         if prox_fat_fim:
-            contratos = contratos.filter(prox_faturamento__lt=prox_fat_fim+timedelta(days=1))
-            ordemservico = ordemservico.filter(data_os__lt=prox_fat_fim+timedelta(days=1))
+            lista_fat = lista_fat.filter(data_fat__lt=prox_fat_fim+timedelta(days=1))
             filtrou = 'ok'
 
         if empresa:
-            contratos = contratos.filter(company=empresa)
-            ordemservico = ordemservico.filter(company=empresa)
+            lista_fat = lista_fat.filter(Q(contrato__company=empresa) | Q(os__company=empresa))
             filtrou = 'ok'
 
         if cadgeral:
-            contratos = contratos.filter(cadgeral=cadgeral)
-            ordemservico = ordemservico.filter(cadgeral=cadgeral)
+            lista_fat = lista_fat.filter(Q(contrato__cadgeral=cadgeral) | Q(os__cadgeral=cadgeral))
             filtrou = 'ok'
 
 
-    lista = lista_contratoeos(contratos,ordemservico)
 
-    lista = sorted(lista,key=itemgetter('pfat'))
+
+
+    form_fat = FormFaturamento(lista_fat,planofinan,contafinan,request.POST or None)
+    if form_fat.is_valid():
+        plano_financeiro = form_fat.cleaned_data['plano_financeiro']
+        fat_unificado = form_fat.cleaned_data['fatura_unificado']
+        faturar = form_fat.cleaned_data['ids_fat']
+        data_fat = form_fat.cleaned_data['data_fat']
+        contafinan = form_fat.cleaned_data['conta_financeira']
+        if data_fat is None:
+            data_fat = datetime.now()
+
+
+
+
+        faturamento = Thread(target=cria_lancamento_credito,
+                     args=[faturar, plano_financeiro, data_fat, contafinan])
+        faturamento.start()
+        # else:
+        #
+        #         retorno_unificado = cria_lancamento_credito_unificado(faturar,plano_financeiro,data_fat,contafinan)
+
+
 
     context = {
-        'lista': lista,
+        'lista': lista_fat,
         'form' : form,
         'filtrou' : filtrou,
-        'data_hoje' : data_hoje
+        'data_hoje' : data_hoje,
+        'form_fat': form_fat,
     }
     return render(request, template_name, context)
 

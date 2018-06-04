@@ -1,4 +1,7 @@
+from nilusnfs.models import TmpFat
 from django.db import models
+from django.db.models.signals import post_save
+
 
 # Create your models here.
 
@@ -45,8 +48,6 @@ class Contratos(models.Model):
     cotacao = models.ForeignKey('nilusfin.Cotacao', models.PROTECT, null=True, blank=True)
     obs_contrato = models.TextField('Observações',blank=True)
 
-
-
     class Meta:
         verbose_name = 'Contratos'
         unique_together = [
@@ -55,6 +56,9 @@ class Contratos(models.Model):
 
     def __str__(self):
       return '%s - %s' % (str(self.num_cont), self.item)
+
+
+
 
 
 
@@ -78,7 +82,7 @@ class OrdemServico(models.Model):
 
     situacao_fat = models.CharField('Situação de faturamento', max_length=1, choices=situacao_Choices, default='A')
 
-
+    os_avulsa = models.BooleanField('OS Avulsa', default=False)
 
     class Meta:
         verbose_name = 'Ordens de Serviço'

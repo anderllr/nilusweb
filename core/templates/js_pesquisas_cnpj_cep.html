@@ -14,6 +14,7 @@ $("#id_cnpj_cpf").keyup(function(e){
                                $("#id_complemento").val("");
                                $("#id_bairro").val("");
                                $("#id_uf").val("");
+
                       }
 
                       $("#btn_busca_cnpj").on("click",function(e){
@@ -102,6 +103,13 @@ $("#id_cnpj_cpf").keyup(function(e){
                                         $("#id_bairro").val(dados.bairro);
                                         $("#id_cidade").val(dados.localidade);
                                         $("#id_uf").val(dados.uf);
+                                        var ibge = dados.ibge;
+                                        var ibge_uf = ibge.substring(0, 2);
+                                        var ibge_mun = ibge.substring(2,8);
+                                        $("#id_ibge_uf").val(ibge_uf);
+                                        $("#id_ibge_mun").val(ibge_mun);
+
+
                                     } //end if.
                                     else {
                                         //CEP pesquisado não foi encontrado.

@@ -8,6 +8,7 @@ from nilusfin.models import Indice,Cotacao
 from recebiveis.models import Recebiveis
 from lancfinanceiros.models import Lancamentos,Movtos_lancamentos
 from niluscont.models import Contratos,OrdemServico
+from nilusnfs.models import TmpFat,Paramnfs,ErrosParametrosNFS,NotasFiscais
 
 # Register your models here.
 
@@ -30,3 +31,9 @@ admin.site.register(Movtos_lancamentos)
 admin.site.register(Grupodre)
 admin.site.register(Contratos)
 admin.site.register(OrdemServico)
+admin.site.register(TmpFat)
+admin.site.register(Paramnfs)
+admin.site.register(ErrosParametrosNFS)
+admin.site.register(NotasFiscais)
+
+

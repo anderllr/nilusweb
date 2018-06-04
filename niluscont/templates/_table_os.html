@@ -6,6 +6,7 @@
                     <th><small>Cadastro</small></th>
                     <th><small>Contrato</small></th>
                     <th><small>Data O.S</small></th>
+                    <th><small>Faturada</small></th>
                     <th><small>Valor</small></th>
                     <th></th>
                 </tr>
@@ -14,8 +15,13 @@
             {% for os in os %}
                     <td><small>{{ os.num_os }}</small></td>
                     <td><small><strong>{{ os.cadgeral}}</strong></small></td>
-                    <td><small>{{ os.contrato }}</small></td>
+                    <td><small>{% if os.contrato %} {{ os.contrato }} {% else %} O.S Avulsa {% endif %}</small></td>
                     <td><small>{{ os.data_os|date:'d/m/Y' }}</small></td>
+                    <td>{% if os.situacao_fat == 'A' %}
+                            <span class="badge badge-danger" text="Não Faturada">Não</span>
+                        {% else %}
+                            <span class="badge badge-info" text="Faturada">Sim</span>
+                        {% endif %}</td>
                     <td><strong>{{ os.valor_unit|intcomma }}</strong></td>
                     <td>
                         <button type="button" class="btn btn-sm btn-outline-info print_os"  href="{% url 'rel_os' %}" value="{{ os.id }}" data-toggle="tooltip" data-placement="bottom" title="Imprimir OS">
