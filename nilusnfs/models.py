@@ -103,8 +103,18 @@ class NotasFiscais(models.Model):
     id_key = models.CharField('Key Enotas',max_length=100)
     link_pdf = models.CharField('Link PDF',max_length=1000)
     link_xml = models.CharField('Link XML', max_length=1000)
-    desc_status_nfs = models.CharField('Status NFS',max_length=20)
+    desc_status_nfs = models.CharField('Status NFS',max_length=100)
     motivoStatus = models.CharField('Motivo Status',max_length=300)
+
+    id_origem = models.IntegerField('ID Externo',null=True,blank=True)
+
+    tipoorigem_Choices = (
+        ('O', 'OrdemServico'),
+        ('C', 'Contrato')
+    )
+    tipo_origem = models.CharField('tipo_origem', max_length=1, null=True, blank=True, choices=tipoorigem_Choices)
+
+    tipo = models.CharField('tipo registro', max_length=1,null=True,blank=True)
 
     class Meta:
         verbose_name = 'Notas Fiscais'

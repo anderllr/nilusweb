@@ -1,0 +1,193 @@
+{% extends "menu.html" %}
+{% load static widget_tweaks humanize %}
+
+
+
+<!-- Bread crumb and right sidebar toggle -->
+{% block title %} Notas Fiscais {% endblock %}
+
+{% block page_body %}
+<div class="block">
+    <div class="block-content">
+        <div class="block">
+            <div class="block-content block-content-full ribbon ribbon-left ribbon-bookmark ribbon-primary">
+                <button type="button"  class="btn  btn-outline-primary btn_lancamentos  mr-5 mb-5" id="mostrar_filtros"   data-toggle="tooltip" data-placement="bottom" title="Exibir filtros de pesquisa">
+                   <i class="fa fa-filter"></i> Pesquisar
+               </button>
+
+                <div class="ribbon-box form_busca" style="display:none;">
+                    Filtros de Pesquisa
+                </div>
+                <div class="form_busca" style="display:none;">
+                    <form>
+                        <div class="filtros_extras">
+                            <div class="row">
+                                <div class="col-4">
+                                    <label for="id_dt_emissao_ini">Data Emissão</label>
+                                    <div class="input-daterange input-group js-datepicker-enabled" data-date-format="dd/mm/yyyy" data-week-start="1" data-autoclose="true" data-today-highlight="true">
+                                        {% render_field form.dt_emissao_ini class="form-control js-datepicker"   placeholder="dd/mm/aaaa" data-week-start="1" data-autoclose="true" data-today-highlight="true"%}
+                                        <span class="input-group-addon font-w600">  &nbsp; até  &nbsp; </span>
+                                        {% render_field form.dt_emissao_fim class="form-control js-datepicker"   placeholder="dd/mm/aaaa" data-week-start="1" data-autoclose="true" data-today-highlight="true"%}
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-material input-group">
+                                        <label>{{ form.empresa.label_tag }}</label>
+                                        {% render_field form.empresa class="chosen-select" %}
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-material input-group">
+                                        <label>{{ form.cadgeral.label_tag }}</label>
+                                        {% render_field form.cadgeral class="chosen-select" %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-material input-group">
+                                        <button type="submit"  class="btn  btn-outline-primary mr-5 mb-5 form_pesquisa form_bus"   data-toggle="tooltip" data-placement="bottom" title="Pesquisar lançamentos">
+                                            <i class="fa fa-search"></i>
+                                        </button>
+                                        <button type="button"  class="btn  btn-outline-danger  mr-5 mb-5 limpa_filtro_pesquisa"   data-toggle="tooltip" data-placement="bottom" title="Remover filtros">
+                                             <i class="fa fa-search-minus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+                <div class="row table table_nfs">
+                 <form method="post" action="" id="form_reemitir">
+                     <div>
+                        <input type="hidden"  name="data_baixa" id="data_baixa">
+                        <input type="hidden"  name="conta_financeira" id="conta_financeira">
+                     </div>
+                     {% csrf_token %}
+                     {% include '_table_nfs.html' %}
+                 </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modal-infolancto" tabindex="-1" role="dialog" aria-labelledby="modal-slideleft" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-slideright " role="document">
+        <div class="modal-content">
+            <div class="block block-themed block-transparent mb-0">
+                <div class="block-header bg-primary-dark">
+                    <h3 class="block-title titulo_modal"></h3>
+                    <div class="block-options">
+                        <button type="button" class="btn-block-option" data-dismiss="modal" aria-label="Close">
+                            <i class="si si-close"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="block-content">
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-alt-secondary" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+{% endblock %}
+
+
+{% block javascript %}
+
+$('.form_inc').hide();
+$('.form_edit').hide();
+$('.chosen-select').chosen({ width: '100%' });
+
+{% include 'js_filtros_pesquisas.html' %}
+
+
+
+function load_lanctos(){
+    $('.table_lancfinanceiro').load('{{ request.path }}');
+}
+
+
+table = $('#table_nfs').DataTable({
+    "language": {
+     "lengthMenu": "Mostrando _MENU_ registros por página",
+     "search" : "Procurar: ",
+     "info" : "Exibindo de _START_ a _END_ de _TOTAL_ registros",
+     "infoEmpty": "Nenhum registro encontrado",
+     "infoFiltered": "(filtrado entre _MAX_ registros)",
+     "paginate" : {
+       "first":      "Primeiro",
+       "last":       "Último",
+       "next":       "Próximo",
+       "previous":   "Anterior"
+     },
+     responsive: {
+            details: {
+                type: 'column'
+            }
+        },
+        columnDefs: [ {
+            className: 'control',
+            orderable: false,
+            targets:   0
+        } ],
+        order: [ 1, 'asc' ]
+ }
+});
+
+{% include 'js_info_lancamentos.html' %}
+
+
+
+$(".table_nfs").on("click", ".atualizar_nfs",function(e){
+    e.preventDefault();
+    var linkURL = $(this).attr("href");
+    window.location.href = linkURL;
+});
+
+
+$(".table_nfs").on("click",".info_lancto",function(e){
+   e.preventDefault();
+   $("#modal-infolancto .block-content").load($(this).attr('href'), function(){
+       $('#modal-infolancto').modal("show");
+       $('.titulo_modal').text("Informações Nota Fiscal");
+       {% include 'js_tabs.html' %}
+   });
+});
+
+
+$(".table_nfs").on("click", ".down_pdf",function(e){
+    e.preventDefault();
+    var linkURL = $(this).attr("href");
+    window.location.href = linkURL;
+});
+
+$(".table_nfs").on("click", ".down_xml",function(e){
+    e.preventDefault();
+    var linkURL = $(this).attr("href");
+    window.location.href = linkURL;
+});
+
+
+
+{% endblock %}
+
+
+

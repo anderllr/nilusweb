@@ -1,4 +1,5 @@
 from threading import Thread
+from django.http import HttpResponse,Http404
 from datetime import date, timedelta, datetime
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -6,13 +7,15 @@ from django.views.generic import CreateView,TemplateView,UpdateView,FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.urlresolvers import reverse_lazy
 from .models import Paramnfs,TmpFat
-from .forms import FormCreateParamnfs,FiltroBuscaFaturamento,FormFaturamento
+from .forms import FormCreateParamnfs,FiltroBuscaFaturamento,FormFaturamento,FiltroBuscaNotas
 from nilusadm.models import Sequenciais
 from nilusfin.models import Contafinanceira
 from niluscad.models import Company,Cadgeral,PlanoFinan
 from niluscont.servicos import cria_lancamento_credito,cria_lancamento_credito_unificado
+from nilusnfs.models import NotasFiscais
 from django.db.models import Q
-from .enotas_util import cad_empresa_emissora,edit_empresa_emissora
+from .enotas_util import cad_empresa_emissora,edit_empresa_emissora,refresh_situacao_nfs
+
 
 
 @login_required
@@ -226,6 +229,121 @@ def fat_list(request):
         'form_fat': form_fat,
     }
     return render(request, template_name, context)
+
+
+
+
+# ######################################################################################################
+#               NOTAS FISCAIS EMITIDAS                                                                 #
+########################################################################################################
+
+@login_required
+def nfs_list(request):
+
+    if request.is_ajax():
+        template_name = '_table_nfs.html'
+    else:
+        template_name = 'nfs_list.html'
+
+    filtrou = 'nao'
+    data_hoje = datetime.today
+
+    notas = NotasFiscais.objects.filter(master_user=request.user.user_master).order_by('-data_emissao')
+    empresa = Company.objects.filter(master_user=request.user.user_master)
+    cadgeral = Cadgeral.objects.filter(master_user=request.user.user_master)
+
+    notas_pendentes = NotasFiscais.objects.filter(master_user=request.user.user_master,
+                                                  desc_status_nfs='EmProcessoDeAutorizacao')
+    # print(notas_pendentes)
+
+    refresh_notas = Thread(target=refresh_situacao_nfs,
+                           args=[notas_pendentes])
+    refresh_notas.start()
+
+    form = FiltroBuscaNotas(empresa,cadgeral,request.GET or None)
+
+    if form.is_valid():
+        dt_emissao_ini = form.cleaned_data.get('dt_emissao_ini', '')
+        dt_emissao_fim = form.cleaned_data.get('dt_emissao_fim', '')
+        empresa = form.cleaned_data.get('empresa', '')
+        cadgeral = form.cleaned_data.get('cadgeral', '')
+
+
+
+
+
+        if dt_emissao_ini:
+            notas = notas.filter(data_emissao__gte=dt_emissao_ini)
+            filtrou = 'ok'
+
+        if dt_emissao_fim:
+            notas = notas.filter(data_emissao__lt=dt_emissao_fim+timedelta(days=1))
+            filtrou = 'ok'
+
+        if empresa:
+            notas = notas.filter(company=empresa)
+            filtrou = 'ok'
+
+        if cadgeral:
+            notas = notas.filter(cadgeral=cadgeral)
+            filtrou = 'ok'
+
+
+        notas = notas.order_by('-data_emissao')
+
+
+
+
+
+    context = {
+        'notas': notas,
+        'form' : form,
+        'filtrou' : filtrou,
+        'data_hoje' : data_hoje,
+    }
+    return render(request, template_name, context)
+
+
+
+@login_required
+def refresh_nfs(request, pk):
+    nfs = NotasFiscais.objects.filter(master_user=request.user.user_master,pk=pk)
+    refresh_situacao_nfs(nfs)
+
+    return redirect('nfs_list')
+
+
+
+@login_required
+def info_nfs(request,pk):
+
+    if request.is_ajax():
+        template_name = '_info_nfs.html'
+    else:
+        raise Http404
+
+    nf = NotasFiscais.objects.get(pk=pk)
+
+    context = {
+        'nf': nf,
+    }
+
+    return render(request, template_name, context)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

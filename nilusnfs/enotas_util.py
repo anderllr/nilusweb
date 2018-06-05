@@ -1,6 +1,7 @@
 import requests
 import json
 from django.conf import settings
+from datetime import date, timedelta, datetime
 from  bs4 import BeautifulSoup
 from nilusnfs.models import Paramnfs,ErrosParametrosNFS,NotasFiscais
 
@@ -64,8 +65,7 @@ def cad_empresa_emissora(paramnfs):
             url,json=data,headers={"Authorization": "Basic"+settings.ENOTASKEY}
         )
 
-        print(resposta)
-        print(resposta.text)
+
 
         xml = BeautifulSoup(resposta.text,"lxml")
 
@@ -142,8 +142,7 @@ def edit_empresa_emissora(paramnfs):
         url, json=data, headers={"Authorization": "Basic "+settings.ENOTASKEY}
     )
 
-    print(resposta)
-    print(resposta.text)
+
 
     xml = BeautifulSoup(resposta.text, "lxml")
 
@@ -161,6 +160,16 @@ def emite_nfse(servico):
 
         paramnfs = Paramnfs.objects.get(company=servico.company)
         url = settings.ENOTASURL + '/empresas/' + paramnfs.key_empresa + '/nfes'
+
+        if servico.tipo == 'C':
+            id_externo = servico.contrato.num_cont
+            valor_nota = servico.vlr_fat
+        elif servico.tipo == 'O':
+            id_externo = servico.os.num_os
+            valor_nota = servico.vlr_fat
+        elif servico.tipo == 'N':
+            id_externo = servico.id_origem
+            valor_nota = servico.vlr_nota
 
         cnpj_cpf = servico.cadgeral.cnpj_cpf.replace('.', '')
         cnpj_cpf = cnpj_cpf.replace('-', '')
@@ -194,7 +203,7 @@ def emite_nfse(servico):
                 'id': None,
                 'ambienteEmissao': 'Producao',
                 'tipo': 'NFS-e',
-                'idExterno': str(servico.pk),
+                'idExterno': str(id_externo),
                 'consumidorFinal': True,
                 'indicadorPresencaConsumidor': None,
                 'servico':
@@ -214,23 +223,23 @@ def emite_nfse(servico):
                      'valorPis': 0,
                      'observacoes': ''
                      },
-                'valorTotal': float(servico.vlr_fat),
+                'valorTotal': float(valor_nota),
                 'idExternoSubstituir': None,
                 'nfeIdSubstitituir': None
                 }
 
-        data2 = json.dumps(data)
+
 
         resposta = requests.post(
             url, json=data, headers={"Authorization": "Basic "+settings.ENOTASKEY}
         )
-
-        print(resposta)
-        print(resposta.text)
+        # print(resposta)
+        # print(resposta.text)
+        # print(data)
 
         if resposta.status_code == 200:
             xml = BeautifulSoup(resposta.text, "lxml")
-            print(xml)
+
             key_nfs = xml.find("nfeid").contents[0]
 
             url = url+'/'+key_nfs
@@ -238,8 +247,9 @@ def emite_nfse(servico):
             retorno_emissao = requests.get(
                 url,  headers={"Authorization": "Basic " + settings.ENOTASKEY}
             )
-            print(retorno_emissao.text)
 
+            # print(retorno_emissao)
+            # print(retorno_emissao.text)
 
             xmlret = BeautifulSoup(retorno_emissao.text,"lxml")
             statusret = xmlret.find("status").contents[0]
@@ -249,10 +259,17 @@ def emite_nfse(servico):
             nfs.master_user = servico.master_user
             nfs.company = servico.company
             nfs.cadgeral = servico.cadgeral
-            # nfs.data_emissao = xmlret.find("datacriacao").contents[0]
+            nfs.id_key = key_nfs
+            nfs.vlr_nota = valor_nota
+            # nfs.data_emissao = date(xmlret.find("dataCriacao").contens[0])
             nfs.desc_status_nfs = statusret
+            nfs.id_origem = id_externo
+            if servico.tipo != 'N':
+                nfs.tipo_origem = servico.tipo
+            nfs.tipo = 'N'
             if statusret == 'Autorizada':
-                nfs.num_nf = xmlret.find("numero").contents[0]
+                num_nf = xmlret.find("nfe").contents[9]
+                nfs.num_nf = num_nf.text
                 nfs.link_pdf = xmlret.find("linkdownloadpdf").contents[0]
                 nfs.link_xml = xmlret.find("linkdownloadxml").contents[0]
             elif statusret == 'Negada':
@@ -260,4 +277,33 @@ def emite_nfse(servico):
             nfs.save()
 
 
-        return data
+
+def refresh_situacao_nfs(nfs):
+   for nf in nfs:
+        paramnfs = Paramnfs.objects.get(company=nf.company)
+        url = settings.ENOTASURL + '/empresas/' + paramnfs.key_empresa + '/nfes/'+nf.id_key
+
+        retorno_nota_fiscal = requests.get(
+               url,  headers={"Authorization": "Basic " + settings.ENOTASKEY}
+        )
+        xmlret = BeautifulSoup(retorno_nota_fiscal.text, "lxml")
+        statusret = xmlret.find("status").contents[0]
+        if statusret == 'Autorizada':
+                num_nf = xmlret.find("nfe").contents[9]
+                link_pdf = xmlret.find("linkdownloadpdf").contents[0]
+                link_xml = xmlret.find("linkdownloadxml").contents[0]
+        elif statusret == 'Negada':
+            motivoStatus = xmlret.find("motivostatus").contents[0]
+
+
+        nota_fiscal = NotasFiscais.objects.get(pk=nf.pk,master_user=nf.master_user)
+        nota_fiscal.desc_status_nfs = statusret
+        if statusret == 'Autorizada':
+            nota_fiscal.num_nf = num_nf.text
+            nota_fiscal.link_pdf = link_pdf
+            nota_fiscal.link_xml = link_xml
+        elif statusret == 'Negada':
+            nota_fiscal.motivoStatus = motivoStatus
+        nota_fiscal.save()
+
+        # emite_nfse(nf)

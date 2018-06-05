@@ -70,3 +70,19 @@ class FormFaturamento(forms.Form):
 
 
 
+class FiltroBuscaNotas(forms.Form):
+
+
+    dt_emissao_ini = forms.DateField(label='Emissão de:', required=False)
+    dt_emissao_fim = forms.DateField(label='Emissão até:', required=False)
+
+    empresa = forms.ModelChoiceField(label='Empresa', required=False, empty_label='Todas',
+                                     queryset=Company.objects.none())
+    cadgeral = forms.ModelChoiceField(label='Cliente / Fornecedor', empty_label='Todos', required=False,
+                                      queryset=Cadgeral.objects.none())
+
+
+    def __init__(self, empresa, cliente, *args, **kwargs):
+        super(FiltroBuscaNotas, self).__init__(*args, **kwargs)
+        self.fields['empresa'].queryset = empresa
+        self.fields['cadgeral'].queryset = cliente

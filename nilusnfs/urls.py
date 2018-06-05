@@ -13,4 +13,7 @@ urlpatterns = [
     # url(r'^conta/(?P<pk>\d+)/apagar/$', views.delete_conta, name='delete_conta'),
     # url(r'^conta/ajuste',views.ajc_saldoconta,name='ajc_saldoconta'),
     url(r'^faturamento/$',views.fat_list,name='fat_list'),
+    url(r'^notasemitidas/$',views.nfs_list,name='nfs_list'),
+    url(r'^notasemitidas/atualiza/(?P<pk>\d+)$',views.refresh_nfs,name='refresh_nfs'),
+    url(r'^notasemitidas/info/(?P<pk>\d+)$', views.info_nfs, name='info_nfs')
 ]

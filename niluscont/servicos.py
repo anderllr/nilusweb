@@ -8,6 +8,8 @@ from niluscont.models import Contratos,OrdemServico
 from core.utils import add_one_month
 from lancfinanceiros.movto_finan import grava_movimento_financeiro_c
 from nilusnfs.enotas_util import emite_nfse
+from nilusnfs.models import Paramnfs
+
 
 def lista_contratoeos(contratos,ordemservico):
 
@@ -85,6 +87,10 @@ def cria_lancamento_credito(faturar,planofinan,data_fat,contafinan):
 
     for f in faturar:
         if f.tipo == 'C':
+            if prox_fat < f.contrato.vigencia:
+                f.data_fat = prox_fat
+                f.save()
+
             lancto = Lancamentos()
             lancto.master_user = f.master_user
             lancto.company = f.contrato.company
@@ -127,20 +133,17 @@ def cria_lancamento_credito(faturar,planofinan,data_fat,contafinan):
 
             contrato.save()
 
-
-            nota_servico = emite_nfse(f)
-            print(nota_servico)
             grava_movimento_financeiro_c(lancto, f.master_user)
 
 
-            if prox_fat < f.contrato.vigencia:
-                f.data_fat = prox_fat
-                f.save()
-
-
-
-
+            # Verifica se a OS. é referente a algum contrato e se a empresa emite notas fiscais
+            if f.contrato.gera_nfs == True:
+                paramnf = Paramnfs.objects.get(master_user=f.master_user, company=f.company)
+                if paramnf:
+                    emite_nfse(f)
         elif f.tipo == 'O':
+            f.situacao = True
+            f.save()
 
             os = OrdemServico.objects.get(pk=f.os.pk)
             os.situacao_fat = 'F'
@@ -171,13 +174,17 @@ def cria_lancamento_credito(faturar,planofinan,data_fat,contafinan):
 
             grava_movimento_financeiro_c(lancto, f.master_user)
 
-
-            nota_servico = emite_nfse(f)
-            print(nota_servico)
-
-
-            f.situacao = True
-            f.save()
+            # Verifica se a OS. é referente a algum contrato e se a empresa emite notas fiscais
+            if f.os.contrato:
+                if f.os.contrato.gera_nfs == True:
+                    paramnf = Paramnfs.objects.get(master_user=f.master_user,company=f.company)
+                    if paramnf:
+                        emite_nfse(f)
+            else:
+            #  Verifica somente se a empresa da O.S pode emitir notas fiscais, se sim.. emite.
+                paramnf = Paramnfs.objects.get(master_user=f.master_user, company=f.company)
+                if paramnf:
+                    emite_nfse(f)
 
 
 def cria_lancamento_credito_unificado(faturar,planofinan,data_fat,contafinan):
