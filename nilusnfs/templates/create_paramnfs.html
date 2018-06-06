@@ -223,27 +223,35 @@
                 </div>
                 <div class="form-group row">
                     <div class="col-md-6">
-                            <div class="form-material floating">
-                                {% render_field  form.conf_usuarioAcesso class='form-control' %}
-                                <label for="{{  form.conf_usuarioAcesso.id }}">Login Portal Prefeitura</label>
-                                {% for error in form.conf_usuarioAcesso.errors %}
-                                <div class="alert alert-danger alert-dismissable">
-                                    <p class="mb-0">{{ error }}</p>
-                                </div>
-                                {% endfor %}
+                        <div class="form-material floating">
+                            {% render_field  form.conf_usuarioAcesso class='form-control' %}
+                            <label for="{{  form.conf_usuarioAcesso.id }}">Login Portal Prefeitura</label>
+                            {% for error in form.conf_usuarioAcesso.errors %}
+                            <div class="alert alert-danger alert-dismissable">
+                                <p class="mb-0">{{ error }}</p>
                             </div>
-                       </div>
-                       <div class="col-md-4">
-                           <div class="form-material  floating">
-                                {% render_field  form.conf_senhaUsuarioAcesso class='form-control' %}
-                                <label for="{{  form.conf_senhaUsuarioAcesso.id }}">Senha Portal Prefeitura</label>
-                                {% for error in form.conf_senhaUsuarioAcesso.errors %}
-                                <div class="alert alert-danger alert-dismissable">
-                                    <p class="mb-0">{{ error }}</p>
-                                </div>
-                                {% endfor %}
-                           </div>
-                       </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-material  floating">
+                             {% render_field  form.conf_senhaUsuarioAcesso class='form-control' %}
+                             <label for="{{  form.conf_senhaUsuarioAcesso.id }}">Senha Portal Prefeitura</label>
+                             {% for error in form.conf_senhaUsuarioAcesso.errors %}
+                             <div class="alert alert-danger alert-dismissable">
+                                 <p class="mb-0">{{ error }}</p>
+                             </div>
+                             {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-6">
+                       <label class="css-control css-control-sm css-control-primary css-switch">
+                            {% render_field form.conf_enviaEmail type="checkbox" class='css-control-input' %}
+                            <span class="css-control-indicator"></span> Envia notas por e-mail
+                        </label>
+                    </div>
                 </div>
              </div>
             <div class="form-group row ">

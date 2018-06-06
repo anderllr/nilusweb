@@ -34,6 +34,8 @@
                                     <center><span class="badge badge-success" text="Contrato">AUTORIZADA</span></center>
                                     {% elif nf.desc_status_nfs == 'Cancelada' %}
                                     <center><span class="badge badge-danger" text="Contrato">CANCELADA</span></center>
+                                    {% else %}
+                                    <center><span class="badge badge-secondary" text="Contrato">AGUARDANDO RESPOSTA</span></center>
                                     {% endif %}
                     </td>
 

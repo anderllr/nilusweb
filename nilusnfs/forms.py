@@ -18,7 +18,7 @@ class FormCreateParamnfs(forms.ModelForm):
 
         fields = ['company','cd_srv_padrao','desc_srv', 'aliquota_iss','cnae','it_lista_srv', 'simples_nac', 'incent_cult','regime_trib',
                   'certificado_pfx','certificado_nome','certificado_senha','conf_sequenciaNFE','conf_serieNFE',
-                  'conf_sequencialoteNFe','conf_usuarioAcesso','conf_senhaUsuarioAcesso']
+                  'conf_sequencialoteNFe','conf_usuarioAcesso','conf_senhaUsuarioAcesso','conf_enviaEmail']
 
 
 

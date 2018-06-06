@@ -74,7 +74,7 @@ def post_edit_tmpfat(contrato,os):
 
         )
     if os:
-        tmp_fat = TmpFat.objects.filter(contrato=os,master_user=contrato.master_user,tipo='O')
+        tmp_fat = TmpFat.objects.filter(os=os,master_user=os.master_user,tipo='O')
 
         tmp_fat.update(
             company = os.company,
@@ -87,9 +87,9 @@ def cria_lancamento_credito(faturar,planofinan,data_fat,contafinan):
 
     for f in faturar:
         if f.tipo == 'C':
-            if prox_fat < f.contrato.vigencia:
-                f.data_fat = prox_fat
-                f.save()
+            # if f.contrato.proximo_faturamento < f.contrato.vigencia:
+            #     f.data_fat = f.proximo_faturamento
+            #     f.save()
 
             lancto = Lancamentos()
             lancto.master_user = f.master_user
@@ -102,7 +102,7 @@ def cria_lancamento_credito(faturar,planofinan,data_fat,contafinan):
             lancto.vlr_lancamento = f.contrato.valor
             lancto.valor_text = f.contrato.valor
             lancto.saldo = f.contrato.valor
-            lancto.descricao = 'Faturamento do contrato nº:'+ str(f.contrato.num_cont) +' ' \
+            lancto.descricao = 'Faturamento do contrato nº: '+ str(f.contrato.num_cont) +' ' \
                                'de prestação do serviço referente: '+ str(f.contrato.item)
             lancto.titulo = True
             lancto.indice = f.contrato.indice
@@ -119,16 +119,16 @@ def cria_lancamento_credito(faturar,planofinan,data_fat,contafinan):
             contrato = Contratos.objects.get(pk=f.contrato.pk)
 
             if contrato.periodo_fat == 'M':
-                prox_fat = add_one_month(contrato.prox_faturamento)
+                # prox_fat = add_one_month(contrato.prox_faturamento)
                 contrato.prox_faturamento = add_one_month(contrato.prox_faturamento)
             elif contrato.periodo_fat == 'S':
-                prox_fat = contrato.prox_faturamento + timedelta(days=15)
+                # prox_fat = contrato.prox_faturamento + timedelta(days=15)
                 contrato.prox_faturamento = contrato.prox_faturamento + timedelta(days=7)
             elif contrato.prox_faturamento == 'Q':
-                prox_fat = contrato.prox_faturamento + timedelta(days=15)
+                # prox_fat = contrato.prox_faturamento + timedelta(days=15)
                 contrato.prox_faturamento = contrato.prox_faturamento + timedelta(days=15)
             elif contrato.prox_faturamento == 'A':
-                prox_fat = contrato.prox_faturamento + timedelta(days=15)
+                # prox_fat = contrato.prox_faturamento + timedelta(days=15)
                 contrato.prox_faturamento = contrato.prox_faturamento + timedelta(days=15)
 
             contrato.save()
@@ -142,49 +142,49 @@ def cria_lancamento_credito(faturar,planofinan,data_fat,contafinan):
                 if paramnf:
                     emite_nfse(f)
         elif f.tipo == 'O':
-            f.situacao = True
-            f.save()
+                f.situacao = True
+                f.save()
 
-            os = OrdemServico.objects.get(pk=f.os.pk)
-            os.situacao_fat = 'F'
-            os.save()
+                os = OrdemServico.objects.get(pk=f.os.pk)
+                os.situacao_fat = 'F'
+                os.save()
 
-            lancto = Lancamentos()
-            lancto.master_user = f.master_user
-            lancto.company = f.os.company
-            lancto.cadgeral = f.os.cadgeral
-            lancto.dt_lancamento = f.os.data_os
-            lancto.dt_vencimento = f.os.data_os
-            lancto.plr_financeiro = planofinan
-            lancto.conta_finan = contafinan
-            lancto.vlr_lancamento = f.os.valor_unit
-            lancto.valor_text = f.os.valor_unit
-            lancto.saldo = f.os.valor_unit
-            lancto.descricao = 'Faturamento da ordem de serviço nº: ' + str(f.os.num_os) + ' ' \
-                               'realizada em : ' + str(f.os.data_os)
-            lancto.titulo = True
+                lancto = Lancamentos()
+                lancto.master_user = f.master_user
+                lancto.company = f.os.company
+                lancto.cadgeral = f.os.cadgeral
+                lancto.dt_lancamento = f.os.data_os
+                lancto.dt_vencimento = f.os.data_os
+                lancto.plr_financeiro = planofinan
+                lancto.conta_finan = contafinan
+                lancto.vlr_lancamento = f.os.valor_unit
+                lancto.valor_text = f.os.valor_unit
+                lancto.saldo = f.os.valor_unit
+                lancto.descricao = 'Faturamento da ordem de serviço nº: ' + str(f.os.num_os) + ' ' \
+                                   'realizada em : ' + str(f.os.data_os)
+                lancto.titulo = True
 
-            seq_lanc = Sequenciais.objects.get(user=f.master_user)
-            lancto.num_lan = seq_lanc.lanc_financeiros + 1
-            seq_lanc.lanc_financeiros = lancto.num_lan
-            seq_lanc.save()
+                seq_lanc = Sequenciais.objects.get(user=f.master_user)
+                lancto.num_lan = seq_lanc.lanc_financeiros + 1
+                seq_lanc.lanc_financeiros = lancto.num_lan
+                seq_lanc.save()
 
-            lancto.tipo_lancamento = 'R'
-            lancto.save()
+                lancto.tipo_lancamento = 'R'
+                lancto.save()
 
-            grava_movimento_financeiro_c(lancto, f.master_user)
+                grava_movimento_financeiro_c(lancto, f.master_user)
 
             # Verifica se a OS. é referente a algum contrato e se a empresa emite notas fiscais
-            if f.os.contrato:
-                if f.os.contrato.gera_nfs == True:
-                    paramnf = Paramnfs.objects.get(master_user=f.master_user,company=f.company)
+                if f.os.contrato:
+                    if f.os.contrato.gera_nfs == True:
+                        paramnf = Paramnfs.objects.get(master_user=f.master_user,company=f.company)
+                        if paramnf:
+                            emite_nfse(f)
+                else:
+                #  Verifica somente se a empresa da O.S pode emitir notas fiscais, se sim.. emite.
+                    paramnf = Paramnfs.objects.get(master_user=f.master_user, company=f.company)
                     if paramnf:
                         emite_nfse(f)
-            else:
-            #  Verifica somente se a empresa da O.S pode emitir notas fiscais, se sim.. emite.
-                paramnf = Paramnfs.objects.get(master_user=f.master_user, company=f.company)
-                if paramnf:
-                    emite_nfse(f)
 
 
 def cria_lancamento_credito_unificado(faturar,planofinan,data_fat,contafinan):

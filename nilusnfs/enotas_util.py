@@ -199,7 +199,7 @@ def emite_nfse(servico):
                           'cep': servico.cadgeral.cep
                           },
                      },
-                'enviarPorEmail': True,
+                'enviarPorEmail': paramnfs.conf_enviaEmail,
                 'id': None,
                 'ambienteEmissao': 'Producao',
                 'tipo': 'NFS-e',
@@ -209,7 +209,7 @@ def emite_nfse(servico):
                 'servico':
                     {'descricao': paramnfs.desc_srv,
                      'aliquotaIss': float(paramnfs.aliquota_iss),
-                     'issRetidoFonte': True,
+                     'issRetidoFonte': False,
                      'cnae': None,
                      'codigoServicoMunicipio': paramnfs.cd_srv_padrao,
                      'descricaoServicoMunicipio': paramnfs.desc_srv,
@@ -233,9 +233,9 @@ def emite_nfse(servico):
         resposta = requests.post(
             url, json=data, headers={"Authorization": "Basic "+settings.ENOTASKEY}
         )
-        # print(resposta)
-        # print(resposta.text)
-        # print(data)
+        print(resposta)
+        print(resposta.text)
+        print(data)
 
         if resposta.status_code == 200:
             xml = BeautifulSoup(resposta.text, "lxml")
@@ -248,11 +248,13 @@ def emite_nfse(servico):
                 url,  headers={"Authorization": "Basic " + settings.ENOTASKEY}
             )
 
-            # print(retorno_emissao)
-            # print(retorno_emissao.text)
+            print(retorno_emissao)
+            print(retorno_emissao.text)
 
             xmlret = BeautifulSoup(retorno_emissao.text,"lxml")
             statusret = xmlret.find("status").contents[0]
+            # data_emissao = datetime.strptime(xmlret.find("dataCriacao").contens[0],'%Y-%M-%dT%H:%M:%SZ')
+            # print(data_emissao)
 
 
             nfs = NotasFiscais()
@@ -261,7 +263,7 @@ def emite_nfse(servico):
             nfs.cadgeral = servico.cadgeral
             nfs.id_key = key_nfs
             nfs.vlr_nota = valor_nota
-            # nfs.data_emissao = date(xmlret.find("dataCriacao").contens[0])
+            # nfs.data_emissao = data_emissao
             nfs.desc_status_nfs = statusret
             nfs.id_origem = id_externo
             if servico.tipo != 'N':

@@ -42,6 +42,8 @@ class Paramnfs(models.Model):
     conf_usuarioAcesso = models.CharField('Usuário site prefeitura',max_length=30)
     conf_senhaUsuarioAcesso = models.CharField('Senha site prefeitura',max_length=30)
 
+    conf_enviaEmail = models.BooleanField('Envia email',default=True)
+
 
 
     class Meta:
@@ -95,7 +97,7 @@ class NotasFiscais(models.Model):
     cadgeral = models.ForeignKey('niluscad.Cadgeral', models.CASCADE, verbose_name='Cliente', null=True, blank=True)
 
     num_nf = models.PositiveIntegerField('Nº Nota Fiscal',null=True,blank=True)
-    data_emissao = models.DateField('Emissão',null=True,blank=True)
+    data_emissao = models.DateTimeField('Emissão',null=True,blank=True)
     vlr_nota = models.DecimalField(verbose_name='Valor Nota',null=True,blank=True,decimal_places=2,max_digits=18)
 
     obs_nota = models.CharField('Observacoes',max_length=1000)
