@@ -9,7 +9,7 @@ class Paramnfs(models.Model):
     master_user = models.ForeignKey('accounts.User', models.CASCADE, verbose_name='Usario Master')
     # dados principais
     num_param = models.IntegerField('Cod. Empresa')
-    company = models.ForeignKey('niluscad.Company', models.PROTECT, verbose_name='Empresa',unique=True)
+    company = models.ForeignKey('niluscad.Company', models.PROTECT, verbose_name='Empresa')
     cd_srv_padrao = models.CharField('Cod. Serviço Padrão',max_length=20)
     desc_srv = models.CharField('Descrição do Serviço', max_length=60)
     aliquota_iss = models.DecimalField('Aliquota',max_digits=13,decimal_places=2)
@@ -48,6 +48,9 @@ class Paramnfs(models.Model):
 
     class Meta:
         verbose_name = 'Parametros NFS'
+        unique_together = [
+            ('master_user', 'company'), ('master_user', 'num_param')
+        ]
 
 
     def __str__(self):

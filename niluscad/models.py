@@ -13,7 +13,7 @@ class Company(models.Model):
     master_user = models.ForeignKey('accounts.User',models.CASCADE,verbose_name='Usario Master')
     # dados principais
     num_company = models.IntegerField('Cod. Empresa')
-    cnpj_cpf = models.CharField('CNPJ/CPF', max_length=20,unique=True)
+    cnpj_cpf = models.CharField('CNPJ/CPF', max_length=20)
     razao = models.CharField('Razão/Nome',max_length=60)
     fantasia = models.CharField('Fantasia',max_length=40,blank=True)
     insc_est = models.CharField('Inscrição Estadual',max_length=20, blank=True)
@@ -45,6 +45,9 @@ class Company(models.Model):
     class Meta:
         verbose_name = 'Empresa'
         verbose_name_plural = 'Empresas'
+        unique_together = [
+            ('master_user', 'cnpj_cpf'), ('master_user', 'num_company')
+        ]
 
 
 
@@ -60,7 +63,7 @@ class Propriety(models.Model):
     company = models.ForeignKey('niluscad.Company',models.PROTECT,verbose_name='Empresa Vinculada')
     # dados principais
     num_propriety = models.IntegerField('Cod. Propriedade')
-    ie = models.CharField('I.E*', max_length=20,unique=True)
+    ie = models.CharField('I.E*', max_length=20)
     razao = models.CharField('Razão/Nome*',max_length=60)
     fantasia = models.CharField('Fantasia',max_length=40,blank=True)
 
@@ -105,7 +108,7 @@ class Cadgeral(models.Model):
     master_user = models.ForeignKey('accounts.User',models.CASCADE,verbose_name='Uusario Master')
     # dados principais
     num_cad = models.IntegerField('Cod. Cadastro')
-    cnpj_cpf = models.CharField('CNPJ/CPF', max_length=20,unique=True)
+    cnpj_cpf = models.CharField('CNPJ/CPF', max_length=20)
     razao = models.CharField('Razão/Nome',max_length=60)
     fantasia = models.CharField('Fantasia',max_length=40,blank=True)
 
