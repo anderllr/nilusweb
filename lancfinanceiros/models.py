@@ -23,7 +23,7 @@ class Lancamentos(models.Model):
     vlr_lancamento = models.DecimalField('Valor do Lançamento',max_digits=13,decimal_places=2,blank=True,null=True)
     valor_text = models.CharField(verbose_name='Valor',  max_length=20)
     saldo = models.DecimalField('Saldo', max_digits=13,decimal_places=2,blank=True,null=True)
-    descricao = models.CharField(verbose_name='Observação', max_length=70,null=True,blank=True)
+    descricao = models.CharField(verbose_name='Observação', max_length=200,null=True,blank=True)
     titulo = models.BooleanField('É Titulo', default=False)
 
     #Dados Cotação/Indice
@@ -240,7 +240,7 @@ class Movtos_lancamentos(models.Model):
     dt_movimento = models.DateField('Data Movimento')
     vlr_movimento = models.DecimalField('Valor do Lançamento', max_digits=13, decimal_places=2, blank=True, null=True)
     conta_financeira = models.ForeignKey('nilusfin.Contafinanceira',models.PROTECT,verbose_name='Conta Financeira',blank=True,null=True)
-    desc_movimento = models.CharField(verbose_name='Observação', max_length=70,null=True)
+    desc_movimento = models.CharField(verbose_name='Observação', max_length=200,null=True)
     sinal = models.CharField(verbose_name='Sinal da Conta',max_length=3)
 
 
