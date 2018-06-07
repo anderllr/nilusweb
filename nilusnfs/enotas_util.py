@@ -162,13 +162,13 @@ def emite_nfse(servico):
         url = settings.ENOTASURL + '/empresas/' + paramnfs.key_empresa + '/nfes'
 
         if servico.tipo == 'C':
-            id_externo = servico.contrato.num_cont
+            id_externo = servico.contrato.pk
             valor_nota = servico.vlr_fat
         elif servico.tipo == 'O':
-            id_externo = servico.os.num_os
+            id_externo = servico.os.pk
             valor_nota = servico.vlr_fat
         elif servico.tipo == 'N':
-            id_externo = servico.id_origem
+            id_externo = servico.pk
             valor_nota = servico.vlr_nota
 
         cnpj_cpf = servico.cadgeral.cnpj_cpf.replace('.', '')
@@ -203,7 +203,7 @@ def emite_nfse(servico):
                 'id': None,
                 'ambienteEmissao': 'Producao',
                 'tipo': 'NFS-e',
-                'idExterno': str(id_externo),
+                'idExterno': servico.tipo + str(id_externo),
                 'consumidorFinal': True,
                 'indicadorPresencaConsumidor': None,
                 'servico':
@@ -233,9 +233,9 @@ def emite_nfse(servico):
         resposta = requests.post(
             url, json=data, headers={"Authorization": "Basic "+settings.ENOTASKEY}
         )
-        print(resposta)
-        print(resposta.text)
-        print(data)
+        # print(resposta)
+        # print(resposta.text)
+        # print(data)
 
         if resposta.status_code == 200:
             xml = BeautifulSoup(resposta.text, "lxml")
@@ -248,13 +248,13 @@ def emite_nfse(servico):
                 url,  headers={"Authorization": "Basic " + settings.ENOTASKEY}
             )
 
-            print(retorno_emissao)
-            print(retorno_emissao.text)
+            # print(retorno_emissao)
+            # print(retorno_emissao.text)
 
             xmlret = BeautifulSoup(retorno_emissao.text,"lxml")
             statusret = xmlret.find("status").contents[0]
-            # data_emissao = datetime.strptime(xmlret.find("dataCriacao").contens[0],'%Y-%M-%dT%H:%M:%SZ')
-            # print(data_emissao)
+
+
 
 
             nfs = NotasFiscais()
@@ -278,6 +278,8 @@ def emite_nfse(servico):
                 nfs.motivoStatus = xmlret.find("motivostatus").contents[0]
             nfs.save()
 
+            return resposta
+
 
 
 def refresh_situacao_nfs(nfs):
@@ -294,6 +296,9 @@ def refresh_situacao_nfs(nfs):
                 num_nf = xmlret.find("nfe").contents[9]
                 link_pdf = xmlret.find("linkdownloadpdf").contents[0]
                 link_xml = xmlret.find("linkdownloadxml").contents[0]
+                data_nota = xmlret.find("dataautorizacao").contents[0]
+                data_nota = datetime.strptime(data_nota,"%Y-%m-%dT%H:%M:%SZ")
+
         elif statusret == 'Negada':
             motivoStatus = xmlret.find("motivostatus").contents[0]
 
@@ -304,6 +309,7 @@ def refresh_situacao_nfs(nfs):
             nota_fiscal.num_nf = num_nf.text
             nota_fiscal.link_pdf = link_pdf
             nota_fiscal.link_xml = link_xml
+            nota_fiscal.data_emissao = data_nota
         elif statusret == 'Negada':
             nota_fiscal.motivoStatus = motivoStatus
         nota_fiscal.save()

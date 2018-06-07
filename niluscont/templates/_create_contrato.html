@@ -51,7 +51,7 @@
                             <label>Data Vigência</label>
                             <input  type="text"  name="vigencia" id="id_vigencia" class="js-datepicker form-control"
                               data-week-start="1" data-autoclose="true" data-today-highlight="true"
-                              data-date-format="dd/mm/yyyy" placeholder="dd/mm/aaaa" required>
+                              data-date-format="dd/mm/yyyy" placeholder="dd/mm/aaaa">
                             {% for error in form.vigencia.errors %}
                             <small class="form-control-feedback"> {{ error }} </small>
                             {% endfor %}

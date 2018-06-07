@@ -11,7 +11,7 @@ from .forms import FormCreateParamnfs,FiltroBuscaFaturamento,FormFaturamento,Fil
 from nilusadm.models import Sequenciais
 from nilusfin.models import Contafinanceira
 from niluscad.models import Company,Cadgeral,PlanoFinan
-from niluscont.servicos import cria_lancamento_credito,cria_lancamento_credito_unificado
+from niluscont.servicos import cria_lancamento_credito,cria_lancamento_credito_unificado,fat
 from nilusnfs.models import NotasFiscais
 from django.db.models import Q
 from .enotas_util import cad_empresa_emissora,edit_empresa_emissora,refresh_situacao_nfs
@@ -202,7 +202,7 @@ def fat_list(request):
     form_fat = FormFaturamento(lista_fat,planofinan,contafinan,request.POST or None)
     if form_fat.is_valid():
         plano_financeiro = form_fat.cleaned_data['plano_financeiro']
-        fat_unificado = form_fat.cleaned_data['fatura_unificado']
+        # fat_unificado = form_fat.cleaned_data['fatura_unificado']
         faturar = form_fat.cleaned_data['ids_fat']
         data_fat = form_fat.cleaned_data['data_fat']
         contafinan = form_fat.cleaned_data['conta_financeira']
@@ -212,7 +212,7 @@ def fat_list(request):
 
 
 
-        faturamento = Thread(target=cria_lancamento_credito,
+        faturamento = Thread(target=fat,
                      args=[faturar, plano_financeiro, data_fat, contafinan])
         faturamento.start()
         # else:

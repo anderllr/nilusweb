@@ -1,3 +1,4 @@
+{% load static widget_tweaks humanize utils %}
         <table id="table_lanfinanceiro" class="table table-bordered table-striped table-vcenter js-dataTable-full" >
             <thead>
                 <tr>
@@ -30,12 +31,12 @@
                     </small></td>
                     <td style="width:1%; heigth:10%;"><small>{{ lanc.dt_lancamento|date:'d/m/Y' }}</small></td>
                     <td style="width:1%; heigth:10%;"><small>{{ lanc.dt_vencimento|date:'d/m/Y'  }}</small></td>
-                    <td style="width:1%; heigth:10%;">{% if lanc.tipo_lancamento == 'R' %}<span class="text-success">{{ lanc.vlr_lancamento }}</span>
-                                          {% else %}   <span class="text-danger">{{ lanc.vlr_lancamento }}</span>
+                    <td style="width:1%; heigth:10%;">{% if lanc.tipo_lancamento == 'R' %}<span class="text-success">{{ lanc.vlr_lancamento|intcomma }}</span>
+                                          {% else %}   <span class="text-danger">{{ lanc.vlr_lancamento|intcomma }}</span>
                                           {% endif %}
                     </td>
-                    <td style="width:1%; heigth:10%;">{% if lanc.tipo_lancamento == 'R' %}<strong class="text-success">{{ lanc.saldo }}</strong>
-                                          {% else %}   <strong class="text-danger">{{ lanc.saldo }}</strong>
+                    <td style="width:1%; heigth:10%;">{% if lanc.tipo_lancamento == 'R' %}<strong class="text-success">{{ lanc.saldo|intcomma }}</strong>
+                                          {% else %}   <strong class="text-danger">{{ lanc.saldo|intcomma }}</strong>
                                           {% endif %}
                     </td>
 

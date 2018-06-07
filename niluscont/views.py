@@ -128,16 +128,17 @@ class CreateContrato(LoginRequiredMixin,CreateView):
         if contrato.data_contrato is None:
              contrato.data_contrato = datetime.now()
 
+        contrato.prox_faturamento = contrato.data_contrato
 
-        if contrato.periodo_fat == 'M':
-            contrato.prox_faturamento = add_one_month(contrato.data_contrato)
-
-        elif contrato.periodo_fat == 'S':
-            contrato.prox_faturamento = contrato.data_contrato + timedelta(days=7)
-        elif contrato.prox_faturamento == 'Q':
-            contrato.prox_faturamento = contrato.data_contrato + timedelta(days=15)
-        elif contrato.prox_faturamento == 'A':
-            contrato.prox_faturamento = contrato.data_contrato + timedelta(days=15)
+        # if contrato.periodo_fat == 'M':
+        #     contrato.prox_faturamento = add_one_month(contrato.data_contrato)
+        #
+        # elif contrato.periodo_fat == 'S':
+        #     contrato.prox_faturamento = contrato.data_contrato + timedelta(days=7)
+        # elif contrato.prox_faturamento == 'Q':
+        #     contrato.prox_faturamento = contrato.data_contrato + timedelta(days=15)
+        # elif contrato.prox_faturamento == 'A':
+        #     contrato.prox_faturamento = contrato.data_contrato + timedelta(days=15)
 
         contrato.valor_unit = contrato.valor_unit_text.replace('R$','').replace('.','').replace(',','.')
 

@@ -120,7 +120,10 @@ $(".new_cadgeral").on("click",function(e){
 	 	 var dados = $(this).serialize();
 	 	 $.post("{% url 'create_cadgeral' %}",dados,function(result){
 	 	    $(".form_inc").html(result);
-	 	    if(ok==ok){
+            var cad_ok = $('#cad_ok').val();
+            var id_cliente = $('#id_cliente').val();
+            var nome_cliente = $('#nome_cliente').val();
+	 	    if(cad_ok=='ok'){
 	 	        window.location.reload();
 
 
@@ -131,6 +134,7 @@ $(".new_cadgeral").on("click",function(e){
                 {% include 'js_floating_labels.html' %}
                 {% include 'js_tabs.html' %}
                 {% include 'js_pesquisas_cnpj_cep.html' %}
+                {% include 'js_masks.html' %}
 
                 $(".form_inc .cancel_form").on("click",function(e){
                     $('.form_inc').hide("drop");
@@ -142,6 +146,9 @@ $(".new_cadgeral").on("click",function(e){
  	        }
 	 	 });
 	});
+
+
+
 
 <!-- Edit Company -->
 $('.table_cadgeral').on('click', '.edit_cadgeral',function(e){
