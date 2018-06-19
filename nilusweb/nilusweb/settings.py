@@ -16,9 +16,20 @@ import dj_database_url
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
+# MEDIA_URL = '/media/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, "..", "www", "static")
+STATIC_URL = '/static/'
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
+
+#MEDIA FILE (user uploaded files)
+MEDIA_ROOT = os.path.join(BASE_DIR, "..", "www", "media")
 MEDIA_URL = '/media/'
+
+
+
 
 
 # Quick-start development settings - unsuitable for production
@@ -28,9 +39,9 @@ MEDIA_URL = '/media/'
 SECRET_KEY = '9+4q3dx3-s^uq-_eek5b)n09fnli04=op=#!gnb_fjqjqiaj$2'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['nilus.herokuapp.com']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -193,11 +204,11 @@ DATABASES['default'].update(db_from_env)
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-ALLOWED_HOSTS = ['*']
 
 
-STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
-STATIC_URL = '/static/'
+
+# STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
+# STATIC_URL = '/static/'
 
 
 # ENVIO DE E-MAIL
@@ -217,13 +228,13 @@ EMAIL_PORT = 587
 
 
 
-SITE_DOMAIN = 'http://nilus.herokuapp.com'
-
-
-
-ALLOWED_HOSTS = ['*']
-
-STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
+# SITE_DOMAIN = 'http://nilus.herokuapp.com'
+#
+#
+#
+# ALLOWED_HOSTS = ['*']
+#
+# STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
 
 
 
