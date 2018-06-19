@@ -195,7 +195,8 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 ALLOWED_HOSTS = ['*']
 
-STATIC_ROOT = os.path.join(BASE_DIR, "..", "www", "static")
+
+STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
 STATIC_URL = '/static/'
 
 
@@ -216,13 +217,14 @@ EMAIL_PORT = 587
 
 
 
-SITE_DOMAIN = 'http://nilus.herokuapp.com'
+# SITE_DOMAIN = 'http://nilus.herokuapp.com'
 
 
 
 ALLOWED_HOSTS = ['*']
 
-STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
+# STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
+
 
 
 # ENOTAS
