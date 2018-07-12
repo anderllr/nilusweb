@@ -349,5 +349,6 @@ def cancela_nfs(nf):
         nf.motivoStatus = motivoStatus
     nf.save()
 
+    # teste
 
 
