@@ -1,0 +1,69 @@
+        <table id="table_nfs" class="table table-bordered table-striped table-vcenter js-dataTable-full" >
+            <thead>
+                <tr>
+                    <th hidden><small>Reemitir</small></th>
+                    <th><small>Nº.</small></th>
+                    <th><small>Cadastro</small></th>
+                    <th><small>Emissão</small></th>
+                    <th><small>Valor</small></th>
+                    <th><small>Situacao</small></th>
+                    <th><small>Ações</small></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for nf in notas %}
+                    <td style="width:1%; heigth:10%;" hidden>
+
+                        <center><label class="custom-control custom-checkbox baixa_lancamento">
+                                                <input type="checkbox" class="custom-control-input reemitir" name="nf_reemitir" value="{{ nf.pk }}">
+                                                <span class="custom-control-indicator"></span>
+                                                <span class="custom-control-description"></span>
+                        </label></center>
+
+                    <!--<center><input class="baixa_lancamento"  name="lanc_baixa" value="{{ lanc.pk }}" type="checkbox"></center>-->
+                    </td>
+                    <td style="width:1%; heigth:15%;"><small>{% if nf.num_nf %}{{ nf.num_nf }} {% else %} ... {% endif %}</small></td>
+                    <td style="width:15%; "><small><strong>{{nf.cadgeral}}</strong></small></td>
+                    <td style="width:1%; heigth:15%;"><small>{{ nf.data_emissao|date:'d/m/Y' }}</small></td>
+                    <td style="width:1%; heigth:15%;"><strong>{{ nf.vlr_nota }}</strong></td>
+                    <td style="width:1%; heigth:15%;">{% if nf.desc_status_nfs == 'Negada' %}
+                                    <center><span class="badge badge-warning" text="Contrato">NEGADA</span></center>
+                                    {% elif nf.desc_status_nfs == 'EmProcessoDeAutorizacao' %}
+                                    <center><span class="badge badge-info" text="Contrato">VALIDAÇÃO</span></center>
+                                    {% elif nf.desc_status_nfs == 'Autorizada' %}
+                                    <center><span class="badge badge-success" text="Contrato">AUTORIZADA</span></center>
+                                    {% elif nf.desc_status_nfs == 'Cancelada' %}
+                                    <center><span class="badge badge-danger" text="Contrato">CANCELADA</span></center>
+                                    {% elif nf.desc_status_nfs == 'CancelamentoNegado' %}
+                                    <center><span class="badge badge-success" text="Contrato">AUTORIZADA</span></center>
+                                    {% else %}
+
+                                    <center><span class="badge badge-secondary" text="Contrato">AGUARDANDO RESPOSTA</span></center>
+                                    {% endif %}
+                    </td>
+
+                    <td style="width:14%">
+                        <button type="button" class="btn btn-sm btn-outline-info atualizar_nfs" data-toggle="tooltip"  href="{% url 'refresh_nfs' nf.pk %}" data-placement="bottom" title="Atualizar Situação">
+                           <i class="fa fa-refresh"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-primary info_lancto"  href="{% url 'info_nfs' nf.pk %}" data-toggle="tooltip" data-placement="bottom" title="Mais informações">
+                            <i class="fa fa-info-circle"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary down_pdf" data-toggle="tooltip" href="{{ nf.link_pdf }}" data-placement="bottom" title="Download PDF"
+                        {% if nf.desc_status_nfs != 'Autorizada' %} disabled {% endif %}>
+                            <i class="fa fa-file-pdf-o"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary down_xml" data-toggle="tooltip" href="{{ nf.link_xml }}" data-placement="bottom" title="Download XML"
+                        {% if nf.desc_status_nfs != 'Autorizada' %} disabled {% endif %}>
+                            <i class="fa fa-download"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-danger cancel_nfs" href="{% url 'cancel_nfs' nf.pk %}" data-toggle="tooltip" data-placement="bottom" title="Cancelar NFS"
+                        {% if nf.desc_status_nfs == 'Cancelada' %} disabled {% endif %}>
+
+                            <i class="fa fa-close"></i>
+                        </button>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
