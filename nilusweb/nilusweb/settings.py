@@ -16,20 +16,9 @@ import dj_database_url
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
-# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-# STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
-# MEDIA_URL = '/media/'
-
-STATIC_ROOT = os.path.join(BASE_DIR, "..", "www", "static")
-STATIC_URL = '/static/'
-STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
-
-#MEDIA FILE (user uploaded files)
-MEDIA_ROOT = os.path.join(BASE_DIR, "..", "www", "media")
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
 MEDIA_URL = '/media/'
-
-
-
 
 
 # Quick-start development settings - unsuitable for production
@@ -39,9 +28,9 @@ MEDIA_URL = '/media/'
 SECRET_KEY = '9+4q3dx3-s^uq-_eek5b)n09fnli04=op=#!gnb_fjqjqiaj$2'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['nilus.herokuapp.com']
 
 
 # Application definition
@@ -116,28 +105,16 @@ CORS_ORIGIN_ALLOW_ALL = True
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
-if 'RDS_DB_NAME' in os.environ:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': os.environ['RDS_DB_NAME'],
-            'USER': os.environ['RDS_USERNAME'],
-            'PASSWORD': os.environ['RDS_PASSWORD'],
-            'HOST': os.environ['RDS_HOSTNAME'],
-            'PORT': os.environ['RDS_PORT'],
-        }
-    }
-else:
-    DATABASES = {
-         'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': 'db_nilusweb',
-            'USER': 'postgres',
-            'PASSWORD': 'root',
-            'HOST': '127.0.0.1',
-            'PORT': '5432',
-         }
-    }
+DATABASES = {
+     'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'db_nilusweb',
+        'USER': 'postgres',
+        'PASSWORD': 'root',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
+     }
+}
 
 
 # Password validation
@@ -204,11 +181,10 @@ DATABASES['default'].update(db_from_env)
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
+ALLOWED_HOSTS = ['*']
 
-
-
-# STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
-# STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, "..", "www", "static")
+STATIC_URL = '/static/'
 
 
 # ENVIO DE E-MAIL
@@ -228,14 +204,13 @@ EMAIL_PORT = 587
 
 
 
-# SITE_DOMAIN = 'http://nilus.herokuapp.com'
-#
-#
-#
-# ALLOWED_HOSTS = ['*']
-#
-# STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
+SITE_DOMAIN = 'http://nilus.herokuapp.com'
 
+
+
+ALLOWED_HOSTS = ['*']
+
+STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
 
 
 # ENOTAS
