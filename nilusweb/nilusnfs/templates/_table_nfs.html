@@ -34,7 +34,10 @@
                                     <center><span class="badge badge-success" text="Contrato">AUTORIZADA</span></center>
                                     {% elif nf.desc_status_nfs == 'Cancelada' %}
                                     <center><span class="badge badge-danger" text="Contrato">CANCELADA</span></center>
+                                    {% elif nf.desc_status_nfs == 'CancelamentoNegado' %}
+                                    <center><span class="badge badge-success" text="Contrato">AUTORIZADA</span></center>
                                     {% else %}
+
                                     <center><span class="badge badge-secondary" text="Contrato">AGUARDANDO RESPOSTA</span></center>
                                     {% endif %}
                     </td>
@@ -54,7 +57,9 @@
                         {% if nf.desc_status_nfs != 'Autorizada' %} disabled {% endif %}>
                             <i class="fa fa-download"></i>
                         </button>
-                        <button type="button" class="btn btn-sm btn-outline-danger" data-toggle="tooltip" data-placement="bottom" title="Cancelar NFS">
+                        <button type="button" class="btn btn-sm btn-outline-danger cancel_nfs" href="{% url 'cancel_nfs' nf.pk %}" data-toggle="tooltip" data-placement="bottom" title="Cancelar NFS"
+                        {% if nf.desc_status_nfs == 'Cancelada' %} disabled {% endif %}>
+
                             <i class="fa fa-close"></i>
                         </button>
                     </td>

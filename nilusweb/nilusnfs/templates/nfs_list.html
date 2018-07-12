@@ -163,6 +163,14 @@ $(".table_nfs").on("click", ".atualizar_nfs",function(e){
 });
 
 
+$(".table_nfs").on("click", ".cancel_nfs",function(e){
+    e.preventDefault();
+    var linkURL = $(this).attr("href");
+    window.location.href = linkURL;
+});
+
+
+
 $(".table_nfs").on("click",".info_lancto",function(e){
    e.preventDefault();
    $("#modal-infolancto .block-content").load($(this).attr('href'), function(){

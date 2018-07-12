@@ -14,7 +14,7 @@ from niluscad.models import Company,Cadgeral,PlanoFinan
 from niluscont.servicos import cria_lancamento_credito,cria_lancamento_credito_unificado,fat
 from nilusnfs.models import NotasFiscais
 from django.db.models import Q
-from .enotas_util import cad_empresa_emissora,edit_empresa_emissora,refresh_situacao_nfs
+from .enotas_util import cad_empresa_emissora,edit_empresa_emissora,refresh_situacao_nfs,cancela_nfs
 
 
 
@@ -329,6 +329,15 @@ def info_nfs(request,pk):
     }
 
     return render(request, template_name, context)
+
+
+@login_required
+def cancel_nfs(request,pk):
+
+    nf = NotasFiscais.objects.get(master_user=request.user.user_master,pk=pk)
+    cancela_nfs(nf)
+
+    return redirect('nfs_list')
 
 
 

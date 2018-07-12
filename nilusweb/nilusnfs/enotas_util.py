@@ -203,7 +203,7 @@ def emite_nfse(servico):
                 'id': None,
                 'ambienteEmissao': 'Producao',
                 'tipo': 'NFS-e',
-                'idExterno': servico.tipo + str(id_externo),
+                'idExterno': servico.tipo + str(id_externo) + str(paramnfs.master_user),
                 'consumidorFinal': True,
                 'indicadorPresencaConsumidor': None,
                 'servico':
@@ -315,3 +315,39 @@ def refresh_situacao_nfs(nfs):
         nota_fiscal.save()
 
         # emite_nfse(nf)
+
+def consulta_nfs(nf):
+    paramnfs = Paramnfs.objects.get(company=nf.company)
+    url = settings.ENOTASURL + '/empresas/' + paramnfs.key_empresa + '/nfes/' + nf.id_key
+
+    retorno_nota_fiscal = requests.get(
+        url, headers={"Authorization": "Basic " + settings.ENOTASKEY}
+    )
+    retorno_consulta = BeautifulSoup(retorno_nota_fiscal.text, "lxml")
+
+    return retorno_consulta
+
+
+def cancela_nfs(nf):
+    paramnfs = Paramnfs.objects.get(company=nf.company)
+    url = settings.ENOTASURL + '/empresas/' + paramnfs.key_empresa + '/nfes/' + nf.id_key
+
+    requests.delete(
+        url, headers={"Authorization": "Basic " + settings.ENOTASKEY}
+    )
+    retorno_cancelamento = consulta_nfs(nf)
+
+
+
+    statusret = retorno_cancelamento.find("status").contents[0]
+
+    if statusret != 'Cancelada':
+        motivoStatus = retorno_cancelamento.find("motivostatus").contents[0]
+
+    nf.desc_status_ret = statusret
+    if statusret != 'Cancelada':
+        nf.motivoStatus = motivoStatus
+    nf.save()
+
+
+
