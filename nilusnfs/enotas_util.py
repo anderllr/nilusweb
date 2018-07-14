@@ -4,6 +4,7 @@ from django.conf import settings
 from datetime import date, timedelta, datetime
 from  bs4 import BeautifulSoup
 from nilusnfs.models import Paramnfs,ErrosParametrosNFS,NotasFiscais
+from nilusadm.models import Sequenciais
 
 def cad_empresa_emissora(paramnfs):
 
@@ -158,14 +159,24 @@ def edit_empresa_emissora(paramnfs):
 
 def emite_nfse(servico):
 
+        seq = Sequenciais.objects.get(user=servico.master_user)
+        seq.seq_fatura = seq.seq_fatura + 1
+        seq.save()
+
+        data_emissao = datetime.today
+
         paramnfs = Paramnfs.objects.get(company=servico.company)
         url = settings.ENOTASURL + '/empresas/' + paramnfs.key_empresa + '/nfes'
 
         if servico.tipo == 'C':
-            id_externo = servico.contrato.pk
+
+            id_externo = servico.tipo + str(servico.contrato.pk) + str(seq.seq_fatura) + str(
+                paramnfs.master_user.pk)
             valor_nota = servico.vlr_fat
+
         elif servico.tipo == 'O':
-            id_externo = servico.os.pk
+            id_externo = servico.tipo + str(servico.os.pk) + str(seq.seq_fatura) + str(
+                paramnfs.master_user.pk)
             valor_nota = servico.vlr_fat
         elif servico.tipo == 'N':
             id_externo = servico.pk
@@ -203,7 +214,7 @@ def emite_nfse(servico):
                 'id': None,
                 'ambienteEmissao': 'Producao',
                 'tipo': 'NFS-e',
-                'idExterno': servico.tipo + str(id_externo) + str(paramnfs.master_user),
+                'idExterno': id_externo ,
                 'consumidorFinal': True,
                 'indicadorPresencaConsumidor': None,
                 'servico':
@@ -263,8 +274,10 @@ def emite_nfse(servico):
             nfs.cadgeral = servico.cadgeral
             nfs.id_key = key_nfs
             nfs.vlr_nota = valor_nota
-            # nfs.data_emissao = data_emissao
+            data_emissao = xmlret.find("datacriacao").contents[0]
+            nfs.data_emissao = datetime.strptime(data_emissao,"%Y-%m-%dT%H:%M:%SZ")
             nfs.desc_status_nfs = statusret
+            nfs.envio_concluido = 'N'
             nfs.id_origem = id_externo
             if servico.tipo != 'N':
                 nfs.tipo_origem = servico.tipo
@@ -283,6 +296,7 @@ def emite_nfse(servico):
 
 
 def refresh_situacao_nfs(nfs):
+
    for nf in nfs:
         paramnfs = Paramnfs.objects.get(company=nf.company)
         url = settings.ENOTASURL + '/empresas/' + paramnfs.key_empresa + '/nfes/'+nf.id_key
@@ -299,6 +313,8 @@ def refresh_situacao_nfs(nfs):
                 data_nota = xmlret.find("dataautorizacao").contents[0]
                 data_nota = datetime.strptime(data_nota,"%Y-%m-%dT%H:%M:%SZ")
 
+
+
         elif statusret == 'Negada':
             motivoStatus = xmlret.find("motivostatus").contents[0]
 
@@ -310,8 +326,12 @@ def refresh_situacao_nfs(nfs):
             nota_fiscal.link_pdf = link_pdf
             nota_fiscal.link_xml = link_xml
             nota_fiscal.data_emissao = data_nota
+            nfs.envio_concluido = 'S'
         elif statusret == 'Negada':
             nota_fiscal.motivoStatus = motivoStatus
+            nota_fiscal.envio_concluido = 'S'
+        elif statusret == 'Cancelada':
+            nota_fiscal.envio_concluido = 'S'
         nota_fiscal.save()
 
         # emite_nfse(nf)
@@ -329,6 +349,8 @@ def consulta_nfs(nf):
 
 
 def cancela_nfs(nf):
+
+
     paramnfs = Paramnfs.objects.get(company=nf.company)
     url = settings.ENOTASURL + '/empresas/' + paramnfs.key_empresa + '/nfes/' + nf.id_key
 
@@ -337,18 +359,18 @@ def cancela_nfs(nf):
     )
     retorno_cancelamento = consulta_nfs(nf)
 
-
-
     statusret = retorno_cancelamento.find("status").contents[0]
 
-    if statusret != 'Cancelada':
-        motivoStatus = retorno_cancelamento.find("motivostatus").contents[0]
+    nf.desc_status_nfs = statusret
+    nf.envio_concluido = 'N'
 
-    nf.desc_status_ret = statusret
     if statusret != 'Cancelada':
-        nf.motivoStatus = motivoStatus
+        motivo_status = retorno_cancelamento.find("motivostatus")
+        if motivo_status != None:
+            motivoStatus = retorno_cancelamento.find("motivostatus").contents[0]
+            nf.motivoStatus = motivoStatus
+
     nf.save()
 
-    # teste
 
 

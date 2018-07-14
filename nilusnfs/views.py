@@ -253,7 +253,7 @@ def nfs_list(request):
     cadgeral = Cadgeral.objects.filter(master_user=request.user.user_master)
 
     notas_pendentes = NotasFiscais.objects.filter(master_user=request.user.user_master,
-                                                  desc_status_nfs='EmProcessoDeAutorizacao')
+                                                  envio_concluido='N')
     # print(notas_pendentes)
 
     refresh_notas = Thread(target=refresh_situacao_nfs,

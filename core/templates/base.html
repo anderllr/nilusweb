@@ -199,11 +199,6 @@
                                             <a href="{% url 'company_list' %}">Empresas</a>
                                             <!--<a href="{% url 'propriety_list' %}">Propriedades</a>-->
                                             <a href="{% url 'cadgeral_list' %}">Fornecedores/Clientes</a>
-                                            {% if permissions.nilusFinanceiro == True %}
-                                            <a href="{% url 'conta_list' %}">Contas Financeiras</a>
-                                            <a href="{% url 'planofinan_list' %}"> Plano Financeiro</a>
-                                            <a href="{% url 'ccusto_list' %}"> Centro de Custo</a>
-                                            {% endif %}
                                         </li>
                                     </ul>
                                 </li>
@@ -214,7 +209,16 @@
                                     <ul>
                                         <li>
                                             <a  href="{% url 'lancfin_list' %}">Lançamentos</a>
-                                            <a  href="{% url 'indice_list' %}">Indices e Cotações</a>
+                                            <li>
+                                               <a class="nav-submenu" data-toggle="nav-submenu" href="#">Cadastros</a>
+                                               <ul>
+                                                <a href="{% url 'conta_list' %}">Contas Financeiras</a>
+                                                <a href="{% url 'planofinan_list' %}"> Plano Financeiro</a>
+                                                <a href="{% url 'ccusto_list' %}"> Centro de Custo</a>
+                                                <a href="{% url 'indice_list' %}">Indices e Cotações</a>
+                                                <a href="{% url 'grupodre_list' %}">Grupos de DRE</a>
+                                               </ul>
+                                            </li>
                                             <li>
                                              <a class="nav-submenu" data-toggle="nav-submenu" href="#">Consultas/Relatórios</a>
                                              <ul>

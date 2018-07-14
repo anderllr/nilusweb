@@ -111,15 +111,16 @@ class NotasFiscais(models.Model):
     desc_status_nfs = models.CharField('Status NFS',max_length=100)
     motivoStatus = models.CharField('Motivo Status',max_length=300)
 
-    id_origem = models.IntegerField('ID Externo',null=True,blank=True)
+    id_origem = models.CharField('ID Externo',null=True,blank=True,max_length=60)
+
 
     tipoorigem_Choices = (
         ('O', 'OrdemServico'),
         ('C', 'Contrato')
     )
     tipo_origem = models.CharField('tipo_origem', max_length=1, null=True, blank=True, choices=tipoorigem_Choices)
-
     tipo = models.CharField('tipo registro', max_length=1,null=True,blank=True)
+    envio_concluido = models.CharField('Envio Concluido', null=True, blank=True, max_length=2)
 
     class Meta:
         verbose_name = 'Notas Fiscais'

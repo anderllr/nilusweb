@@ -93,7 +93,6 @@ def fat(faturar,planofinan,data_fat,contafinan):
                 paramnf = Paramnfs.objects.get(master_user=f.master_user, company=f.company)
                 if paramnf:
                     retorno_nota = emite_nfse(f)
-                    print(retorno_nota)
                     if retorno_nota.status_code == 200:
                         cria_lancamento_credito(f,planofinan,data_fat,contafinan,f.tipo)
             else:
@@ -119,10 +118,17 @@ def cria_lancamento_credito(registro,planofinan,data_fat,contafinan,tipo):
             #     f.save()
 
             prox_fat = registro.contrato.prox_faturamento
-            vencto_lancamento = datetime.strftime(prox_fat,'%Y')+'-'+datetime.strftime(prox_fat,'%m')+'-'+\
-                                str(registro.contrato.dia_base)
+            vencto_lancamento  = prox_fat
 
-            vencto_lancamento = datetime.strptime(vencto_lancamento,"%Y-%m-%d")
+
+            if registro.contrato.periodo_fat == 'M' or registro.contrato.periodo_fat == 'A' :
+
+                vencto_lancamento = datetime.strftime(prox_fat, '%Y') + '-' + datetime.strftime(prox_fat, '%m') + '-' + \
+                                    str(registro.contrato.dia_base)
+
+                vencto_lancamento = datetime.strptime(vencto_lancamento, "%Y-%m-%d")
+                if datetime.date(vencto_lancamento) < data_fat:
+                    vencto_lancamento = add_one_month(vencto_lancamento)
 
             lancto = Lancamentos()
             lancto.master_user = registro.master_user
@@ -152,17 +158,16 @@ def cria_lancamento_credito(registro,planofinan,data_fat,contafinan,tipo):
             contrato = Contratos.objects.get(pk=registro.contrato.pk)
 
             if contrato.periodo_fat == 'M':
-                # prox_fat = add_one_month(contrato.prox_faturamento)
                 contrato.prox_faturamento = add_one_month(contrato.prox_faturamento)
+
             elif contrato.periodo_fat == 'S':
-                # prox_fat = contrato.prox_faturamento + timedelta(days=15)
                 contrato.prox_faturamento = contrato.prox_faturamento + timedelta(days=7)
-            elif contrato.prox_faturamento == 'Q':
-                # prox_fat = contrato.prox_faturamento + timedelta(days=15)
+
+            elif contrato.periodo_fat == 'Q':
                 contrato.prox_faturamento = contrato.prox_faturamento + timedelta(days=15)
-            elif contrato.prox_faturamento == 'A':
-                # prox_fat = contrato.prox_faturamento + timedelta(days=15)
-                contrato.prox_faturamento = contrato.prox_faturamento + timedelta(days=15)
+
+            elif contrato.periodo_fat == 'A':
+                contrato.prox_faturamento = contrato.prox_faturamento + timedelta(days=365)
 
             contrato.save()
 

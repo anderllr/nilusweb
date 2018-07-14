@@ -45,6 +45,7 @@ class Sequenciais(models.Model):
     paramnfs = models.IntegerField('Seq Parametros Nfs',default=0)
     contratos = models.IntegerField('Seq Contratos',default=0)
     ordensservico = models.IntegerField('Seq O.S',default=0)
+    seq_fatura = models.IntegerField('Seq Faturamento',default=0)
 
 
 class Meta:
