@@ -38,7 +38,7 @@ def lancfin_list(request):
     data_hoje = datetime.today
 
     if request.user.is_masteruser is True:
-        lanctos = Lancamentos.objects.filter(master_user=request.user.pk)
+        lanctos = Lancamentos.objects.filter(master_user=request.user.pk,sit_lancamento ='A')
         empresa = Company.objects.filter(master_user=request.user.pk)
         cadgeral = Cadgeral.objects.filter(master_user=request.user.pk)
         plano_finan = PlanoFinan.objects.filter(master_user=request.user.pk)
@@ -47,7 +47,7 @@ def lancfin_list(request):
         conta_finan = Contafinanceira.objects.filter(master_user=request.user.pk)
 
     else:
-        lanctos = Lancamentos.objects.filter(master_user=request.user.user_master)
+        lanctos = Lancamentos.objects.filter(master_user=request.user.user_master,sit_lancamento ='A')
         empresa = Company.objects.filter(master_user=request.user.user_master)
         cadgeral = Cadgeral.objects.filter(master_user=request.user.user_master)
         plano_finan = PlanoFinan.objects.filter(master_user=request.user.user_master)
@@ -74,6 +74,7 @@ def lancfin_list(request):
         c_custo = form.cleaned_data.get('c_custo', '')
         conta_finan2 = form.cleaned_data.get('conta_finan','')
 
+        lanctos = Lancamentos.objects.filter(master_user=request.user.user_master)
 
         if data_venc_ini:
             lanctos = lanctos.filter(dt_vencimento__gte=data_venc_ini)
