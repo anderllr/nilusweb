@@ -68,23 +68,32 @@ def saldo_conta(empresa,contas,data_saldo,user):
         if empresa:
             movtos_creditos = Movtos_lancamentos.objects.filter(master_user=user.user_master,sinal='R'
                                                        ,dt_movimento__lte=data_saldo,conta_financeira=c,company=empresa
-                                                       ).exclude(tipo_movto='C').aggregate(vlr=Sum('vlr_movimento'))[:1]
+                                                       ).exclude(tipo_movto='C')
 
+            print('movtos_cred')
             print(movtos_creditos)
 
             movtos_debitos =  Movtos_lancamentos.objects.filter(master_user=user.user_master,sinal='D'
                                                        ,dt_movimento__lte=data_saldo,conta_financeira=c,company=empresa
-                                                       ).exclude(tipo_movto='C').aggregate(vlr=Sum('vlr_movimento'))[:1]
+                                                       ).exclude(tipo_movto='C')
 
+            print('movtos_debit')
             print(movtos_debitos)
         else:
             movtos_creditos = Movtos_lancamentos.objects.filter(master_user=user.user_master, sinal='R'
                                                 , dt_movimento__lte=data_saldo, conta_financeira=c
-                                                ).exclude(tipo_movto='C').aggregate(vlr=Sum('vlr_movimento'))[:1]
+                                                ).exclude(tipo_movto='C')
+
+            print('movtos_cred')
+            print(movtos_creditos)
 
             movtos_debitos = Movtos_lancamentos.objects.filter(master_user=user.user_master, sinal='D'
                                                 , dt_movimento__lte=data_saldo, conta_financeira=c,
-                                                ).exclude(tipo_movto='C').aggregate(vlr=Sum('vlr_movimento'))[:1]
+                                                ).exclude(tipo_movto='C')
+
+            print('movtos_debit')
+            print(movtos_debitos)
+
 
         if movtos_creditos['vlr'] is None:
             movtos_creditos['vlr'] = 0
