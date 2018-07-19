@@ -92,7 +92,7 @@ def saldo_conta(empresa,contas,data_saldo,user):
                                                 , dt_movimento__lte=data_saldo, conta_financeira=c,
                                                 ).exclude(tipo_movto='C')
 
-             movtos_debitos = movtos_debitos.aggregate(vlr_debitos=Sum('vlr_movimento'))
+            movtos_debitos = movtos_debitos.aggregate(vlr_debitos=Sum('vlr_movimento'))
 
 
         if movtos_creditos['vlr'] is None:
