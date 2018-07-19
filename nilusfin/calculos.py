@@ -65,13 +65,15 @@ def saldo_conta(empresa,contas,data_saldo,user):
     saldos = []
     for c in contas:
         if empresa:
-            movtos_creditos = Movtos_lancamentos.objects.filter(master_user=user.user_master,sinal='R'
-                                                       ,dt_movimento__lte=data_saldo,conta_financeira=c,company=empresa
-                                                       ).exclude(tipo_movto='C').aggregate(vlr=Sum('vlr_movimento'))
+            movtos_creditos = 2
+                # Movtos_lancamentos.objects.filter(master_user=user.user_master,sinal='R'
+                #                                        ,dt_movimento__lte=data_saldo,conta_financeira=c,company=empresa
+                #                                        ).exclude(tipo_movto='C').aggregate(vlr=Sum('vlr_movimento'))
 
-            movtos_debitos =  Movtos_lancamentos.objects.filter(master_user=user.user_master,sinal='D'
-                                                       ,dt_movimento__lte=data_saldo,conta_financeira=c,company=empresa
-                                                       ).exclude(tipo_movto='C').aggregate(vlr=Sum('vlr_movimento'))
+            movtos_debitos =  4
+                # Movtos_lancamentos.objects.filter(master_user=user.user_master,sinal='D'
+                #                                        ,dt_movimento__lte=data_saldo,conta_financeira=c,company=empresa
+                #                                        ).exclude(tipo_movto='C').aggregate(vlr=Sum('vlr_movimento'))
         else:
             movtos_creditos = Movtos_lancamentos.objects.filter(master_user=user.user_master, sinal='R'
                                                 , dt_movimento__lte=data_saldo, conta_financeira=c
