@@ -38,7 +38,7 @@ def lancfin_list(request):
     data_hoje = datetime.today
 
     if request.user.is_masteruser is True:
-        lanctos = Lancamentos.objects.filter(master_user=request.user.pk,sit_lancamento ='A')
+        lanctos = Lancamentos.objects.filter(master_user=request.user.pk,situacao = False)
         empresa = Company.objects.filter(master_user=request.user.pk)
         cadgeral = Cadgeral.objects.filter(master_user=request.user.pk)
         plano_finan = PlanoFinan.objects.filter(master_user=request.user.pk)
