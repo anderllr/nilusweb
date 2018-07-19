@@ -794,11 +794,12 @@ def fluxo_caixa(request):
 
     contas = Contafinanceira.objects.filter(master_user=request.user.user_master)
     empresa = Company.objects.filter(master_user=request.user.user_master)
+    empresa_filtro = None
     data_saldo = datetime.now()
     data_hoje = datetime.now()
     usuario = request.user
     contas_pk = []
-    saldos = saldo_conta(empresa,contas,data_saldo,usuario)
+    saldos = saldo_conta(empresa_filtro,contas,data_saldo,usuario)
     saldo_final = None
     rec_atraso_lanc = None
     rec_atraso_tot = None
@@ -817,7 +818,7 @@ def fluxo_caixa(request):
         data_venc_ini = form_fluxo.cleaned_data.get('data_venc_ini', '')
         data_venc_fim = form_fluxo.cleaned_data.get('data_venc_fim', '')
         contas =        form_fluxo.cleaned_data.get('contas_financeiras', '')
-        empresa =       form_fluxo.cleaned_data.get('empresa', '')
+        empresa_filtro =       form_fluxo.cleaned_data.get('empresa', '')
         atrasados =     form_fluxo.cleaned_data.get('considera_atraso','')
 
 
