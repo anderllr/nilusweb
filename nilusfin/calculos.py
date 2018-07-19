@@ -101,7 +101,7 @@ def saldo_conta(empresa,contas,data_saldo,user):
                 vlr_limite = 0
                 saldo_final = saldo_conta
 
-    saldos.append({"pk": c.pk ,"conta": c.descricao,"saldo" :saldo_conta,"vlr_limite" : vlr_limite,"saldo_final": saldo_final})
+        saldos.append({"pk": c.pk ,"conta": c.descricao,"saldo" :saldo_conta,"vlr_limite" : vlr_limite,"saldo_final": saldo_final})
 
 
     return(saldos)
