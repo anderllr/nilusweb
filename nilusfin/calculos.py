@@ -65,43 +65,43 @@ def saldo_conta(empresa,contas,data_saldo,user):
     saldos = []
     print(contas)
 
-        for c in contas:
-            for e in empresa:
-                if empresa:
-                    movtos_creditos = Movtos_lancamentos.objects.filter(master_user=user.user_master,sinal='R'
-                                                               ,dt_movimento__lte=data_saldo,conta_financeira=c,company=e
-                                                               ).exclude(tipo_movto='C').aggregate(vlr=Sum('vlr_movimento'))
+    for c in contas:
+        for e in empresa:
+            if empresa:
+                movtos_creditos = Movtos_lancamentos.objects.filter(master_user=user.user_master,sinal='R'
+                                                           ,dt_movimento__lte=data_saldo,conta_financeira=c,company=e
+                                                           ).exclude(tipo_movto='C').aggregate(vlr=Sum('vlr_movimento'))
 
-                    movtos_debitos =  Movtos_lancamentos.objects.filter(master_user=user.user_master,sinal='D'
-                                                               ,dt_movimento__lte=data_saldo,conta_financeira=c,company=e
-                                                               ).exclude(tipo_movto='C').aggregate(vlr=Sum('vlr_movimento'))
+                movtos_debitos =  Movtos_lancamentos.objects.filter(master_user=user.user_master,sinal='D'
+                                                           ,dt_movimento__lte=data_saldo,conta_financeira=c,company=e
+                                                           ).exclude(tipo_movto='C').aggregate(vlr=Sum('vlr_movimento'))
 
 
-                else:
-                    movtos_creditos = Movtos_lancamentos.objects.filter(master_user=user.user_master, sinal='R'
-                                                        , dt_movimento__lte=data_saldo, conta_financeira=c
-                                                        ).exclude(tipo_movto='C').aggregate(vlr=Sum('vlr_movimento'))
+            else:
+                movtos_creditos = Movtos_lancamentos.objects.filter(master_user=user.user_master, sinal='R'
+                                                    , dt_movimento__lte=data_saldo, conta_financeira=c
+                                                    ).exclude(tipo_movto='C').aggregate(vlr=Sum('vlr_movimento'))
 
-                    movtos_debitos = Movtos_lancamentos.objects.filter(master_user=user.user_master, sinal='D'
-                                                        , dt_movimento__lte=data_saldo, conta_financeira=c,
-                                                        ).exclude(tipo_movto='C').aggregate(vlr=Sum('vlr_movimento'))
+                movtos_debitos = Movtos_lancamentos.objects.filter(master_user=user.user_master, sinal='D'
+                                                    , dt_movimento__lte=data_saldo, conta_financeira=c,
+                                                    ).exclude(tipo_movto='C').aggregate(vlr=Sum('vlr_movimento'))
 
-                if movtos_creditos['vlr'] is None:
-                    movtos_creditos['vlr'] = 0
+            if movtos_creditos['vlr'] is None:
+                movtos_creditos['vlr'] = 0
 
-                if movtos_debitos['vlr'] is None:
-                    movtos_debitos['vlr'] = 0
+            if movtos_debitos['vlr'] is None:
+                movtos_debitos['vlr'] = 0
 
-                saldo_conta = Decimal(movtos_creditos['vlr']) - Decimal(movtos_debitos['vlr'])
+            saldo_conta = Decimal(movtos_creditos['vlr']) - Decimal(movtos_debitos['vlr'])
 
-                if c.usa_limite:
-                    vlr_limite = c.vlr_limite
-                    saldo_final = Decimal(saldo_conta) + Decimal(vlr_limite)
-                else:
-                    vlr_limite = 0
-                    saldo_final = saldo_conta
+            if c.usa_limite:
+                vlr_limite = c.vlr_limite
+                saldo_final = Decimal(saldo_conta) + Decimal(vlr_limite)
+            else:
+                vlr_limite = 0
+                saldo_final = saldo_conta
 
-            saldos.append({"pk": c.pk ,"conta": c.descricao,"saldo" :saldo_conta,"vlr_limite" : vlr_limite,"saldo_final": saldo_final})
+    saldos.append({"pk": c.pk ,"conta": c.descricao,"saldo" :saldo_conta,"vlr_limite" : vlr_limite,"saldo_final": saldo_final})
 
 
     return(saldos)
