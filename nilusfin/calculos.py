@@ -68,31 +68,31 @@ def saldo_conta(empresa,contas,data_saldo,user):
         if empresa:
             movtos_creditos = Movtos_lancamentos.objects.filter(master_user=user.user_master,sinal='R'
                                                        ,dt_movimento__lte=data_saldo,conta_financeira=c,company=empresa
-                                                       ).exclude(tipo_movto='C').aggregate(vlr=Sum('vlr_movimento'))
+                                                       ).exclude(tipo_movto='C')
 
-            print('movtos_credit')
-            print(movtos_creditos)
+            movtos_creditos = movtos_creditos.aggregate(vlr_debitos=Sum('vlr_movimento'))
+
+
+
 
             movtos_debitos =  Movtos_lancamentos.objects.filter(master_user=user.user_master,sinal='D'
                                                        ,dt_movimento__lte=data_saldo,conta_financeira=c,company=empresa
-                                                       ).exclude(tipo_movto='C').aggregate(vlr=Sum('vlr_movimento'))
+                                                       ).exclude(tipo_movto='C')
 
-            print('movtos_debit')
-            print(movtos_debitos)
-        # else:
-        #     movtos_creditos = Movtos_lancamentos.objects.filter(master_user=user.user_master, sinal='R'
-        #                                         , dt_movimento__lte=data_saldo, conta_financeira=c
-        #                                         ).exclude(tipo_movto='C').aggregate(vlr=Sum('vlr_movimento'))
-        #
-        #     print('movtos_credit')
-        #     print(movtos_creditos)
-        #
-        #     movtos_debitos = Movtos_lancamentos.objects.filter(master_user=user.user_master, sinal='D'
-        #                                         , dt_movimento__lte=data_saldo, conta_financeira=c,
-        #                                         ).exclude(tipo_movto='C').aggregate(vlr=Sum('vlr_movimento'))
-        #
-        #     print('movtos_debit')
-        #     print(movtos_debitos)
+            movtos_debitos = movtos_debitos.aggregate(vlr_debitos=Sum('vlr_movimento'))
+
+
+        else:
+            movtos_creditos = Movtos_lancamentos.objects.filter(master_user=user.user_master, sinal='R'
+                                                , dt_movimento__lte=data_saldo, conta_financeira=c
+                                                ).exclude(tipo_movto='C')
+            movtos_creditos = movtos_creditos.aggregate(vlr_debitos=Sum('vlr_movimento'))
+
+            movtos_debitos = Movtos_lancamentos.objects.filter(master_user=user.user_master, sinal='D'
+                                                , dt_movimento__lte=data_saldo, conta_financeira=c,
+                                                ).exclude(tipo_movto='C')
+
+             movtos_debitos = movtos_debitos.aggregate(vlr_debitos=Sum('vlr_movimento'))
 
 
         if movtos_creditos['vlr'] is None:
