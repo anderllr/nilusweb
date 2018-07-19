@@ -64,96 +64,45 @@ def calc_dre(empresa,f_lancamento,f_vencimento,f_baixa,data_lanc_ini,data_lanc_f
 def saldo_conta(empresa,contas,data_saldo,user):
     saldos = []
     print(contas)
-    for c in contas:
-        if empresa:
-            movtos_creditos = Movtos_lancamentos.objects.filter(master_user=user.user_master,sinal='R'
-                                                       ,dt_movimento__lte=data_saldo,conta_financeira=c
-                                                       ).exclude(tipo_movto='C')
+    for e in empresa:
+        for c in contas:
+            if empresa:
+                movtos_creditos = Movtos_lancamentos.objects.filter(master_user=user.user_master,sinal='R'
+                                                           ,dt_movimento__lte=data_saldo,conta_financeira=c,company=e
+                                                           ).exclude(tipo_movto='C').aggregate(vlr=Sum('vlr_movimento'))
 
-            movtos_creditos = movtos_creditos.aggregate(vlr_creditos=Sum('vlr_movimento'))
-
-
-
-
-            movtos_debitos =  Movtos_lancamentos.objects.filter(master_user=user.user_master,sinal='D'
-                                                       ,dt_movimento__lte=data_saldo,conta_financeira=c
-                                                       ).exclude(tipo_movto='C')
-
-            movtos_debitos = movtos_debitos.aggregate(vlr_debitos=Sum('vlr_movimento'))
+                movtos_debitos =  Movtos_lancamentos.objects.filter(master_user=user.user_master,sinal='D'
+                                                           ,dt_movimento__lte=data_saldo,conta_financeira=c,company=e
+                                                           ).exclude(tipo_movto='C').aggregate(vlr=Sum('vlr_movimento'))
 
 
-        else:
-            movtos_creditos = Movtos_lancamentos.objects.filter(master_user=user.user_master, sinal='R'
-                                                , dt_movimento__lte=data_saldo,
-                                                ).exclude(tipo_movto='C')
-            movtos_creditos = movtos_creditos.aggregate(vlr_creditos=Sum('vlr_movimento'))
+            else:
+                movtos_creditos = Movtos_lancamentos.objects.filter(master_user=user.user_master, sinal='R'
+                                                    , dt_movimento__lte=data_saldo, conta_financeira=c
+                                                    ).exclude(tipo_movto='C').aggregate(vlr=Sum('vlr_movimento'))
 
-            movtos_debitos = Movtos_lancamentos.objects.filter(master_user=user.user_master, sinal='D'
-                                                , dt_movimento__lte=data_saldo,
-                                                ).exclude(tipo_movto='C')
-            movtos_debitos = movtos_debitos.aggregate(vlr_debitos=Sum('vlr_movimento'))
+                movtos_debitos = Movtos_lancamentos.objects.filter(master_user=user.user_master, sinal='D'
+                                                    , dt_movimento__lte=data_saldo, conta_financeira=c,
+                                                    ).exclude(tipo_movto='C').aggregate(vlr=Sum('vlr_movimento'))
+
+            if movtos_creditos['vlr'] is None:
+                movtos_creditos['vlr'] = 0
+
+            if movtos_debitos['vlr'] is None:
+                movtos_debitos['vlr'] = 0
+
+            saldo_conta = Decimal(movtos_creditos['vlr']) - Decimal(movtos_debitos['vlr'])
+
+            if c.usa_limite:
+                vlr_limite = c.vlr_limite
+                saldo_final = Decimal(saldo_conta) + Decimal(vlr_limite)
+            else:
+                vlr_limite = 0
+                saldo_final = saldo_conta
+
+            saldos.append({"pk": c.pk ,"conta": c.descricao,"saldo" :saldo_conta,"vlr_limite" : vlr_limite,"saldo_final": saldo_final})
 
 
-        if movtos_creditos['vlr_creditos'] is None:
-            movtos_creditos['vlr_creditos'] = 0
-
-        if movtos_debitos['vlr_debitos'] is None:
-            movtos_debitos['vlr_debitos'] = 0
-
-        saldo_conta = Decimal(movtos_creditos['vlr_creditos']) - Decimal(movtos_debitos['vlr_debitos'])
-
-        if c.usa_limite:
-            vlr_limite = c.vlr_limite
-            saldo_final = Decimal(saldo_conta) + Decimal(vlr_limite)
-        else:
-            vlr_limite = 0
-            saldo_final = saldo_conta
-
-        # SALDO ATUAL
-
-        # total creditos
-        # if empresa:
-        #     movtos_creditos = Movtos_lancamentos.objects.filter(master_user=user.user_master,
-        #                                                         sinal='R', dt_movimento__lte=data_saldo,
-        #                                                         company=empresa).exclude(tipo_movto='C')
-        # else:
-        #     movtos_creditos = Movtos_lancamentos.objects.filter(master_user=user.user_master,
-        #                                                         sinal='R', dt_movimento__lte=data_saldo)\
-        #                                                         .exclude(tipo_movto='C')
-        #
-        # if c:
-        #     movtos_creditos = movtos_creditos.filter(conta_financeira=c)
-        # movtos_creditos = movtos_creditos.aggregate(vlr_creditos=Sum('vlr_movimento'))
-        #
-        #
-        # # total debitos
-        # if empresa:
-        #     movtos_debitos = Movtos_lancamentos.objects.filter(master_user=user.user_master,
-        #                                                        sinal='D', dt_movimento__lte=data_saldo,
-        #                                                        company=empresa).exclude(tipo_movto='C')
-        # else :
-        #     movtos_debitos = Movtos_lancamentos.objects.filter(master_user=user.user_master,
-        #                                                        sinal='D', dt_movimento__lte=data_saldo
-        #                                                        ).exclude(tipo_movto='C')
-        #
-        # if c:
-        #     movtos_debitos = movtos_debitos.filter(conta_financeira=c)
-        # movtos_debitos = movtos_debitos.aggregate(vlr_debitos=Sum('vlr_movimento'))
-        #
-        # if movtos_creditos['vlr_creditos'] is None:
-        #     movtos_creditos['vlr_creditos'] = 0
-        #
-        # if movtos_debitos['vlr_debitos'] is None:
-        #     movtos_debitos['vlr_debitos'] = 0
-        #
-        # saldo_conta = Decimal(movtos_creditos['vlr_creditos']) - Decimal(movtos_debitos['vlr_debitos'])
-        # # FIM SALDO ATUAL
-        #
-        # if c.usa_limite:
-        #     vlr_limite = c.vlr_limite_text.replace('R$', '').replace('.', '').replace(',', '.')
-        #     saldo_final = Decimal(saldo_conta) + Decimal(vlr_limite)
-
-        saldos.append({"pk": c.pk ,"conta": c.descricao,"saldo" :saldo_conta,"vlr_limite" : vlr_limite,"saldo_final": saldo_final})
     return(saldos)
 
 
